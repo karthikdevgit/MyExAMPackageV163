@@ -1,0 +1,21 @@
+<aura:component access="public">
+    
+    <aura:attribute name="componentLink" type="String" description="component to link to" access="public"/>
+    <aura:attribute name="active" default="false" required="true" type="Boolean" description="one of active, blank(in active)" access="public"/>
+    <aura:attribute name="label" default="" required="true" type="String" description="what the user sees as Tab name" access="public"/>
+    <aura:attribute name="liClass" type="String" access="public"/>
+    <aura:attribute name="aClass" type="String" access="public"/>
+    <aura:attribute name="tooltipText" type="String" access="public"/>
+    <aura:attribute name="index" type="Integer" access="public"/>
+    <aura:attribute name="currentComponent" type="String" access="public"/>
+    <aura:attribute name="canSwitchTab" type="Boolean" access="public"/>
+    
+    <aura:registerEvent name="SettingSelectedTab" type="c:settingSelectedTabEvt"/>
+    <aura:registerEvent name="notificationEvent" type="c:notificationEvt"/>
+    
+    <aura:method name="changeTab" action="{!c.changeTempalteTab}"/>
+
+    <li class="{! v.active ? 'tooltip-container ' + 'slds-active bgColor '+ v.liClass : 'tooltip-container '+ v.liClass}" role="presentation" aria-describedby="tooltip" id="{#'innertab' + v.index}">
+        <a class="{#v.aClass}" onclick="{!c.fireEvent}" role="tab" tabindex="{#v.index}">{#v.label}</a>
+        <aura:if isTrue="{# v.tooltipText != null}"> <div class="slds-popover slds-popover--tooltip slds-nubbin--bottom-left" role="tooltip" id="tooltip"> <div
+            class="proper-case slds-popover__body">{#v.tooltipText}</div> </div> </aura:if> </li> </aura:component>

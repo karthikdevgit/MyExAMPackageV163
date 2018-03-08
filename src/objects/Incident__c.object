@@ -1,0 +1,667 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>Used to support data collections around incidents or events.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>FacilityOrSchoolName__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Name of the School or facility.Against this object all Incidents,Assessment checklist,t\Tornado and fire drill form instances will be stored.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Name of the School or facility.Against this object all Incidents,Assessment checklist,t\Tornado and fire drill form instances will be stored.</inlineHelpText>
+        <label>Facility/School Name</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Incident</relationshipLabel>
+        <relationshipName>Incident</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Facility_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Facility Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <controllingField>Facility_Type__c</controllingField>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Administrative Building</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>ALDIE ELEMENTARY</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>BELMONT RIDGE MIDDLE</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>BRIAR WOODS HIGH</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+            <valueSettings>
+                <controllingFieldValue>Elementary School</controllingFieldValue>
+                <valueName>ALDIE ELEMENTARY</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Middle School</controllingFieldValue>
+                <valueName>BELMONT RIDGE MIDDLE</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>High School</controllingFieldValue>
+                <valueName>BRIAR WOODS HIGH</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Other</controllingFieldValue>
+                <valueName>Administrative Building</valueName>
+            </valueSettings>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Facility_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Top level Facility whether its a school or an administrative building</inlineHelpText>
+        <label>Facility Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Elementary School</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Middle School</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>High School</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>IncidentDescription__c</fullName>
+        <deprecated>false</deprecated>
+        <description>DESCRIBE IN DETAIL WHAT OCCURED.State WHO, WHAT, WHERE, HOW, WHEN. Provide details of monetary losses, weapons, eyewitness accounts, etc.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>DESCRIBE IN DETAIL WHAT OCCURED.State WHO, WHAT, WHERE, HOW, WHEN. Provide details of monetary losses, weapons, eyewitness accounts, etc.</inlineHelpText>
+        <label>Incident Description</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Incident_Classification__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Incident Classification</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Alarm</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Bullying</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Drug/Alcohol Offenses</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Involving People</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Involving Property</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Security Threats</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Incident_List__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>List of all incidents type on a incident.Please manually add new incidents on separate line in the format Incident Classification:Incident Type</inlineHelpText>
+        <label>Incident List</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Incident_Location__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Incident Location</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Bus</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Classrooms</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Field Trips</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Hallways</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Locker rooms</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Parking Lots</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Play areas</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Restrooms</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Cafeteria</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Incident_Time__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Incident Time</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>After school</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Before school</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Change of class</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>During class</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>During school</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Weekends</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Incident_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Incident Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <controllingField>Incident_Classification__c</controllingField>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Assault(Minor)</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Assault with weapon</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Fight</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Robbery</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Sex Offense</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Suspicious People</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Suspicious Incident</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Suspicious Package</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Suspicious Vehicles</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Phone Threat</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Cyber Threat</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Fire</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Security</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Physical</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Verbal</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Cyber</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Burglary</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Vandalism</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Graffiti</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Arson</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Larceny (over $200)</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Larceny (under $200)</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Alarms</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Panic</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Verbal Threat</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Possession</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Use</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Distribution</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+            <valueSettings>
+                <controllingFieldValue>Alarm</controllingFieldValue>
+                <valueName>Fire</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Alarm</controllingFieldValue>
+                <valueName>Security</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Alarm</controllingFieldValue>
+                <valueName>Panic</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Bullying</controllingFieldValue>
+                <valueName>Physical</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Bullying</controllingFieldValue>
+                <valueName>Verbal</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Bullying</controllingFieldValue>
+                <valueName>Cyber</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Drug/Alcohol Offenses</controllingFieldValue>
+                <valueName>Possession</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Drug/Alcohol Offenses</controllingFieldValue>
+                <valueName>Use</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Drug/Alcohol Offenses</controllingFieldValue>
+                <valueName>Distribution</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Involving People</controllingFieldValue>
+                <valueName>Assault(Minor)</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Involving People</controllingFieldValue>
+                <valueName>Assault with weapon</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Involving People</controllingFieldValue>
+                <valueName>Fight</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Involving People</controllingFieldValue>
+                <valueName>Other</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Involving People</controllingFieldValue>
+                <valueName>Robbery</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Involving People</controllingFieldValue>
+                <valueName>Sex Offense</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Involving Property</controllingFieldValue>
+                <valueName>Burglary</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Involving Property</controllingFieldValue>
+                <valueName>Vandalism</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Involving Property</controllingFieldValue>
+                <valueName>Graffiti</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Involving Property</controllingFieldValue>
+                <valueName>Arson</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Involving Property</controllingFieldValue>
+                <valueName>Larceny (over $200)</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Involving Property</controllingFieldValue>
+                <valueName>Larceny (under $200)</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Security Threats</controllingFieldValue>
+                <valueName>Suspicious People</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Security Threats</controllingFieldValue>
+                <valueName>Suspicious Incident</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Security Threats</controllingFieldValue>
+                <valueName>Suspicious Package</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Security Threats</controllingFieldValue>
+                <valueName>Suspicious Vehicles</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Security Threats</controllingFieldValue>
+                <valueName>Phone Threat</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Security Threats</controllingFieldValue>
+                <valueName>Cyber Threat</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Security Threats</controllingFieldValue>
+                <valueName>Verbal Threat</valueName>
+            </valueSettings>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Notifications__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Notifications</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Administrator</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Public Information Officer</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Safety and Security</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Superintendent</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Participants_List__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Participants List</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <label>Incident</label>
+    <nameField>
+        <label>Incident Name</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Incident</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Facility_Name__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Facility_Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Incident_Classification__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Incident_Location__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Incident_Time__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Incident_Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Participants_List__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>LAST_UPDATE</customTabListAdditionalFields>
+        <customTabListAdditionalFields>UPDATEDBY_USER</customTabListAdditionalFields>
+        <listViewButtons>New_Participant</listViewButtons>
+        <lookupDialogsAdditionalFields>Facility_Name__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Facility_Type__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Incident_Classification__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Incident_Type__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>LAST_UPDATE</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Facility_Name__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Facility_Type__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Incident_Location__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Incident_Classification__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Incident_Type__c</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>Facility_Type__c</searchFilterFields>
+        <searchFilterFields>Facility_Name__c</searchFilterFields>
+        <searchFilterFields>Incident_Classification__c</searchFilterFields>
+        <searchFilterFields>Incident_Type__c</searchFilterFields>
+        <searchFilterFields>UPDATEDBY_USER</searchFilterFields>
+        <searchResultsAdditionalFields>Facility_Name__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Facility_Type__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Incident_Classification__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Incident_Type__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>LAST_UPDATE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>UPDATEDBY_USER</searchResultsAdditionalFields>
+        <searchResultsCustomButtons>New_Participant</searchResultsCustomButtons>
+    </searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
+    <webLinks>
+        <fullName>New_Participant</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>New Participant</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>true</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Update_Incident</fullName>
+        <availability>online</availability>
+        <description>To automatically update Incident list</description>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Update Incident</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!Incident__c.Incident_List__c}={!Incident__c.Incident_List__c}+{!Incident__c.Incident_Classification__c}:{!Incident__c.Incident_Type__c}
+upsert Incident__c;</url>
+    </webLinks>
+</CustomObject>

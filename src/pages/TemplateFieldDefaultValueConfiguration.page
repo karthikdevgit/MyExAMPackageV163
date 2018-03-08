@@ -1,0 +1,35 @@
+<apex:page controller="ResultTemplateConfigurationController">
+    <apex:form >
+        <apex:pageBlock id="pg" title="Result Template Default Values Configuration">
+            <apex:outputPanel rendered="{!NOT(isResultQuestion)}">
+                <apex:outputText value="Default values configuration is available only for Result Question Template"/>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!isResultQuestion}">
+                <apex:pageMessages id="msg"/>
+                <apex:pageBlockTable value="{!fieldDefaultValueList}" var="f">
+                    <apex:column rendered="{!f.isEnabled}">
+                        <apex:facet name="header">Field Label</apex:facet>
+                        <apex:outputText value="{!f.fieldLabelName}"/>
+                        <apex:outputText style="display: none" value="{!f.fieldAPIName}"/>
+                    </apex:column>
+                    <apex:column rendered="{!f.isEnabled}">
+                        <apex:facet name="header">Default Value</apex:facet>
+                        <apex:outputPanel rendered="{!NOT(f.isPickList)}">
+                            <apex:inputText value="{!f.defaultValue}" rendered="{!f.fieldAPIName != 'Pictures'}"/>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!f.isPickList}">
+                            <apex:selectList value="{!f.defaultValue}" multiselect="false" size="1">
+                                <apex:selectOptions value="{!f.fieldPklstOptions}"/>
+                            </apex:selectList>
+                        </apex:outputPanel>
+                    </apex:column>
+                </apex:pageBlockTable>
+                <br/>
+                <center>
+                    <apex:commandButton value="Save" action="{!saveFieldDefaultValues}" reRender="pg"/>
+                    <apex:commandButton value="Cancel" action="/{!$CurrentPage.parameters.questionTemplateId}"/>
+                </center>
+            </apex:outputPanel>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

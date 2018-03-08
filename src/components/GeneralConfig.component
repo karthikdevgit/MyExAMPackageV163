@@ -1,0 +1,533 @@
+<apex:component controller="GeneralConfigController">
+    <style>
+        .slds-card {
+          @include box($theme: shade, $padding: 0, $borders: around);
+        
+          + .slds-card {
+            margin-top: $spacing-medium;
+          }
+        
+          .slds-card__header {
+            padding: $spacing-small $spacing-small $spacing-xx-small;
+          }
+        
+          .slds-tile {
+            margin: $spacing-x-small;
+            padding: $spacing-x-small;
+          }
+        }
+        .generalSelect {
+            @include form-states;
+            height: $line-height-button;
+            width: 50% !important;
+        }
+        .slds-button--neutral {
+          @include button;
+          @include button-base;
+          background-color: $color-background-button-default;
+        }
+        .slds-spinner--small {
+            @include square(32px);
+        }
+        .errorSpan { color: #ff5454; }
+    </style>
+    <form class="slds-form">
+        <div ng-app="amStatusConfigApp" ng-controller="amStatusConfigCtrl">
+            <div class="slds-card slds-m-top--x-small">
+                <div class="slds-card__header slds-grid">
+                    <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <h2 class="slds-text-heading--small slds-truncate">Assess Anything</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-card__body">
+                    <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                        <tbody>
+                            <tr class="slds-hint-parent">
+                              <td class="slds-size--1-of-2" >
+                                  <b><label id="domainNamelabel" class="slds-form-element__label slds-text-align--center" style="display:none;"  for="name">{!sfsubdomainEndPointUrl}</label></b>
+                                  <input id="domainName" class="slds-input" type="text" placeholder="Please Enter Salesforce Domain Name" />
+                              </td>
+                              <td class="slds-size--1-of-2" >
+                                  <button class="slds-button slds-button--brand saveEndpointURL" type="button">Save Endpoint URL</button>
+                                  <button class="slds-button slds-button--brand cancelEndpointURL" type="button">Cancel</button>
+                                  <button class="slds-button slds-button--brand editEndpointURL" style="display:none;" type="button">Edit Endpoint URL</button>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td class="slds-size--1-of-2" >(Eg: https://na15.salesforce.com or https://cs10.salesforce.com ) <br/>**Please add this URL in Remote Site Setting (on the Setup menu) as well.</td>
+                                <td class="slds-size--1-of-2" ></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="slds-card slds-m-top--x-small">
+                <div class="slds-card__header slds-grid">
+                    <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <h2 class="slds-text-heading--small slds-truncate">Assess Anything</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-card__body">
+                    <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                        <tbody>
+                            <tr class="slds-hint-parent">
+                              <td class="slds-size--1-of-2" >
+                                  <select id="selectSample1" ng-model="selectedAssObj" class="slds-select slds-size--10-of-12" ng-options="option.Value as option.Label for option in (Objes | orderBy:'Label')"></select>
+                              </td>
+                              <td class="slds-size--1-of-2" >
+                                  <button class="slds-button slds-button--brand" type="button" ng-click="createAssObj()">Create ExAM to Object</button>
+                              </td>
+                            </tr>                            
+                        </tbody>
+                    </table>
+                </div>
+            </div><br/>
+
+            <!-- Code Below Added on 30-06-2016 -->
+            <!-- Start Code to Overall Status on Submit -->
+            <div class="slds-card slds-m-top--x-small">
+                <div class="slds-card__header slds-grid">
+                    <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <h2 class="slds-text-heading--small slds-truncate"> Assignment Manager's Overall Status on Submit </h2> <!-- '-->
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-notify_container" style="display:none;" id="amStatusConfigExcept">
+                    <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert">
+                        <button class="slds-button slds-notify__close slds-button--icon-inverse" title="Close">
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                            <span class="slds-assistive-text">Error</span>
+                            <h2 id="amStatusConfigExceptMsg">
+                                
+                            </h2>
+                    </div>
+                </div>
+                <div class="slds-card__body">
+                    <div ng-show="showErrMessage_Status" style="color: {{setPgMsgColor_Status}};font-size: 15px;">{{ errMessage_Status }}</div>
+                    <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                        <tbody>
+                            <tr class="slds-hint-parent">
+                                <td class="slds-size--1-of-4"> Overall Status </td>
+                                <td class="slds-size--1-of-4">
+                                    <p ng-show="!showOverallStatusPicklist">{{ statusVal }}</p>
+                                    <div ng-show="showOverallStatusPicklist">
+                                        <select id="statusValId" class="slds-select generalSelect"  ng-model="statusVal" ng-options="status for status in (overallStatusList | orderBy)"/> 
+                                    </div>
+                                </td>
+                                <td class="slds-size--2-of-4">
+                                    <input class="slds-button slds-button--brand" ng-show="!showOverallStatusPicklist" ng-click="togglestatusView('edit')" type="button" value="Edit"/>
+                                    <input class="slds-button slds-button--brand" ng-show="showOverallStatusPicklist" ng-click="savestatusInBackEnd()" type="button" value="Save"/>
+                                    <input class="slds-button slds-button--brand" ng-show="showOverallStatusPicklist" ng-click="togglestatusView('cancel')" type="button" value="Cancel"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- End Code to Overall Status on Submit -->
+
+            <!-- Start Code to Assignment manager list filter  -->
+            <div class="slds-card slds-m-top--x-small">
+                <div class="slds-card__header slds-grid">
+                    <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <h2 class="slds-text-heading--small slds-truncate">  Assignment Manager List Tab Filter  </h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-notify_container" style="display:none;" id="amfilterConfigExcept">
+                    <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert">
+                        <button class="slds-button slds-notify__close slds-button--icon-inverse" title="Close">
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <span class="slds-assistive-text">Error</span>
+                        <h2 id="amfilterConfigExceptMsg">
+                           
+                        </h2>
+                    </div>
+                </div>
+                <div class="slds-card__body">
+                    <div ng-show="showErrMessage_filter" style="color: {{setPgMsgColor_filter}};font-size: 15px;">{{ errMessage_filter }}</div>
+                    <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                        <tbody>
+                            <tr class="slds-hint-parent">
+                                <td class="slds-size--1-of-4"> Assignment manager's status </td> <!-- ' -->
+                                <td class="slds-size--1-of-4">
+                                    <p ng-show="!showFilterStatusPicklist">{{ filter_statusVal }}</p>
+                                    <div ng-show="showFilterStatusPicklist">
+                                        <select id="filterstatusValId" class="slds-select generalSelect"  ng-model="filter_statusVal" ng-options="status for status in (overallStatusList | orderBy)">
+                                        </select>    
+                                    </div>
+                                </td>
+                                <td class="slds-size--2-of-4">
+                                    <input class="slds-button slds-button--brand" ng-show="!showFilterStatusPicklist" ng-click="togglefilterstatusView('edit')" type="button" value="Edit"/>
+                                    <input class="slds-button slds-button--brand" ng-show="showFilterStatusPicklist" ng-click="savefilterstatusInBackEnd()" type="button" value="Save"/>
+                                    <input class="slds-button slds-button--brand" ng-show="showFilterStatusPicklist" ng-click="togglefilterstatusView('cancel')" type="button" value="Cancel"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- End Code to Assignment manager list filter  -->
+        </div>
+
+        <c:DataManagementTabFilterComponent />
+
+        <div class="slds-card slds-m-top--x-small">
+            <div class="slds-card__header slds-grid">
+                <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                    <div class="slds-media__body">
+                        <h2 class="slds-text-heading--small slds-truncate">Decision Tree Configuration</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-notify_container" style="display:none;" id="dtConfigExcept">
+                <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert">
+                    <button class="slds-button slds-notify__close slds-button--icon-inverse" title="Close">
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                        <span class="slds-assistive-text">Error</span>
+                        <h2 id="dtConfigExceptMsg">
+                            
+                        </h2>
+                </div>
+            </div>
+            <div class="slds-card__body">
+                <div id="skipAnswerMsg1" style="padding-left: 13px;font-weight:bold;color:green;font-size: 15px;"></div>
+                <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                    <tbody>
+                        <tr class="slds-hint-parent">
+                            <td class="slds-size--1-of-2" >
+                                <label class="slds-checkbox"  for="skipAnswerId">
+                                <input type="checkbox" id="skipAnswerId" value="{!skipAnswerForDecisionTreeSteps}">  </input>
+                                <span class="slds-checkbox--faux"></span>
+                                <span class="slds-form-element__label">
+                                    Skip Answer For Decision Tree Steps
+                                </span>
+                                </label>
+                           </td>
+                       </tr>
+                        <tr class="slds-hint-parent"> <!--added on 29 nov 2017 -->
+                            <td class="slds-size--1-of-2" >
+                                <label class="slds-checkbox"  for="relateDecisionId">
+                                <input type="checkbox" id="relateDecisionId" value="{!RelateDecisionTreeonContinueButton}">  </input>
+                                <span class="slds-checkbox--faux"></span>
+                                <span class="slds-form-element__label">
+                                    Related DecisionTree on Continue Button
+                                </span>
+                                </label>
+                           </td>
+                       </tr>
+                       <tr>
+                           <td class="slds-size--1-of-2"  style="text-align:center;"  >
+                                <button class="slds-button slds-button--brand saveSkipAnswer" type="button">Save</button>                               
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!--Starts with Assessable object fields with question record mapping-->
+        <div class="slds-card slds-m-top--x-small">
+            <div class="slds-card__header slds-grid">
+                <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                    <div class="slds-media__body">
+                        <h2 class="slds-text-heading--small slds-truncate">Field Mapping Configuration</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-notify_container" style="display:none;" id="FMConfigExcept">
+                <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert">
+                    <button class="slds-button slds-notify__close slds-button--icon-inverse" title="Close">
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                        <span class="slds-assistive-text">Error</span>
+                        <h2 id="FMConfigExceptMsg">
+                            
+                        </h2>
+                </div>
+            </div>
+            <div class="slds-card__body">
+                <div id="fieldMappingMsg1" style="padding-left: 13px;font-weight:bold;color:green;font-size: 15px;"></div>
+                <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                    <tbody>
+                        <tr class="slds-hint-parent">
+                            <td class="slds-size--1-of-2" >
+                                <label class="slds-checkbox"  for="fieldMappingId">
+                                <input type="checkbox" id="fieldMappingId" value="{!fieldMappingConfiguration}">  </input>
+                                <span class="slds-checkbox--faux"></span>
+                                <span class="slds-form-element__label">
+                                    Enable Field Mapping
+                                </span>
+                                </label>
+                           </td>
+                       </tr>
+                       <tr class="slds-hint-parent">
+                            <td class="slds-size--1-of-2" >
+                                <a href="/apex/ExAM__AssessableFieldQuestionMapping">Configure Field Mapping</a>
+                           </td>
+                       </tr>
+                       <tr>
+                           <td class="slds-size--1-of-2"  style="text-align:center;"  >
+                                <button class="slds-button slds-button--brand savefieldMappping" type="button">Save</button>                               
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div><!--End with Assessable object fields with question record mapping-->
+        
+        <!--<c:DecisionTreeConfig ></c:DecisionTreeConfig>-->
+        <!--<c:ExportAMwithQuestionAnswer></c:ExportAMwithQuestionAnswer>-->
+        <c:ExportAssessmentTemplate />
+        <c:ImportAssessmentTemplate />
+        <c:JSONUploadAMAndAnswer />
+        <c:ExportAnswerCSV />
+        <c:ExportAnswersPerAM />
+        <c:PublicSiteURLConfigurationComponent />
+        <c:WebInterceptURLConfigurationComponent />
+        <c:ReportBuilderHeaderFooter />
+        <c:CaseSurveyConfiguration />
+        <c:PublicAssessment_ModalView />
+    </form>
+    <script>
+        var app = angular.module('amStatusConfigApp', []);
+        app.service('amStatusConfigureService', function($q) {
+
+            this.getExamConfigAndAssessmentTemplates = function() {
+
+                var defer = $q.defer();
+
+                ExAM.GeneralConfigController.queryExamConfigRecordAndAllAssessmentTemplates(function(result, event) {
+
+                    if(event.status) {
+                        defer.resolve(result);
+                    }
+                });
+                return defer.promise;
+            }
+        });
+        app.controller('amStatusConfigCtrl', function($scope, amStatusConfigureService) {
+            $scope.Objes = JSON.parse('{!JSENCODE(ObjStr)}');
+            $scope.selectedAssObj = '';
+            $scope.initialStatus = $scope.statusVal = '';
+            $scope.overallStatusList = [];
+            $scope.statusVal = '';
+            $scope.showOverallStatusPicklist = false;
+            $scope.showErrMessage_Status = false;
+            $scope.errMessage_Status = '';
+            $scope.setPgMsgColor_Status = 'green';
+            
+            $scope.initialFilterStatus = $scope.filter_statusVal = '';
+            $scope.filter_statusVal = '';
+            $scope.showFilterStatusPicklist = false;
+            $scope.showErrMessage_filter = false;
+            $scope.errMessage_filter = '';
+            $scope.setPgMsgColor_filter = 'green';
+            
+            $scope.exceptMsg = '';
+            ExAM.GeneralConfigController.getOverallStatusList(function(result, event) {
+    
+                if(event.status) {
+                    $scope.overallStatusList = result;        
+                }
+            });
+            $scope.createAssObj = function() {
+                if($scope.selectedAssObj != '') {
+                    ExAM.GeneralConfigController.createLookupField($scope.selectedAssObj, function(result, event) {
+                        if (event.status) {
+                            if(result == 'successfully created') {
+                                alert('Field created Successfully');
+                                window.location.reload();
+                            } else {
+                                alert(result);
+                            }
+                            
+                        } else {
+                            alert(result);
+                        }
+                    });
+                }
+            }
+            
+            $scope.togglestatusView = function(statusAction) {
+                $scope.showErrMessage_Status = false;
+                $scope.errMessage_Status = '';
+                $scope.setPgMsgColor_Status = 'red';
+
+                if (statusAction == 'edit') {
+                    $scope.showOverallStatusPicklist = true;
+                }
+                else if(statusAction == 'cancel') {
+                    $scope.statusVal = $scope.initialStatus;
+                    $scope.showOverallStatusPicklist = false;
+                }
+            }
+            $scope.savestatusInBackEnd = function() {
+                ExAM.GeneralConfigController.saveStatusinExamConfig($scope.statusVal, function(result, event) {
+                   
+                    if (event.status && result == 'Successfully updated exam configuration' ) {
+                        $scope.showErrMessage_Status = true;
+                        $('#amStatusConfigExcept').css("display","none");
+                        $scope.errMessage_Status = result;
+                        $scope.setPgMsgColor_Status = 'green';
+                        $scope.showOverallStatusPicklist = false;
+                        $scope.initialStatus = $scope.statusVal;
+                        $scope.$apply();
+                        
+                    } else {
+                        $('#amStatusConfigExceptMsg').text(result);
+                        $('#amStatusConfigExcept').css("display","");
+                        $scope.showErrMessage_Status = false;
+                    }
+                    $scope.$apply();
+                });
+            }
+            $scope.togglefilterstatusView = function(statusAction) {
+                $scope.showErrMessage_filter = false;
+                $scope.errMessage_filter = '';
+                $scope.setPgMsgColor_filter = 'red';
+
+                if (statusAction == 'edit') {
+                    $scope.showFilterStatusPicklist = true;
+                }
+                else if(statusAction == 'cancel') {
+                    $scope.filter_statusVal = $scope.initialFilterStatus;
+                    $scope.showFilterStatusPicklist = false;
+                }
+            }
+            $scope.savefilterstatusInBackEnd = function() {
+                ExAM.GeneralConfigController.saveAssignmentManagerListFilterInExamConfig($scope.filter_statusVal, function(result, event) {
+                    
+                    if (event.status && result == 'Successfully updated exam configuration' ) {
+                        $scope.showErrMessage_filter = true;
+                        $('#amfilterConfigExcept').css("display","none");
+                        $scope.errMessage_filter = result;
+                        $scope.setPgMsgColor_filter = 'green';
+                        $scope.showFilterStatusPicklist = false;
+                        $scope.initialFilterStatus = $scope.filter_statusVal;
+                        $scope.$apply();
+                        
+                    } else {
+                        $('#amfilterConfigExceptMsg').text(result);
+                        $('#amfilterConfigExcept').css("display","");
+                        $scope.showErrMessage_filter = false;
+                    }
+                    $scope.$apply();
+                });
+            }
+            amStatusConfigureService.getExamConfigAndAssessmentTemplates().then(function(data) {
+
+                if (angular.isDefined(data.examConfigRecord.Id)) {
+
+                    $scope.initialStatus = $scope.statusVal = data.examConfigRecord.ExAM__Overall_Status_on_Submit__c != null ? data.examConfigRecord.ExAM__Overall_Status_on_Submit__c : '';
+                    $scope.initialFilterStatus = $scope.filter_statusVal = data.examConfigRecord.ExAM__Assignment_Manager_List_Status_Filter__c != null ? data.examConfigRecord.ExAM__Assignment_Manager_List_Status_Filter__c : '';
+                }
+            });
+        });
+        $(document).ready(function() {
+            if('{!sfsubdomainEndPointUrl}' != null && '{!sfsubdomainEndPointUrl}' != '') {
+                $('#domainName').val('{!sfsubdomainEndPointUrl}');
+                $('#domainName').hide();
+                $('#domainNamelabel').show();
+                
+                $('.saveEndpointURL').hide();
+                $('.cancelEndpointURL').hide();
+                $('.editEndpointURL').show();
+            }
+            var skip = {!skipAnswerForDecisionTreeSteps};
+            //alert(fd);
+            if (skip) {
+                $('#skipAnswerId').prop("checked", true);
+            }  
+            var relate = {!RelateDecisionTreeonContinueButton}; // added this for RelateDecisionTreeonContinueButton  on 29 nov 2017
+            //alert(fd);
+            if (relate) {
+                $('#relateDecisionId').prop("checked", true);
+            } 
+            var isfieldMapped = {!fieldMappingConfiguration};
+            if (isfieldMapped) {
+                $('#fieldMappingId').prop("checked", true);
+            } 
+        });
+        $('.editEndpointURL').click(function() {
+            $('#domainNamelabel').hide();
+            $('#domainName').show();
+            
+            $('.editEndpointURL').hide();
+            $('.saveEndpointURL').show();
+            $('.cancelEndpointURL').show();
+        });
+        $('.saveEndpointURL').click(function() {
+            var domainURL = $('#domainName').val();
+            domainURL = decodeURIComponent(domainURL);
+            ExAM.GeneralConfigController.saveEndpointUrl(domainURL, function(result, event) {
+                if (event.status) {
+                    $('#domainNamelabel').html(domainURL);
+                    $('#domainName').hide();
+                    $('#domainNamelabel').show();
+                    
+                    $('.saveEndpointURL').hide();
+                    $('.cancelEndpointURL').hide();
+                    $('.editEndpointURL').show();
+                    
+                } else {
+                    $('#saveEndpointURLExceptMsg').text(result);
+                }
+            });
+        });
+        $('.cancelEndpointURL').click(function() {
+            $('#domainName').hide();
+            $('#domainNamelabel').show();
+            
+            $('.saveEndpointURL').hide();
+            $('.cancelEndpointURL').hide();
+            $('.editEndpointURL').show();
+        });
+        
+        $('.saveSkipAnswer').click(function() {
+            
+            // added $('#relateDecisionId').prop("checked") on 29 nov 2017.
+            ExAM.GeneralConfigController.updateExamConfig($('#skipAnswerId').prop("checked"),$('#relateDecisionId').prop("checked"), function(result, event) {
+                if (event.status && result.includes('success') ) {
+                    if ( result.indexOf('@@') >= 0 ) {
+                        $('.hiddenExamConfigId').val(result.split('@@')[1]);
+                        $('#skipAnswerMsg1').html('Successfully updated exam configuration');
+                        $('#dtConfigExcept').css("display","none");
+                    }
+                } else {
+                    
+                    $('#dtConfigExceptMsg').text(result);
+                    $('#dtConfigExcept').css("display","");
+                    
+                }
+                
+            });
+        });
+        
+        $('.savefieldMappping').click(function() {
+            ExAM.GeneralConfigController.savefieldMappping($('#fieldMappingId').prop("checked"), function(result, event) {
+                if (event.status && result.includes('success') ) {
+                    if (result.indexOf('@@') >= 0) {
+                        $('.hiddenExamConfigId').val(result.split('@@')[1]);
+                        $('#fieldMappingMsg1').html('Exam Configuration updated successfully');
+                    }
+                } else {
+                    $('#FMConfigExceptMsg').text(result);
+                    $('#FMConfigExcept').css("display","");
+                    
+                }
+                
+            });
+        });
+    </script>
+</apex:component>

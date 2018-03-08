@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>MB_A</letterhead>
+    <name>Notify Team Member</name>
+    <style>freeForm</style>
+    <subject>Notification to Team Member</subject>
+    <textOnly>Hello {!IssueRequest_Life_Cycle__c.Assessor_Resource__c},
+
+A new task {!IssueRequest_Life_Cycle__c.Link} has been assigned to you.
+Please take appropriate action.
+
+Thanks
+
+Management Team</textOnly>
+    <type>html</type>
+</EmailTemplate>

@@ -1,0 +1,264 @@
+<apex:page standardController="Incident__c"  standardStylesheets="false" sidebar="false" extensions="IncidentController" id="incidentpage" docType="html-5.0">
+    <meta name="viewport" content="width=device-width-5, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes;" />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> 
+    <script type="text/javascript">
+        var $j = jQuery.noConflict();
+        $j(document).ready(function() {
+            setTimeout(function() {
+                $j('select.myMultiClass').each(function(i, val) { 
+                    $j(val).width(280);
+                    $j(val).height(100);
+                })
+            },100);
+        });
+        function addIncident()
+        {
+           var originalIncidents=document.getElementById('{!$Component.incidentForm.row3incidentlist}').value;//alert(document.getElementById('{!$Component.incidentForm.labeltype}').value);
+             
+               var addNewIncident=document.getElementById('{!$Component.incidentForm.labelclassif}').value+':'+document.getElementById('{!$Component.incidentForm.labeltype}').value;﻿
+               var firstChar=addNewIncident.substr(0,1);
+               if(firstChar==':')
+               {
+               alert('Please select the Incident classification and type');
+               }
+               else
+               {
+                   if((originalIncidents==null)||(originalIncidents==''))
+                   {
+                     document.getElementById('{!$Component.incidentForm.row3incidentlist}').value= addNewIncident;
+                   }
+                   else
+                   {
+                     var newlist=originalIncidents+'\n'+addNewIncident;
+                     document.getElementById('{!$Component.incidentForm.row3incidentlist}').value= newlist;
+                   }
+               }
+               //alert( document.getElementById('{!$Component.incidentForm.row3incidentlist}').value);
+           
+        }
+        function addPartic()
+        {
+           var age=document.getElementById('{!$Component.incidentForm.labelage}').value;
+           var gender=document.getElementById('{!$Component.incidentForm.labelgender}').value;
+           var status=document.getElementById('{!$Component.incidentForm.labelstatus}').value;
+           var grade=document.getElementById('{!$Component.incidentForm.labelgrade}').value;
+           var originalParticipants=document.getElementById('{!$Component.incidentForm.row3partilist}').value;//alert(originalIncidents);
+           var withoutcomma=gender+age+grade+status;
+           if((withoutcomma=='')||(withoutcomma==null))
+           {
+                alert('Please select value before adding participants');
+           }
+           else
+           {
+               if(gender==null)
+                {gender='';}
+               if(age==null)
+               {age='';}
+               if(grade==null)
+               {grade='';}
+               if(status==null)
+               {status='';}
+               var addNewParticipants='Gender:'+gender+',Age:'+age+',Grade:'+grade+',Status:'+status;﻿
+                 
+               if((originalParticipants==null)||(originalParticipants==''))
+               {  
+                 document.getElementById('{!$Component.incidentForm.row3partilist}').value= addNewParticipants;
+               }
+               else
+               {
+                 var newlist=originalParticipants+'\n'+addNewParticipants;
+                 document.getElementById('{!$Component.incidentForm.row3partilist}').value= newlist;
+               }
+               //alert( document.getElementById('{!$Component.incidentForm.row3partilist}').value);
+           }
+        }
+    </script>
+  <style type="text/css">
+         .inputTextRow2{ width: 30%; }
+         .inputTextRow1{ width: 41%; }
+         .inputTextWidthMedium {width: 60%; }
+         .inputTextWidthMediumdesc {width: 99%; }
+         .inputTextWidthMediumSchool{width: 55%;   }
+         .inputTextWidthMediumloc{width:50%;   }
+         .inputTextWidthMediumName{width:75%;   }
+         .row3incidentlist{width:99%;}
+          #divContainer { margin: 0 auto; }
+    .divImageHolder { float:left; }
+     .divTextHolder { text-align: center;font-style:bold;font-size:20px;padding:20px 0 10px 0px; }
+    .clear { clear:both; }
+    </style>
+    <div id="divContainer">
+        <div class="divImageHolder">
+        <apex:image url="{!$Resource.LoudounLogo}" />
+        </div>
+        <div class="divTextHolder">
+        <b>Loudoun County Public Schools Incident Form</b>
+        </div>
+    
+    <br class="clear" />
+    </div>
+    <!-- <table WIDTH="100%">
+         <tr><td valign="top" width="10%" align="center" style="padding:20px 0 10px 0px;"><apex:image url="{!$Resource.LoudounLogo}" /></td>
+             <td align="center"  style="font-style:bold;font-size:20px;padding:10px 0 0px 0px;"><b>Loudoun County Public Schools Incident Form</b><br/>
+             </td>
+         </tr>
+        
+     </table>-->
+    <apex:form id="incidentForm">
+        <apex:pageMessages ></apex:pageMessages>
+        
+         <TABLE BORDER="2" CELLPADDING="4" CELLSPACING="0" align="LEFT"  WIDTH="100%" BORDERCOLOR="#666666" bgcolor="#EEEEEE">
+           <TR align="center">
+             <td colspan="2" style="font-style:bold;font-size:16px;padding:10px 0 10px 0px;"><b>ADD INCIDENTS</b> </td>      
+           </TR>     
+           <TR>
+              <TD width="42%">
+                  <b><label for="labelarea" style="font-size:15px;padding:20px 68px 20px 0px;">Facility Type : </label> </b><apex:inputField value="{!VisRecord.Facility_Type__c}" id="labelarea" styleClass="inputTextRow1"></apex:inputField>     
+              </td>
+              <td width="58%">
+              <b><label for="labelarea" style="font-size:15px;padding:20px 0px 20px 0px;">Facility Name : </label> </b>
+                  <apex:inputField value="{!VisRecord.Facility_Name__c}" id="labeldist" styleClass="inputTextRow1"></apex:inputField>
+             
+              </TD>
+           </TR>     
+           <TR>
+              <TD  valign="top" width="42%">
+                  <b><label for="labelloc" style="font-size:15px;padding:20px 36px 20px 0px;">Incident Location :</label> </b><apex:inputField value="{!VisRecord.Incident_Location__c}" id="labelloc" styleClass="inputTextRow1"></apex:inputField>     
+              </TD>
+              <TD valign="top" width="58%">
+                  <b><label for="labeltime" style="font-size:15px;padding:20px 5px 20px 0px;">Incident Time :</label></b><apex:inputField value="{!VisRecord.Incident_Time__c}" id="labeltime" styleClass="inputTextRow1"></apex:inputField>
+              </TD>
+           </TR>
+           
+           <TR >
+              <TD width="42%" >
+                  <b><label for="labelclassif" style="font-size:15px;padding:20px 0px 20px 0px;">Incident Classification : </label> </b><apex:inputField value="{!VisRecord.Incident_Classification__c}" id="labelclassif" styleClass="inputTextRow1"></apex:inputField>            
+             </TD>
+              <TD width="58%" valign="top" >
+                  <b><label for="labeltype" style="font-size:15px;padding:20px 0px 20px 0px;border-left:none;">Incident Type : </label> </b><apex:inputField value="{!VisRecord.Incident_Type__c}" id="labeltype" styleClass="inputTextRow1"></apex:inputField>     
+                 <b>
+                  <input id="clickMe" type="button" value="Add Incident" onclick="addIncident();" style="font-weight:bold;font-size:15px;padding:2px 15px 2px 15px;"/></b>
+             </TD>
+           </TR>
+           
+           <TR>
+              <TD width="100%" colspan="2" >
+                <b><label for="labeltype" style="font-size:15px;padding:20px 5px 20px 0px;">Incident List </label> </b><br/>
+                <apex:inputTextarea rows="5" id="row3incidentlist" label="Incident List" value="{!VisRecord.Incident_List__c}" styleClass="inputTextWidthMediumdesc"/>
+              
+               </TD>
+           </TR>
+           
+      </TABLE> 
+ 
+ 
+      <TABLE BORDER="1" CELLPADDING="4" CELLSPACING="0" align="LEFT" BORDERCOLOR="#666666" bgcolor="#EEEEEE" WIDTH="100%">
+           <TR align="center" style="font-style:bold;">
+             <td colspan="4" style="font-style:bold;font-size:16px;padding:10px 0 10px 0px;"><b>ADD INCIDENT PARTICIPANTS</b> </td>      
+           </TR>  
+           <TR>
+               <TH align="center" style="font-style:bold;font-size:16px;padding:10px 0 10px 7px;border-bottom:none;border-right:none;">Gender</TH> 
+               <TH align="center" style="font-style:bold;font-size:16px;padding:10px 0 10px 7px;border-bottom:none;border-left:none;border-right:none;">Age</TH>
+               
+               <TH align="center" style="font-style:bold;font-size:16px;padding:10px 0 10px 7px;border-bottom:none;border-left:none;border-right:none;">Grade</TH>
+               <TH align="center" style="font-style:bold;font-size:16px;padding:10px 0 10px 7px;border-bottom:none;border-left:none;">Status</TH>
+           </TR>
+           <TR>
+              <TD style="font-style:bold;border-top:none;border-right:none;">
+                  <apex:inputField value="{!Participants.Gender__c}" id="labelgender" ></apex:inputField>     
+              
+              </TD>
+           
+              <TD style="font-style:bold;border-top:none;border-right:none;border-left:none;">
+                 <apex:inputField value="{!Participants.Age_LC__c}" id="labelage" ></apex:inputField>     
+              </TD>
+              <TD style="font-style:bold;border-top:none;border-right:none;border-left:none;">
+                 <apex:inputField value="{!Participants.Grade_LC__c}" id="labelgrade" ></apex:inputField>
+              </TD>
+           
+              <TD style="font-style:bold;border-top:none;border-left:none;">
+                 <apex:inputField value="{!Participants.Status__c}" id="labelstatus" ></apex:inputField>            
+                  <b><input id="addParti" type="button" value="Add Participant" style="font-weight:bold;font-size:15px;padding:2px 15px 2px 15px;" onclick="addPartic();" /></b>
+              </TD>
+           </TR>
+           
+           <TR>
+              <TD width="100%" colspan="4" >
+                <b><label for="labeltype" style="font-size:15px;padding:20px 5px 20px 0px;">Participant List </label> </b><br/>
+                <apex:inputTextarea rows="5" id="row3partilist" label="Incident List" value="{!VisRecord.Participants_List__c}" styleClass="inputTextWidthMediumdesc"/>
+              
+               </TD>
+           </TR>
+           
+      </TABLE> 
+ 
+ 
+ <TABLE BORDER="2" CELLPADDING="4" CELLSPACING="0" align="LEFT" BORDERCOLOR="#666666" bgcolor="#EEEEEE" WIDTH="100%">
+           <TR align="center" style="font-style:bold;">
+             <td colspan="4" style="font-style:bold;font-size:16px;padding:10px 0 10px 0px;"><b>ADD DESCRIPTION AND PHOTOS</b> </td>      
+           </TR>
+           <TR  style="font-style:bold;font-size:15px;">
+             <TD colspan="4" style="font-weight:bold;border-bottom:NONE;">DESCRIBE IN DETAIL WHAT OCCURED.State WHO, WHAT, WHERE, HOW, WHEN.  Provide details of monetary losses, weapons, eyewitness accounts, etc.</td>
+           </TR>
+            <TR  style="font-style:bold;font-size:15px;">
+             <TD colspan="4" width="100%" style="border-top:NONE;"><apex:inputField value="{!VisRecord.IncidentDescription__c}" styleClass="inputTextWidthMediumdesc"></apex:inputField>
+              </TD>
+            </TR>     
+           
+          
+           
+           <apex:repeat value="{!newAttachments}" var="newAtt">
+                         
+              <TR>
+              <TD width="30%" colspan="2" valign="top">
+                      <b><label for="labelupload" style="font-size:15px;padding:20px 5px 20px 0px;">Upload Photo or File </label> </b>
+                                  
+                         <apex:inputFile value="{!newAtt.body}" filename="{!newAtt.name}" id="labelupload"/>                     
+               </TD>
+               <TD width="65%" colspan="2" valign="top" style="vertical-align: top;">
+                         <b><label for="labeldescr" style="font-size:15px;padding:0px 5px 20px 0px;">Description  </label> </b>
+                        
+                        <apex:inputField value="{!newAtt.Description}" id="labeldescr" styleClass="inputTextWidthMediumdesc"></apex:inputField>                    
+               </TD> 
+
+               </tr>  
+                </apex:repeat>
+             
+               
+           <!-- <apex:pageBlock title="Upload Attachments">
+                <apex:repeat value="{!newAttachments}" var="newAtt">
+                    <apex:pageBlockSection columns="3">
+                       <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="File"/>                         
+                            <apex:inputFile value="{!newAtt.body}" filename="{!newAtt.name}"/>
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Description"/>                      
+                            <apex:inputText value="{!newAtt.Description}"/>
+                        </apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>
+                </apex:repeat>
+            <apex:commandButton value="Add More" action="{!addMore}"/>
+           
+        </apex:pageBlock>-->
+
+          </table>
+          <TABLE BORDER="2" CELLPADDING="4" CELLSPACING="0" align="LEFT" BORDERCOLOR="#666666" bgcolor="#EEEEEE" WIDTH="100%">
+           <TR align="center" style="font-style:bold;">
+             <td colspan="4" style="font-style:bold;font-size:16px;padding:10px 0 10px 0px;"><b>ADD NOTIFICATIONS</b> </td>      
+           </TR> 
+           <TR  style="font-style:bold;font-size:15px;">
+             <TD colspan="4" width="100%" style="border-top:NONE;"><apex:inputField value="{!VisRecord.Notifications__c}" ></apex:inputField>
+              </TD>
+            </TR>  
+           <TR align="center" style="font-style:bold;">
+             <td colspan="4" style="font-style:bold;font-size:16px;padding:20px 0 20px 0px;"><!-- <apex:commandButton value="Save" action="{!Save}" id="button2"/>-->
+             <apex:commandButton value="Cancel" action="{!Cancel}" id="button1"/> 
+             <apex:commandButton value="Save" action="{!Save}"/>
+             </td>      
+           </TR>
+      </TABLE> 
+ 
+    </apex:form>
+  
+</apex:page>

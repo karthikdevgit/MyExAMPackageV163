@@ -1,0 +1,60 @@
+<apex:page standardController="IssueRequest_Life_Cycle__c"  standardStylesheets="false" sidebar="false"  id="thePage" docType="html-5.0" extensions="ProfileBasedFormController"> 
+<meta name="viewport" content="width=device-width-5, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes;" />
+ <apex:form id="templateForm" style="bgcolor:#EEEEEE;border-color:#666666;" >
+   <apex:pageMessages ></apex:pageMessages>
+   <div style="margin-right:3px;margin-left:3px;text-align:center;font-size:18px;padding:10px 0 10px 0px;font-style:bold;" >
+          <apex:outputText value="Create Request"/>
+      </div>
+  <apex:pageBlock >
+  <apex:pageBlockButtons location="bottom" id="buttons1" style="align:center;">  
+               <!-- <input type="button" onclick="function1();" value="Call2Functions" />-->
+               <apex:commandButton id="button2" value="Save" action="{!save}"  />
+                        
+                <apex:commandButton value="Cancel" action="{!Cancel}" id="button1" title="Cancel"  />
+               
+               <!-- <apex:commandButton value="Submit" action="{!submitForApproval}" />-->
+              </apex:pageBlockButtons>
+  
+  <apex:pageBlock rendered="{!accList.size>0}">
+      <apex:outputText value="Account Name :  " style="font-style:bold;padding-right:10px;padding-top:5px;padding-bottom:5px"/>
+    <apex:selectList id="accOptions" value="{!issue.Facility_Name__c}" size="1">
+     <apex:selectOptions value="{!accList}"></apex:selectOptions>
+     </apex:selectList><br/><br/>
+    <apex:outputText value="Request Date :" style="font-style:bold;padding-right:10px;padding-top:5px;padding-bottom:5px"/>
+     {!Now()}
+     
+    <!-- <apex:param name="currdate" value=" {!NOW()}" assignTo="{!issue.ExAM__Assessment_Date_Time__c}"/>
+     </apex:outputText>-->
+    <!-- <a href="/apex/ExAM__QuestionnaireCustomIssue?issueid="&Id&"&accid="&ExAM__Facility_Name__r.Id&"&templatename="&SUBSTITUTE(ExAM__InvestigationType__r.ExAM__Template_name__c,' ','%20'), "Link to New Mobile Assessment Form"))
+     <apex:outputField value="{!ExAM__IssueRequest_Life_Cycle__c.id}"/> 
+      Facility Name : {!ExAM__IssueRequest_Life_Cycle__c.ExAM__Facility_Name__r.name}<br/>
+     {!$UserRole.Name}>---{!$User.ContactId}
+      Assessment Form Completion : {!ExAM__IssueRequest_Life_Cycle__c.ExAM__Assessment_Form_Completion__c}<br/>
+     -->
+  </apex:pageBlock>
+   <apex:pageBlock rendered="{!NOT(ISNULL($User.ContactId))}">
+      <apex:outputText value="Account Name : " style="font-style:bold;padding-right:10px;padding-top:5px;padding-bottom:5px"/>
+    {!accname}<br/><br/>
+     <apex:outputText value="Request Date :" style="font-style:bold;padding-right:10px;padding-top:5px;padding-bottom:5px"/>
+    {!Now()}
+   
+  </apex:pageBlock>
+    
+     <!-- <apex:outputText value="Select Form:" style="font-style:bold;padding-right:10px;padding-top:5px;padding-bottom:5px"/>-->
+    <apex:pageBlockTable id="alltempaltes" value="{!templateList}" var="temp">
+        <apex:column headerValue="Select">
+        <input type="radio" id="{!temp.id}" name="templat" value="{!temp.id}"/>
+         <apex:param name="tempid" value="{!temp.id}"/>
+        </apex:column> 
+        <apex:column headerValue="Form Name">
+        <apex:outputField value="{!temp.Template_name__c}"/></apex:column>
+         <apex:column headerValue="Description">
+        <apex:outputField value="{!temp.ExAM__Description__c }"/></apex:column>
+    </apex:pageBlockTable>
+    <!-- <apex:selectList id="accOptions" value="{!issue.ExAM__InvestigationType__c}" size="1">
+     <apex:selectOptions value="{!tempList}"></apex:selectOptions>
+     </apex:selectList>-->
+   </apex:pageBlock>   
+ </apex:form> 
+  
+</apex:page>

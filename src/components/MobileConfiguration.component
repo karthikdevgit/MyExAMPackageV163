@@ -1,0 +1,691 @@
+<apex:component controller="MobileConfigController" >
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <div ng-app="mobileconfigApp" ng-controller="mobileconfigCtrl">
+            
+            <!-- Notification Message Start -->
+            <div class="slds-notify_container" id="MobileConfigSuccess" style="display:none;">
+              <div class="slds-notify slds-notify--alert slds-theme--success slds-theme--alert-texture" role="alert">
+                <button class="slds-button slds-button--icon-inverse slds-notify__close" ng-click="closeLoad();">
+                  <svg aria-hidden="true" class="slds-button__icon">
+                    <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                  </svg>
+                  <span class="slds-assistive-text">Close</span>
+                </button>
+                <span class="slds-assistive-text">Success</span>
+                <h2>
+                    Mobile configuration saved successfully.
+                </h2>
+              </div>
+            </div>
+            <div class="slds-notify_container" style="display:none" id="MobileConfigError" >
+              <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert">
+                <button class="slds-button slds-button--icon-inverse slds-notify__close" ng-click="closeLoad();">
+                  <svg aria-hidden="true" class="slds-button__icon">
+                    <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                  </svg>
+                  <span class="slds-assistive-text">Close</span>
+                </button>
+                <span class="slds-assistive-text">Error</span>
+                <h2 id="MobileConfigErrorMsg">
+                    
+                </h2>
+              </div>
+            </div>
+            <!-- Notification Message End-->
+                
+                
+            <div class="slds-card">
+                <div class="slds-card__header slds-grid">
+                    <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <h2 class="slds-text-heading--small slds-truncate">Data Sync Configuration</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-card__body">
+                    <div ng-show="showErrMessage1" style="color: {{setPgMsgColor1}};font-size: 15px;">{{ errMessage1 }}</div>
+                    <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                        <tbody>
+                            <tr class="slds-hint-parent">
+                                <td class="slds-size--1-of-4">
+                                    Additional Templates
+                                </td>
+                                <td class="slds-size--3-of-4">
+                                    <div class="slds-size--1-of-1 slds-cell-wrap" >
+                                        <textarea rows="3" cols="20" wrap="hard" ng-click="openAssessmentSelectionDiv()" placeholder="Select Assessment Template" class="slds-col slds-size--8-of-12 slds-textarea" id="TemplateId" ng-model="selectedTemplateName" ng-show="!isShow"/>
+                                        <div ng-show="isShow"> {{savedSelectedTemplateName}}</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td class="slds-size--1-of-4">
+                                    Feedback Template
+                                </td>
+                                <td class="slds-size--3-of-4">
+                                    <div class="slds-size--1-of-1 slds-cell-wrap" >
+                                        <input type="text" placeholder="Select Feedback Assessment Template" class="slds-col slds-size--8-of-12 slds-input" id="FeedbackTemplate" ng-show="!isShow" ng-model="FeedbackTemplate.Name"/>
+                                        <span ng-show="!isShow" ng-click="showFeedbackSelectionDiv = true;" class="slds-icon__container slds-align-middle slds-p-right--medium">
+                                            <svg aria-hidden="true" class="slds-icon icon__svg slds-icon-standard-marketing-actions slds-icon--small">
+                                                <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/standard-sprite/svg/symbols.svg#marketing_actions')}"></use>
+                                            </svg>
+                                        </span>
+                                        <div ng-show="isShow && configuration. ExAM__Feedback_Template__r"> {{ configuration.ExAM__Feedback_Template__r.Name }} ({{configuration.ExAM__Feedback_Template__r.ExAM__Template_name__c}})</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td class="slds-size--1-of-4">
+                                    Assignment Manager Statuses
+                                </td>
+                                <td class="slds-size--3-of-4">
+                                    <select id="MobileConfigStatusId" class="slds-select mobileconfigStatus slds-size--8-of-12" style="height:135px;" ng-model="selectedStatuses" ng-options="status for status in overallStatusList" multiple="test" ng-show="!isShow">
+                                    </select>
+                                    <div ng-show="isShow"> {{showSelectedStatuses}}</div>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td class="slds-size--1-of-4">
+                                    Sync Last X Days
+                                </td>
+                                <td class="slds-size--3-of-4">
+                                    <div class="numbervalidate {{validateError}}"> 
+                                        <input type="text" class="slds-input slds-size--8-of-12" ng-model="syncLastXDays" ng-show="!isShow"/>
+                                        <span id="errorMsg" ng-show="invalidNumber" class="slds-form-element__help">Please Enter Valid Number</span>
+                                        <span id="errorMsg" ng-show="maxNumber" class="slds-form-element__help">Value should be less then 1000.</span>
+                                    </div>
+                                    <div class="slds-size--1-of-1" ng-show="isShow">
+                                        {{savedSyncLastXDays}}
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td class="slds-size--1-of-4">
+                                    Sync Future X Days
+                                </td>
+                                <td class="slds-size--3-of-4">
+                                    <div class="numbervalidate {{validateNumError}}"> 
+                                        <input type="text" class="slds-input slds-size--8-of-12" ng-model="syncFutureXDays" ng-show="!isShow"/>
+                                        <span ng-show="invalidNum" class="slds-form-element__help">Please Enter Valid Number</span>
+                                        <span ng-show="maximumNum" class="slds-form-element__help">Value should be less then 1000.</span>
+                                    </div>
+                                    <div class="slds-size--1-of-1" ng-show="isShow">
+                                        {{savedSyncFutureXDays}}
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td class="slds-size--1-of-4">
+                                    Turn Off Save &amp; Submit
+                                </td>
+                                <td class="slds-size--3-of-4">
+                                    <div > 
+                                        <input type="checkBox" class="slds-checkbox" ng-model="Turn_Off_Save_Submit__c" ng-disabled="isShow"/>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td class="slds-size--1-of-4">
+                                    Mobile App Image Resolution
+                                </td>
+                                <td class="slds-size--3-of-4">
+                                    <select class="slds-select slds-size--8-of-12" ng-model="selectedMobileAppImageSize" ng-options="key as value for (key,value) in imageSizeList" ng-disabled="isShow">
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td class="slds-size--1-of-4">
+                                   Mobile Assessable Object
+                                </td>
+                                <td class="slds-size--3-of-4">
+                                    <div class="slds-size--1-of-1 slds-cell-wrap" >
+                                        <textarea rows="3" cols="20" wrap="hard" ng-click="openMobileAssessableObjectSelectionDiv()" placeholder="Select Assessable Template" class="slds-col slds-size--8-of-12 slds-textarea" id="TemplateId" ng-model="selectedMobileAssessableTemplateName" ng-show="!isShow"/>
+                                        <div ng-show="isShow"> {{savedMobileAssessableSelectedTemplateName}}</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td class="slds-size--1-of-4">
+                                    Default Assessable Object 
+                                </td>
+                                <td class="slds-size--3-of-4">
+                                    <select class="slds-select slds-size--8-of-12" ng-model="defaultAssesableTemplate" ng-options="value as key for (key,value) in selectedMobAssessableNamelist" ng-disabled="isShow">
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td class="slds-size--1-of-4">
+                                    Decision Tree Sync 
+                                </td>
+                                <td class="slds-size--3-of-4">
+                                    <div > 
+                                        <input type="checkBox" class="slds-checkbox" ng-model="Decision_Tree_Sync__c" ng-disabled="isShow"/>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td colspan="2">
+                                    <center>
+                                        <input class="slds-button slds-button--brand" ng-show="isShow" ng-click="toggleView('edit')" type="button" value="Edit Configuration"/>
+                                        <input class="slds-button slds-button--brand" ng-show="!isShow" ng-click="saveRecords()" type="button" value="Save"/>
+                                        <input class="slds-button slds-button--brand" ng-show="!isShow" ng-click="toggleView('cancel')" type="button" value="Cancel"/>
+                                    </center>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>    
+                </div>
+            </div>
+            <!-- Start Assessment Template Selection -->
+            <div ng-show="showAssessmentSelectionDiv" aria-hidden="false" role="dialog" class="slds-modal slds-modal__close AssessmentSelectionDiv" style="background-color: rgba(128, 128, 128, 0.75);">
+                <div class="slds-modal__container">
+                    <div class="slds-modal__header">
+                        <button class="slds-button slds-button--icon-inverse slds-modal__close" ng-click="closeSelectionDiv()">
+                            <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                                <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                            </svg>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-text-heading--medium">Assessment Template</h2>
+                    </div>
+                    <div class="slds-modal__content">
+                        <table class="slds-table slds-table--bordered slds-max-medium-table--stacked" style="height:20%">
+                            <thead>
+                                <tr class="slds-text-heading--label">
+                                    <th class="slds-cell-shrink"></th>
+                                    <th scope="col"><span class="slds-truncate"><b>Name</b></span></th>
+                                    <th scope="col"><span class="slds-truncate"><b>Template Name</b></span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="assTempRecord in (assTemp | orderBy:'templateLabel')">
+                                    <td class="slds-cell-shrink" data-label="Select Row" style="vertical-align: middle;">
+                                        <label class="slds-checkbox">
+                                          <input type="checkbox" name="options" ng-model="assTempRecord.isSelected"/>
+                                          <span class="slds-checkbox--faux"></span>
+                                          <span class="slds-assistive-text">Select Row</span>
+                                        </label>
+                                    </td>
+                                    <td style="cursor: pointer;" >{{ assTempRecord.templateName  }}</td>
+                                    <td style="cursor: pointer;" >{{ assTempRecord.templateLabel }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="slds-modal__footer">
+                        <button class="slds-button slds-button--neutral" ng-click="closeSelectionDiv()">Cancel</button>
+                        <button class="slds-button slds-button--brand" ng-click="submitAfterSelectTemplate()">Submit</button>
+                    </div>
+                </div>
+            </div>
+            <!-- End Assessment Template Selection -->
+            <!-- Processing Image Code -->
+            <div style="display: none; background-color: rgba(0, 0, 0, 0.6); width: 100%; height: 100%; z-index: 1000; position: fixed; left: 0; top: 0; overflow: hidden; text-align: center; vertical-align: middle;" class="mobileConfigMaskDiv">
+                <img src="{!URLFOR($Resource.SLDS052, '/assets/images/spinners/slds_spinner.gif')}" alt="Loading..." class="slds-spinner--small" style="z-index: 10001; background-color: white; width: 80px; height: 80px; padding: 15px; border-radius: 4px; text-align: left; position: relative; top: 30%;"/>
+            </div>
+            <!--End Processing Image Code -->
+            <!-- Start Mobile Assessable Object Selection -->
+            <div ng-show="showMobileAssessableObjectSelectionDiv" aria-hidden="false" role="dialog" class="slds-modal slds-modal__close MobileAssessableObjectSelectionDiv" style="background-color: rgba(128, 128, 128, 0.75);">
+                <div class="slds-modal__container">
+                    <div class="slds-modal__header">
+                        <button class="slds-button slds-button--icon-inverse slds-modal__close" ng-click="closeMobileAssessableObjectSelectionDiv()">
+                            <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                                <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                            </svg>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-text-heading--medium">Mobile Assessable Object</h2>
+                    </div>
+                    <div class="slds-modal__content">
+                  
+                        <table class="slds-table slds-table--bordered slds-max-medium-table--stacked" style="height:20%">
+                            <thead>
+                                <tr class="slds-text-heading--label">
+                                    <th class="slds-cell-shrink"></th>
+                                    <th scope="col"><span class="slds-truncate"><b>Template Name</b></span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="(key, value) in (mobassessableTemp)">
+                                    <td class="slds-cell-shrink" data-label="Select Row" style="vertical-align: middle;">
+                                        <label class="slds-checkbox">
+                                          <input type="checkbox" name="options" ng-click="getSelectedMobAssessableObj(value,$event,key)" ng-checked ="selectedMobAssessableNamelist[key]"/>
+                                          <span class="slds-checkbox--faux"></span>
+                                          <span class="slds-assistive-text">Select Row</span>
+                                        </label>
+                                    </td>
+                                    <td style="cursor: pointer;" >{{ key.replace("ExAM__","").replace("__c","")}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="slds-modal__footer">
+                        <button class="slds-button slds-button--neutral" ng-click="closeMobileAssessableObjectSelectionDiv()">Cancel</button>
+                        <button class="slds-button slds-button--brand" ng-click="submitMobileAssessableObjectAfterSelectTemplate()">Submit</button>
+                    </div>
+                </div>
+            </div>
+            <!-- End Mobile Assessable Object Selection -->
+            
+            <!-- Start Feedback Template Selection -->
+            <div ng-show="showFeedbackSelectionDiv" aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open" style="background-color: rgba(128, 128, 128, 0.75);">
+                <div class="slds-modal__container">
+                    <div class="slds-modal__header">
+                        <button class="slds-button slds-button--icon-inverse slds-modal__close" ng-click="showFeedbackSelectionDiv = false">
+                            <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                                <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                            </svg>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-text-heading--medium">Assessment Template</h2>
+                    </div>
+                    <div class="slds-modal__content">
+                        <table class="slds-table slds-table--bordered slds-max-medium-table--stacked" style="height:20%">
+                            <thead>
+                                <tr class="slds-text-heading--label">
+                                    <th scope="col"><span class="slds-truncate"><b>Name</b></span></th>
+                                    <th scope="col"><span class="slds-truncate"><b>Template Name</b></span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="eachAssessmentTemplate in (assessmentTemplateList | orderBy:'ExAM__Template_name__c')" ng-click="setSelectedAssessmentTemplate(eachAssessmentTemplate);">
+                                    <td style="cursor: pointer;" >{{ eachAssessmentTemplate.Name }}</td>
+                                    <td style="cursor: pointer;">{{ eachAssessmentTemplate.ExAM__Template_name__c }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- End Feedback Template Selection -->
+            
+            
+        </div>
+        <script>
+            var app = angular.module('mobileconfigApp', []);            
+            app.controller('mobileconfigCtrl', function($scope, $timeout) {
+                
+                ExAM.MobileConfigController.getOverallStatusList(function(result, event) {
+
+                    if(event.status) {
+                        $scope.overallStatusList = result;        
+                    } else {
+                       
+                    }
+                });
+                ExAM.MobileConfigController.queryAllAssessmentTemplates(function(result, event) {
+                
+                    if(event.status) {
+                        $scope.assessmentTemplateList = JSON.parse( _.unescape(result) );
+                    }
+                    
+                });
+                $scope.mobassessableTemp ={};
+                $scope.showFeedbackSelectionDiv = false;
+                $scope.showTemplateSelectionBox = true;                
+                $scope.showAssessmentSelectionDiv = false;
+                $scope.imageSizeList = {Actual:"Actual",Small:"Small (320x240)",Medium:"Medium (640x480)",Large:"Large (1024x768)"};
+                $scope.assTemp = [];
+                $scope.savedAssTemp = [];
+                if ('{!JSENCODE(assTempJSON)}' != null && '{!JSENCODE(assTempJSON)}' != '' && '{!JSENCODE(assTempJSON)}' != 'null') {
+                    $scope.assTemp = JSON.parse('{!JSENCODE(assTempJSON)}');
+                    $scope.savedAssTemp = JSON.parse('{!JSENCODE(assTempJSON)}');
+                }
+                
+                $scope.selectedStatuses = [];
+                if ('{!JSENCODE(selectedStatuses)}' != null && '{!JSENCODE(selectedStatuses)}' != '' && '{!JSENCODE(selectedStatuses)}' != 'null') {
+                    $scope.selectedStatuses = JSON.parse('{!JSENCODE(selectedStatuses)}'); 
+                }
+                $scope.savedSelectedStatuses = angular.copy($scope.selectedStatuses);
+                $scope.showSelectedStatuses = '';
+                
+                $scope.overallStatusList = [];
+                $scope.isShow = true;
+                $scope.syncLastXDays = '{!syncLastXDaysCont}';
+                $scope.savedSyncLastXDays = '{!syncLastXDaysCont}';
+                $scope.syncFutureXDays = '{!syncFutureXDaysCont}';
+                $scope.savedSyncFutureXDays = '{!syncFutureXDaysCont}';
+                $scope.FeedbackTemplate  ={};
+                
+                $scope.configuration = {};
+                var tempTurn_Off_Save_Submit__c;
+                var tempDecision_Tree_Sync__c ; 
+                var tempselectedMobileAppImageSize;
+                $scope.selectedMobAssessableNamelist ={};
+                
+                $scope.getSelectedMobAssessableObj = function(val,evt,key){
+                
+                    if(evt.toElement.checked ){
+                    
+                         if(!$scope.selectedMobAssessableNamelist[key]){
+                         
+                             $scope.selectedMobAssessableNamelist[key] = null;
+                         }
+                         $scope.selectedMobAssessableNamelist[key] = val
+                        
+                    }else if($scope.selectedMobAssessableNamelist[key]){
+                    
+                        delete $scope.selectedMobAssessableNamelist[key];
+                    }
+                }
+                
+                if('{!JSENCODE(configuration)}'){
+                  try {
+                  
+                      $scope.configuration = JSON.parse('{!JSENCODE(configuration)}');
+                      $scope.selectedMobAssessableNamelist = JSON.parse($scope.configuration.ExAM__Mobile_Assessable_Object__c);
+                      $scope.defaultAssesableTemplate = $scope.configuration.ExAM__Mobile_Default_Assesable_Object__c;
+                  } catch (ex) {
+                      
+                  }
+                }
+                $scope.assesableObjectList = {};
+                if('{!JSENCODE(mobileAssessableObjectMap)}'){
+                  try {
+                        
+                        $timeout(function(){
+                             $scope.mobassessableTemp = JSON.parse('{!JSENCODE(mobileAssessableObjectMap)}')
+                        },100);
+                       
+                  } catch (ex) {
+                  
+                      
+                  }
+                }
+               
+                $scope.Turn_Off_Save_Submit__c = $scope.configuration.ExAM__Turn_Off_Save_Submit__c;
+                $scope.Decision_Tree_Sync__c = $scope.configuration.ExAM__Decision_Tree_Sync__c;
+                $scope.selectedMobileAppImageSize = $scope.configuration.ExAM__Mobile_App_Image_Size__c;
+                $scope.selectedMobileAssessableObject = $scope.configuration.ExAM__Mobile_Assessable_Object__c;
+                if($scope.configuration.ExAM__Feedback_Template__r && $scope.configuration.ExAM__Feedback_Template__r.Name){
+                    $scope.FeedbackTemplate.Name = $scope.configuration.ExAM__Feedback_Template__r.Name;
+                    $scope.FeedbackTemplate.Id = $scope.configuration.ExAM__Feedback_Template__c;
+                }
+                
+                
+                $scope.validateError = '';
+                $scope.maxNumber = false;
+                $scope.selectedTemplateName = '';
+                $scope.savedSelectedTemplateName = '';
+                
+                $scope.openAssessmentSelectionDiv = function() {
+                    $scope.showAssessmentSelectionDiv = true;
+                    $('.AssessmentSelectionDiv').removeClass('slds-modal__close');
+                    $('.AssessmentSelectionDiv').addClass('slds-fade-in-open');
+                }
+                $scope.openMobileAssessableObjectSelectionDiv = function() {
+                    $scope.showMobileAssessableObjectSelectionDiv = true;
+                    $('.MobileAssessableObjectSelectionDiv').removeClass('slds-modal__close');
+                    $('.MobileAssessableObjectSelectionDiv').addClass('slds-fade-in-open');
+                }
+                $scope.closeMobileAssessableObjectSelectionDiv = function() {
+                    $scope.showAssessmentSelectionDiv = false;
+                    $('.MobileAssessableObjectSelectionDiv').addClass('slds-modal__close');
+                    $('.MobileAssessableObjectSelectionDiv').removeClass('slds-fade-in-open');
+                }
+                $scope.closeSelectionDiv = function() {
+                    $scope.showAssessmentSelectionDiv = false;
+                    $('.AssessmentSelectionDiv').addClass('slds-modal__close');
+                    $('.AssessmentSelectionDiv').removeClass('slds-fade-in-open');
+                }
+                 $scope.submitAfterSelectTemplate = function() {
+                    $scope.showSelectedValue();
+                    $scope.showAssessmentSelectionDiv = false;
+                }
+                
+                $scope.submitMobileAssessableObjectAfterSelectTemplate = function() {
+                    $scope.showMobileAssessableSelectedValue();
+                    $scope.showMobileAssessableObjectSelectionDiv = false;
+                }
+                
+                $scope.setSelectedAssessmentTemplate = function(assesmentTemplate){
+                
+                    $scope.showFeedbackSelectionDiv = false;
+                    $scope.FeedbackTemplate = assesmentTemplate;
+                }
+                
+                $scope.showMobileAssessableSelectedValue = function() {
+                
+                    var returnStr = '';
+                    if (angular.isDefined($scope.selectedMobAssessableNamelist) && Object.keys($scope.selectedMobAssessableNamelist).length > 0) {
+                        for (var templateindex=0;templateindex< Object.keys($scope.selectedMobAssessableNamelist).length;templateindex++) {
+                            if ($scope.selectedMobAssessableNamelist[Object.keys($scope.selectedMobAssessableNamelist)[templateindex]]) {
+                                returnStr += Object.keys($scope.selectedMobAssessableNamelist)[templateindex].replace("ExAM__",'').replace("__c","")+',\n';
+                            }
+                        }
+                    }
+                    if (returnStr != null && returnStr != '' && returnStr.length > 3) {
+                        returnStr = returnStr.substring(0, returnStr.length - 2);
+                    }
+                    $scope.selectedMobileAssessableTemplateName = returnStr;
+                    
+                    var savedVal = '';
+                    if (angular.isDefined($scope.selectedMobAssessableNamelist ) &&  Object.keys($scope.selectedMobAssessableNamelist).length > 0) {
+                        for (var templateindex=0;templateindex< Object.keys($scope.selectedMobAssessableNamelist).length;templateindex++) {
+                            if ($scope.selectedMobAssessableNamelist[Object.keys($scope.selectedMobAssessableNamelist)[templateindex]]) {
+                                savedVal += Object.keys($scope.selectedMobAssessableNamelist)[templateindex].replace("ExAM__",'').replace("__c","")+', ';
+                            }
+                        }
+                    }
+                    if (savedVal != null && savedVal != '' && savedVal.length > 3) {
+                   
+                        savedVal = savedVal.substring(0, savedVal.length -2);
+                    }
+                    $scope.savedMobileAssessableSelectedTemplateName = savedVal;
+                }
+                $scope.showSelectedValue = function() {
+                    var returnStr = '';
+                    if (angular.isDefined($scope.assTemp) && $scope.assTemp.length > 0) {
+                        for (var templateindex=0;templateindex<$scope.assTemp.length;templateindex++) {
+                            if ($scope.assTemp[templateindex].isSelected) {
+                                returnStr += $scope.assTemp[templateindex].templateName + ' ('+$scope.assTemp[templateindex].templateLabel+')'+',\n';
+                            }
+                        }
+                    }
+                    if (returnStr != null && returnStr != '' && returnStr.length > 3) {
+                        returnStr = returnStr.substring(0, returnStr.length - 2);
+                    }
+                    $scope.selectedTemplateName = returnStr;
+                    
+                    var savedVal = '';
+                    if (angular.isDefined($scope.savedAssTemp ) && $scope.savedAssTemp.length > 0) {
+                        for (var templateindex=0;templateindex<$scope.savedAssTemp.length;templateindex++) {
+                            if ($scope.savedAssTemp[templateindex].isSelected) {
+                                savedVal += $scope.savedAssTemp[templateindex].templateName + ' ('+$scope.savedAssTemp[templateindex].templateLabel+')'+', ';
+                            }
+                        }
+                    }
+                    if (savedVal != null && savedVal != '' && savedVal.length > 3) {
+                        savedVal = savedVal.substring(0, savedVal.length - 2);
+                    }
+                    $scope.savedSelectedTemplateName = savedVal;
+                }
+                
+                $scope.showMobileAssessableSelectedValue();
+                $scope.showSelectedValue();
+                $scope.saveRecords = function() {
+                
+                    $('.mobileConfigMaskDiv').show();
+                    var isSuccess = true;
+                    $scope.validateError = '';
+                    $scope.validateNumError = '';
+                    $('#MobileConfigSuccess').hide();
+                    $('#MobileConfigError').hide();
+                    
+                    $scope.invalidNumber = false;
+                    $scope.maxNumber = false;
+                    $scope.invalidNum = false;
+                    $scope.maximumNum = false;
+
+                    
+                    if (angular.isDefined($scope.syncLastXDays) && $scope.syncLastXDays != '') {
+                        var reg = /^\d+$/;
+                        isSuccess = reg.test($scope.syncLastXDays);  
+                        if (!isSuccess) {
+                            $scope.validateError = 'slds-has-error';
+                            $scope.invalidNumber = true;
+                            $('.mobileConfigMaskDiv').hide();    
+                        } else if (isSuccess && $scope.syncLastXDays.length >= 4) {
+                            $scope.validateError = 'slds-has-error';
+                            $scope.maxNumber = true;
+                            $('.mobileConfigMaskDiv').hide();
+                            isSuccess = false;
+                        }
+                        
+                    }                   
+                    if (angular.isDefined($scope.syncFutureXDays) && $scope.syncFutureXDays != '') {
+                        var reg = /^\d+$/;
+                        isSuccess = reg.test($scope.syncFutureXDays);  
+                        if (!isSuccess) {
+                            $scope.validateNumError = 'slds-has-error';
+                            $scope.invalidNum = true;
+                            $('.mobileConfigMaskDiv').hide();    
+                        } else if (isSuccess && $scope.syncFutureXDays.length >= 4) {
+                            $scope.validateNumError = 'slds-has-error';
+                            $scope.maximumNum = true;
+                            $('.mobileConfigMaskDiv').hide();
+                            isSuccess = false;
+                        }
+                        
+                    } 
+                    if (isSuccess) {
+                       
+                        var mobileAdditionalTemplateList = '';
+                        var mobileAssessableTemplateList = '';
+                        var mobileConfigStatus = '';
+                        
+                        if (angular.isDefined($scope.assTemp) && $scope.assTemp.length > 0) {
+                            for (var templateindex=0;templateindex<$scope.assTemp.length;templateindex++) {
+                                if ($scope.assTemp[templateindex].isSelected) {
+                                    mobileAdditionalTemplateList += $scope.assTemp[templateindex].templateId +'~';
+                                }
+                            }
+                            if (mobileAdditionalTemplateList != null && mobileAdditionalTemplateList != '') {
+                                mobileAdditionalTemplateList = mobileAdditionalTemplateList.substring(0, mobileAdditionalTemplateList.length - 1);
+                            }
+                            
+                        }
+                        
+                        if ($scope.selectedStatuses != null && angular.isDefined($scope.selectedStatuses) && $scope.selectedStatuses.length > 0) {
+                            for (var mobStatusIndex = 0; mobStatusIndex <= $scope.selectedStatuses.length; mobStatusIndex++) {
+                                if (angular.isDefined($scope.selectedStatuses[mobStatusIndex]) && $scope.selectedStatuses[mobStatusIndex] != '--None--') {
+                                    mobileConfigStatus += $scope.selectedStatuses[mobStatusIndex]+'~';
+                                }
+                            }
+                            if (mobileConfigStatus != null && mobileConfigStatus != '') {
+                                mobileConfigStatus = mobileConfigStatus.substring(0, mobileConfigStatus.length - 1); 
+                            }
+                        }
+                        
+                        var ConfigurationObject = {};
+                        ConfigurationObject.ExAM__Mobile_Default_Assesable_Object__c = $scope.defaultAssesableTemplate;
+                        ConfigurationObject.Mobile_Sync_Additional_Templates__c = mobileAdditionalTemplateList;
+                        ConfigurationObject.Mobile_Sync_Assignment_Manager_Statuses__c = mobileConfigStatus;
+                        ConfigurationObject.Turn_Off_Save_Submit__c = $scope.Turn_Off_Save_Submit__c;
+                        ConfigurationObject.Decision_Tree_Sync__c = $scope.Decision_Tree_Sync__c;
+                        ConfigurationObject.ExAM__Mobile_App_Image_Size__c = $scope.selectedMobileAppImageSize;
+                        ConfigurationObject.ExAM__Mobile_Assessable_Object__c = JSON.stringify($scope.selectedMobAssessableNamelist);//mobileAssessableTemplateList;
+                        
+                       
+                        if($scope.FeedbackTemplate.Id && $scope.FeedbackTemplate.Name ){
+                            ConfigurationObject.Feedback_Template__c =  $scope.FeedbackTemplate.Id;
+                        }else{
+                            ConfigurationObject.Feedback_Template__c = null;
+                        }
+                        
+                      
+                        ExAM.MobileConfigController.saveMobileConfig(ConfigurationObject, $scope.syncLastXDays,$scope.syncFutureXDays, function(result,event) {
+                            
+                            if (event.status && result != null && result == 'success') {
+                                
+                                $scope.savedmobassessableTemp = angular.copy($scope.mobassessableTemp);
+                                $scope.savedAssTemp = angular.copy($scope.assTemp);
+                                $scope.showSelectedValue();
+                                $scope.showMobileAssessableSelectedValue();
+                                $scope.showSelectedStatuses = angular.copy($scope.formSelectedStatus($scope.selectedStatuses)); 
+                                $scope.savedSelectedStatuses = angular.copy($scope.selectedStatuses);
+                                $scope.savedSyncLastXDays = angular.copy($scope.syncLastXDays); 
+                                $scope.savedSyncFutureXDays = angular.copy($scope.syncFutureXDays); 
+                                if($scope.FeedbackTemplate.Id && $scope.FeedbackTemplate.Name ){
+                                    $scope.configuration.ExAM__Feedback_Template__r = {};
+                                    $scope.configuration.ExAM__Feedback_Template__r.Name = $scope.FeedbackTemplate.Name;
+                                    $scope.configuration.ExAM__Feedback_Template__r.ExAM__Template_name__c = $scope.FeedbackTemplate.ExAM__Template_name__c;
+                                }else{
+                                    $scope.configuration.ExAM__Feedback_Template__r = '';
+                                }
+                    
+                                $scope.isShow = true;
+                                $('.mobileConfigMaskDiv').hide();
+                                $('#MobileConfigSuccess').show();
+                                $('#MobileConfigError').hide();
+                                $scope.$apply();
+                            } else {
+                            
+                                $('.mobileConfigMaskDiv').hide();
+                                $('#MobileConfigErrorMsg').text('Error : '+result);
+                                $('#MobileConfigSuccess').hide();
+                                $('#MobileConfigError').show();
+                            }
+                        }); 
+                        
+                    } else {
+                        $('.mobileConfigMaskDiv').hide();                     
+                    }
+                
+                }
+                $scope.closeLoad = function() {
+                    $('#MobileConfigSuccess').hide();
+                    $('#MobileConfigError').hide();
+                }
+                
+                var defaultAssesableTemplate = '';
+                $scope.toggleView = function(editOrCancel) {
+                    if (editOrCancel == 'edit') {
+                        defaultAssesableTemplate = $scope.defaultAssesableTemplate;
+                        tempselectedMobileAppImageSize = angular.copy($scope.selectedMobileAppImageSize);
+                        tempTurn_Off_Save_Submit__c = angular.copy($scope.Turn_Off_Save_Submit__c);
+                        tempDecision_Tree_Sync__c = angular.copy($scope.Decision_Tree_Sync__c);
+                        tempMoblieAssessableObjectNameList = angular.copy($scope.selectedMobAssessableNamelist);
+                        $scope.isShow = false;
+                        $scope.assTemp = angular.copy($scope.savedAssTemp);
+                        $scope.showSelectedValue();
+                        $scope.showMobileAssessableSelectedValue();
+                        $scope.selectedStatuses = angular.copy($scope.savedSelectedStatuses);
+                        $scope.showSelectedStatuses = angular.copy($scope.formSelectedStatus($scope.selectedStatuses)); 
+                        $scope.syncLastXDays = angular.copy($scope.savedSyncLastXDays); 
+                        $scope.syncFutureXDays = angular.copy($scope.savedSyncFutureXDays); 
+                        
+                    } else if (editOrCancel == 'cancel') {
+                        
+                        $scope.defaultAssesableTemplate = defaultAssesableTemplate;
+                        $scope.selectedMobileAppImageSize = angular.copy(tempselectedMobileAppImageSize);
+                        $scope.Turn_Off_Save_Submit__c = angular.copy(tempTurn_Off_Save_Submit__c);
+                        $scope.Decision_Tree_Sync__c = angular.copy(tempDecision_Tree_Sync__c);
+                        $scope.selectedMobAssessableNamelist = tempMoblieAssessableObjectNameList
+                        $scope.isShow = true;
+                        $scope.showSelectedValue();
+                        $scope.showMobileAssessableSelectedValue();
+                    }
+                    $('#MobileConfigSuccess').hide();
+                    $('#MobileConfigError').hide();                    
+                }
+                $scope.formSelectedStatus = function(selStatus) {
+                    var amStatusVal= '';
+                    if (angular.isDefined(selStatus) && selStatus.length > 0) {
+                        for (var tempStatusIndex = 0; tempStatusIndex < selStatus.length; tempStatusIndex++) {
+                            if (selStatus[tempStatusIndex] != '--None--') {
+                                amStatusVal+= selStatus[tempStatusIndex]+', ';
+                            }                            
+                        }
+                        if (amStatusVal!= '' && amStatusVal.length > 2) {
+                            amStatusVal= amStatusVal.substring(0,amStatusVal.length-2);
+                        }
+                    }
+                    return amStatusVal;
+                }
+                if ('{!JSENCODE(selectedStatuses)}' != null && '{!JSENCODE(selectedStatuses)}' != '' && '{!JSENCODE(selectedStatuses)}' != 'null') {
+                    $scope.showSelectedStatuses = $scope.formSelectedStatus(JSON.parse('{!JSENCODE(selectedStatuses)}')); 
+                }
+            });
+        </script>
+    </html>
+</apex:component>

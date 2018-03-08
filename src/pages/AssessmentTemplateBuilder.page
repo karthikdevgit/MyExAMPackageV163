@@ -1,0 +1,223 @@
+<apex:page standardController="Main_questionaire__c" extensions="AssessmentTemplateUIController" recordSetVar="ListTemplates" sidebar="false" id="wizardpage" showHeader="false">
+    
+    <apex:includeScript value="{!URLFOR($Resource.DataTable,'DataTables/jquery-1.11.3.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.DataTable,'DataTables/jquery.dataTables.min.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.DataTable,'DataTables/jquery.dataTables.min.css')}"/>
+    <script type="text/javascript">
+        function popup() {//alert("in jvs");
+            var url='/apex/NewTemplateForm';   
+            window.open(url,"Homepage","resizable=yes,status=yes,scrollbars=yes,width=500,height=200,target=_blank");
+        }
+        
+    </script>
+    
+    <style type="text/css">
+        .inputTextBig { width: 80%; }
+        .inputTextBigLeft {text-align: left;align:left; }
+    </style>
+    <apex:form id="TemplateWizardForm">
+        <apex:pageMessages id="pageMsg" ></apex:pageMessages>
+        <br></br>
+        <!-- <p style="font-size:18px">SELECT THE ORGANIZATION FOR THE ASSESSMENT </p>-->
+        <apex:pageBlock >
+        
+            <b>MODIFY EXISTING TEMPLATE OR CREATE NEW</b>
+            
+                <table id="assementTemplateListId" width="100%" class="row-border">
+                    <thead>
+                        <tr>
+                            <th> Assessment Template Name </th>
+                            <th> Action </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <apex:repeat value="{!templatesList}" var="templates">
+                            <tr>
+                                <td width="30%"> {!templates.Template_name__c} </td>
+                                <td width="70%"> 
+                                    <apex:commandLink action="{!EditSurvey}" value="Modify" styleClass="btn" style="padding:2px 5px 2px 5px; text-decoration:none; " target="_blank">
+                                        <apex:param name="templateid" value="{!templates.id}"/>
+                                    </apex:commandLink>  
+                                    <apex:outputLink value="{!URLFOR('/apex/QuestionnaireViewReport?templateid='+templates.id+'&templatename='+templates.Template_name__c)}" styleClass="btn" style="padding:2px 5px 2px 5px; text-decoration:none;" title="Preview" target="_blank"> Preview
+                                    </apex:outputLink>     
+                                    <apex:commandLink action="{!cloneTemp}" value="Clone" styleClass="btn" style="padding:2px 5px 2px 5px; text-decoration:none; " reRender="pageMsg" oncomplete="reloadFun();">
+                                        <apex:param name="templateid" value="{!templates.id}"/>                                                                                                                                                                                             
+                                    </apex:commandLink>  
+                                </td>
+                            </tr>
+                        </apex:repeat>
+                    </tbody>
+                </table>  
+                <br/>
+                <apex:commandLink value="Create New Template" styleClass="btn" style="padding:5px 5px 2px 5px; text-decoration:none;"  reRender="{!$Component.wizardpage.TemplateWizardForm.NewSurveyForm}" >
+                    <apex:param name="myFlag" value="true" assignTo="{!myFlag}"/>                                             
+                </apex:commandLink>
+                <br/><br/>
+                <!--<apex:commandLink value="Create New" onclick="popup()" styleClass="btn" style="padding:2px 5px 2px 5px; text-decoration:none;"/>
+                <input type="button" value="upload" onClick="popup()"/>
+                <apex:outputPanel id="NewSurveyForm" title="New Template Details" style="font-style:bold;" rendered="{!myFlag}">-->
+                <apex:pageBlock id="NewSurveyForm" title="New Template Details"  rendered="{!myFlag}">                 
+                    <apex:pageBlockButtons location="bottom" id="buttons5" >  
+                        <apex:commandButton id="button7" value="Save" action="{!save}"/>
+                        <apex:commandButton value="Cancel" action="{!Cancel}" id="button6" title="Cancel"/> 
+                    </apex:pageBlockButtons> 
+                    <table width="100%">
+                        <tr>
+                            <td width="30%"><b>Template Name:</b></td>
+                            <td><apex:inputField value="{!templateObj.Template_name__c}" styleClass="inputTextBig"></apex:inputField></td>
+                        </tr>
+                        <tr>
+                            <td width="30%"><b>Description:</b></td>
+                            <td><apex:inputField value="{!templateObj.Description__c}" styleClass="inputTextBig"></apex:inputField></td>
+                        </tr>
+                        <tr>
+                            <td width="30%"><b>Publish on external site or internal salesforce:</b></td>
+                            <td><apex:inputField value="{!templateObj.PublishPlace__c}" styleClass="inputTextBig"></apex:inputField></td>
+                        </tr>
+                        <tr>
+                            <td width="30%"><b>Multi Assessment Mode?</b></td>
+                            <td><apex:inputField value="{!templateObj.TemplateFlag__c}" styleClass="inputTextBigLeft"></apex:inputField></td>
+                        </tr>
+                        <!--
+                        <tr><td width="50%"><b>Do you want to display the submit button on assessment?</b></td>
+                            <td><apex:inputField value="{!templateObj.Display_Submit_Button__c}" styleClass="inputTextBigLeft"></apex:inputField></td>
+                        </tr>
+                        -->
+                        <tr>
+                            <td width="30%"><b>Viewer Configuration: </b></td>
+                            <td><apex:inputField value="{!templateObj.Viewer_Configuration__c}" styleClass="inputTextBigLeft"></apex:inputField></td>
+                        </tr>                      
+                        <tr>
+                            <td width="30%"><b>Associate the template with existing organization:</b></td>
+                            <td>
+                                <!--
+                                <apex:selectList size="1" value="{!selectedAccountId}" styleClass="inputTextBig">
+                                    <apex:selectOptions value="{!AccountList}"></apex:selectOptions>
+                                </apex:selectList>
+                                -->
+                                <apex:outputPanel >
+                                    <apex:inputHidden id="AccHiddenField" value="{!selectedAccountId}"/>
+                                    <apex:inputText id="AccName" value="{!AccName}" style="width:170px;" />
+                                    <a href="" onClick ="window.open('/apex/AccountLookup?accName='+document.getElementById('{!$Component.AccName}').value, 'Search Account', 'location=5,status=1,scrollbars=1,width=600,height=500');">
+                                        <img src="/s.gif" alt="MasterAccount Lookup (New Window)"
+                                            class="lookupIcon" onchange="this.className = 'lookupIcon';"
+                                            onfocus="this.className = 'lookupIconOn';"
+                                            onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';"
+                                            onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';"
+                                            title="MasterHealthCube Lookup (New Window)"/>                     
+                                    </a>
+                                </apex:outputPanel>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="30%"><b>Create new organization</b></td>
+                            <td>
+                                <apex:inputText value="{!Accountname}" styleClass="inputTextBig"/>
+                            </td>
+                        </tr>
+                        <!--
+                            <tr>
+                                <td width="50%"><b>Select the template for weight calculation:</b></td>
+                                <td>
+                                    <apex:inputField value="{!templateObj.Weight_Template__c}" styleClass="inputTextBig"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="50%"><b>Score By Section Weight?</b>
+                            </td>
+                            <td>
+                                <!--
+                                <apex:inputField value="{!Accountname}"></apex:inputField>
+                                <apex:inputField value="{!templateObj.Score_By_Section_Weight__c}" styleClass="inputTextBig"/>
+                                </td>
+                            </tr>
+                        -->
+                    </table>
+                </apex:pageBlock>
+            </apex:pageBlock>
+        <apex:pageBlock >
+            <b>MODIFY EXISTING MULTI-ASSESSMENT GROUP OR CREATE NEW</b>
+            <table id="secGroupListId" width="100%" class="row-border">
+                <thead>
+                    <tr>
+                        <th> Group Name </th>
+                        <th> Action </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <apex:repeat value="{!secgrouplist}" var="grplist">
+                        <tr>
+                            <td width="30%"> {!grplist.Group_Name__c} </td>
+                            <td width="70%"> 
+                                <apex:outputLink value="{!URLFOR('/'+grplist.id)}" styleClass="btn" style="padding:2px 5px 2px 5px; text-decoration:none;" title="Modify" target="_blank"> Modify</apex:outputLink>
+                                <apex:outputLink value="{!URLFOR('/apex/QuestionnaireViewReport?groupid='+grplist.id)}" styleClass="btn" style="padding:2px 5px 2px 5px; text-decoration:none;" title="Preview" target="_blank"> Preview</apex:outputLink>                                                                                                                                                                                              
+                            </td>
+                        </tr>
+                    </apex:repeat>
+                </tbody>
+            </table>
+            <!--
+            <apex:pageBlockTable width="100%" value="{!secgrouplist}" var="grplist" style="border-collapse: collapse;" >                                  
+                <apex:column width="30%">
+                    {!grplist.Group_Name__c}
+                </apex:column>
+                <apex:column width="70%">
+                    <apex:outputLink value="{!URLFOR('/'+grplist.id)}" styleClass="btn" style="padding:2px 5px 2px 5px; text-decoration:none;" title="Modify"> Modify</apex:outputLink> 
+                    <apex:outputLink value="{!URLFOR('/apex/QuestionnaireViewReport?groupid='+grplist.id)}" styleClass="btn" style="padding:2px 5px 2px 5px; text-decoration:none;" title="Preview" target="_blank"> Preview</apex:outputLink>                                                                                                                                                                                              
+                </apex:column>
+            </apex:pageBlockTable>
+            -->
+            <br/>
+            <apex:commandLink value="Create New Assessment Group" styleClass="btn" style="padding:5px 5px 2px 5px; text-decoration:none;"  reRender="{!$Component.wizardpage.TemplateWizardForm.NewSurveyFormMulti}" >
+                <apex:param name="myFlagMulti" value="true" assignTo="{!myFlagmulti}"/>                                             
+            </apex:commandLink>
+            <br/><br/>
+            <apex:pageBlock id="NewSurveyFormMulti" title="New Assessment Group Details"  rendered="{!myFlagmulti}">
+                <apex:pageBlockButtons location="bottom" id="buttons5" >  
+                    <apex:commandButton id="button8" value="Save" action="{!saveMulti}"/>
+                    <apex:commandButton value="Cancel" action="{!Cancel}" id="button9" title="Cancel"/> 
+                </apex:pageBlockButtons> 
+                <table width="100%">
+                    <tr>
+                        <td width="30%"><b>Multi Assessment Group Name:</b></td>
+                        <td><apex:inputField value="{!grpObj.Group_Name__c }" styleClass="inputTextBig" ></apex:inputField></td>
+                    </tr>
+                </table>
+            </apex:pageBlock>
+        </apex:pageBlock>
+    </apex:form>
+    <script>
+        var js = jQuery.noConflict();
+        function AccountIdNameFunc(accId, accName) {
+            //alert('>AccId>>>>'+accId+'<<<<<<Name>>>>'+accName);
+            js('[id$=AccHiddenField]').val(accId);
+            js('[id$=AccName]').val(accName);
+        }
+        function reloadFun(){
+            if({!pageMsg}){
+                location.reload();
+            }
+        }
+        js(document).ready(function() {
+            js('#assementTemplateListId').DataTable({
+                "lengthMenu": [ 25 ],
+                "ordering": false,
+                "info":     false,
+                "bFilter": false,
+                "fnDrawCallback":function(){
+                    js('#assementTemplateListId_length')[0].style.display = "none"  
+                }              
+            });
+            js('#secGroupListId').DataTable({
+                "lengthMenu": [ 25 ],
+                "ordering": false,
+                "info":     false,
+                "bFilter": false,
+                "fnDrawCallback":function(){
+                    js('#secGroupListId_length')[0].style.display = "none"  
+                }              
+            });
+            
+        } );
+    </script>
+</apex:page>

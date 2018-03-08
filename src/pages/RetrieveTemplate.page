@@ -1,0 +1,42 @@
+<apex:page controller="TemplateList"  showHeader="false" sidebar="false" docType="html-5.0">
+    <meta name="viewport" content="width=device-width-5, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes;" />
+     
+    <apex:form >
+        <apex:inputHidden value="{!templateid}" id="hiddenid"/>  
+        <script>
+            function setPreferredDistributor(radioBtn) {
+                var jspDistributor = document.getElementById("{!$Component.hiddenid}"); //alert(jspDistributor.value );
+                if (radioBtn.checked) {
+                    // alert('setting distributor ' + radioBtn.value);
+                    jspDistributor.value=radioBtn.value;
+
+                }            
+            }
+        </script>
+        <apex:pageBlock tabStyle="Assessment_Development_Wizard__tab" >
+
+            <apex:pageMessages />
+            <apex:outputPanel rendered="{!NOT(ISBLANK(templateLists))}">
+
+                <div style="margin-right:3px;margin-left:3px;text-align:center;font-size:18px;padding:10px 0 10px 0px;">
+                    <apex:outputText value="Select the Assessment Template to create the issue"/>
+                </div>
+
+                <apex:pageBlockTable value="{!templateLists}" var="a">
+                    <apex:column headervalue="Select Template">                      
+
+                    <!--<apex:actionsupport action="{!settemplateid}" event="onclick" >  -->
+                        <input type="radio" name="temp" value="{!a.id}" onclick="setPreferredDistributor(this)"/>
+                    <!--</apex:actionsupport>  -->
+
+                    </apex:column>  
+                    <apex:column headerValue="Assessment Id">{!a.name} </apex:column>
+                    <apex:column headerValue="Template Name">{!a.Template_name__c} </apex:column>
+                </apex:pageBlockTable>
+                <div style="margin-right:3px;margin-left:3px;text-align:center;font-size:18px;padding:10px 0 10px 0px;">
+                    <apex:commandButton value="Submit" action="{!submitIssue}" style="align:center;font-size:15px;"/>
+                </div>
+            </apex:outputPanel>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

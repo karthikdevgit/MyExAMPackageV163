@@ -1,0 +1,165 @@
+<apex:page showHeader="false" sidebar="false" controller="FetchDocumentId">
+  <!-- This is the page for banner include it in all pages, always put the images and css together in a zip than we can reference from css the images-->
+<apex:include pageName="BannerTemplate"/>
+<apex:stylesheet value="{!URLFOR($Resource.ResourceLibOHSES,'styles.css')}" />
+<apex:form >
+      <!-- <TABLE border="0" cellSpacing="0" cellPadding="0" width="100%">
+        <TBODY>
+        <TR bgColor="#49572a">
+          <TD class="header-nav"></TD>
+          <TD style="PADDING-RIGHT: 4px" class="header-nav" vAlign="top" 
+            align="right">
+            <DIV id="navigation" class="navbar"></DIV>
+          </TD>
+        </TR>
+        <TR>
+          <TD class="header-main">
+            <TABLE border="0" cellSpacing="0" cellPadding="0" width="100%">
+              <TBODY>
+              <TR>
+                <TD vAlign="top" width="140" align="left"><A title="Home" 
+                  href="">                 </A></TD></TR></TBODY></TABLE>
+          </TD>
+          <TD class="header-main" vAlign="middle" align="right">
+            <TABLE>
+              <TBODY>
+              <TR>
+                <TD style="PADDING-RIGHT: 4px" class="header-nav secondary" 
+                vAlign="top" width="1%" align="right"><A class="bannerLinkU" 
+                  title="View account information" 
+                  href="/accountview">Hello&nbsp;{!$user.FirstName}</A> 
+                </TD>
+              </TR>
+              <TR>
+              </TR>
+              </TBODY></TABLE>
+           </TD>
+        </TR>
+        
+          
+          </TBODY></TABLE>
+      <TABLE>
+        <TBODY></TBODY></TABLE>
+        
+  -->
+      <TABLE cellPadding="15" width="100%">
+        <TBODY>
+        <TR>
+          <TD>
+
+
+<DIV id="container_wrap">
+   <DIV id="container">
+     <H2>Overview</H2>
+     <P>The Pre-Assessment Checklist (PAC) is a tool that facilitates the assessment of minimum security requirements set forth by the Department of the Interior &apos; Departmental Manual for facilities owned or leased by the Bureau of Indian Affairs in Indian Country.</P>
+        <DIV id="tool_container_wrap">
+            <DIV id="tool_container">
+                <A class="big_box" href="{! $Page.SurveyListDOI}">
+                    <DIV class="top"></DIV>
+                    <DIV class="middle"><apex:image url="{!URLFOR($Resource.ResourceLibOHSES,'images/ph_survey.jpg')}"/>
+                        <H3>Survey</H3>
+                        <H4><BR></br></H4>
+                        <P>Questionnaire regarding the security standards and conditions of 
+                        BIA/BIE owned or leased facilities operating in Indian Country.</P>
+                        <DIV class="go_arrow"></DIV>
+                    </DIV>
+                    <DIV class="bottom"></DIV>
+                 </A>
+                 <A class="big_box" href="{! $Page.ListReportsDashboardsDOI}">
+                    <DIV class="top"></DIV>
+                    <DIV class="middle"> <apex:image url="{!URLFOR($Resource.ResourceLibOHSES,'images/ph_charts.jpg')}"/>
+                    <H3>Dashboards &amp; Reports</H3>
+                    
+                    <P>Dashboard provides a user-friendly interface that organizes, 
+                    compiles, and presents survey data. Reports are automatically 
+                    analyzed and results are generated after each facility survey is 
+                    completed.</P>
+                    <DIV class="go_arrow">
+                    </DIV></DIV>
+                    <DIV class="bottom"></DIV>
+                 </A>
+             </DIV>
+          </DIV>
+            <H2>Feedback</H2>
+            <P>OHSES Checklist Comment and Feedback Template&nbsp;
+            <!--<A class="download_box" href="../servlet/servlet.FileDownload?file=015d00000013AXG" target="_blank">&nbsp;Download</A></P>-->
+           <!-- <apex:outputLink value="{!documentname='Checklist_Comment_and_Feedback_Template'}{!DocumentUrl}" target="_blank" styleClass="download_box" title="Checklist_Comment_and_Feedback_Template">&nbsp;Download
+                    <apex:param name="docname" value="Checklist_Comment_and_Feedback_Template" assignTo="{!documentname}"/>
+      
+
+          </apex:outputLink>-->
+          
+          <apex:commandLink action="{!documentId}" oncomplete="window.location.href='../servlet/servlet.FileDownload?file={!docId}';" value=" Download" styleClass="download_box">
+      
+              <apex:param name="documentname" value="Checklist_Comment_and_Feedback_Template" assignTo="{!documentname}"/> 
+         </apex:commandLink>
+          </P>
+          
+            <H2>References</H2>
+            <A class="ref_box first" href="{! $Page.Governance}">
+            <H3>Governance</H3>
+            <P>Authorities and responsibilities that facilitate the development 
+            of policies and procedures adopted and utilized by OHSES and BIA/BIE 
+            owned or leased facilities.</P>
+            <DIV class="go_arrow"></DIV></A><A class="ref_box" 
+            href="{! $Page.Library}">
+            <H3>Library</H3>
+            <P>An online repository consisting of department manuals, 
+            regulations, and guidelines for BIA/BIE owned or leased facilities 
+            in Indian Country.</P>
+            <DIV class="go_arrow"></DIV></A><A class="ref_box" 
+            href="{! $Page.LocationSchool}">
+            <H3>Facilities Map</H3>
+            <P>Pin-point locations of BIA/BIE owned or leased facilities being 
+            assessed.</P>
+            <DIV class="go_arrow"></DIV></A>
+             <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}');" value=""  target="_blank" styleClass="ref_box last">
+              
+              <apex:param name="documentname" value="Help_Manual_Pre_Assessment_Checklist" assignTo="{!documentname}"/> 
+            <h3>Help &amp; Support</h3><P>Help resources including FAQ and troubleshooting support</P>
+            <DIV class="go_arrow"> </DIV>
+         
+             </apex:commandLink>
+            
+            
+            </DIV></DIV>
+  </td></tr></tbody></table>
+
+<!--<table>
+<TR>
+<TD>
+<apex:outputPanel layout="block" id="container_wrap" style="font-weight:bold"/>
+<DIV id="container_wrap">
+    <DIV id="container">
+    <H2>Overview</H2>
+    <P>The Pre-Assessment Checklist (PAC) is a tool that facilitates the assessment of minimum security requirements set forth by the Department of the Interior &apos; Departmental Manual for facilities owned or leased by the Bureau of Indian Affairs in Indian Country.</P>
+        <DIV id="tool_container_wrap">
+            <DIV id="tool_container">
+            <A class="box" href="">
+                <DIV class="top">&nbsp;</DIV>
+                <DIV class="middle">
+                    <apex:outputLink value="{! $Page.QuestionnaireCustom}">
+                    <apex:image url="{!URLFOR($Resource.OHSESResource,'images/ph_survey.jpg')}"  height="100"/>                                   
+                    <H3>Survey</H3>
+                    <H4><BR></br></H4>
+                    <P>Questionnaire regarding the security standards and conditions of BIA/BIE owned or leased facilities operating in Indian Country.</P>
+                    </apex:outputLink>                    
+                    <DIV class="go_arrow">&nbsp;</DIV>
+                     <apex:image url="{!URLFOR($Resource.OHSESResource,'images/ph_charts.jpg')}"  height="100"/>                
+                    <H3>Dashboards and Reports </H3>
+                    <H4><BR></br></H4>
+                    <P>Dashboards present a user-friendly interface that organizes, compels and presents survey data. Reports are automatically analyzed and results are generated after each facility survey is completed.</P>
+                    <DIV class="go_arrow">&nbsp;</DIV>
+                
+                    </DIV>
+                <DIV class="bottom">&nbsp;</DIV>
+             </A>
+             </div>
+       </div>
+    </DIV>
+</div>
+</TD></TR>
+</table>
+-->
+</apex:form>
+</apex:page>

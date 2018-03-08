@@ -1,0 +1,28 @@
+<apex:page controller="ExportAMController" contentType="application/xml" showHeader="false" sidebar="false" readOnly="true" cache="true">
+    <!--<?xml version="1.0" encoding="UTF-8" ?>-->
+    <apex:pagemessages ></apex:pagemessages>
+    <AssignmentManagerList>
+        <apex:repeat value="{!AMList}" var="eachAM" >
+            <AssignmentManager Name="{!eachAM.recName}" id="{!eachAM.recId}" type="{!eachAM.assessmentTemplateType}">
+               
+                <apex:repeat value="{!eachAM.sectionList}" var="eachSection"> 
+                    <Section Name="{!eachSection.sectionName}" ExternalId="{!eachSection.sectionExternalId}" Id="{!eachSection.sectionId}" >
+                        
+                        <apex:repeat value="{!eachSection.QuestionList}" var="eachQues">
+                            <Question Question="{!eachQues.questionName}" ExternalId="{!eachQues.questionExternalId}" Id="{!eachQues.questionId}">
+                                <apex:repeat value="{!eachQues.AnswerList}" var="eachAnswer">
+                                    <Answer id="{!eachAnswer.answerId}">
+                                        <Response>{!eachAnswer.answerValue}</Response>
+                                        <Comments>{!eachAnswer.commentValue}</Comments>
+                                    </Answer>
+                                </apex:repeat>
+                            </Question>
+                        </apex:repeat>
+                        
+                    </Section>
+                </apex:repeat>
+                
+            </AssignmentManager>
+        </apex:repeat>
+    </AssignmentManagerList>
+</apex:page>

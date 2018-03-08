@@ -1,0 +1,490 @@
+<apex:component controller="MapAnythingAddressConfigCtrller">
+
+    <div class="slds-form-element" ng-app="mapAddressConfigureApp" ng-controller="mapAddressConfigureCtrl">
+        <!-- Start Exam Map Anything Address Configuration -->
+        <div class="slds-card__body">
+            <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                <tbody>
+                    <tr class="slds-hint-parent">
+                        <td colspan="3" ng-show="errMsg.length" style="color: {{setPgMsgColor}};font-size: 15px;">
+                            {{ errMsg }}
+                        </td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                        <td class="slds-size--1-of-4">Assessible Object</td>
+                        <td class="slds-size--2-of-4">
+                            <select class="slds-select slds-size--3-of-4 mapConfigSelect" id="objDD" ng-disabled="hideAssessibleObj" ng-options="item.assessibleObjApiName as item.assessibleObjLabel for item in (AssessibleObjects | orderBy:'assessibleObjLabel')" ng-model="selectedMapConfig.Name" ng-change="loadFieldsForSelectedAssessibleObject(false)">
+                            </select>
+                        </td>
+                        <td class="slds-size--1-of-4"></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                        <td class="slds-size--1-of-4">Address</td>
+                        <td class="slds-size--2-of-4">
+                            <select class="slds-select mapConfigSelect" ng-options="eachField.assessibleFieldApiName as eachField.assessibleFieldLabel for eachField in (filterAssessibleFields('address')| orderBy:'assessibleFieldLabel')" ng-model="selectedMapConfig.ExAM__Address__c">
+                            </select>
+                        </td>
+                        <td class="slds-size--1-of-4"></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                        <td colspan="3"><center>(OR)</center></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                        <td class="slds-size--1-of-4">Street Field</td>
+                        <td class="slds-size--2-of-4">
+                            <select class="slds-select mapConfigSelect" ng-options="eachField.assessibleFieldApiName as eachField.assessibleFieldLabel for eachField in (filterAssessibleFields('street')| orderBy:'assessibleFieldLabel')" ng-model="selectedMapConfig.ExAM__Street_Field_Name__c">
+                            </select>
+                        </td>
+                        <td class="slds-size--1-of-4"></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                        <td class="slds-size--1-of-4">City Field</td>
+                        <td class="slds-size--2-of-4">
+                            <select class="slds-select mapConfigSelect" ng-options="eachField.assessibleFieldApiName as eachField.assessibleFieldLabel for eachField in (filterAssessibleFields('city')| orderBy:'assessibleFieldLabel')" ng-model="selectedMapConfig.ExAM__City_Field_Name__c">
+                            </select>
+                        </td>
+                        <td class="slds-size--1-of-4"></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                        <td class="slds-size--1-of-4">Postal Code Field</td>
+                        <td class="slds-size--2-of-4">
+                            <select class="slds-select mapConfigSelect" ng-options="eachField.assessibleFieldApiName as eachField.assessibleFieldLabel for eachField in (filterAssessibleFields('postalcode') | orderBy:'assessibleFieldLabel')" ng-model="selectedMapConfig.ExAM__Postal_Code_Field_Name__c">
+                            </select>
+                        </td>
+                        <td class="slds-size--1-of-4"></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                        <td class="slds-size--1-of-4">Country Field</td>
+                        <td class="slds-size--2-of-4">
+                            <select class="slds-select mapConfigSelect" ng-options="eachField.assessibleFieldApiName as eachField.assessibleFieldLabel for eachField in (filterAssessibleFields('country')| orderBy:'assessibleFieldLabel')" ng-model="selectedMapConfig.ExAM__Country_Field_Name__c">
+                            </select>
+                        </td>
+                        <td class="slds-size--1-of-4"></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                        <td colspan="3">
+                            <center><input class="slds-button slds-button--brand" type="button" value="Save" ng-click="validateData();"/></center>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- End Exam Map Anything Address Configuration -->
+
+        <!-- Start Code to show existing Exam Map Anything Address Configuration -->
+            <div class="slds-card__body">
+                <div ng-show="!AssessibleObjDtl.mapConfigRecords.length">There are no existing Map Anything Address Configuration records</div>
+                <div ng-show="AssessibleObjDtl.mapConfigRecords.length">
+                    <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                        <thead>
+                            <tr class="slds-text-heading--label">
+                                <th scope="col"><span class="slds-truncate"><b>Action</b></span></th>
+                                <th scope="col"><span class="slds-truncate"><b>Assessable Object Name</b></span></th>
+                                <th scope="col"><span class="slds-truncate"><b>Address</b></span></th>
+                                <th scope="col"><span class="slds-truncate"><b>City Field Name</b></span></th>
+                                <th scope="col"><span class="slds-truncate"><b>Country Field Name</b></span></th>
+                                <th scope="col"><span class="slds-truncate"><b>Postal Code Field Name</b></span></th>
+                                <th scope="col"><span class="slds-truncate"><b>Street Field Name</b></span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="eachMapAddressConfigRecord in existingMapConfigurationRecords">
+                                <td class="slds-cell-wrap" data-label="Action">
+                                    <a style="cursor: pointer;" ng-click="editThisMapConfig($index);">Edit</a>|
+                                    <a style="cursor: pointer;" ng-click="removeThisMapConfig($index);">Del</a>
+                                </td>                
+                                <td class="slds-cell-wrap" data-label="Assessable Object Name">
+                                    <span>{{ eachMapAddressConfigRecord.Name }}</span>
+                                </td>                
+                                <td class="slds-cell-wrap" data-label="Address">
+                                    <span>{{ eachMapAddressConfigRecord.ExAM__Address__c }}</span>
+                                </td>                
+                                <td class="slds-cell-wrap" data-label="City Field Name">
+                                    <span class="slds-truncate"> {{ eachMapAddressConfigRecord.ExAM__City_Field_Name__c }} </span>
+                                </td>
+                                <td data-label="Country Field Name">
+                                    <span class="slds-truncate">{{ eachMapAddressConfigRecord.ExAM__Country_Field_Name__c }}</span>
+                                </td>
+                                <td data-label="Postal Code Field Name">
+                                    <span class="slds-truncate">{{ eachMapAddressConfigRecord.ExAM__Postal_Code_Field_Name__c }}</span>
+                                </td>
+                                <td data-label="Street Field Name">
+                                    <span class="slds-truncate">{{ eachMapAddressConfigRecord.ExAM__Street_Field_Name__c }}</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        <!-- End Code to show existing Exam Map Anything Address Configuration -->
+
+        <!-- Processing Image Code -->
+        <div ng-show="showSpinnerWheel" style="background-color: rgba(0, 0, 0, 0.6); width: 100%; height: 100%; z-index: 1000; position: absolute; left: 0; top: 0; overflow: hidden; text-align: center; vertical-align: middle;" class="maskDiv">
+            <img ng-show="showSpinnerWheel" src="{!URLFOR($Resource.SLDS052, '/assets/images/spinners/slds_spinner.gif')}" alt="Loading..." class="slds-spinner--small" style="z-index: 10001; background-color: white; width: 80px; height: 80px; padding: 15px; border-radius: 4px; text-align: left; position: relative; top: 30%;"/>
+        </div>
+        <!--End Processing Image Code -->
+    </div><!-- end slds-form-element -->
+    <script>
+
+        var app = angular.module('mapAddressConfigureApp', []);
+        app.controller('mapAddressConfigureCtrl', function($scope) {
+
+            $scope.AssessibleObjDtl = {};
+            $scope.selectedMapConfig = {};
+            $scope.objMap = {};
+            $scope.fieldMap = {};
+            $scope.AssessibleObjects = [];
+            $scope.AssessibleFields = [];
+            $scope.existingMapConfigurationRecords = [];
+            $scope.selectedAssessibleFields = [];
+            $scope.existingRecordIds = [];
+            $scope.errMsg = '';
+            $scope.setPgMsgColor = 'red';
+            $scope.showSpinnerWheel = false;
+            $scope.hideAssessibleObj = false;
+
+            ExAM.MapAnythingAddressConfigCtrller.queryAllAccessibleObjsFromASM(function(result, event) {
+                if (event.status) {
+                    $scope.AssessibleObjDtl = result;
+                    if($scope.AssessibleObjDtl.errormsg){
+                       $scope.errMsg = _.unescape($scope.AssessibleObjDtl.errormsg);
+                       $scope.setPgMsgColor = 'red';
+                    }else{
+                        $scope.AssessibleObjects = $scope.AssessibleObjDtl.assessibleObjDtls;
+                        $scope.existingMapConfigurationRecords = $scope.AssessibleObjDtl.mapConfigRecords;
+                        $scope.objMap = $scope.AssessibleObjDtl.assessibleObjApiNameLabelMap;
+                        $scope.fieldMap = $scope.AssessibleObjDtl.assessibleObjFieldApiNameLabelMap;
+                        $scope.$apply();
+                        
+                    }
+                }
+            });
+
+            $scope.loadFieldsForSelectedAssessibleObject = function(isManual) {
+
+                $scope.clearAllVariables(false, isManual);
+
+                if (angular.isDefined($scope.AssessibleObjDtl.assessibleObjApiRelatedFieldsMap[$scope.selectedMapConfig.Name])) {
+                    $scope.AssessibleFields = $scope.AssessibleObjDtl.assessibleObjApiRelatedFieldsMap[$scope.selectedMapConfig.Name];
+                }
+            }
+
+            $scope.filterAssessibleFields = function(isFromWhichSelectBox) {
+
+                $scope.AssessibleFieldsNewArray = [];
+
+                if ($scope.AssessibleFields.length > 0) {
+
+                    for(var i=0;i<$scope.AssessibleFields.length;i++) {
+
+                        if ((isFromWhichSelectBox == 'street') &&
+                            ($scope.AssessibleFields[i].assessibleFieldDataType != 'PICKLIST')                        
+                        ) {
+    
+                            $scope.AssessibleFieldsNewArray.push( $scope.AssessibleFields[i] );
+                        }
+                        else if ((isFromWhichSelectBox == 'postalcode') &&
+                                 ($scope.AssessibleFields[i].assessibleFieldDataType == '' ||
+                                  $scope.AssessibleFields[i].assessibleFieldDataType == 'STRING')                        
+                        ) {
+    
+                            $scope.AssessibleFieldsNewArray.push( $scope.AssessibleFields[i] );
+                        }
+                        else if ((isFromWhichSelectBox == 'city' || isFromWhichSelectBox == 'country') &&
+                                 ($scope.AssessibleFields[i].assessibleFieldDataType != 'TEXTAREA')
+                        ) {
+    
+                            $scope.AssessibleFieldsNewArray.push( $scope.AssessibleFields[i] );
+                        }
+                        else if ((isFromWhichSelectBox == 'address') &&
+                                 ($scope.AssessibleFields[i].assessibleFieldDataType == '' ||
+                                  $scope.AssessibleFields[i].assessibleFieldDataType == 'TEXTAREA')
+                        ) {
+    
+                            $scope.AssessibleFieldsNewArray.push( $scope.AssessibleFields[i] );
+                        }
+                    }
+                }
+                return $scope.AssessibleFieldsNewArray;
+            }
+
+            $scope.editThisMapConfig = function(thisRecordIndex) {
+
+                $scope.selIndex = thisRecordIndex;
+                $scope.selectedMapConfig = angular.copy( $scope.existingMapConfigurationRecords[thisRecordIndex] );
+                $scope.hideAssessibleObj = true;
+                
+                if ($scope.existingRecordIds.indexOf($scope.selectedMapConfig.Id) == -1) {
+
+                    if ( angular.isDefined($scope.objMap[$scope.selectedMapConfig.Name]) ) {
+
+                        //inject existing Assessible Object in to Object Drop down
+                        $scope.assessibleObj = {};
+                        $scope.assessibleObj["assessibleObjApiName"] = $scope.selectedMapConfig.Name;
+                        $scope.assessibleObj["assessibleObjLabel"] = $scope.objMap[$scope.selectedMapConfig.Name];
+                        $scope.AssessibleObjects.push( $scope.assessibleObj );
+                    }
+
+                    if ( angular.isDefined($scope.fieldMap[$scope.selectedMapConfig.ExAM__Address__c]) ) {
+
+                        //inject existing Assessible Object Address field in to Address Drop down
+                        $scope.assessibleField1 = {};
+                        $scope.assessibleField1["assessibleFieldApiName"] = $scope.selectedMapConfig.ExAM__Address__c;
+                        $scope.assessibleField1["assessibleFieldLabel"] = $scope.fieldMap[$scope.selectedMapConfig.ExAM__Address__c];
+                        $scope.assessibleField1["assessibleFieldDataType"] = '';
+                        $scope.AssessibleFields.push( $scope.assessibleField1 );
+                        $scope.isDisabled = true;
+                    }
+
+                    if ( angular.isDefined($scope.fieldMap[$scope.selectedMapConfig.ExAM__City_Field_Name__c]) ) {
+
+                        //inject existing Assessible Object City field in to City Drop down
+                        $scope.assessibleField2 = {};
+                        $scope.assessibleField2["assessibleFieldApiName"] = $scope.selectedMapConfig.ExAM__City_Field_Name__c;
+                        $scope.assessibleField2["assessibleFieldLabel"] = $scope.fieldMap[$scope.selectedMapConfig.ExAM__City_Field_Name__c];
+                        $scope.assessibleField2["assessibleFieldDataType"] = '';
+                        $scope.AssessibleFields.push( $scope.assessibleField2 );
+                    }
+
+                    if ( angular.isDefined($scope.fieldMap[$scope.selectedMapConfig.ExAM__Country_Field_Name__c]) ) {
+
+                        //inject existing Assessible Object Country field in to Country Drop down
+                        $scope.assessibleField3 = {};
+                        $scope.assessibleField3["assessibleFieldApiName"] = $scope.selectedMapConfig.ExAM__Country_Field_Name__c;
+                        $scope.assessibleField3["assessibleFieldLabel"] = $scope.fieldMap[$scope.selectedMapConfig.ExAM__Country_Field_Name__c];
+                        $scope.assessibleField3["assessibleFieldDataType"] = '';
+                        $scope.AssessibleFields.push( $scope.assessibleField3 );
+                    }
+
+                    if ( angular.isDefined($scope.fieldMap[$scope.selectedMapConfig.ExAM__Postal_Code_Field_Name__c]) ) {
+
+                        //inject existing Assessible Object Postal code field in to Postal code Drop down
+                        $scope.assessibleField4 = {};
+                        $scope.assessibleField4["assessibleFieldApiName"] = $scope.selectedMapConfig.ExAM__Postal_Code_Field_Name__c;
+                        $scope.assessibleField4["assessibleFieldLabel"] = $scope.fieldMap[$scope.selectedMapConfig.ExAM__Postal_Code_Field_Name__c];
+                        $scope.assessibleField4["assessibleFieldDataType"] = '';
+                        $scope.AssessibleFields.push( $scope.assessibleField4 );
+                    }
+
+                    if ( angular.isDefined($scope.fieldMap[$scope.selectedMapConfig.ExAM__Street_Field_Name__c]) ) {
+
+                        //inject existing Assessible Object Street field in to Street Drop down
+                        $scope.assessibleField5 = {};
+                        $scope.assessibleField5["assessibleFieldApiName"] = $scope.selectedMapConfig.ExAM__Street_Field_Name__c;
+                        $scope.assessibleField5["assessibleFieldLabel"] = $scope.fieldMap[$scope.selectedMapConfig.ExAM__Street_Field_Name__c];
+                        $scope.assessibleField5["assessibleFieldDataType"] = '';
+                        $scope.AssessibleFields.push( $scope.assessibleField5 );
+                    }
+                    $scope.existingRecordIds.push($scope.selectedMapConfig.Id);
+                    $scope.loadFieldsForSelectedAssessibleObject(true);
+                }
+            }
+
+            $scope.removeThisMapConfig = function(rowIndex) {
+
+                $scope.mapConfigToRemove = angular.copy( $scope.existingMapConfigurationRecords[rowIndex] );
+
+                if (window.confirm('Are you sure?')) {
+    
+                    $scope.showSpinnerWheel = true;
+                    $scope.errMsg = '';
+                    $scope.setPgMsgColor = 'red';
+
+                    ExAM.MapAnythingAddressConfigCtrller.deleteMapAddressConfiguration($scope.mapConfigToRemove, function(result, event) {
+    
+                        if (event.status && result.length > 0) {
+                            if( result.indexOf('Exception-') == -1) {
+    
+                                $scope.existingMapConfigurationRecords.splice(rowIndex, 1);
+                                $scope.clearAllVariables(true, false);
+                                $scope.setPgMsgColor = 'green';
+
+                                //inject removed Assessible Object in to Object Drop down
+                                $scope.removedAssessibleObj = {};
+                                $scope.removedAssessibleObj["assessibleObjApiName"] = $scope.mapConfigToRemove.Name;
+                                $scope.removedAssessibleObj["assessibleObjLabel"] = $scope.objMap[$scope.mapConfigToRemove.Name];
+                                $scope.AssessibleObjects.push( $scope.removedAssessibleObj );
+                            }
+                            else {
+                                result = result.replace('Exception-', '');
+                            }
+                            $scope.showSpinnerWheel = false;
+                            $scope.errMsg = _.unescape(result);
+                            $scope.$apply();
+                        }
+                    });
+                }
+            }
+
+            $scope.clearAllVariables = function(isFromRF, isManual) {
+
+                if (isFromRF) {
+                    $scope.selectedMapConfig.Name = '';
+                    $scope.selectedMapConfig.Id = null;
+                    $scope.mapAddrConfig = {};
+                    $scope.selIndex = null;
+                    $scope.existingRecordIds = [];
+                }
+
+                $scope.AssessibleFields = [];
+                if (!isManual) {
+                    $scope.selectedMapConfig.ExAM__Address__c = '--None--';
+                    $scope.selectedMapConfig.ExAM__City_Field_Name__c = '--None--';
+                    $scope.selectedMapConfig.ExAM__Country_Field_Name__c = '--None--';
+                    $scope.selectedMapConfig.ExAM__Postal_Code_Field_Name__c = '--None--';
+                    $scope.selectedMapConfig.ExAM__Street_Field_Name__c = '--None--';
+                }
+            }
+
+            $scope.validateData = function() {
+
+                $scope.isValidData = false;
+                $scope.errMsg = '';
+                $scope.setPgMsgColor = 'red';
+                $scope.selectedAssessibleFields = [];
+
+                if ( angular.isUndefined($scope.selectedMapConfig.Name) || ($scope.selectedMapConfig.Name == '') ) {
+
+                    $scope.errMsg = 'Please select a Assessible Object';
+                }
+                else if ( ($scope.selectedMapConfig.ExAM__Address__c == '' || $scope.selectedMapConfig.ExAM__Address__c == '--None--') &&
+                          (($scope.selectedMapConfig.ExAM__Street_Field_Name__c == '' || $scope.selectedMapConfig.ExAM__Street_Field_Name__c == '--None--') ||
+                             ($scope.selectedMapConfig.ExAM__City_Field_Name__c == '' || $scope.selectedMapConfig.ExAM__City_Field_Name__c == '--None--') ||
+                             ($scope.selectedMapConfig.ExAM__Postal_Code_Field_Name__c == '' || $scope.selectedMapConfig.ExAM__Postal_Code_Field_Name__c == '--None--') ||
+                             ($scope.selectedMapConfig.ExAM__Country_Field_Name__c == '' || $scope.selectedMapConfig.ExAM__Country_Field_Name__c == '--None--'))                    
+                ) {
+
+                        $scope.errMsg = 'Please enter value for Address field or for each of the Address related fields';
+                }
+                else if ( ($scope.selectedMapConfig.ExAM__Address__c != undefined && $scope.selectedMapConfig.ExAM__Address__c != '' && $scope.selectedMapConfig.ExAM__Address__c != '--None--') &&
+                          (($scope.selectedMapConfig.ExAM__Street_Field_Name__c != undefined && $scope.selectedMapConfig.ExAM__Street_Field_Name__c != '' && $scope.selectedMapConfig.ExAM__Street_Field_Name__c != '--None--') ||
+                             ($scope.selectedMapConfig.ExAM__City_Field_Name__c != undefined && $scope.selectedMapConfig.ExAM__City_Field_Name__c != '' && $scope.selectedMapConfig.ExAM__City_Field_Name__c != '--None--') ||
+                             ($scope.selectedMapConfig.ExAM__Postal_Code_Field_Name__c != undefined && $scope.selectedMapConfig.ExAM__Postal_Code_Field_Name__c != '' && $scope.selectedMapConfig.ExAM__Postal_Code_Field_Name__c != '--None--') ||
+                             ($scope.selectedMapConfig.ExAM__Country_Field_Name__c != undefined && $scope.selectedMapConfig.ExAM__Country_Field_Name__c != '' && $scope.selectedMapConfig.ExAM__Country_Field_Name__c != '--None--'))                    
+                ) {
+
+                        $scope.errMsg = 'Please enter value only for Address field (or) for each of the Address related fields';
+                }
+                else {
+
+                    if (angular.isDefined($scope.selectedMapConfig.ExAM__Address__c) && $scope.selectedMapConfig.ExAM__Address__c != '' && $scope.selectedMapConfig.ExAM__Address__c != '--None--') {
+                        if ($scope.selectedAssessibleFields.indexOf($scope.selectedMapConfig.ExAM__Address__c) == -1) {
+                            $scope.selectedAssessibleFields.push($scope.selectedMapConfig.ExAM__Address__c);
+                        }
+                        else {
+                            $scope.errMsg = 'Selected Address field must be unique across all fields';
+                            return false;
+                        }
+                    }
+                    if (angular.isDefined($scope.selectedMapConfig.ExAM__Street_Field_Name__c) && $scope.selectedMapConfig.ExAM__Street_Field_Name__c != '' && $scope.selectedMapConfig.ExAM__Street_Field_Name__c != '--None--') {
+                        if ($scope.selectedAssessibleFields.indexOf($scope.selectedMapConfig.ExAM__Street_Field_Name__c) == -1) {
+                            $scope.selectedAssessibleFields.push($scope.selectedMapConfig.ExAM__Street_Field_Name__c);
+                        }
+                        else {
+                            $scope.errMsg = 'Selected street field must be unique across all Address fields';
+                            return false;
+                        }
+                    }
+                    if (angular.isDefined($scope.selectedMapConfig.ExAM__City_Field_Name__c) && $scope.selectedMapConfig.ExAM__City_Field_Name__c != '' && $scope.selectedMapConfig.ExAM__City_Field_Name__c != '--None--') {
+                        if ($scope.selectedAssessibleFields.indexOf($scope.selectedMapConfig.ExAM__City_Field_Name__c) == -1) {
+                            $scope.selectedAssessibleFields.push($scope.selectedMapConfig.ExAM__City_Field_Name__c);
+                        }
+                        else {
+                            $scope.errMsg = 'Selected city field must be unique across all Address fields';
+                            return false;
+                        }
+                    }
+                    if (angular.isDefined($scope.selectedMapConfig.ExAM__Postal_Code_Field_Name__c) && $scope.selectedMapConfig.ExAM__Postal_Code_Field_Name__c != '' && $scope.selectedMapConfig.ExAM__Postal_Code_Field_Name__c != '--None--') {
+                        if ($scope.selectedAssessibleFields.indexOf($scope.selectedMapConfig.ExAM__Postal_Code_Field_Name__c) == -1) {
+                            $scope.selectedAssessibleFields.push($scope.selectedMapConfig.ExAM__Postal_Code_Field_Name__c);
+                        }
+                        else {
+                            $scope.errMsg = 'Selected postal code field must be unique across all Address fields';
+                            return false;
+                        }
+                    }
+                    if (angular.isDefined($scope.selectedMapConfig.ExAM__Country_Field_Name__c) && $scope.selectedMapConfig.ExAM__Country_Field_Name__c != '' && $scope.selectedMapConfig.ExAM__Country_Field_Name__c != '--None--') {
+                        if ($scope.selectedAssessibleFields.indexOf($scope.selectedMapConfig.ExAM__Country_Field_Name__c) == -1) {
+                            $scope.selectedAssessibleFields.push($scope.selectedMapConfig.ExAM__Country_Field_Name__c);
+                        }
+                        else {
+                            $scope.errMsg = 'Selected country field must be unique across all Address fields';
+                            return false;
+                        }
+                    }
+
+                    if ( ($scope.selectedMapConfig.ExAM__Address__c != '' && $scope.selectedMapConfig.ExAM__Address__c != '--None--') ||
+                         (($scope.selectedMapConfig.ExAM__Street_Field_Name__c != '' && $scope.selectedMapConfig.ExAM__Street_Field_Name__c != '--None--') &&
+                             ($scope.selectedMapConfig.ExAM__City_Field_Name__c != '' && $scope.selectedMapConfig.ExAM__City_Field_Name__c != '--None--') &&
+                             ($scope.selectedMapConfig.ExAM__Postal_Code_Field_Name__c != '' && $scope.selectedMapConfig.ExAM__Postal_Code_Field_Name__c != '--None--') &&
+                             ($scope.selectedMapConfig.ExAM__Country_Field_Name__c != '' && $scope.selectedMapConfig.ExAM__Country_Field_Name__c != '--None--'))                    
+                    ) {
+
+                        $scope.isValidData = true;
+                    }
+
+                }
+                if ($scope.isValidData) {
+                    $scope.saveMapAddressConfiguration();
+                }
+            }
+
+            $scope.saveMapAddressConfiguration = function() {
+
+                $scope.showSpinnerWheel = true;
+                $scope.errMsg = '';
+                $scope.setPgMsgColor = 'red';
+
+                $scope.selectedMapConfig.ExAM__Address__c = ($scope.selectedMapConfig.ExAM__Address__c != '--None--') ? $scope.selectedMapConfig.ExAM__Address__c : '';
+                $scope.selectedMapConfig.ExAM__City_Field_Name__c = ($scope.selectedMapConfig.ExAM__City_Field_Name__c != '--None--') ? $scope.selectedMapConfig.ExAM__City_Field_Name__c : '';
+                $scope.selectedMapConfig.ExAM__Country_Field_Name__c = ($scope.selectedMapConfig.ExAM__Country_Field_Name__c != '--None--') ? $scope.selectedMapConfig.ExAM__Country_Field_Name__c : '';
+                $scope.selectedMapConfig.Name = ($scope.selectedMapConfig.Name != '--None--') ? $scope.selectedMapConfig.Name : '';
+                $scope.selectedMapConfig.ExAM__Postal_Code_Field_Name__c = ($scope.selectedMapConfig.ExAM__Postal_Code_Field_Name__c != '--None--') ? $scope.selectedMapConfig.ExAM__Postal_Code_Field_Name__c : '';
+                $scope.selectedMapConfig.ExAM__Street_Field_Name__c = ($scope.selectedMapConfig.ExAM__Street_Field_Name__c != '--None--') ? $scope.selectedMapConfig.ExAM__Street_Field_Name__c : '';
+
+                $scope.mapAddrConfig = {};
+                if ($scope.selectedMapConfig.Id != null) {
+                    $scope.mapAddrConfig.Id = $scope.selectedMapConfig.Id;
+                }
+                $scope.mapAddrConfig.ExAM__Address__c = $scope.selectedMapConfig.ExAM__Address__c;
+                $scope.mapAddrConfig.ExAM__City_Field_Name__c = $scope.selectedMapConfig.ExAM__City_Field_Name__c;
+                $scope.mapAddrConfig.ExAM__Country_Field_Name__c = $scope.selectedMapConfig.ExAM__Country_Field_Name__c;
+                $scope.mapAddrConfig.Name = $scope.selectedMapConfig.Name;
+                $scope.mapAddrConfig.ExAM__Postal_Code_Field_Name__c = $scope.selectedMapConfig.ExAM__Postal_Code_Field_Name__c;
+                $scope.mapAddrConfig.ExAM__Street_Field_Name__c = $scope.selectedMapConfig.ExAM__Street_Field_Name__c;
+
+                ExAM.MapAnythingAddressConfigCtrller.saveMapAddressConfiguration($scope.mapAddrConfig, function(result, event) {
+
+                    if (event.status && result.length > 0) {
+
+                        if( result.indexOf('Exception-') == -1) {
+
+                            var upsertedRecordId;
+                            if (result.indexOf('@@') > 0) {
+                                upsertedRecordId = result.split('@@')[0];
+                                result = result.split('@@')[1];
+                                $scope.mapAddrConfig.Id = upsertedRecordId;
+                            }
+                            if ( $scope.selIndex != null ) {
+                                $scope.hideAssessibleObj = false;
+                                $scope.existingMapConfigurationRecords.splice($scope.selIndex, 1);
+                            }
+                            $scope.existingMapConfigurationRecords.unshift($scope.mapAddrConfig);
+                            $scope.clearAllVariables(true, false);
+                            $scope.setPgMsgColor = 'green';
+
+                            var sel = document.getElementById('objDD');
+                            $scope.AssessibleObjects.splice(sel.selectedIndex, 1);
+                        }
+                        else {
+                            result = result.replace('Exception-', '');
+                        }
+                        $scope.showSpinnerWheel = false;
+                        $scope.errMsg = _.unescape(result);
+                        $scope.$apply();
+                    }
+                });
+            }
+        });
+    </script>
+</apex:component>

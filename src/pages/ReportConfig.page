@@ -1,0 +1,47 @@
+<apex:page controller="ReportConfigController">
+<script type="text/javascript">
+window.onload = init;
+ 
+function init() {
+   tables = document.getElementsByTagName('table');
+   for (i = 0; i < tables.length; i++) {
+      table = tables[i];
+      if (table.className == 'makeRows') {
+         makeRows(table, 7);
+      } 
+   } 
+}
+
+function makeRows(table, columnCount) {
+} 
+
+</script>
+<apex:form >
+<apex:pageMessages ></apex:pageMessages>
+<apex:pageBlock >
+<apex:pageBlockSection title="General Information">
+<p><b>Provide a Report Title: </b><apex:inputText title="Provide a Report Title" id="rptTitle" /></p>
+<p><b>Choose an Output Format: </b>
+<apex:selectList >
+    <apex:selectOption itemValue="Word"></apex:selectOption>
+</apex:selectList></p>
+<p><b>Choose an Assignment: </b>
+<apex:selectList >
+    <apex:selectOption itemValue="Test"></apex:selectOption>
+</apex:selectList>
+</p>
+ </apex:pageBlockSection>
+ <apex:pageBlockSection Title="Assignment Manager Data" columns="2">
+    <apex:selectCheckboxes value="{!AssignmentManagerFields}" layout="PageDirection" styleClass="makeRows">
+        <apex:selectOptions value="{!AssignItems}"></apex:selectOptions>    
+    </apex:selectCheckboxes>
+ </apex:pageBlockSection>
+ <apex:pageBlockSection Title="Assessment Data" columns="3">
+     <apex:selectCheckboxes value="{!SectionList}">
+         <apex:selectOptions value="{!SectionItems}"></apex:selectOptions>
+     </apex:selectCheckboxes>
+ </apex:pageBlockSection>
+ <apex:commandButton value="Run Report" />
+ </apex:pageBlock>
+</apex:form>
+</apex:page>

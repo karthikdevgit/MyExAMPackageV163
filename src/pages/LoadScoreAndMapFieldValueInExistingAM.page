@@ -1,0 +1,315 @@
+<apex:page controller="LoadScoreAndMapFieldValueInAMController">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"/>
+    <script src="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-1.10.2.js')}"/>
+    <script src="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-ui.min.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-ui.min.css')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.UnderscoreAndAngularJS,'UnderscoreAndAngularJS/underscore-min.js')}"/>
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <title>Load Score For Existing Assignment Manager</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS052, '/assets/styles/salesforce-lightning-design-system-vf.css')}" />
+        </head>
+        <style>
+            .maskDiv {background-color: rgba(0, 0, 0, 0.6); width: 100%; height: 100%; z-index: 1000; position: fixed; left: 0; top: 0; overflow: hidden; text-align: center; vertical-align: middle;}
+        </style>
+        
+        <div class="slds" ng-app="AMScorePopulateApp" ng-controller="AMScorePopulateCtrl">
+            <form class="slds-form--inline">
+                <!-- Processing Image Code -->
+                <div style="display:none;" class="maskDiv">
+                    <img src="{!URLFOR($Resource.SLDS052, '/assets/images/spinners/slds_spinner.gif')}" alt="Loading..." class="slds-spinner--small" style="z-index: 10001; background-color: white; width: 80px; height: 80px; padding: 15px; border-radius: 4px; text-align: left; position: relative; top: 30%;"/>
+                </div>
+                <!--End Processing Image Code -->
+                <div class="slds-card slds-m-top--x-small slds-m-bottom--x-large">
+                    <div class="slds-card__header slds-grid">
+                        <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <h2 class="slds-text-heading--small slds-truncate" style="font-weight: bold;">
+                                    Re-run Score and Field Mapping for Existing Managers
+                                </h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-notify_container">
+                        <div class="slds-notify slds-notify--alert slds-theme--success slds-theme--alert-texture" role="alert" style="display: none;" id="showSuccessMsg">
+                            <h2>{{successMsg}}</h2>
+                        </div>
+                        <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert" style="display: none;" id="showErrorMsg">
+                            <h2>{{errorMsg}}</h2>
+                        </div>
+                    </div>
+                    <div class="slds-card__body slds-grid slds-wrap slds-size--23-of-24 slds-p-around--small slds-theme--default  slds-m-left--x-small slds-m-bottom--x-small slds-m-top--x-small slds-m-right--x-small">
+                        <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                            <tbody>
+                                <tr class="slds-hint-parent">
+                                    <td class="slds-size--1-of-4 " style="text-align: right;" data-label="AssessmentTemplate">
+                                        <label class="slds-form-element__label  slds-size--6-of-12" for="text-input-01">Assessment Template</label>
+                                    </td>
+                                    <td class="slds-size--1-of-4" data-label="templateId">
+                                        <div class="slds-size--1-of-1">
+                                            <input type="text" placeholder="Assessment Template" class="slds-col slds-size--8-of-12 slds-input" ng-model="selectedTemplate.Name"/>
+                                            <span ng-click="openAssessmentSelectionDiv();" class="slds-icon__container slds-align-middle slds-p-right--medium">
+                                                <svg aria-hidden="true" class="slds-icon icon__svg slds-icon-standard-marketing-actions slds-icon--small">
+                                                    <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/standard-sprite/svg/symbols.svg#marketing_actions')}"></use>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                        <div style="display:none;" class="slds-form-element__help">This field is required</div>                              
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td class="slds-size--1-of-4 " style="text-align: right;" data-label="AssignmentManagersCount">
+                                        <label class="slds-form-element__label  slds-size--6-of-12" for="text-input-01">Assignment Managers Count</label>
+                                    </td>
+                                    <td class="slds-size--1-of-4" data-label="templateId">{{assignmentManagers.length}}</td>
+                                </tr>
+                                <tr class="slds-hint-parent" ng-show="assignmentManagers.length > 0">
+                                    <td colspan="2" style="text-align: center;">
+                                        <button class="slds-button slds-button--brand" type="button" ng-click="updateScore();">Re-run Score and Field Mapping</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Start Assessment Template Selection -->
+                <div ng-show="showAssessmentSelectionDiv" aria-hidden="false" role="dialog" class="slds-modal slds-modal__close AssessmentSelectionDiv" style="background-color: rgba(128, 128, 128, 0.75);">
+                    <div class="slds-modal__container">
+                        <div class="slds-modal__header">
+                            <button class="slds-button slds-button--icon-inverse slds-modal__close" ng-click="closeAssessmentSelectionDiv()">
+                                <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                                    <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                                </svg>
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                            <h2 class="slds-text-heading--medium">Assessment Templates</h2>
+                        </div>
+                        <div class="slds-modal__content">
+                            <div class="slds-m-around--small">    
+                                <input type="text" class="slds-input slds-size--4-of-12" ng-model="searchTemplateName"/>
+                                <button class="slds-button slds-button--brand slds-size--2-of-12" ng-click="searchTemplates();"> Go! </button>
+                                <div class="slds-size--7-of-12"/>
+                            </div>
+                            <label><strong> Search Result</strong> </label>
+                            <table class="slds-table slds-table--bordered slds-max-medium-table--stacked" style="height:20%">
+                                <thead>
+                                    <tr class="slds-text-heading--label">
+                                        <th scope="col"><span class="slds-truncate"><b>Name</b></span></th>
+                                        <th scope="col"><span class="slds-truncate"><b>Template Name</b></span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="eachTemplate in ( templates | filter:searchTemplateName | orderBy:'ExAM__Template_name__c' ) track by eachTemplate.Id">
+                                        <td style="cursor: pointer;" ng-click="setSelectedTemplate(eachTemplate);">{{eachTemplate.Name}}</td>
+                                        <td style="cursor: pointer;" ng-click="setSelectedTemplate(eachTemplate);">{{eachTemplate.ExAM__Template_name__c}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Assessment Template Selection -->
+            </form>
+        </div>
+        <script type="text/javascript">
+        
+            var underscore = angular.module('underscore', []);
+            underscore.factory('_', ['$window', function($window) {
+                return $window._;
+            }]);
+            
+            var app = angular.module('AMScorePopulateApp', ['underscore']);
+            app.service('AMScorePopulateService', function($q) {
+
+                this.queryTemplates = function(templateName) {
+
+                    var defer = $q.defer();
+                    var inputObj = {};
+
+                    ExAM.LoadScoreAndMapFieldValueInAMController.getTemplates(templateName, function(result, event) {
+                        if (event.status) {
+                            var responseObj = result;
+                            if(responseObj['errorMsg'] && responseObj['errorMsg'] != ''){
+                                defer.reject( responseObj['errorMsg'] );
+                            }else{
+
+                                var stringifiedResponse = JSON.stringify( responseObj['templatelist'] );
+                                stringifiedResponse = stringifiedResponse.replace('&#39;', '\'');
+                                stringifiedResponse = _.unescape( stringifiedResponse );
+
+                                inputObj['templates'] = JSON.parse(stringifiedResponse);
+                                inputObj['status'] = responseObj['amStatus'];
+
+                                defer.resolve( inputObj );
+                            }                    
+                        }
+                        else {
+                            defer.reject( event.message );
+                        }
+                    });
+                    return defer.promise;
+                }
+
+                this.queryAssignmentManagers = function(searchCriteria) {
+
+                    var defer = $q.defer();
+
+                    ExAM.LoadScoreAndMapFieldValueInAMController.getAssignmentManagers(searchCriteria, function(result, event) {
+                        if (event.status) {
+                            var responseObj = result;
+                            if(responseObj['Errormessage'] && responseObj['Errormessage'] != '') {
+                                defer.reject( responseObj['Errormessage'] );
+                            }
+                            else {
+
+                                if (responseObj['assmanlist'] && responseObj['assmanlist'].length > 0) {
+                                    var stringifiedResponse = JSON.stringify( responseObj['assmanlist'] );
+                                    stringifiedResponse = stringifiedResponse.replace('&#39;', '\'');
+                                    stringifiedResponse = _.unescape( stringifiedResponse );
+                                    defer.resolve( JSON.parse(stringifiedResponse) );
+                                }
+                                else {
+                                    var managers = {};
+                                    defer.resolve( managers );
+                                }
+
+                            }
+                        }
+                        else {
+                            defer.reject( event.message );
+                        }
+                    });
+                    return defer.promise;
+                }
+
+                this.loadScoreInQueriedAM = function(amArray) {
+
+                    var defer = $q.defer();
+                    ExAM.LoadScoreAndMapFieldValueInAMController.loadScoreInSelectedAssignmentManagers(amArray, function(result, event) {
+                        if (event.status) {
+                            var response = JSON.parse( _.unescape(result) );
+                            
+                            if (response["isSuccess"]) {
+                                defer.resolve( response["message"] );
+                            }
+                            else {
+                                defer.reject( response["message"] );
+                            }
+                        }
+                        else {
+                            defer.reject(result);
+                        }
+                    },{timeout: 120000});
+                    return defer.promise;
+                }
+            });
+
+            app.controller('AMScorePopulateCtrl', function($scope, AMScorePopulateService, filterFilter, _) {
+
+                $scope.templates = [];
+                $scope.assignmentManagers = [];
+
+                $scope.selectedTemplate = {"Name": '', "ExAM__Template_name__c": '', "Id": ''};
+
+                $scope.searchTemplateName = '';
+                $scope.status = '';
+                $scope.successMsg = '';
+                $scope.errorMsg = '';
+
+                $scope.showAssessmentSelectionDiv = false;
+
+                AMScorePopulateService.queryTemplates('').then(function(successResponse) {
+                    $scope.templates = successResponse['templates'];
+                    $scope.status = successResponse['status'];
+                },
+                function(errorResponse) {
+                    $scope.errorMsg = errorResponse;
+                    $('#showErrorMsg').show();
+                });
+
+                $scope.openAssessmentSelectionDiv = function() {
+
+                    $scope.successMsg = '';
+                    $scope.errorMsg = '';
+                    $('#showSuccessMsg, #showErrorMsg').hide();
+
+                    $('.AssessmentSelectionDiv').addClass('slds-fade-in-open');
+                    $('.AssessmentSelectionDiv').removeClass('slds-modal__close');
+                    $scope.showAssessmentSelectionDiv = true;
+                }
+                $scope.closeAssessmentSelectionDiv = function() {
+                    $('.AssessmentSelectionDiv').addClass('slds-modal__close');
+                    $('.AssessmentSelectionDiv').removeClass('slds-fade-in-open');
+                    $scope.showAssessmentSelectionDiv = false;
+                }
+                $scope.setSelectedTemplate = function(templateSelected) {
+
+                    $scope.selectedTemplate = templateSelected;
+
+                    var searchCriteria = {};
+                    searchCriteria['templateId'] = $scope.selectedTemplate['Id'];
+                    searchCriteria['status'] = $scope.status;
+
+                    AMScorePopulateService.queryAssignmentManagers(JSON.stringify(searchCriteria)).then(function(successResponse) {
+                        if (Object.keys(successResponse).length > 0) {
+                            $scope.showAssessmentSelectionDiv = false;
+                            $('#showErrorMsg').hide();
+                            $scope.assignmentManagers = successResponse;
+                        }
+                        else {
+                            $scope.showAssessmentSelectionDiv = false;
+                            $scope.assignmentManagers = [];
+                            $scope.errorMsg = 'Assignment Manager in '+$scope.status+' status not exists below selected template. Please select another template';
+                            $('#showErrorMsg').show();
+                        }
+                    },
+                    function(errorResponse) {
+                        $scope.showAssessmentSelectionDiv = false;
+                        $scope.errorMsg = errorResponse;
+                        $('#showErrorMsg').show();
+                    });
+                }
+                $scope.searchTemplates = function() {
+                    AMScorePopulateService.queryTemplates($scope.searchTemplateName).then(function(successResponse) {
+                        if (successResponse['templates'].length > 0) {
+                            $.each(successResponse['templates'], function(key, value) {
+                                $scope.templates.push( successResponse['templates'][key] );
+                            });
+                        }
+                        else {
+                            $scope.showAssessmentSelectionDiv = false;
+                            $scope.errorMsg = 'Template not exists with selected input. Please enter a valid name.';
+                            $('#showErrorMsg').show();
+                        }
+                    },
+                    function(errorResponse) {
+                        $scope.showAssessmentSelectionDiv = false;
+                        $scope.errorMsg = errorResponse;
+                        $('#showErrorMsg').show();
+                    });
+                }
+                $scope.updateScore = function() {
+
+                    $('.maskDiv').show();
+                    AMScorePopulateService.loadScoreInQueriedAM( $scope.assignmentManagers ).then(function(successResponse) {
+
+                        $('.maskDiv').hide();
+                        $scope.searchTemplateName = '';
+                        $scope.selectedTemplate = {"Name": '', "ExAM__Template_name__c": '', "Id": ''};
+                        $scope.assignmentManagers = [];
+                        $scope.successMsg = successResponse;
+                        $('#showErrorMsg').hide();
+                        $('#showSuccessMsg').show();
+                    }, function(errorResponse) {
+
+                        $('.maskDiv').hide();
+                        $scope.errorMsg = errorResponse;
+                        $('#showSuccessMsg').hide();
+                        $('#showErrorMsg').show();
+                    });
+                }
+            });
+        </script>
+    </html>
+</apex:page>

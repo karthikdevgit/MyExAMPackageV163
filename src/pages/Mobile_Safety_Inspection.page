@@ -1,0 +1,114 @@
+<apex:page standardController="SafetyInspection__c" tabstyle="account" sidebar="false" extensions="safetyInspectioncontroller" docType="html-5.0" showHeader="false">
+<meta name="viewport" content="width=device-width-5, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes;" />  
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>        
+<script language="JavaScript" type="text/javascript">
+function CorrectiveAction(correctaction)
+{//alert("hi");
+//alert(correctaction);
+//alert("hi");
+//alert(correctaction);
+var caction;
+if(correctaction=='Program – HAZCOM')
+{caction='Implement a Hazard Communication Program pursuant to Cal/OSHA requirements. To obtain a copy of the Districts Hazard Communication Program, contact OEHS at (213) 241-3199.';}
+else if(correctaction=='Chemical Inventory')
+{caction='Maintain school chemical inventory pursuant to Hazard Communication Program.';}
+else if(correctaction=='Plan – Chemical Hygiene & Safety')
+{caction='Maintain and implement Chemical Hygiene & Safety Plan and ensure it is readily available to all employees. The plan should identify a Chemical Safety Coordinator and be revised at least annually. To obtain a copy of the District’s Chemical Hygiene & Safety Plan, contact OEHS at (213) 241-3199.';}
+else if(correctaction=='Visitor’s Pass')
+{caction='Ensure visitors entering school grounds sign in and receive a visitor’s pass.';}
+else if(correctaction=='Posting – Visitation Policy')
+{caction='Ensure school visitation policy is posted and distributed annually to parents and staff.';}
+else if(correctaction=='Communicating Emergencies')
+{caction='Ensure all classrooms are provided with a communications system that can contact the main office or call 911. New schools and building additions constructed after 2000 require a telephone system capable of calling 911.';}
+else if(correctaction=='Availability')
+{caction='Ensure that an Asbestos Management Plan is available to employees, parents and others pursuant to 40 CFR.';}
+else if(correctaction=='Current')
+{caction='Confer with Asbestos Technical Unit (ATU) to ensure that the Asbestos Management Plan is current and identifies the location of all asbestos containing material (ACM). For assistance, contact ATU at (213) 745-1450.';}
+else if(correctaction=='Asbestos Work Compliance')
+{caction='Ensure regulatory compliance with asbestos work practices, engineering controls, personal protective equipment, and clearance air monitoring requirements for all releases or abatement activities.';}
+//alert(document.getElementById("{!$Component.pagesf.incidentForm.corraction}");
+//alert(document.getElementById('corraction1'));
+document.getElementById('corraction1').value=caction;
+}
+</script> 
+   
+  <style type="text/css">
+         .inputTextBig { width: 30%; }
+         .inputText { width: 100%; }
+         .inputTextArea { width: 100%; }
+         .inputTextPicklist { width:100%; }
+         span.thick {font-weight:bold;}
+span.thick {font-size:12px}
+span.thin {font-size:10px}
+.tdfont{
+font-style:bold;
+font-weight:bold;
+font-size:15px;
+width:100%;
+}
+    </style>
+       
+ 
+  <apex:form id="safetyForm" style="background-color:#EEEEEE;">
+    <div style="margin-right:3px;margin-left:3px;">
+        <TABLE WIDTH="100%" BORDER="1" align="left" CELLPADDING="4" CELLSPACING="0" BORDERCOLOR="#666666" bgcolor="#EEEEEE">
+         <colgroup>
+            <col style="width: 49%" />
+            <col style="width: 49%" />
+           
+          </colgroup>
+           <tr><td colspan="2" align="center" style="font-style:bold;font-size:20px;padding:20px 0 20px 0px;"><B>SAFETY INSPECTION WORKSHEET</B><br/>
+           </td></tr>
+           <TR>
+           <TD class="tdfont">
+              <label for="labelarea">Facility :</label> </TD><td><apex:inputField value="{!VisRecord.Facility__c}" id="labelarea" styleClass="inputTextPicklist"></apex:inputField>
+              </TD>
+           </TR>
+           <TR>
+              <TD class="tdfont">
+              <label for="labelinci">Inspector :</label></td>
+              <td><apex:inputField value="{!VisRecord.Inspector__c}" id="labelinci" styleClass="inputTextPicklist" ></apex:inputField>
+              </TD>             
+           </TR> 
+            <tr>
+                 <td class="tdfont"> <label for="labelsch5">Category: </label>  </TD><td>         
+                <apex:inputField value="{!VisRecord.Category__c}" id="labelsch5" styleClass="inputTextPicklist"></apex:inputField></td>
+            </TR> 
+            <tr>
+                <td class="tdfont">
+               <label for="labelsch6">Type: </label>  </TD><td>
+                 <apex:inputField value="{!VisRecord.Type__c}" id="labelsch6" styleClass="inputTextPicklist"></apex:inputField></td>
+            </TR> 
+            <tr>     
+                <td class="tdfont">
+           <label for="labelsch7" >Subtype: </label>  </TD><td>
+                 <apex:inputField value="{!VisRecord.Sub_Type__c}"  id="labelsch7" styleClass="inputTextPicklist" onchange="CorrectiveAction(this.value);"></apex:inputField></td>
+            </TR>
+             <tr>  
+             <td class="tdfont"> 
+             <label for="corraction1" >Corrective Action: </label>  </TD><td>        
+                <textarea rows="3" cols="20" id="corraction1">
+            </textarea>
+                </td>
+                 </TR>
+             
+            <TR>
+                <TD class="tdfont"><label for="labelsch11" >Priority: </label> </TD><td>
+                 <apex:inputField value="{!VisRecord.Priority__c}"  id="labelsch11"></apex:inputField>
+           
+                </td>
+            </TR>
+
+            <TR align="center" style="font-style:bold;">
+             <td colspan="2" style="font-style:bold;font-size:16px;padding:20px 0 20px 0px;">
+             <apex:commandButton value="Home" action="{!Home}" style="padding-left:10px;"/>
+             <apex:commandButton value="Save" action="{!Save}" style="padding-left:10px;"/>
+             <apex:commandButton value="Cancel" action="{!Cancel}" id="button1" /> 
+             
+             </td>      
+           </TR>
+        </TABLE> 
+     </div>
+    </apex:form>
+  
+</apex:page>

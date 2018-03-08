@@ -1,0 +1,5 @@
+<aura:event type="COMPONENT" access="public">
+    <aura:attribute name="index" type="Integer" access="public"/>
+    <aura:attribute name="direction" type="String" access="public"/>
+    <aura:attribute name="order_no" type="Integer" access="public"/>
+</aura:event>

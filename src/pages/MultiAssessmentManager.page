@@ -1,0 +1,347 @@
+<apex:page standardController="IssueRequest_Life_Cycle__c" tabstyle="IssueRequest_Life_Cycle__c" standardStylesheets="false" sidebar="false" extensions="MultiAssessmentcontroller" id="thePage" > 
+<meta name="viewport" content="width=device-width-5, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes;" />
+ <apex:actionStatus id="statusSaveTrip" onstart="alert('Saving Please Wait...');"  onstop="alert('Done Saving...');">
+    <apex:facet name="start">
+        <div>
+            <div class="popupBackground" />
+            <div class="PopupPanel">
+                <table border="0" width="100%" height="100%">
+                    <tr>
+                        <td align="center"><b>Please Wait</b></td>
+                    </tr>
+                    <tr>
+                        <td align="center"><img src="{!$Resource.ProgressBarImage}"/></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+     </apex:facet>
+</apex:actionStatus>
+ <apex:form id="templateForm" style="bgcolor:#EEEEEE;border-color:#666666;" >
+   <apex:pageMessages ></apex:pageMessages>
+   <script>
+          
+          function showTableCheck(chkbox,tableID)
+           {//alert(tableID);
+              var visSetting = (chkbox.checked) ?"block": "none"; //alert(visSetting );
+               document.getElementById(tableID).style.display = visSetting ; 
+           }
+           function showTable(chkbox,tableID)
+           {//alert(tableID);
+              // var visSetting = (chkbox.checked) ?"block": "none"; 
+               document.getElementById(tableID).style.display = "block"; 
+           }
+           function addRow(tableID) {
+                
+            //alert(tableID);   
+            var table = document.getElementById(tableID);
+ 
+            var rowCount = table.rows.length;
+            var row = table.insertRow(rowCount-1);
+            var textinputids=tableID+'row';
+            textinputids=textinputids+(rowCount-1);  //alert( textinputids);   
+            
+            var cell1 = row.insertCell(0);
+            cell1.innerHTML ='<INPUT type="checkbox" name="chkbox[]"/>';
+            
+            var cell3 = row.insertCell(1);            
+                
+            cell3.innerHTML ='  <TEXTAREA name='+textinputids+' id='+textinputids+' class="democlass" rows="2"/>';   
+            //alert(cell3.innerHTML);
+                
+        }
+
+        /**
+         * This method deletes the specified section of the table
+         * OR deletes the specified rows from the table.
+         */
+        
+
+            function deleteRow(tableID) {
+            try {
+            var table = document.getElementById(tableID);
+            var rowCount = table.rows.length;
+ 
+            for(var i=0; i<rowCount; i++)
+             {
+                var row = table.rows[i];
+                var chkbox = row.cells[0].childNodes[0];
+                if((rowCount <= 3) && (true == chkbox.checked))
+                {
+                        alert("Cannot delete all the rows.");
+                        break;
+                }
+                else
+                {
+                    if(null != chkbox && true == chkbox.checked)
+                     {
+                        table.deleteRow(i);
+                        rowCount--;
+                        i--;
+                     }
+                }
+ 
+ 
+            }
+            }catch(e) {
+                alert('Exception'+e);
+            }
+        }
+   </script>
+   <style type="text/css">
+    .myButton:active {
+        position:relative;
+    }
+
+    .democlass {
+        width:98%;
+    }
+
+    .detailList {
+        width:100%;
+    }    
+
+    .editComment {
+        font-style: italic;
+        font-size: small;
+        float:right;
+    }
+
+    .commentBox {
+        background-color: white;
+        border: thin solid gray;
+        margin: 0 17px;
+        padding: 5px 25px;
+    }
+
+    .commentBoxHeader {
+        background-color: #BBBBBB;
+        border: thin solid gray;
+        margin: 0 17px;
+        padding: 5px 10px;
+    }
+
+    .commentBoxHeaderActions {
+        float:right;
+    }
+    
+    .commentBox p {
+        border-bottom: thin dotted black;
+        margin: 0;
+        padding: 2px 0;
+    }
+
+    .addCommentContainer {
+        padding: 5px 250px;
+    }
+
+    .addCommentTextArea {
+        width: 100%
+    }
+    #ck-button {
+    margin:4px;
+    background-color:#EFEFEF;
+    border-radius:4px;
+    border:1px solid #D0D0D0;
+    overflow:auto;
+    float:left;
+    font-style:bold;
+    padding-right:9px;
+}
+    .inputTextWidthMediumdesc {width: 99%; }
+     /* This is for the full screen DIV */
+    .popupBackground {
+        /* Background color */
+        background-color:black;
+        opacity: 0.20;
+        filter: alpha(opacity = 20);
+    
+        /* Dimensions */
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 998;
+        position: absolute;
+        
+        /* Mouse */
+        cursor:wait;
+    }
+ 
+    /* This is for the message DIV */
+    .PopupPanel {
+        /* Background color */
+        border: solid 2px blue;
+        background-color: white;
+ 
+        /* Dimensions */
+        left: 50%;
+        width: 200px;
+        margin-left: -100px;
+        top: 50%;
+        height: 50px;
+        margin-top: -25px;
+        z-index: 999;
+        position: fixed;
+        
+        /* Mouse */
+        cursor:pointer;
+    }
+</style>
+
+  <apex:actionFunction name="updateTemplate" action="{!setSections}" rerender="{!$Component.thePage.templateForm.outermost.secquest.MainBlock.innerdetail.innersection}"/>
+  <apex:actionFunction name="updateAnswers" action="{!setAnswers}" rerender="{!$Component.thePage.templateForm.outermost.secquest.MainBlock.innerdetail.innersection.innerquestion.innerquestionans}"/>
+  <apex:actionFunction name="updateQuestions" action="{!setQuestions}" rerender="{!$Component.thePage.templateForm.outermost.secquest.MainBlock.innerdetail.innerquestion}"/>
+  
+  <div style="background-color:#EEEEEE;border-color:#666666;" id="outermost">
+       <div style="margin-right:3px;margin-left:3px;text-align:center;font-size:18px;padding:10px 0 10px 0px;font-style:bold;" >
+          <apex:outputText value="Multiple Assessment Manager"/>
+      
+       </div><div style="margin-right:3px;margin-left:3px;text-align:right;padding:10px 0 10px 0px;font-style:bold;font-size:12px;" > <apex:commandButton value="Submit Inspection" action="{!subApproval}" /></div>
+      <div align="left" style="margin-right:3px;margin-left:2px;" id="secquest"> 
+             <apex:outputText style="padding-right:7px;padding-top:5px;padding-bottom:5px;font-style:bold;">Select Location :</apex:outputText>
+             <apex:selectList id="ChildAccounts" value="{!response.Account_to_Response__c}" size="1" >
+                   <apex:selectOptions value="{!childAccOptionLists }"/> 
+              </apex:selectList>
+              <br/><br/>
+          <apex:pageBlock id="MainBlock">
+          
+             <apex:outputPanel rendered="{!$ObjectType.Section_Group__c.accessible}"> 
+                 <apex:outputText style="padding-right:23px;padding-top:5px;padding-bottom:5px;font-style:bold;">Assessment Group :</apex:outputText>
+                 <apex:selectList id="AssessTemplates" value="{!templateid}" size="1" onchange="updateTemplate(this.value)" >
+                       <apex:selectOptions value="{!templateLists}"/> 
+                  </apex:selectList><br/></apex:outputPanel>
+              <apex:outputPanel id="innerdetail" rendered="{!IF(ISNULL(templateid) || templateid=='None',false,true)}">
+                   <apex:outputPanel id="innersection" rendered="{!$ObjectType.Section_Group_Section_Relation__c.accessible}">
+                     <apex:outputText value="Assessment Section :" style="font-style:bold;padding-right:16px;padding-top:5px;padding-bottom:5px"/>
+                     <apex:selectList id="sectionlist" value="{!sectionid}" size="1" onchange="updateQuestions(this.value)">
+                       <apex:selectOptions value="{!sectionOptionLists}"/> 
+                     </apex:selectList><br/> 
+                   </apex:outputPanel>
+                   
+                   
+               
+                   <apex:outputPanel id="innerquestion" rendered="{!IF(ISNULL(sectionid) || sectionid=='None',false,true)}">
+                    <apex:outputText value="Assessment Question :" style="font-style:bold;padding-right:9px;padding-top:5px;padding-bottom:5px"/>
+                     <apex:selectList id="questionlist" value="{!questionid}" size="1" onchange="updateAnswers(this.value)">
+                       <apex:selectOptions value="{!questionOptionLists}"/> 
+                     </apex:selectList><br/>
+                   <br/> 
+                    <apex:outputPanel id="innerquestionans" rendered="{!IF(ISNULL(questionid),false,true)}" >
+                     <apex:outputPanel id="innerquestionans1" rendered="{!IF(ISNULL(questionid) ||  questionid=='All',false,true)}" >
+                     
+                         <apex:outputText value="Assessment Response :" style="font-style:bold;padding-right:2px;"/>
+                         <apex:selectList id="anslist" value="{!response.Response__c}" size="1" rendered="{!IF(ISNULL(selectedQuestion) ||selectedQuestion.Question_Type__c!='RadioPicklist',false,true)}" style="font-style:bold;">
+                           <apex:selectOptions value="{!ansOptionLists}" /> 
+                         </apex:selectList><br/>
+                         <apex:selectCheckboxes layout="pageDirection" id="qmOptionList" value="{!multi}" rendered="{!IF(ISNULL(selectedQuestion) ||selectedQuestion.Question_Type__c!='MultiselectPicklist',false,true)}" style="font-style:bold;">
+                              <apex:selectOptions value="{!ansOptionLists}" />
+                         </apex:selectCheckboxes>
+                          <apex:inputTextarea rows="6" style="width:98%;" id="textInforesponse" value="{!response.Response__c}" rendered="{!IF(ISNULL(selectedQuestion) ||selectedQuestion.Question_Type__c!='Text',false,true)}"></apex:inputTextArea> 
+                                          
+                        <apex:outputText value="Responsible Party :" style="font-style:bold;padding-right:31px;"/>
+                        <apex:inputField id="ResponsibleParty" value="{!response.Responsible_Party__c}"/>  <br/>
+                        <apex:outputText value="Priority : " style="font-style:bold;padding-right:92px;"/>
+                        <apex:inputField id="priority" value="{!response.Priority__c}"/>  <br/>   
+                         <br/>
+                        
+                        <label style="border:1px solid #D0D0D0;margin:10px;background-color:#EFEFEF;border-radius:4px;padding: 3px 3px;" > <input type="checkbox" id="{!JSENCODE(questionid)}chkatt" onclick="showTableCheck(this,'{!JSENCODE(questionid)}'+'att')" /><b>Add Photos(Max</b> 5)</label>
+                        <label style="border:1px solid #D0D0D0;margin:10px;background-color:#EFEFEF;border-radius:4px;padding: 3px 3px;" ><input type="checkbox" id="{!JSENCODE(questionid)}chknote" onclick="showTableCheck(this,'{!JSENCODE(questionid)}'+'note')"/><b>Add Comments</b></label>
+                        <br/><br/>
+                         <div id="innerquestionansnotatt">
+                        <TABLE BORDER="1" CELLPADDING="0" CELLSPACING="0" align="LEFT" BORDERCOLOR="#666666" bgcolor="#EEEEEE" WIDTH="100%" id="{!JSENCODE(questionid)}att" style="display:none;">
+                               <TR align="center" style="font-style:bold;">
+                                 <td colspan="4" style="font-style:bold;font-size:14px;padding:10px 0 10px 0px;"><b>ADD PHOTOS</b> </td>      
+                               </TR>
+                               <apex:repeat value="{!allFileList}" var="AFL">      <TR>
+                                  <TD width="30%" colspan="2" valign="top">
+                                          <b><label for="labelupload" style="font-size:12px;padding:10px 5px 10px 0px;">Upload Photo or File </label> </b>
+                                                      
+                                             <apex:inputFile value="{!AFL.body}" filename="{!AFL.Name}" id="labelupload"/>                     
+                                   </TD>
+                                   <TD width="65%" colspan="2" valign="top" style="vertical-align: top;">
+                                             <b><label for="labeldescr" style="font-size:12px;padding:0px 5px 10px 0px;">Description  </label> </b>
+                                            <apex:inputField value="{!AFL.Description}" id="labeldescr" styleClass="inputTextWidthMediumdesc" ></apex:inputField>                    
+                                   </TD>
+                                  </tr>  
+                                </apex:repeat>
+                      </table>
+                   
+                        <table id="{!JSENCODE(questionid)}note" width="100%" style="display:none;" BORDER="1" align="left" CELLPADDING="4" CELLSPACING="0" BORDERCOLOR="#666666" bgcolor="#EEEEEE">
+                       <TR><TH>
+                      Select to Delete
+                       </TH><TH colspan="2">
+                       Type Comment
+                       </TH></TR>
+                        <TR>
+                            <TD width="10%"><INPUT type="checkbox" name="chk"/></TD>
+                            <TD width="90%">
+                                <TEXTAREA name="{!JSENCODE(questionid)}noterow1" id="{!JSENCODE(questionid)}noterow1" class="democlass" rows="2"/>
+                            </TD>
+                        </TR>
+                        <TR>
+                           <TD colspan="2" align="center">
+                                <INPUT type="button" value="Add More" onclick="addRow('{!JSENCODE(questionid)}note')" />
+                                <INPUT type="button" value="Delete Row" onclick="deleteRow('{!JSENCODE(questionid)}note')" />
+                           </TD>
+                        </TR>
+                         
+                        </TABLE>   
+                        </div>
+                        
+                      </apex:outputPanel>
+                   <apex:variable var="qnum" value="{!1}"/>
+                   <div align="left" style="margin-right:3px;margin-left:2px;"> 
+                   <apex:outputPanel id="defaultsection" rendered="{!IF(ISNULL(sectionid) || sectionid=='None' || questionid!='All' ,false,true)}" >
+                        <apex:repeat value="{!questionsList}" var="question"  > 
+                           <apex:outputPanel rendered="{!question.newquestFormat.Question_Type__c=='Text'}" >
+                               <b>Q.{!qnum} {!question.newquestFormat.Question_Label__c}</b><br/>
+                                    <apex:inputTextarea style="width:100%;" rows="6"  id="textInfo" value="{!question.resObj.Response__c}"></apex:inputTextArea>
+                               
+                          </apex:outputPanel>
+                           <apex:outputPanel rendered="{!(question.newquestFormat.Question_Type__c=='RadioPicklist' )}">
+                              <b>Q.{!qnum} {!question.newquestFormat.Question_Label__c}</b><br/>
+                               <apex:selectRadio id="qOptionList" value="{!question.resObj.Response__c}" layout="pageDirection">
+                                  <apex:selectOptions value="{!question.optionsList}" />
+                              </apex:selectRadio>  
+                          </apex:outputPanel>
+                             <apex:pageBlockSection columns="1" rendered="{!question.newquestFormat.Question_Type__c=='MultiselectPicklist'}" >
+                                 <b>Q.{!qnum} {!question.newquestFormat.Question_Label__c}</b><br/>
+                                   <apex:selectCheckboxes layout="pageDirection" id="qmOptionList" value="{!question.multiselectlist}" >
+                                                          
+                                  <apex:selectOptions value="{!question.optionsList}" />
+                                   </apex:selectCheckboxes> 
+                               </apex:pageBlockSection>
+                                <apex:variable var="qnum" value="{!qnum+1}"/>
+                       </apex:repeat>
+                   </apex:outputPanel> 
+                    </div>
+                    </apex:outputPanel> 
+                   </apex:outputPanel>  
+                   
+                       
+                      <apex:pageBlock >
+                <apex:pageBlockButtons location="bottom" id="buttons1" style="align:center;">
+               <apex:commandButton id="button2" value="Save" action="{!save}" >
+                    
+                </apex:commandButton>             
+                <apex:commandButton value="Cancel" action="{!cancel}" /> 
+               
+                 
+              </apex:pageBlockButtons> 
+              </apex:pageBlock>      
+              </apex:outputPanel> 
+             </apex:pageBlock>
+            
+      </div>
+     
+  </div>
+ 
+ </apex:form>
+ 
+ <div>
+ <apex:outputPanel rendered="{!$ObjectType.Questionnaire_Response__c.accessible}">
+     <apex:relatedList list="Questionnaire_Response__r"/>
+  </apex:outputPanel>
+ </div>
+</apex:page>

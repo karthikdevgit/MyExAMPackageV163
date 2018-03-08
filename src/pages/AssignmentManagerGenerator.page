@@ -1,0 +1,499 @@
+<apex:page controller="AssignmentManagerGeneratorController" standardStylesheets="false" docType="html-5.0" showHeader="false" sidebar="false">
+    <apex:includeScript value="{!URLFOR($Resource.UnderscoreAndAngularJS,'UnderscoreAndAngularJS/angular.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.UnderscoreAndAngularJS,'UnderscoreAndAngularJS/underscore-min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-1.10.2.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-ui.min.js')}"/>
+    <style>
+        .slds-required {
+            color: #c23934;
+            margin: 0 0.125rem; 
+        }
+    </style>
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <title>Assignment Manager Generator</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS052, '/assets/styles/salesforce-lightning-design-system-vf.css')}" />
+            <apex:stylesheet value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-ui.min.css')}"/>
+        </head>
+        <apex:includeScript value="{!$Resource.svgxuse}"/>
+        <div class="slds" ng-app="AssignmentManagerGeneratorApp" ng-controller="AssignmentManagerGeneratorCtrl">
+            <apex:pageMessages />
+            <form class="slds-form--inline">
+                <!-- Processing Image Code -->
+                <div style="background-color: rgba(0, 0, 0, 0.6); width: 100%; height: 100%; z-index: 1000; position: fixed; left: 0; top: 0; overflow: hidden; text-align: center; vertical-align: middle;display:none;" class="maskDiv">
+                    <img src="{!URLFOR($Resource.SLDS052, '/assets/images/spinners/slds_spinner.gif')}" alt="Loading..." class="slds-spinner--small" style=" z-index: 10001; background-color: white; width: 80px; height: 80px; padding: 15px; border-radius: 4px; text-align: left; position: relative; top: 30%;"/>
+                </div>
+                <!--End Processing Image Code -->
+                <div class="slds-notify_container" id="succeeCreated" style="display:none;">
+                  <div class="slds-notify slds-notify--alert slds-theme--success slds-theme--alert-texture" role="alert">
+                    <button class="slds-button slds-button--icon-inverse slds-notify__close" ng-click="closeLoad();">
+                      <svg aria-hidden="true" class="slds-button__icon">
+                        <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                      </svg>
+                      <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <span class="slds-assistive-text">Success</span>
+                    <h2>
+                        You will receive an email after the record is created.
+                    </h2>
+                  </div>
+                </div>
+                <div class="slds-notify_container" style="display:none" id="errorCreated" >
+                  <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert">
+                    <button class="slds-button slds-button--icon-inverse slds-notify__close" ng-click="closeLoad();">
+                      <svg aria-hidden="true" class="slds-button__icon">
+                        <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                      </svg>
+                      <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <span class="slds-assistive-text">Error</span>
+                    <h2 id="ErrorCreateMsg">
+                        
+                    </h2>
+                  </div>
+                </div>
+                <div class="slds-card slds-m-top--x-small slds-m-bottom--x-large">
+                    <div class="slds-card__header slds-grid">
+                        <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <h2 class="slds-text-heading--small slds-truncate" style="font-weight: bold;">
+                                    Assignment Manager Generator
+                                </h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-card__body slds-grid slds-wrap slds-size--23-of-24 slds-p-around--small slds-theme--default  slds-m-left--x-small slds-m-bottom--x-small slds-m-top--x-small slds-m-right--x-small">
+                        <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover slds-size--23-of-24">
+                            <tbody>
+                                <tr clas="slds-hint-parent">
+                                    <td class="slds-size--1-of-4 " style="text-align: right;" data-label="template">
+                                        <label class="slds-size--6-of-12 slds-form-element__label" for="assessmentTempId">Assessment Template 
+                                            <span class="slds-required" title="required" style="font-size:large;"> *</span>
+                                        </label>
+                                    </td>
+                                    <td class="slds-size--1-of-4" data-label="templateId" id="tdAssessableTemplate">
+                                        <select class="slds-select slds-size--9-of-12" id="assessmentTempId" ng-model="selectedTemplate" ng-change="tempChange()" ng-options="assTemp.Id as (assTemp.Name +' ( '+assTemp.ExAM__Template_name__c+' )') for assTemp in (assessmentTemplate | orderBy:'ExAM__Template_name__c')">
+                                        </select>
+                                        <div style="display:none;" class="slds-form-element__help">This field is required</div>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td class="slds-size--1-of-4 is-required slds-has-error" style="text-align: right;" data-label="AssessableObject">
+                                        <label class="slds-size--6-of-12 slds-form-element__label" for="assessableApi">Assessable Object
+                                            <span class="slds-required" title="required" style="font-size:large;"> *</span>
+                                        </label>
+                                    </td>
+                                    <td class="slds-size--1-of-4" data-label="assessableApi" id="tdAssessableApi">
+                                        <select class="slds-select slds-size--9-of-12" id="assessableApi" ng-model="selectedObject" ng-change="objectChange(selectedObject.objectApi);" ng-options="ass as ass.objectLabel for ass in (assessableObjects | orderBy:'objectLabel')">
+                                        </select>
+                                        <div style="display:none;" class="slds-form-element__help">This field is required</div>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td class="slds-size--1-of-4" style="text-align: right;" data-label="AssessmentGroupOrAssessableRecord">
+                                        <label class="slds-form-element__label slds-size--6-of-12" for="text-input-01">Assessment Group/Assessable Record</label>
+                                    </td>
+                                    <td class="slds-size--1-of-4" data-label="assessmentGrouporAssessableRecord" id="tdAssessmentGrouporRecord">
+                                         <select class="slds-select slds-size--9-of-12" id="assessmentGrouporAssessableRecid" ng-model="selectedGrporRec" ng-change="changedGrouporRecord(selectedGrporRec)">
+                                             <option value="none">--None--</option> 
+                                             <option value="AssessmentGroup">Assessment Group</option> 
+                                             <option value="AssessableRecord">Assessable Record</option>
+                                        </select>
+                                        
+                                    </td>
+                                </tr>
+                                <tr clas="slds-hint-parent" ng-show ="selectedGrporRec =='AssessmentGroup'">
+                                    <td class="slds-size--1-of-4" style="text-align: right;" data-label="template">
+                                        <label class="slds-form-element__label  slds-size--6-of-12" for="text-input-01">Assessment Group</label>
+                                    </td>
+                                    <td class="slds-size--1-of-4" data-label="templateId" id="groupOrCountId">
+                                        <div class="slds-size--1-of-1">
+                                            <select class="slds-select slds-size--9-of-12" id="assessmentgroupId" ng-model="selectedGroup" ng-change="changeAssessmentGroup()" ng-options="assgroup.assessmentGroupId as assgroup.assessmentGroupName for assgroup in (assessmentGroups | orderBy:'assessmentGroupName')">
+                                            </select>  
+                                        </div>
+                                        <div style="display:none;" class="slds-form-element__help">This field is required</div>                             
+                                    </td>
+                                </tr>
+                                <tr clas="slds-hint-parent" ng-show ="selectedGrporRec =='AssessableRecord'">
+                                    <td class="slds-size--1-of-4" style="text-align: right;" data-label="template">
+                                        <label class="slds-form-element__label slds-size--6-of-12" for="text-input-01">Assessable Record</label>
+                                    </td>
+                                    <td class="slds-size--1-of-4" data-label="templateId" id="assessableRecordId">
+                                        <div class="slds-size--1-of-1">
+                                            <input type="text" placeholder="Select the Assessable Record" class="slds-col slds-size--8-of-12 slds-input" id="selectAssessableRecordId" ng-model="selectedRecord.RecordName"/> 
+                                            <span ng-click="openAssessableRecord(selectedRecord.RecordName,selectedObject.objectApi)" class="slds-icon__container slds-align-middle slds-p-right--medium">
+                                                <svg aria-hidden="true" class="slds-icon icon__svg slds-icon-standard-marketing-actions slds-icon--small">
+                                                    <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/standard-sprite/svg/symbols.svg#marketing_actions')}"></use>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                        <div style="display:none;" class="slds-form-element__help">This field is required</div>                              
+                                    </td>
+                                </tr>
+                                <tr clas="slds-hint-parent">
+                                    <td class="slds-size--1-of-4" style="text-align: right;" data-label="NoOfRecords">
+                                        <label class="slds-form-element__label  slds-size--6-of-12" for="text-input-03">No of records</label>
+                                    </td>
+                                    <td class="slds-size--1-of-4" data-label="noofRecordslabel" id="noofRecordsid">
+                                        <div class="slds-size--1-of-1">
+                                            <input class="slds-input slds-size--9-of-12" type="text" ng-model="noofrecords" ng-disabled="selectedGroup !='' || selectedGrporRec =='AssessmentGroup'"/>
+                                        </div>
+                                        <div style="display:none;" class="slds-form-element__help">This field is required</div>
+                                    </td>
+                                </tr>
+                                <tr clas="slds-hint-parent">
+                                    <td class="slds-size--1-of-4" style="text-align: right;" data-label="expDate">
+                                        <label class="slds-form-element__label slds-size--6-of-12" for="text-input-01">Expiration Date</label>
+                                    </td>
+                                    <td class="slds-size--1-of-4" data-label="expDateField" id="expDateId">
+                                        <div class="slds-size--1-of-1">
+                                            <input type="text" placeholder="Enter Expiration Date" class="slds-col slds-size--9-of-12 slds-input" id="selectExpDate"/> 
+                                        </div>
+                                        <!--
+                                        <div style="display:none;" class="slds-form-element__help">This field is required</div>
+                                        -->
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div> 
+                    <div class="slds-card__footer slds-grid slds-wrap slds-size--1-of-1" >
+                        <div class="slds-size--1-of-2" style="display:inline-block;text-align: right;">
+                            <button class="slds-button slds-button--neutral" type="button" ng-click="cancelAssignmentManagerCreate()">Cancel</button>
+                            <button class="slds-button slds-button--brand" type="button" ng-click="saveAssignmentManager(selectedObject.assignmentManagerApi, selectedObject.assessmentGroupJunctionApi,selectedGroup, selectedTemplate, noofrecords, selectedObject.objectApi, selectedObject.objectLabel)">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            
+            <!-- Start Assessment Template Selection -->
+            <div ng-show="showAssessmentSelectionDiv" aria-hidden="false" role="dialog" class="slds-modal slds-modal__close AssessmentSelectionDiv" style="background-color: rgba(128, 128, 128, 0.75);">
+                <div class="slds-modal__container">
+                    <div class="slds-modal__header">
+                        <button class="slds-button slds-button--icon-inverse slds-modal__close" ng-click="closeAssessmentSelectionDiv()">
+                            <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                                <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                            </svg>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-text-heading--medium">Assessable Records List</h2>
+                    </div>
+                    <div class="slds-modal__content">
+                        <div class="slds-m-around--small">    
+                            <input type="text" class="slds-input slds-size--4-of-12" ng-model="searchName"/>
+                            <button class="slds-button slds-button--brand slds-size--2-of-12" ng-click="searchRecordfunction();"> Go! </button>
+                            <div class="slds-size--7-of-12"/>
+                        </div>
+                        <label><strong> Search Result</strong> </label>
+                        <table class="slds-table slds-table--bordered slds-max-medium-table--stacked" style="height:20%">
+                            <thead>
+                                <tr class="slds-text-heading--label">
+                                    <th scope="col"><span class="slds-truncate"><b>Name</b></span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="assessableRec in (assessableRecordsList | orderBy:'RecordName')">
+                                    <td style="cursor: pointer;" ng-click="setSelectedAssessmentTemplate(assessableRec);">{{ assessableRec.RecordName }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- End Assessment Template Selection -->
+            
+        </div>
+        <script type="text/javascript">
+
+            $(document).ready(function() {
+                $('#selectExpDate').datepicker({ minDate: 1 });
+            });
+
+            var underscore = angular.module('underscore', []);
+            underscore.factory('_', ['$window', function($window) {
+                return $window._; // assumes underscore has already been loaded on the page
+            }]);
+            
+            var app = angular.module('AssignmentManagerGeneratorApp', ['underscore']);
+            app.controller('AssignmentManagerGeneratorCtrl', function($scope, filterFilter,_) {
+
+                $scope.assessableObjects = [];
+                $scope.assessmentGroups = [];
+                $scope.selectedObject = {};
+                $scope.selectedGroup = '';
+                $scope.noofrecords = '';
+                $scope.selectedTemplate = '';
+                $scope.selectedGrporRec = 'none';
+                $scope.assessableRecordsList = [];
+                $scope.selectedRecord = {};
+                $scope.showAssessmentSelectionDiv = false;
+                
+                $('.maskDiv').hide();
+                $('#succeeCreated').hide();
+                $('#errorCreated').hide();
+                $('#ErrorCreateMsg').text('');
+
+                if ('{!JSENCODE(assessableObjectJSON)}' != null && '{!JSENCODE(assessableObjectJSON)}' != '' && '{!JSENCODE(assessableObjectJSON)}' != 'null') {
+                    $scope.assessableObjects = JSON.parse('{!JSENCODE(assessableObjectJSON)}');
+                }
+                if ('{!JSENCODE(errorMsg)}' != null && '{!JSENCODE(errorMsg)}' != '' && '{!JSENCODE(errorMsg)}' != 'null') {
+                    $('#ErrorCreateMsg').text( '{!JSENCODE(errorMsg)}' );
+                    $('#errorCreated').show();
+                }
+                for (var i = 0; i < $scope.assessableObjects.length; i++) {
+                    if ($scope.assessableObjects[i].objectApi == '') {
+                        $scope.selectedObject = $scope.assessableObjects[i];
+                        break;
+                    } 
+                }
+                
+                if ('{!JSENCODE(assessmentTemplateJSON)}' != null && '{!JSENCODE(assessmentTemplateJSON)}' != '' && '{!JSENCODE(assessmentTemplateJSON)}' != 'null') {
+                    $scope.assessmentTemplate = JSON.parse('{!JSENCODE(assessmentTemplateJSON)}');
+                }
+                
+                $scope.objectChange = function(selectedObjectVal) {
+                    $('.maskDiv').show();
+                    $scope.assessmentGroups = [];
+                    if (selectedObjectVal != null && selectedObjectVal != '') {
+                        $( "#tdAssessableApi" ).removeClass('slds-has-error');
+                        $( "#tdAssessableApi" ).find( ".slds-form-element__help" ).first().css("display","none" );
+                        ExAM.AssignmentManagerGeneratorController.getAssessmentGroups(selectedObjectVal, function(result, event) {
+                            if (result != null && result != '' && result != 'null') {
+                                $scope.assessmentGroups = JSON.parse(_.unescape(result));
+                                $scope.$apply();
+                                $('.maskDiv').hide();
+                            } else {
+                                $('.maskDiv').hide();
+                                $('#ErrorCreateMsg').text( event.message );
+                                $('#errorCreated').show();
+                            }
+                        });
+                    } else {
+                        $('.maskDiv').hide();
+                    }
+                }
+                $scope.saveAssignmentManager = function (AMApi, assessmentGroupJunctionFieldApi,selectedGroupId, selectedTemplateId, noofrecords, AssessableObjectApi,selectedobjectLabel) {
+                    var isError = false;
+                    $('.maskDiv').show();
+                    if ($scope.selectedObject == null || $scope.selectedObject == '' || $scope.selectedObject.objectApi == '') {
+                        $( "#tdAssessableApi" ).addClass('slds-has-error');
+                        $( "#tdAssessableApi" ).find( ".slds-form-element__help" ).first().css("display","" );  
+                        isError = true;
+                    } else {
+                        $( "#tdAssessableApi" ).removeClass('slds-has-error');
+                        $( "#tdAssessableApi" ).find( ".slds-form-element__help" ).first().css("display","none" ); 
+                    }
+                    if ($scope.selectedTemplate == null || $scope.selectedTemplate == '') {
+                        $( "#tdAssessableTemplate" ).addClass('slds-has-error');
+                        $( "#tdAssessableTemplate" ).find( ".slds-form-element__help" ).first().css("display","" );  
+                        isError = true;
+                    } else {
+                        $( "#tdAssessableTemplate" ).removeClass('slds-has-error');
+                        $( "#tdAssessableTemplate" ).find( ".slds-form-element__help" ).first().css("display","none" );
+                    }
+                    if (($scope.selectedGroup == null || $scope.selectedGroup == '') && ($scope.noofrecords == null || $scope.noofrecords == '')) {
+                        $( "#groupOrCountId" ).addClass('slds-has-error');
+                        $( "#groupOrCountId" ).find( ".slds-form-element__help" ).last().css("display","" ); 
+                        isError = true;
+                    } else {
+                        $( "#groupOrCountId" ).removeClass('slds-has-error');
+                        $( "#groupOrCountId" ).find( ".slds-form-element__help" ).last().css("display","none" ); 
+                    }
+                    if ((($scope.selectedGrporRec == 'none' || $scope.selectedGrporRec == 'AssessableRecord') && $scope.noofrecords == '' )
+                        ||( $scope.noofrecords != '' && parseInt($scope.noofrecords) > 50000 )) {
+                        
+                        if( $scope.noofrecords != '' && parseInt($scope.noofrecords) > 50000 ) {
+                            $("#noofRecordsid").addClass('slds-has-error');
+                            $("#noofRecordsid").find( ".slds-form-element__help" ).last().text("You should enter a value less than 50000" ); 
+                            $("#noofRecordsid").find( ".slds-form-element__help" ).last().css("display","" ); 
+                            isError = true;
+                        } else {
+                            $("#noofRecordsid").addClass('slds-has-error');
+                            $("#noofRecordsid").find( ".slds-form-element__help" ).last().css("display","" ); 
+                            isError = true;
+                        }
+                    } else {
+                        $( "#noofRecordsid" ).removeClass('slds-has-error');
+                        $( "#noofRecordsid" ).find( ".slds-form-element__help" ).last().css("display","none" ); 
+                    }
+
+                    var selectedExpDate = $('#selectExpDate').val();
+                    /*
+                    if (!selectedExpDate) {
+                        $("#expDateId").addClass('slds-has-error');
+                        $("#expDateId").find( ".slds-form-element__help" ).last().css("display","" ); 
+                        isError = true;
+                    } else {
+                        $( "#expDateId" ).removeClass('slds-has-error');
+                        $( "#expDateId" ).find( ".slds-form-element__help" ).last().css("display","none" ); 
+                    }
+                    */
+
+                    if ($scope.selectedGrporRec == 'AssessableRecord' && (angular.isUndefined($scope.selectedRecord.RecordId) || $scope.selectedRecord.RecordName == '')) {
+                        $("#assessableRecordId").addClass('slds-has-error');
+                        $("#assessableRecordId").find( ".slds-form-element__help" ).last().css("display","" ); 
+                        isError = true;
+                    } else {
+                        $( "#assessableRecordId" ).removeClass('slds-has-error');
+                        $( "#assessableRecordId" ).find( ".slds-form-element__help" ).last().css("display","none" ); 
+                    }
+                    var assessableRecId = '';
+                    if (angular.isDefined($scope.selectedRecord.RecordId)) {
+                        assessableRecId = $scope.selectedRecord.RecordId;
+                    }
+                    
+                    if (!isError && AMApi != null && ((selectedGroupId != null && selectedGroupId != '' && assessmentGroupJunctionFieldApi != null ) || (noofrecords != null && noofrecords != '')) &&  selectedTemplateId != null) {
+                        assessmentGroupJunctionFieldApi = assessmentGroupJunctionFieldApi+'@@'+selectedExpDate;
+                        ExAM.AssignmentManagerGeneratorController.saveAssignmentmanagerList(AMApi, assessmentGroupJunctionFieldApi,selectedGroupId, selectedTemplateId, noofrecords, AssessableObjectApi,selectedobjectLabel, assessableRecId, function(result, event) { 
+                            $('#succeeCreated').hide();
+                            $('#errorCreated').hide();
+                            if (event.status && result != null && result != '') {
+                                if (result == 'success') {
+                                    $('#succeeCreated').show();
+                                    $scope.assessmentGroups = [];
+                                    $scope.selectedObject = {};
+                                    for (var i = 0; i < $scope.assessableObjects.length; i++) {
+                                        if ($scope.assessableObjects[i].objectApi == '') {
+                                            $scope.selectedObject = $scope.assessableObjects[i];
+                                            break;
+                                        } 
+                                    }
+                                    $scope.selectedGrporRec = 'none';
+                                    $scope.selectedGroup = '';
+                                    $scope.noofrecords = '';
+                                    $scope.selectedTemplate = '';
+                                    $('#selectExpDate').val('');
+                                    $('.maskDiv').hide();
+                                    $scope.$apply();
+                                } else {
+                                    $('#ErrorCreateMsg').text(result);
+                                    $('#errorCreated').show();
+                                    $('.maskDiv').hide();
+                                }
+                            } else {
+                                $('#ErrorCreateMsg').text(event.message);
+                                $('#errorCreated').show();
+                                $('.maskDiv').hide();
+                            }
+                        });
+                    } else {
+                        $('.maskDiv').hide();
+                    }    
+                }
+                $scope.changeAssessmentGroup = function () {
+                    if ($scope.selectedGroup != '') {
+                        $scope.noofrecords = '';
+                        $( "#groupOrCountId" ).removeClass('slds-has-error');
+                        $( "#groupOrCountId" ).find( ".slds-form-element__help" ).last().css("display","none" ); 
+                        $scope.selectedRecord = {};
+                    }
+                }
+                $scope.cancelAssignmentManagerCreate = function() {
+                    $scope.assessmentGroups = [];
+                    $scope.selectedObject = {};
+                    $scope.selectedGrporRec = 'none';
+                    for (var i = 0; i < $scope.assessableObjects.length; i++) {
+                        if ($scope.assessableObjects[i].objectApi == '') {
+                            $scope.selectedObject = $scope.assessableObjects[i];
+                            break;
+                        } 
+                    }
+                    $scope.selectedGroup = '';
+                    $scope.noofrecords = '';
+                    $scope.selectedTemplate = '';
+                    $( "#tdAssessableApi" ).removeClass('slds-has-error');
+                    $( "#tdAssessableApi" ).find( ".slds-form-element__help" ).first().css("display","none" ); 
+                    $( "#tdAssessableTemplate" ).removeClass('slds-has-error');
+                    $( "#tdAssessableTemplate" ).find( ".slds-form-element__help" ).first().css("display","none" );
+                    $( "#groupOrCountId" ).removeClass('slds-has-error');
+                    $( "#groupOrCountId" ).find( ".slds-form-element__help" ).last().css("display","none" ); 
+                    $('#succeeCreated').hide();
+                    $('#errorCreated').hide();
+                    $('#selectExpDate').val('');
+                }
+                $scope.closeLoad = function() {
+                    $('#succeeCreated').hide();
+                    $('#errorCreated').hide();
+                }
+                $scope.openAssessableRecord = function(selectRecordName, selectedOb) {
+                    $('.maskDiv').show();
+                    $scope.searchName = selectRecordName;
+                    selectRecordName = angular.isDefined(selectRecordName) ? selectRecordName : '';
+                    selectedOb = angular.isDefined(selectedOb) ? selectedOb : '';
+                    if (selectedOb == '') {
+                        $( "#tdAssessableApi" ).addClass('slds-has-error');
+                        $( "#tdAssessableApi" ).find( ".slds-form-element__help" ).first().css("display","" );  
+                        $("#assessableRecordId").addClass('slds-has-error');
+                        $("#assessableRecordId").find( ".slds-form-element__help" ).last().css("display","" ).text("Please Select the Assessable Object")
+                        $('.maskDiv').hide();
+                        return null;
+                    } else {
+                        $scope.showAssessmentSelectionDiv = true;
+                        $('.AssessmentSelectionDiv').removeClass('slds-modal__close');
+                        $('.AssessmentSelectionDiv').addClass('slds-fade-in-open');
+                        $("#assessableRecordId").removeClass('slds-has-error');
+                        $("#assessableRecordId").find( ".slds-form-element__help" ).last().css("display","none" );
+                    }
+                    ExAM.AssignmentManagerGeneratorController.queryAssessableRecords(selectRecordName, selectedOb, function(result,event) {
+                        if (event.status) {
+                            result = result.replace(/&#39;/g,"'");
+                            $scope.assessableRecordsList = JSON.parse(_.unescape(result));
+                            $scope.$apply();
+                            $('.maskDiv').hide();
+                        } else {
+                            $('#ErrorCreateMsg').text(event.message);
+                            $('#errorCreated').show();
+                            $('.maskDiv').hide();
+                        }
+                    
+                    });
+                }
+                $scope.closeAssessmentSelectionDiv = function() {
+                    $('.AssessmentSelectionDiv').addClass('slds-modal__close');
+                    $('.AssessmentSelectionDiv').removeClass('slds-fade-in-open');
+                }
+                $scope.setSelectedAssessmentTemplate = function(selRec) {
+                    $scope.selectedRecord = selRec;
+                    $scope.closeAssessmentSelectionDiv();
+                
+                }
+                $scope.changedGrouporRecord = function (selectedValue) {
+                    if (selectedValue == 'none') {
+                        $scope.selectedGroup = '';
+                        $scope.selectedRecord = {};
+                    } else if (selectedValue == 'AssessmentGroup') {
+                        $scope.selectedRecord = {};
+                        $( "#noofRecordsid" ).removeClass('slds-has-error');
+                        $( "#noofRecordsid" ).find( ".slds-form-element__help" ).last().css("display","none" ); 
+                    } else { 
+                        $scope.selectedGroup = '';
+                    }
+                }
+                $scope.searchRecordfunction = function () {
+                    if ($scope.searchName != null && $scope.searchName != '' && $scope.selectedObject != null && $scope.selectedObject.objectApi != null
+                            && angular.isDefined($scope.selectedObject.objectApi) && $scope.selectedObject.objectApi != '') {
+                        
+                        ExAM.AssignmentManagerGeneratorController.queryAssessableRecords($scope.searchName, $scope.selectedObject.objectApi, function(result, event) {
+                            if (event.status) {
+                                result = result.replace(/&#39;/g,"'");
+                                $scope.assessableRecordsList = JSON.parse(_.unescape(result));
+                                $scope.$apply();
+                                $('.maskDiv').hide();
+                            } else {
+                                $('#ErrorCreateMsg').text(event.message);
+                                $('#errorCreated').show();
+                                $('.maskDiv').hide();
+                            }
+                        
+                        });
+                    }
+                }
+                $scope.tempChange = function() {
+                    $('#succeeCreated').hide();
+                    $('#errorCreated').hide();
+                }
+            });
+        </script>
+    </html>
+</apex:page>

@@ -1,0 +1,4 @@
+<aura:event type="COMPONENT" description="Event template" access="public" >
+    <aura:attribute name="questionTemplate" type="Question_Template__c" access="public" />
+    <aura:attribute name="imageSrc" type="String[]" access="public" />
+</aura:event>

@@ -1,0 +1,162 @@
+<apex:page standardController="IssueRequest_Life_Cycle__c" tabstyle="IssueRequest_Life_Cycle__c" standardStylesheets="false" sidebar="false" extensions="Procedurecontroller" id="thePage" > 
+<meta name="viewport" content="width=device-width-5, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes;" />
+ 
+ <apex:form id="templateForm" style="bgcolor:#EEEEEE;border-color:#666666;" >
+   <apex:pageMessages ></apex:pageMessages>
+         <style type="text/css">
+    .myButton:active {
+        position:relative;
+    }
+
+    .democlass {
+        width:98%;
+    }
+
+    .detailList {
+        width:100%;
+    }    
+
+    .editComment {
+        font-style: italic;
+        font-size: small;
+        float:right;
+    }
+
+    .commentBox {
+        background-color: white;
+        border: thin solid gray;
+        margin: 0 17px;
+        padding: 5px 25px;
+    }
+
+    .commentBoxHeader {
+        background-color: #BBBBBB;
+        border: thin solid gray;
+        margin: 0 17px;
+        padding: 5px 10px;
+    }
+
+    .commentBoxHeaderActions {
+        float:right;
+    }
+    
+    .commentBox p {
+        border-bottom: thin dotted black;
+        margin: 0;
+        padding: 2px 0;
+    }
+
+    .addCommentContainer {
+        padding: 5px 250px;
+    }
+
+    .addCommentTextArea {
+        width: 100%
+    }
+    #ck-button {
+    margin:4px;
+    background-color:#EFEFEF;
+    border-radius:4px;
+    border:1px solid #D0D0D0;
+    overflow:auto;
+    float:left;
+    font-style:bold;
+    padding-right:9px;
+}
+    .inputTextWidthMediumdesc {width: 99%; }
+     /* This is for the full screen DIV */
+    .popupBackground {
+        /* Background color */
+        background-color:black;
+        opacity: 0.20;
+        filter: alpha(opacity = 20);
+    
+        /* Dimensions */
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 998;
+        position: absolute;
+        
+        /* Mouse */
+        cursor:wait;
+    }
+ 
+    /* This is for the message DIV */
+    .PopupPanel {
+        /* Background color */
+        border: solid 2px blue;
+        background-color: white;
+ 
+        /* Dimensions */
+        left: 50%;
+        width: 200px;
+        margin-left: -100px;
+        top: 50%;
+        height: 50px;
+        margin-top: -25px;
+        z-index: 999;
+        position: fixed;
+        
+        /* Mouse */
+        cursor:pointer;
+    }
+</style>
+
+ <!-- <apex:actionFunction name="updateTemplate" action="{!setSections}" rerender="{!$Component.thePage.templateForm.outermost.secquest.MainBlock.innerdetail.innersection}"/>-->
+  <apex:actionFunction name="updateAnswers" action="{!setAnswers}" rerender="{!$Component.thePage.templateForm.outermost.secquest.MainBlock.innerdetail.innersection.innerquestion.innerquestionans}"/>
+  <apex:actionFunction name="updateQuestions" action="{!setQuestions}" rerender="{!$Component.thePage.templateForm.outermost.secquest.MainBlock.innerdetail.innerquestion}"/>
+  
+  <div style="background-color:#EEEEEE;border-color:#666666;" id="outermost">
+       <div style="margin-right:3px;margin-left:3px;text-align:center;font-size:18px;padding:10px 0 10px 0px;font-style:bold;" >
+          <apex:outputText value="Emergency Procedures"/></div>
+      
+      <div align="left" style="margin-right:3px;margin-left:2px;" id="secquest"> 
+             
+          <apex:pageBlock id="MainBlock">
+                      
+              <apex:outputPanel id="innerdetail" >
+                   <apex:outputPanel id="innersection">
+                     <apex:outputText value=" Section :" style="font-style:bold;padding-right:16px;padding-top:5px;padding-bottom:5px"/>
+                     <apex:selectList id="sectionlist" value="{!sectionid}" size="1" onchange="updateQuestions(this.value)">
+                       <apex:selectOptions value="{!sectionOptionLists}"/> 
+                     </apex:selectList><br/> 
+                   </apex:outputPanel>
+                   <br/>
+                   <apex:outputPanel id="innerquestion" rendered="{!IF(ISNULL(sectionid) || sectionid=='None',false,true)}">
+                    <apex:outputText value=" Question :" style="font-style:bold;padding-right:9px;padding-top:5px;padding-bottom:5px"/>
+                     <apex:selectList id="questionlist" value="{!questionid}" size="1" onchange="updateAnswers(this.value)">
+                       <apex:selectOptions value="{!questionOptionLists}"/> 
+                     </apex:selectList><br/><br/>
+                     
+                     <apex:outputPanel id="innerquestionans" rendered="{!IF(ISNULL(questionid) || questionid=='None',false,true)}" >                     
+                         <apex:outputText value=" Response :" style="font-style:bold;padding-right:2px;"/>
+                         <apex:selectList id="anslist" value="{!response.Response__c}" size="1" rendered="{!IF(ISNULL(selectedQuestion) ||selectedQuestion.Question_Type__c!='RadioPicklist',false,true)}" style="font-style:bold;">
+                           <apex:selectOptions value="{!ansOptionLists}" /> 
+                         </apex:selectList><br/>
+                         <apex:selectCheckboxes layout="pageDirection" id="qmOptionList" value="{!multi}" rendered="{!IF(ISNULL(selectedQuestion) ||selectedQuestion.Question_Type__c!='MultiselectPicklist',false,true)}" style="font-style:bold;">
+                              <apex:selectOptions value="{!ansOptionLists}" />
+                         </apex:selectCheckboxes>
+                         
+                          <apex:inputTextarea rows="6" style="width:98%;" id="textInforesponse" value="{!response.Response__c}" rendered="{!IF(ISNULL(selectedQuestion) ||selectedQuestion.Question_Type__c!='Text',false,true)}" readonly="true"></apex:inputTextArea> 
+                     </apex:outputPanel>   
+                   </apex:outputPanel>       
+               <!-- <input type="button" onclick="function1();" value="Call2Functions" />-->
+               <apex:pageBlock >
+                <apex:pageBlockButtons location="bottom" id="buttons1" style="align:center;">
+                            
+                <apex:commandButton value="Cancel" action="{!cancel}" /> 
+               
+              </apex:pageBlockButtons> 
+              </apex:pageBlock>
+              </apex:outputPanel>
+</apex:pageBlock>
+            
+      </div>
+     
+  </div>
+ 
+ </apex:form> 
+ 
+</apex:page>

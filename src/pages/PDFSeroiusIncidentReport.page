@@ -1,0 +1,117 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" standardController="DoDEA_Serious_Incident_Report__c"   recordSetVar="sitem"  id="thePage" renderAs="pdf" readOnly="true">
+<!--<apex:page showHeader="false" sidebar="false" standardStylesheets="false" standardController="Section_Template__c" extensions="QuestionnaireFieldsReportOutput"  recordSetVar="sitem" action="{!sectionStatus}" id="thePage" contenttype="application/vnd.ms-excel">
+<apex:include pageName="BannerTemplate"/>-->
+<style>
+
+ .inputTextBig { width: 80%;font-size:12px; }
+ .inputTextWidthMedium { width: 25%;font-size:12px; }
+ .inputTextWidthMediumSchool { width: 20%;font-size:12px;padding-left:20px; }
+   
+</style>
+
+
+<apex:form id="templateForm">
+        
+      
+
+     <apex:repeat value="{!sitem}" var="VisRecord"> 
+     
+   <p style="text-align:right;"> <apex:image value="{!$Resource.CompanyLogo}" width="200" height="100"/></p> 
+   <TABLE BORDER="3" CELLPADDING="4" CELLSPACING="0" align="LEFT" BORDERCOLOR="black" WIDTH="100%">
+           <TR align="center" style="font-style:bold;font-weight:bold;">
+             <td colspan="3" style="font-style:bold;font-weight:bold;font-size:20px;padding:20px 0 20px 0px;"> SERIOUS INCIDENT REPORT</td>      
+           </TR>  
+           
+               
+           <TR>
+              <TD colspan="3" style="font-size:15px;"><b>AREA :</b><apex:outputText value="{!VisRecord.Area__c}" id="labelarea" styleClass="inputTextWidthMediumSchool "></apex:outputText>
+              <b>DISTRICT :</b> <apex:outputText value="{!VisRecord.District_Name__c}" id="labeldist" styleClass="inputTextWidthMediumSchool "></apex:outputText>
+              <b>SCHOOL NAME :</b> <apex:outputText value="{!VisRecord.School_Name__c}" id="labelsch" styleClass="inputTextWidthMediumSchool "></apex:outputText></TD>
+           </TR>
+           <TR>
+              <TD colspan="3" style="font-size:15px;"><b>DATE AND TIME OF INCIDENT :</b> <apex:outputText value="{!VisRecord.Date_and_Time__c}" styleClass="inputTextWidthMedium"></apex:outputText>
+              <b>INCIDENT OCCURED :</b><apex:outputText value="{!VisRecord.Incident_Occured__c}" id="labelinci" styleClass="inputTextWidthMedium" ></apex:outputText></TD>
+               
+           </TR>
+          
+           <TR align="center" style="font-style:bold;">
+               <td colspan="3" style="font-style:bold;font-weight:bold;font-size:15px;padding:20px 0 20px 0px;border-right:NONE;border-left:NONE;border-bottom:NONE;"> TYPE OF INCIDENT<br/></td>      
+           </TR> 
+          
+           <TR>
+                <TD colspan="1" style="border-right:NONE;font-size:15px;border-left:NONE;border-top:NONE;"><b>DRUG/ALCOHOL OFFENSES : </b><apex:outputText value="{!VisRecord.Drug_Alcohol_Offenses__c}" ></apex:outputText></TD>
+           
+                <TD colspan="1" style="border-right:NONE;border-left:NONE;font-size:15px;border-top:NONE;"><b>CRIMES AGAINST PERSONS :</b> <apex:outputText value="{!VisRecord.Crime_Against_Persons__c}" ></apex:outputText></TD>
+           </TR>
+           
+            <TR>
+                <TD colspan="1" style="border-right:NONE;border-left:NONE;font-size:15px;"><b>CRIMES AGAINST PROPERTY : </b><apex:outputText value="{!VisRecord.Crimes_Against_Property__c}" ></apex:outputText></TD>
+           
+                <TD colspan="1" style="padding:20px 0 0px 0px;font-size:15px;border-right:NONE;border-left:NONE;"><b>SECURITY THREATS (Affecting School,Staff, Students, or Operations) :</b><span class="helpButton" id="help1_Help"><img src="/s.gif" alt="Help for Security Threats"  class="helpIcon" title="Force Protection issues i.e., suspected surveillance or other suspicious or actual activity constituting a threat or potential threat to students, staff, or operations. 
+Threats of Extreme Violence i.e., written,verbal,internal or external, by students or Others"/></span><apex:outputText value="{!VisRecord.Security_Threats__c}" ></apex:outputText></TD>
+           </TR>
+           
+           <TR align="center" style="font-style:bold;">
+               <td colspan="2" style="font-style:bold;font-weight:bold;font-size:15px;padding:20px 0 10px 0px;border-right:NONE;border-left:NONE;border-bottom:NONE;"> OTHER INCIDENTS <span class="helpButton" id="help1_Help"><img src="/s.gif" alt="Other Incidents Help"  class="helpIcon" title="Posession of Other Weapon i.e. report knife with 3 inch blade or lock-in-place blade/razor of any length,/BB//Pellet// guns or realistic replica guns, nun-chucks, clubs, and other items possessed or used to inflict bodily harm. Whenever a question arises as to whether a device is a legally classified weapon the supporting local law enforcement authority interpretation will prevail.Other- Use this area to record those incidents which do not fit comfortably within categories listed above, but which may develop into incidents of negative media attention or other issues felt by the reporting official to warrant a report for the record. "/></span></td>      
+           </TR> 
+         
+           <TR >
+                <TD colspan="2" style="border-right:NONE;border-left:NONE;border-top:NONE;align:center;"><apex:outputText value="{!VisRecord.Other_Incidents__c}" ></apex:outputText></TD>          
+           </TR>
+           <TR style="font-style:bold;">
+               <td colspan="3" style="font-style:bold;font-weight:bold;font-size:15px;padding:20px 0 10px 0px;">
+                  <TABLE cols="5" align="LEFT" WIDTH="100%">
+                       <TR style="font-style:bold;">
+                           <TD style="font-style:bold;border-left:NONE;border-top:NONE;" width="40%">PARTICIPANTS(Last Name, First Name, MI) </TD><TD>GENDER </TD><TD>AGE </TD><TD>GRADE </TD><TD>STATUS </TD>
+                       </TR>
+                       <TR>
+                           <TD><apex:outputText value="{!VisRecord.Incident_Report_Participants__r.Last_Name__c}" styleClass="inputTextWidthMedium"></apex:outputText><apex:outputText value="{!VisRecord.Incident_Report_Participants__r.First_Name__c}" styleClass="inputTextWidthMedium"></apex:outputText><apex:outputText value="{!VisRecord.Incident_Report_Participants__r.MI_Name__c}" styleClass="inputTextWidthMedium"></apex:outputText> </TD><TD><apex:outputText value="{!VisRecord.Incident_Report_Participants__r.Gender__c}"></apex:outputText> </TD><TD><apex:outputText value="{!VisRecord.Incident_Report_Participants__r.Age__c}" ></apex:outputText></TD><TD><apex:outputText value="{!VisRecord.Incident_Report_Participants__r.Grade__c}"></apex:outputText> </TD><TD><apex:outputText value="{!VisRecord.Incident_Report_Participants__r.Status__c}"></apex:outputText> </TD>
+                       </TR>
+                        <TR>
+                              <TD><apex:outputText value="{!VisRecord.Incident_Report_Participants2__r.Last_Name__c}" styleClass="inputTextWidthMedium"></apex:outputText><apex:outputText value="{!VisRecord.Incident_Report_Participants2__r.First_Name__c}" styleClass="inputTextWidthMedium"></apex:outputText><apex:outputText value="{!VisRecord.Incident_Report_Participants2__r.MI_Name__c}" styleClass="inputTextWidthMedium"></apex:outputText> </TD><TD><apex:outputText value="{!VisRecord.Incident_Report_Participants2__r.Gender__c}"></apex:outputText> </TD><TD><apex:outputText value="{!VisRecord.Incident_Report_Participants2__r.Age__c}" ></apex:outputText></TD><TD><apex:outputText value="{!VisRecord.Incident_Report_Participants2__r.Grade__c}"></apex:outputText> </TD><TD><apex:outputText value="{!VisRecord.Incident_Report_Participants2__r.Status__c}"></apex:outputText> </TD>
+                        </TR>
+                        <TR>
+                            <TD><apex:outputText value="{!VisRecord.Incident_Report_Participants3__r.Last_Name__c}" styleClass="inputTextWidthMedium"></apex:outputText><apex:outputText value="{!VisRecord.Incident_Report_Participants3__r.First_Name__c}" styleClass="inputTextWidthMedium"></apex:outputText><apex:outputText value="{!VisRecord.Incident_Report_Participants3__r.MI_Name__c}" styleClass="inputTextWidthMedium"></apex:outputText> </TD><TD><apex:outputText value="{!VisRecord.Incident_Report_Participants3__r.Gender__c}"></apex:outputText> </TD><TD><apex:outputText value="{!VisRecord.Incident_Report_Participants3__r.Age__c}" ></apex:outputText></TD><TD><apex:outputText value="{!VisRecord.Incident_Report_Participants3__r.Grade__c}"></apex:outputText> </TD><TD><apex:outputText value="{!VisRecord.Incident_Report_Participants3__r.Status__c}"></apex:outputText> </TD>
+                        </TR>
+                        <TR>
+                            <TD><apex:outputText value="{!VisRecord.Incident_Report_Participants4__r.Last_Name__c}" styleClass="inputTextWidthMedium"></apex:outputText><apex:outputText value="{!VisRecord.Incident_Report_Participants4__r.First_Name__c}" styleClass="inputTextWidthMedium"></apex:outputText><apex:outputText value="{!VisRecord.Incident_Report_Participants4__r.MI_Name__c}" styleClass="inputTextWidthMedium"></apex:outputText> </TD><TD><apex:outputText value="{!VisRecord.Incident_Report_Participants4__r.Gender__c}"></apex:outputText> </TD><TD><apex:outputText value="{!VisRecord.Incident_Report_Participants4__r.Age__c}" ></apex:outputText></TD><TD><apex:outputText value="{!VisRecord.Incident_Report_Participants4__r.Grade__c}"></apex:outputText> </TD><TD><apex:outputText value="{!VisRecord.Incident_Report_Participants4__r.Status__c}"></apex:outputText> </TD>
+                       
+                        </TR>
+                        
+                  </TABLE>
+               </td>      
+           </TR>
+         
+           
+           <TR style="font-style:bold;">
+               <td style="font-style:bold;font-size:15px;font-weight:bold;padding:20px 0 10px 0px;border-right:NONE;border-left:NONE;border-bottom:NONE;"> NOTIFICATIONS : 
+               <apex:outputText value="{!VisRecord.Notification__c}" ></apex:outputText></TD>          
+           </TR>
+           
+           <TR  style="font-style:bold;font-size:15px;">
+             <TD colspan="3" style="border-right:NONE;border-left:NONE;border-bottom:NONE;border-top:NONE;"><b><label for="labelpos" style="padding-left:0px;">Police Responded?</label> </b><apex:outputText value="{!VisRecord.Police_Responded__c}" id="labelpos"></apex:outputText>
+              <b><label for="labelpoi" style="padding-left:20px;">Police Investigating? </label></b><apex:outputText value="{!VisRecord.Police_Investigating__c}" id="labelpoi" ></apex:outputText>
+              <b><label for="labelcoor" style="padding-left:20px;">Notifications made/coordinated by:</label> </b><apex:outputText value="{!VisRecord.Notifications_made_coordinated_by__c}" id="labelcoor" styleClass="inputTextWidthMedium"></apex:outputText>
+             </TD>                            
+           </TR>
+           <TR  style="font-style:bold;font-size:15px;">
+             <TD colspan="3" style="border-right:NONE;font-weight:bold;border-left:NONE;border-bottom:NONE;">DESCRIBE IN DETAIL WHAT OCCURED. State WHO, WHAT, WHERE, HOW, WHEN.  Provide details of monetary losses, weapons, eyewitness accounts, etc.</td>
+           </TR>
+            <TR  style="font-style:bold;font-size:15px;">
+             <TD colspan="3" style="border-right:NONE;border-left:NONE;border-bottom:NONE;border-top:NONE;"><apex:outputText value="{!VisRecord.Describe_in_Detail_What_Occurred__c}" ></apex:outputText>
+              </TD>
+            </TR>
+             <TR align="center" style="font-style:bold;">
+             <td colspan="2" style="font-style:bold;font-size:16px;padding:20px 0 20px 0px;"><!-- <apex:commandButton value="Save" action="{!Save}" id="button2"/>-->
+             <apex:commandButton value="Cancel" action="{!Cancel}" id="button1"/> 
+            
+             </td>      
+           </TR>
+          
+        </TABLE> 
+ 
+<p style="text-align:right;page-break-after:always;"/> 
+ </apex:repeat>
+</apex:form>
+
+</apex:page>

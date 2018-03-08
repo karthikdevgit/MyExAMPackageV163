@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Fact Score Data</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Fact Score Data</value>
+    </caseValues>
+    <fields>
+        <label><!-- Assessment Completed URL JSON --></label>
+        <name>Assessment_Completed_URL_JSON__c</name>
+    </fields>
+    <fields>
+        <label><!-- Assessment Template --></label>
+        <name>Assessment_Template__c</name>
+        <relationshipLabel><!-- Fact Score Data --></relationshipLabel>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

@@ -1,0 +1,3 @@
+{!Contact.FirstName} {!Contact.LastName}, 
+
+Public Assessment Url is {!Public_Assessment__c.Public_Assessment_URL__c}

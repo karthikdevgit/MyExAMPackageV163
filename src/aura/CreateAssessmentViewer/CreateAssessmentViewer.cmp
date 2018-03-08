@@ -1,0 +1,28 @@
+<aura:component access="public">
+
+  <aura:attribute name="AssessmentTemplate" type="Main_questionaire__c" default="{
+     'sobjectType' : 'Main_questionaire__c',
+     'ExAM__Template_name__c'  : ''
+     }" access="public"/>
+
+  <aura:registerEvent name="cancelCreateAssessmentEvt" type="c:cancelCreateQuestionEvt"/>
+  <aura:registerEvent name="notificationEvent" type="c:notificationEvt"/>
+
+  <div class="slds-p-vertical--small">
+    <article class="">
+      <div class="section-body">
+        <div class="slds-text-heading--small">
+          Enter an ExAM name to continue.</div> <div class="slds-p-vertical--small slds-text-heading--x-small">This is for your internal use.</div>
+
+        <div class="">
+          <ui:inputText class="slds-input" labelClass="slds-form-element__label" label="" value="{!v.AssessmentTemplate.ExAM__Template_name__c}"/>
+        </div>
+
+        <div class="section-footer slds-m-top--small ">
+          <lightning:button class="slds-button slds-button--neutral slds-button--save" label="Continue" onclick="{!c.saveAssessmentTemplate}"/>
+          <lightning:button class="slds-button slds-button--neutral" label="Cancel" onclick="{!c.cancel}"/>
+        </div>
+      </div>
+    </article>
+  </div>
+</aura:component>

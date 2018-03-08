@@ -1,0 +1,113 @@
+<apex:component controller="DecisionTreeConfigController">
+
+    <style>
+        .slds-card {
+          @include box($theme: shade, $padding: 0, $borders: around);
+        
+          + .slds-card {
+            margin-top: $spacing-medium;
+          }
+        
+          .slds-card__header {
+            padding: $spacing-small $spacing-small $spacing-xx-small;
+          }
+        
+          .slds-tile {
+            margin: $spacing-x-small;
+            padding: $spacing-x-small;
+          }
+        }
+        .slds-select {
+            @include form-states;
+            height: $line-height-button;
+            width: 50% !important;
+        }
+        .slds-button--neutral {
+          @include button;
+          @include button-base;
+          background-color: $color-background-button-default;
+        }
+        .slds-spinner--small {
+            @include square(32px);
+        }
+        .errorSpan { color: #ff5454; }
+    </style>
+    <form class="slds-form">
+        <apex:pageMessages ></apex:pageMessages>
+        <div class="slds-form-element">
+            <div class="slds-card slds-m-top--x-small">
+                <div class="slds-card__header slds-grid">
+                    <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <h2 class="slds-text-heading--small slds-truncate">Decision Tree Results Configuration</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-card__body">
+                    <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover fieldClass">
+                        <tbody>
+                            <apex:repeat value="{!rowwithListOfAnswerMap}" var="rowcount">
+                                <tr class="slds-hint-parent">
+                                    <apex:repeat value="{!rowwithListOfAnswerMap[rowcount]}" var="columnvalue">
+                                        <td class="slds-size--1-of-2" colspan="{!IF(rowwithSizeofColumn[rowcount]==1,'2','1')}">
+                                            <label class="slds-checkbox"  for="{!columnvalue.fieldAPIName}">
+                                                <input type="checkbox" id="{!columnvalue.fieldAPIName}" value="{!columnvalue.fieldAPIName}">  </input>
+                                                <span class="slds-checkbox--faux"></span>
+                                                <span class="slds-form-element__label">
+                                                    {!columnvalue.fieldLabelName}
+                                                </span>
+                                            </label>
+                                        </td>
+                                    </apex:repeat>                            
+                                </tr>
+                            </apex:repeat>
+                            <tr>
+                                <td class="slds-size--1-of-2" style="text-align:center;" colspan="2">
+                                    <button class="slds-button slds-button--brand" onclick="saveDecisionTree();"> Save </button>
+                                </td>
+                            </tr>                           
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </form> 
+    <script>
+        $(document).ready(function() {
+            var fd = '{!JSENCODE(fieldsList)}';
+            var fdlist = [];
+            if (fd !='') {
+                fdlist = fd.split('~');
+            }
+            $.each(fdlist , function( index, value ) {
+                $('#'+value).prop( "checked", true );                
+            });
+        });
+        function saveDecisionTree() {
+            var fieldsapi = '';
+            $('.fieldClass input[type="checkbox"]').each(function(){
+                if($(this).prop("checked") == true){
+                    //alert("Checkbox is checked."+$(this).val());
+                    if (fieldsapi != '') {
+                        fieldsapi += '~'+$(this).val();    
+                    } else {
+                        fieldsapi += $(this).val();  
+                    }
+                }
+            });
+            //alert('::::'+fieldsapi );
+            ExAM.DecisionTreeConfigController.saveDecisionTreeConfig(fieldsapi, function(result, event) {
+                if (event.status) {
+                    if (result == 'success') {
+                        alert('Decision Tree Configured successfully');
+                    } else if ( result == '') {
+                        alert('Does not checked any field');
+                    }
+                } else {
+                    alert(result);
+                }
+            });
+            return false;
+        }        
+    </script> 
+</apex:component>

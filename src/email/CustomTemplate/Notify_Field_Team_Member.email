@@ -1,0 +1,6 @@
+<table height="400" width="550" cellpadding="5" border="0" cellspacing="5" >
+<tr height="400" valign="top" >
+<td style=" color:#000000; font-size:12pt; background-color:#FFFFFF; font-family:arial; bLabel:main; bEditID:r3st1;" tEditID="c1r1" locked="0" aEditID="c1r1" >
+<![CDATA[<font size="5" face="Arial, sans-serif"><span style="background-color: rgb(255, 255, 255);"><font><font>Hello&nbsp;</font><font>{!IssueRequest_Life_Cycle__c.Assessor_Resource__c},</font></font></span><br><br><span style="background-color: rgb(255, 255, 255);">A new task &nbsp;{!IssueRequest_Life_Cycle__c.Link}&nbsp;has been assigned to you.</span><br><span style="color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);">Please take appropriate action.&nbsp;</span><br><br><span style="color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);">Thanks,&nbsp;</span></font><div style="color: rgb(0, 0, 0);"><font size="5" face="Arial, sans-serif"><br>Management Team</font></div>]]></td>
+</tr>
+</table>

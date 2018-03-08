@@ -1,0 +1,241 @@
+<apex:component controller="JSONUploadAMAndAnswerController" allowDML="true">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">        
+        <head>
+            <title>Assessable object, Assignment Manager and Answer Upload</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS052, '/assets/styles/salesforce-lightning-design-system-vf.css')}" />
+        </head>
+        <body>
+            <div class="slds" ng-app="jsonparsingApp" ng-controller="jsonparsingCtrl">
+                <form class="slds-form">
+                    <div class="slds-notify_container" id="fileUploadMessage" style="display:none;">
+                        <div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert">
+                            <button class="slds-button slds-button--icon-inverse slds-notify__close" ng-click="closeLoad();">
+                                <svg aria-hidden="true" class="slds-button__icon">
+                                    <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                                </svg>
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                            <span class="slds-assistive-text">Info</span>
+                            <h2 id="UploadMsg">Loading...</h2>
+                        </div>
+                    </div>
+                    <!--<div class="slds-notify_container" id="fileUploadSuccessMsg" style="display:none;">
+                      <div class="slds-notify slds-notify--alert slds-theme--success slds-theme--alert-texture" role="alert">
+                        <button class="slds-button slds-button--icon-inverse slds-notify__close" ng-click="closeLoad();">
+                          <svg aria-hidden="true" class="slds-button__icon">
+                            <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                          </svg>
+                          <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <span class="slds-assistive-text">Success</span>
+                        <h2>
+                            Successfully file uploaded.
+                        </h2>
+                      </div>
+                    </div>-->
+                    <div class="slds-notify_container" style="display:none" id="fileuploadErrordiv" >
+                      <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert">
+                        <button class="slds-button slds-button--icon-inverse slds-notify__close" ng-click="closeLoad();">
+                          <svg aria-hidden="true" class="slds-button__icon">
+                            <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                          </svg>
+                          <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <span class="slds-assistive-text">Error</span>
+                        <h2 id="fileuploadErrorMessage">
+                            
+                        </h2>
+                      </div>
+                    </div>
+                    
+                    
+                    <div class="slds-card slds-m-top--x-small">
+                        <div class="slds-card__header slds-grid">
+                            <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                <div class="slds-media__body">
+                                    <h2 class="slds-text-heading--small slds-truncate">Assignment Manager Import (JSON)</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-card__body">
+                            <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                                <tbody>
+                                    <tr class="slds-hint-parent">
+                                      <td class="slds-size--1-of-2" >
+                                          <input type="file" id="jsonfileUpload" style="font-size: medium;" onchange="angular.element(this).scope().file_changed(this)" accept="application/json"/>
+                                      </td>
+                                      <td class="slds-size--1-of-2" >
+                                          <button class="slds-button slds-button--brand" type="button" ng-click="uploadImage()" style="background-color: #0070D2;color:white;">Upload</button>
+                                          <button class="slds-button slds-button--neutral" type="button" ng-click="cancelUpload()">Cancel</button>
+                                      </td>
+                                    </tr>                            
+                                </tbody>
+                            </table>
+                        </div>
+                    </div><br/>
+                </form>
+                <!-- Processing Image Code -->
+                <div style="display: none;background-color: rgba(0, 0, 0, 0.6); width: 100%; height: 100%; z-index: 1000; position: fixed; left: 0; top: 0; overflow: hidden; text-align: center; vertical-align: middle;" class="fileMaskDiv">
+                    <img src="{!URLFOR($Resource.SLDS052, '/assets/images/spinners/slds_spinner.gif')}" alt="Loading..." class="slds-spinner--small" style="z-index: 10001; background-color: white; width: 80px; height: 80px; padding: 15px; border-radius: 4px; text-align: left; position: relative; top: 30%;"/>
+                </div>
+                <!--End Processing Image Code -->
+                
+                <!-- Start Modal -->
+                <div ng-show="statusWindow" role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-modal__close /* slds-fade-in-open*/ jsonfileuploadMsg" style="background-color: rgba(128, 128, 128, 0.75);">
+                    <div class="slds-modal__container">
+                        <div class="slds-modal__header">
+                            <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" ng-click="closeModal();">
+                                <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                                    <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                                </svg>
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                            <h2 id="header43" class="slds-text-heading--medium">File Import Status </h2>
+                        </div>
+                        <div class="slds-modal__content slds-p-around--medium">
+                            <div>
+                                <div ng-if="resMessage.uploadedStatus" style="color:green;font-weight:bold;">
+                                    {{resMessage.resMsg}}    <br/>                            
+                                </div>
+                                <div ng-if="!resMessage.uploadedStatus" style="text-align: center;"> 
+                                    <b style="color:red;">Upload failed</b><br/><br/>
+                                </div>
+                                <div ng-if="!resMessage.uploadedStatus" ng-repeat="err in resMessage.errorMsgs track by $index">
+                                    {{err}}<br/>
+                                </div>
+                                <div ng-if="resMessage.uploadedStatus"> 
+                                    
+                                    <b> Created Assessment Records : </b> {{resMessage.numberOfAssessableRecInserted}} <br/>
+                                    <b> Created Assignment Records : </b> {{resMessage.numberOfAssignmentManagerRecInserted}} <br/>
+                                    <b> Created Answer Records : </b> {{resMessage.numberOfAnswerRecInserted}} <br/>               
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-modal__footer">
+                            <button class="slds-button slds-button--brand" ng-click="closeModal();">Close</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Modal -->
+            </div>
+        </body>
+        <script>
+            
+            var underscore = angular.module('underscore', []);
+            underscore.factory('_', ['$window', function($window) {
+                return $window._; // assumes underscore has already been loaded on the page
+            }]);
+            
+            var jsonparsingApp = angular.module('jsonparsingApp',['underscore']);
+            
+            jsonparsingApp.controller('jsonparsingCtrl',function($scope,_,$timeout){
+                
+                $scope.assignmentAndAnswerJSON = [];
+                $scope.responseMessage = '';   
+                $scope.statusWindow = false;    
+                $scope.resMessage = {};
+                    
+                $scope.uploadImage = function() {
+                    $('#fileUploadMessage').hide();
+                    
+                    $('#fileuploadErrordiv').hide();
+                    
+                    $('.fileMaskDiv').show();
+                    $('#fileUploadMessage').show();
+                    //alert('test');
+                    if ($scope.assignmentAndAnswerJSON != null && $scope.assignmentAndAnswerJSON.length > 0 ) {
+                        ExAM.JSONUploadAMAndAnswerController.saveRecords($scope.assignmentAndAnswerJSON, function(result, event) {
+                            $scope.resMessage = JSON.parse(_.unescape(result));
+                            if ($scope.resMessage != null && $scope.resMessage.uploadedStatus ) {
+                                //alert('::::Upload process has completed successfully::::');
+                                $scope.assignmentAndAnswerJSON = [];
+                                //$scope.responseMessage = 'Upload process has completed successfully';
+                                
+                                $("input[type='file']").val(null);
+                                $('.jsonfileuploadMsg').removeClass('slds-modal__close');
+                                $('.jsonfileuploadMsg').addClass('slds-fade-in-open');
+                                $scope.statusWindow = true;
+                                $scope.$apply();
+                            } else {
+                                //alert(':::error::'+result);
+                                $('.jsonfileuploadMsg').removeClass('slds-modal__close');
+                                $('.jsonfileuploadMsg').addClass('slds-fade-in-open');
+                                $scope.statusWindow = true;
+                                $scope.$apply();
+                            }
+                            $('.fileMaskDiv').hide();
+                        });
+                        $('#fileUploadMessage').hide();
+                        
+                    } else {
+                        $('.fileMaskDiv').hide();
+                        $('#fileUploadMessage').hide();
+                        $('#fileuploadErrordiv').show();
+                        $('#fileuploadErrorMessage').text('Please upload valid file');
+                    }
+                }
+                
+                $scope.cancelUpload = function() {
+                    document.getElementById('jsonfileUpload').value = '';
+                    //('#jsonfileUpload').val() = '';
+                    templateFile = '';
+                    $('#fileUploadMessage').hide();
+                    $('#fileUploadSuccess').hide();
+                    $('#fileuploadErrordiv').hide();
+                }
+                $scope.closeLoad = function() {
+                    $('#fileUploadMessage').hide();
+                    $('#fileUploadSuccess').hide();
+                    $('#fileuploadErrordiv').hide();
+                }
+                
+                var templateFile;
+                $scope.file_changed = function(element) {
+                    $('#fileUploadMessage').hide();
+                    $('#fileUploadSuccess').hide();
+                    $('#fileuploadErrordiv').hide();
+                    
+                    var reader  = new FileReader();
+                    if(element.files[0]){
+                       if (element.files[0].name != null 
+                           && element.files[0].name.toLowerCase().indexOf('.json') != -1 ) {
+                           reader.readAsText(element.files[0]);
+                           reader.onload = function(e) {
+                               templateFile = e.target.result;
+                               
+                               try{
+                                   $scope.assignmentAndAnswerJSON = templateFile;
+                               } catch(e) {
+                                   alert(e); //error in the above string(in this case,yes)!
+                               }
+                           };
+                           $('.fileMaskDiv').hide();
+                       } else {
+                           $('.fileMaskDiv').hide();
+                           $('#fileUploadMessage').hide();
+                           $('#fileuploadErrordiv').show();
+                           $('#fileUploadSuccess').hide();
+                           $('#fileuploadErrorMessage').text('Please select valid JSON file');
+                       }
+                    } else {
+                        $('.fileMaskDiv').hide();
+                        $('#fileUploadMessage').hide();
+                        $('#fileuploadErrordiv').show();
+                        $('#fileUploadSuccess').hide();
+                        $('#fileuploadErrorMessage').text('Please select valid JSON file.');
+                    }
+                    //var strVar = '{"uploadedStatus":null,"resMsg":"Upload process has completed successfully","numberOfAssignmentManagerRecInserted":30,"numberOfAssessableRecInserted":1,"numberOfAnswerRecInserted":2}'
+                }
+                $scope.closeModal = function() {
+                    $('.jsonfileuploadMsg').addClass('slds-modal__close');
+                    $('.jsonfileuploadMsg').removeClass('slds-fade-in-open');
+                    $scope.statusWindow = false;                    
+                    
+                } 
+                              
+            });
+            
+        </script>
+    </html>
+</apex:component>

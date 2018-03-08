@@ -1,0 +1,70 @@
+<apex:component >
+    
+    <div aria-hidden="false" role="dialog" class="slds-modal slds-modal__close DecisionTree" style="background-color: rgba(128, 128, 128, 0.75);">
+        <div class="slds-modal__container">
+            <div class="slds-modal__content">
+                <div class="slds-grid slds-wrap">
+                    <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'Text'" class="slds-size--12-of-12">
+                        <c:Text_QuestionType_Component isDecisionTreeText="true"/>
+                    </div>
+                    <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'Email'" class="slds-size--12-of-12">
+                        <c:Email_QuestionType_Component isDecisionTreeEmail="true"/>
+                    </div>
+                    <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'Phone Number'" class="slds-size--12-of-12">
+                        <c:PhoneNumber_QuestionType_Component isDecisionTreePhone="true"/>
+                    </div>
+                    <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'Date'" class="slds-size--12-of-12">
+                        <c:Date_QuestionType_Component isDecisionTreeDate="true"/>
+                    </div>
+                    <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'Number'" class="slds-size--12-of-12">
+                        <c:Number_QuestionType_Component isDecisionTreeNumber="true"/>
+                    </div>
+                    <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'Textarea'" class="slds-size--12-of-12">
+                        <c:TextArea_QuestionType_Component isDecisionTreeTextarea="true"/>
+                    </div>
+                    <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'Dropdown Picklist'" class="slds-size--12-of-12">
+                        <c:DropdownPicklist_QuestionType_Component isDecisionTreeDropdown="true"/>
+                    </div>
+                    <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'RadioPicklist' || decisionTreeQuestion.ExAM__Question_Type__c == 'Horizontal Radiopicklist'" class="slds-size--12-of-12">
+                        <c:Radio_QuestionType_Component isDecisionTreeRadioQtn="true"/>
+                    </div>
+                    <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'Image'" class="slds-size--12-of-12">
+                        <c:Image_QuestionType_Component isDecisionTreeImage="true"/>
+                    </div>
+                    <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'Button'" class="slds-size--12-of-12">
+                        <c:Button_QuestionType_Component isDecisionTreeButton="true"/>
+                    </div>
+                    <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'Checkbox' || decisionTreeQuestion.ExAM__Question_Type__c == 'MultiselectPicklist'" class="slds-size--12-of-12">
+                        <c:One_Or_Many_CBox_QuestionType_Component isDecisionTreeCBox="true"/>
+                    </div>
+                    <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'File Question - AM' || decisionTreeQuestion.ExAM__Question_Type__c == 'File Question - Assessable Object'" class="slds-size--12-of-12">
+                        <c:File_AM_Or_Object_QuestionType_Component isDecisionTreeFileAMOrObject="true"/>
+                    </div>
+                    <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'File Question - Answer'" class="slds-size--12-of-12">
+                        <c:FileAnswer_QuestionType_Component isDecisionTreeFileAnswer="true"/>
+                    </div>
+                    <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'List'" class="slds-size--12-of-12">
+                        <c:List_QuestionType_Component isDecisionTreeList="true"/>
+                    </div>
+                    <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'Result'" class="slds-size--12-of-12">
+                        <c:Result_QuestionType_Component />
+                    </div>
+                    <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'Hotspot Image'" class="slds-size--12-of-12">
+                        <c:HotspotImage_QuestionType_Component isDecisionTreeHotSpotImage="true" />
+                    </div>
+                    <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'Signature'" class="slds-size--12-of-12">
+                        <c:Signature_QuestionType_Component isDecisionTreeSignature="true" />
+                    </div>
+                </div>
+            </div>
+            <div class="slds-modal__footer">
+                <button ng-show="decisionTreeQuestion.ExAM__Question_Type__c == 'Result' && (decisionTreeQuestion.ExAM__Single_Next_Question__c != null ||(decisionTreeQuestion.ExAM__Next_Question__c != null || ( decisionTreeQuestion.ExAM__Answer_Options__r != null && decisionTreeQuestion.ExAM__Answer_Options__r.records.length > 0 && decisionTreeQuestion.ExAM__Answer_Options__r.records[0].ExAM__Next_Question__c != null))) && relatedDTClickButton" class="slds-button slds-button--neutral slds-button--brand" ng-click="saveChosenAnswerOptionInDecisionTreeQuestions(false, decisionTreeQuestion, 'SAVE AND CONTINUE');">{!$Label.Related_Decision_Tree_Chain_Button}</button>  
+                <button ng-show="previousQuestion != null && previousQuestion[decisionTreeQuestion.Name] != null" class="slds-button slds-button--neutral slds-button--brand" ng-click="previousQuestionFun(decisionTreeQuestion);"> Previous </button>
+                <button ng-show="decisionTreeQuestion.ExAM__Question_Type__c != 'Result' " class="slds-button slds-button--neutral slds-button--brand" ng-click="renderNextQuestionInDecisionTree(DecisionTreeresponse[decisionTreeQuestion.Id], decisionTreeQuestion);">Next</button>
+                <button ng-show="decisionTreeQuestion.ExAM__Question_Type__c == 'Result' " class="slds-button slds-button--neutral slds-button--brand" ng-click="saveChosenAnswerOptionInDecisionTreeQuestions(false, decisionTreeQuestion, 'SAVE');">{{resultQuesButtonText}}</button>  
+                <button class="slds-button slds-button--neutral" ng-click="closeDecisionTreePopUp()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+</apex:component>

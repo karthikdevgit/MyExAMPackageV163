@@ -1,0 +1,45 @@
+<aura:component access="public">
+    
+    <aura:attribute name="QuestionTemplate" type="Question_Template__c" access="public"/>
+    <aura:attribute name="fields" type="Map" access="public"/>
+    <aura:attribute name="defaultMode" type="String" access="public"/>
+    <aura:attribute name="mode" type="String" access="public" default="view"/>
+    <aura:attribute name="newField" type="Boolean" access="public" default="false"/>
+    <aura:attribute name="hideQuestionOptions" type="Boolean" access="public" default="true"/>
+
+  <div class="editor-options-card">
+    <article class="{!v.hideQuestionOptions ? 'slds-card card-collapse' : 'slds-card '}">
+        <div class="slds-card__header slds-grid">
+            <div class="slds-p-right--small" onclick="{!c.toggleQuestionOptions}">
+                <div class="{!v.hideQuestionOptions ? 'slds-hide' : 'slds-show'}">
+                    <lightning:icon class="icn" iconName="utility:chevrondown" size="small"/>
+                </div>
+                <div class="{!v.hideQuestionOptions ? 'slds-show' : 'slds-hide'}">
+                    <lightning:icon class="icn" iconName="utility:chevronright" size="small"/>
+                </div>
+            </div>
+            <div class="slds-text-heading_medium">Question Options</div>
+        </div>
+      <div class="{!v.hideQuestionOptions ? 'slds-card__body slds-hide' : 'slds-card__body slds-show'}">
+        <aura:iteration items="{!v.fields.ExAM__lightningComp_QuestionOptions_FieldSet}" var="field">
+          <div class="slds-text-heading--small option-item">
+            <c:ExamField valType="{!field.fieldDataType}"
+              record="{!v.QuestionTemplate}"
+              Id="{!v.QuestionTemplate.Id}"
+              sObjectAPI="{!field.sObjectApi}"
+              fieldName="{!field.fieldApi}"
+              fieldLabel="{!field.fieldLabel}"
+              options="{!field.options}"
+              defaultMode="{!v.defaultMode}"
+              mode="{!v.mode}"
+              helpText="{!field.inLineHelpText}"
+              newField="{!v.newField}"
+              />
+          </div>
+        </aura:iteration>
+          <div class="slds-card__footer slds-grid slds-grid--align-spread"></div>
+      </div>
+    </article>
+  </div>
+
+</aura:component>

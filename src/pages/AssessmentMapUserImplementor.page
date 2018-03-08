@@ -1,0 +1,458 @@
+<apex:page controller="AssessmentMapUserImplementorController" showHeader="true" sidebar="false" standardStylesheets="false" id="mapbuilder" tabstyle="Map_Builder__tab">
+    <head>
+        <title>My Angular App</title>
+        <apex:includeScript value="{!URLFOR($Resource.AngularGoogleMap, '/AngularGoogleMapsJS/angular.min.js')}"/>
+        <apex:outputPanel rendered="{!if(GoogleMapsAPIKey != '' && GoogleMapsAPIKey != null, true, false)}">
+            <script src="https://maps.googleapis.com/maps/api/js?libraries=weather,visualization,drawing,places,geometry&key={!GoogleMapsAPIKey}&sensor=false&language=en"></script>
+        </apex:outputPanel>
+        <apex:includeScript value="{!URLFOR($Resource.AngularGoogleMap, '/AngularGoogleMapsJS/lodash.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.AngularGoogleMap, '/AngularGoogleMapsJS/index.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.AngularGoogleMap, '/AngularGoogleMapsJS/angular-google-maps.js')}"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+        <script type="text/javascript">
+            var timerStart = Date.now();
+        </script>
+    </head>
+    <style>
+        #map_canvas {
+            font-family: Arial;
+            font-size:12px;
+            height:750px;
+            width:500px
+        }
+        .infoWindowContent {
+            font-size:  14px !important;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+        }
+        h2 {
+            margin-bottom:0;
+            margin-top: 0;
+        }
+        .angular-google-map-container {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+        }
+    </style>
+    <body>
+        <apex:outputPanel rendered="{!if(GoogleMapsAPIKey != '' && GoogleMapsAPIKey != null, true, false)}">
+            <div ng-app="mapsApp">
+                <div ng-controller="MapCtrl" attach-to-window="true">
+                    <div id="map_canvas">
+                        <ui-gmap-google-map center="map.center" zoom="map.zoom" draggable="true" options="options" fit="true">
+                            <ui-gmap-markers models="markers" coords="'self'" click="onClick" icon="'icon'">
+                                <ui-gmap-windows show="show">
+                                    <div ng-non-bindable="test">{{info}}</div>
+                                </ui-gmap-windows>
+                            </ui-gmap-markers>
+                        </ui-gmap-google-map>
+                    </div>
+                    <!-- Processing Image Code -->
+                    <div style="background-color: rgba(0, 0, 0, 0.6); width: 100%; height: 100%; z-index: 1000; position: fixed; left: 0; top: 0; overflow: hidden; text-align: center; vertical-align: middle;" ng-show="maskDiv">
+                        <img src="{!URLFOR($Resource.SLDS052, '/assets/images/spinners/slds_spinner.gif')}" alt="Loading..." class="slds-spinner--brand slds-spinner slds-spinner--small" style="z-index: 10001; background-color: white; width: 80px; height: 80px; padding: 15px; border-radius: 4px; text-align: left; position: relative; top: 30%;"/>
+                    </div>
+                    <!--End Processing Image Code -->
+                </div>
+            </div>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!if(GoogleMapsAPIKey == '' || GoogleMapsAPIKey == null, true, false)}">
+            <div style="margin: 40px;">
+                <h1>Google Maps API Key is not found in the custom settings. Please create Google Maps API key Google APIs Console or Contact MB&amp;A.</h1>
+            </div>
+        </apex:outputPanel>
+    </body>
+    <script>
+
+        //Angular App Module and Controller
+        var underscore = angular.module('underscore', []);
+        underscore.factory('_', ['$window', function($window) {
+            return $window._;
+        }]);
+        var app = angular.module('mapsApp', ['underscore','uiGmapgoogle-maps']);
+        app.service('angularmapservice', function($q, filterFilter, uiGmapIsReady) {
+
+            var AssessableObj = '{!JSENCODE($CurrentPage.parameters.AssessableObj)}';
+            var counter = 0;
+            var markerDataMap = {};
+            var parsedData = {};
+            var resultObj = {};
+            var markers = [];
+            var assessibleObjWithLatLngArr = [];
+            var convertedRecordIdArr = [];
+            var convertedObjArr = [];
+
+            var colorByOptions = '';
+            var assessibleField = '';
+            var pklstOptColorObj = {};
+            var colorByOptionsArr = [];
+
+            var personImg = '{!URLFOR($Resource.PinColor, '/icons/person-dot1.png')}';
+            var redImg = '{!URLFOR($Resource.PinColor, '/icons/red-dot.png')}';
+            var greenImg = '{!URLFOR($Resource.PinColor, '/icons/green-dot.png')}';
+            var yellowImg = '{!URLFOR($Resource.PinColor, '/icons/yellow-dot.png')}';
+            var blueImg = '{!URLFOR($Resource.PinColor, '/icons/blue-dot.png')}';
+            var colorURLObj = {"Red": redImg, "Green": greenImg, "Yellow": yellowImg, "default": blueImg, "User": personImg};
+            var timeout1 = 600;
+
+            function pinColorSelectionObj() {
+
+                colorByOptions = '{!JSENCODE($CurrentPage.parameters.ColorBy)}';
+
+                if (colorByOptions) {
+                    colorByOptionsArr = colorByOptions.split('~');
+                    for(var i=0;i<colorByOptionsArr.length;i++) {
+                        if (colorByOptionsArr[i].indexOf(':') >= 0) {
+
+                            var opt = colorByOptionsArr[i].split(':')[0];
+                            var color = colorByOptionsArr[i].split(':')[1];
+                            pklstOptColorObj[opt] = color;
+                        }
+                        else {
+                            assessibleField = colorByOptionsArr[i];
+                        }
+                    }
+                }
+            }
+
+            function createMarker(objArr, isMarkerForUsr) {
+
+                if (objArr.length > 0) {
+                    for(var i=0; i<objArr.length; i++) {
+
+                        var thisObj = objArr[i];
+
+                        var thisObjName = (!isMarkerForUsr) ? thisObj.accountname : thisObj.Name;
+                        var thisObjId = (!isMarkerForUsr) ? thisObj.accountid : thisObj.Id;
+                        var thisObjLat = (!isMarkerForUsr) ? thisObj.assessibleObjLat : thisObj.ExAM__Location__Latitude__s;
+                        var thisObjLng = (!isMarkerForUsr) ? thisObj.assessibleObjLngg : thisObj.ExAM__Location__Longitude__s;
+                        var thisObjFieldVal = (!isMarkerForUsr) ? thisObj.colorByFieldValue : 'User';
+                        var thisObjContent = (!isMarkerForUsr) ? markerDataMap["AssessibleObject"] : markerDataMap["User"];
+
+                        if (pklstOptColorObj[thisObjFieldVal]) {
+                            
+                            iconURL = colorURLObj[ pklstOptColorObj[thisObjFieldVal] ];
+                        }
+                        else if (thisObjFieldVal == 'User') {
+                            
+                            iconURL = colorURLObj[thisObjFieldVal];
+                        }
+                        else {
+                            iconURL = colorURLObj["default"];
+                        }
+
+                        var marker = {
+                            title: thisObjName,
+                            info: thisObjContent[thisObjId],
+                            id : thisObjId,
+                            latitude: thisObjLat,
+                            longitude: thisObjLng,
+                            show: false,
+                            icon: iconURL
+                        };
+                        markers.push( marker );
+                    }
+                }
+            }
+
+            function geocodeAddress(selectedIndex) {
+
+                if (angular.isDefined(parsedData.dataWithAddress[selectedIndex] && 
+                    selectedIndex < parsedData.dataWithAddress.length)
+                ) {
+
+                    var selectedObject = {};
+                    selectedObject = parsedData.dataWithAddress[selectedIndex];
+
+                    geocoder = new google.maps.Geocoder();
+                    geocoder.geocode( { 'address': selectedObject.accountaddress}, function(results, status) {
+
+                        if (status == google.maps.GeocoderStatus.OK) {
+
+                            var assessibleObject_Obj = {};
+                            assessibleObject_Obj["RecordId"] = selectedObject.accountid;
+                            assessibleObject_Obj["Lat"] = results[0].geometry.location.lat();
+                            assessibleObject_Obj["Lngg"] = results[0].geometry.location.lng();
+
+                            convertedObj = {};
+                            convertedObj.assessibleObjLat = results[0].geometry.location.lat();
+                            convertedObj.assessibleObjLngg = results[0].geometry.location.lng();
+                            convertedObj.accountname = selectedObject.accountname;
+                            convertedObj.accountid = selectedObject.accountid;
+                            convertedObj.colorByFieldValue = selectedObject.colorByFieldValue;
+
+                            if(convertedRecordIdArr.indexOf( assessibleObject_Obj.RecordId ) == -1) {
+
+                                assessibleObjWithLatLngArr.push(assessibleObject_Obj);
+                                convertedRecordIdArr.push(assessibleObject_Obj.RecordId);
+                                convertedObjArr.push( convertedObj );
+                            }
+                            counter++;
+                            if(counter < parsedData.dataWithAddress.length) {
+                                setTimeout(function() { geocodeAddress(counter); }, (timeout1));
+                            }
+                            if( counter == parsedData.dataWithAddress.length ) {
+                                callObjLatLngUpdateJS();
+                                createMarker(convertedObjArr, false);
+                            }
+                        }
+                        else 
+                        {
+                            if(status == google.maps.GeocoderStatus.ZERO_RESULTS) {
+                                counter++;
+                                if(counter < parsedData.dataWithAddress.length) {
+                                    setTimeout(function() { geocodeAddress(counter); }, (timeout1));
+                                }
+                            }
+                            else
+                            {
+                                setTimeout(function() { geocodeAddress(counter); }, (timeout1 * 3));
+                            }
+                        }
+                    });
+                }
+            }
+
+            function callObjLatLngUpdateJS() {
+
+                if (assessibleObjWithLatLngArr.length > 0) {
+
+                    ExAM.AssessmentMapUserImplementorController.updateAssessibleObjectLatLng(JSON.stringify(assessibleObjWithLatLngArr), '{!JSENCODE($CurrentPage.parameters.AssessableObj)}', function(result, event){
+
+                        if (event.status) {
+                        }
+                    });
+                }
+            }
+
+            function prepareMarkerContent(mainObj) {
+
+                var assessibleObjIdContentMap = {};
+                var userIdContentMap = {};
+                var contentMap = {};
+                var assessibleObjData = usrData = [];
+
+                assessibleObjData = mainObj.allData;
+                usrData = mainObj.userData;
+
+                if(assessibleObjData.length > 0) {
+                    _.forEach(assessibleObjData, function(value) {
+
+                        var assessibleRecordContent = '';
+                        assessibleRecordContent = '<div id="popup" style="width:500px;">';
+                        assessibleRecordContent += '<div id="popup-area" style="width:500px; margin:0 auto; padding:10px;">';
+                        assessibleRecordContent += '<div id="school-name" style="font-weight:bold; font-size:large;">'+value.accountname+'</div>';
+                        assessibleRecordContent += '<div id="school-address" style="font-style:italic;">'+value.accountaddress+'<br /><br /></div>';
+
+                        if (value.issueLists != null) {
+
+                            assessibleRecordContent += '<div id="overall-label" style="width:310px; float:left; text-transform:uppercase;"><b>Planner Details:</b></div>';
+                            assessibleRecordContent += '<div style="clear:both;"></div>';
+
+                            assessibleRecordContent += '<table BORDER="1" width="100%" align="left" CELLPADDING="4" CELLSPACING="0" BORDERCOLOR="#666666" bgcolor="#EEEEEE">';
+                            assessibleRecordContent += '<tr>';
+                            assessibleRecordContent += '<th>Planner Record</th>';
+                            assessibleRecordContent += '<th width="40%">Assignment Type</th>';
+                            if ('{!$CurrentPage.parameters.status}' == 'true') {
+                                assessibleRecordContent += '<th>Status</th>';
+                            }
+                            if ('{!$CurrentPage.parameters.priority}' == 'true') {
+                                assessibleRecordContent += '<th>Priority</th>';
+                            }
+                            if ('{!$CurrentPage.parameters.AssessmentCompletion}' == 'true') {
+                                assessibleRecordContent += '<th>Assessment Completion</th>';
+                            }
+                            assessibleRecordContent += '</tr>';
+
+                            _.forEach(value.issueLists, function(value) {
+
+                                assessibleRecordContent += '<tr>';
+
+                                assessibleRecordContent += '<td width="10%"><a href="/'+value.Id+'">Planner Record</a></td>';
+
+                                assessibleRecordContent += '<td width="40%">';
+                                if (angular.isDefined(value.ExAM__InvestigationType__r.ExAM__Template_name__c) ) {
+                                    assessibleRecordContent += value.ExAM__InvestigationType__r.ExAM__Template_name__c;
+                                }
+                                assessibleRecordContent += '</td>';
+
+                                if ('{!$CurrentPage.parameters.status}' == 'true') {
+
+                                    assessibleRecordContent += '<td width="40%">';
+                                    if (angular.isDefined(value.ExAM__Status__c) ) {
+                                        assessibleRecordContent += value.ExAM__Status__c;
+                                    }
+                                    assessibleRecordContent += '</td>';
+                                }
+
+                                if ('{!$CurrentPage.parameters.priority}' == 'true') {
+
+                                    assessibleRecordContent += '<td width="40%">';
+                                    if (angular.isDefined(value.ExAM__Priority__c) ) {
+                                        assessibleRecordContent += value.ExAM__Priority__c;
+                                    }
+                                    assessibleRecordContent += '</td>';
+                                }
+
+                                if ('{!$CurrentPage.parameters.AssessmentCompletion}' == 'true') {
+
+                                    assessibleRecordContent += '<td width="40%">';
+                                    if (angular.isDefined(value.ExAM__Assessment_Form_Completion__c) ) {
+                                        assessibleRecordContent += value.ExAM__Assessment_Form_Completion__c;
+                                    }
+                                    assessibleRecordContent += '</td>';
+                                }
+
+                                assessibleRecordContent += '</tr>';
+                            });
+                            assessibleRecordContent += '</table>';
+                        }
+                        assessibleRecordContent += '</div></div>';
+                        assessibleObjIdContentMap[value.accountid] = assessibleRecordContent;
+                    });
+                }
+                if (usrData.length > 0) {
+                    _.forEach(usrData, function(value) {
+
+                        var usrContent = '';
+                        usrContent = 'Name :  <b> '+value.Name+'</b><br/> Email :<b> '+value.Email+'</b><br/><hr/>';
+                        usrContent += '<div id="overall-label" style="width:500px; margin:0 auto; padding:10px; float:left; text-transform:uppercase;"><a href="{!URLFOR($Action.IssueRequest_Life_Cycle__c.New,   null )}" target=_blank><b>Create New Assignment</b></a> </div>';
+                        userIdContentMap[value.Id] = usrContent;
+                    });
+                }
+                contentMap["AssessibleObject"] = assessibleObjIdContentMap;
+                contentMap["User"] = userIdContentMap;
+                return contentMap;
+            }
+
+            function fetchAllAssessibleObjData() {
+
+                var dataWithLatLng = [];
+                var dataWithAddress = [];
+                var assessibleObjArr = [];
+                var userArr = [];
+
+                if ('{!JSENCODE(assessibleObjRecordsJson)}' != null && '{!JSENCODE(assessibleObjRecordsJson)}' != '') {
+
+                    assessibleObjArr = JSON.parse( _.unescape('{!JSENCODE(assessibleObjRecordsJson)}') );
+                    if (assessibleObjArr.hasOwnProperty('errorType') && assessibleObjArr.hasOwnProperty('errorMsg')) {
+                        alert(assessibleObjArr['errorMsg']);
+                    }
+                    else {
+
+                        dataWithLatLng = filterFilter(assessibleObjArr,{hasLatLngg:true});
+                        dataWithAddress = filterFilter(assessibleObjArr,{hasLatLngg:false});
+
+                        if ('{!JSENCODE(userRecordsJson)}' != null && '{!JSENCODE(userRecordsJson)}' != '') {
+                            userArr = JSON.parse( _.unescape('{!JSENCODE(userRecordsJson)}') );
+                        }
+                        parsedData["allData"] = assessibleObjArr;
+                        parsedData["dataWithLatLng"] = dataWithLatLng;
+                        parsedData["dataWithAddress"] = dataWithAddress;
+                        parsedData["userData"] = userArr;
+
+                        //call marker Content preparing function
+                        markerDataMap = prepareMarkerContent(parsedData);
+
+                        //call picklist option and color object preparing function
+                        pinColorSelectionObj();
+
+                        //call marker generating function for records with latitude and longitude
+                        if (parsedData.dataWithLatLng.length > 0) {
+                            createMarker(parsedData.dataWithLatLng, false);
+                        }
+
+                        //call marker generating function for users with latitude and longitude
+                        if (parsedData.userData.length > 0) {
+                            createMarker(parsedData.userData, true);
+                        }
+                        if (parsedData.dataWithAddress.length > 100) {
+
+                            alert('You have exceeded the limits of the Map Builder functionality. Please contact your account representative for more information.');
+                        }
+                        else if (parsedData.dataWithAddress.length > 0) {
+
+                            //call latitude and longitude generating function for records with address only
+                            geocodeAddress(counter);
+                        }
+                    }
+                }
+                else {
+
+                    alert('No Records matches the filter criteria in Map Builder');
+                }
+                resultObj["markers"] = markers;                
+                return resultObj;          
+            }
+
+            function zoomToFitBound(){
+
+                uiGmapIsReady.promise(1).then(function(instances) {
+                    instances.forEach(function(inst) {
+                        var map = inst.map;
+                        fitBound(map);
+                    });
+                });
+            }
+            
+            function fitBound(map){
+                
+                var bounds = new google.maps.LatLngBounds();
+
+                for (var i = markers.length - 1; i >= 0; i--) {                
+                    var latlng = new google.maps.LatLng(markers[i].latitude,markers[i].longitude); 
+                    bounds.extend(latlng);                      
+                }                                    
+                if (!markers.length) {
+
+                    var latlng = new google.maps.LatLng(39.5, -98.35);
+                    map.setCenter(latlng);
+                }
+                else {
+                    map.setCenter(bounds.getCenter());
+                    map.fitBounds(bounds);
+                    if(markers.length >= 2){
+                        map.setZoom(map.getZoom()-1);
+                    }
+                    else if(map.getZoom() > 15){
+                        map.setZoom(10);
+                    }
+                }
+            }
+
+            this.zoomToFitMarkers = function() {
+                zoomToFitBound();
+            }
+
+            this.callPrepareMarkers = function() {
+
+                var defer = $q.defer();
+
+                var resultObject = {};
+                resultObject = fetchAllAssessibleObjData();
+                window.setTimeout(function() {
+                    defer.resolve(resultObject);
+                },500);
+                return defer.promise;
+            }
+        });
+        
+        app.controller('MapCtrl', function ($scope, _, angularmapservice) {
+
+            $scope.markers = [];
+            $scope.maskDiv = true;
+            $scope.map = {center: {latitude: 40.1451, longitude: -99.6680}, zoom: 4, bounds: {}};
+            $scope.options = {scrollwheel: false};
+
+            angularmapservice.callPrepareMarkers().then(function(data){
+                angularmapservice.zoomToFitMarkers();
+                $scope.markers = data.markers;                
+                $scope.maskDiv = false;
+            });
+
+            $scope.onClick = function(marker, eventName, model) {
+                model.show = !model.show;
+            };
+        });
+    </script>
+</apex:page>

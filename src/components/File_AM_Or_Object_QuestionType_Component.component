@@ -1,0 +1,93 @@
+<apex:component >
+
+    <apex:attribute name="isPrimaryFileAMOrObject" type="Boolean" default="false" description="Renders Primary File Question - AM or File Question - Assessable Object Question"/>
+    <apex:attribute name="isDependentFileAMOrObject" type="Boolean" default="false" description="Renders Dependent File Question - AM or File Question - Assessable Object Question"/>
+    <apex:attribute name="isDecisionTreeFileAMOrObject" type="Boolean" default="false" description="Renders Decision Tree File Question - AM or File Question - Assessable Object Question"/>
+
+    <apex:outputPanel rendered="{!isPrimaryFileAMOrObject}">
+        <div ng-if="eachQuestTemplateRec.ExAM__Question_Type__c == 'File Question - AM' || eachQuestTemplateRec.ExAM__Question_Type__c == 'File Question - Assessable Object'" ng-init = "addFileAttchAM(eachQuestTemplateRec);">
+            <c:Primary_Question_Property />
+            <div class="slds-grid slds-wrap validateFile{{eachQuestTemplateRec.ExAM__Is_Mandatory__c}}" id="file{{eachQuestTemplateRec.Id}}" style="padding-bottom:15px;">
+                <div class="slds-size--4-of-12 slds-align-bottom slds-m-right--medium slds-truncate" >
+                    <input type="button" id="fileButtonId{{eachQuestTemplateRec.Id}}" value="Choose File" ng-click="amFile(eachQuestTemplateRec);"/>
+                    <span title="{{responseFile[eachQuestTemplateRec.Id][0].name}}">{{responseFile[eachQuestTemplateRec.Id][0].name}}</span>
+                    <input class="slds-col slds-m-left--medium slds-size--4-of-12" ng-hide="true" name="{{eachQuestTemplateRec.Name}}" type="file" id="fileAttId{{eachQuestTemplateRec.Id}}" data-file="responseFile[eachQuestTemplateRec.Id][0]" onchange="angular.element(this).scope().fileChangedAM(this);"/>
+                </div>
+                <div ng-if="responseFile[eachQuestTemplateRec.Id][0].id.length > 0" class="slds-align-bottom " id="imgdiv{{eachQuestTemplateRec.Id}}" style="float:left;padding-right:4px;" >
+                    <div class="slds-size--12-of-12">
+                        <a ng-if="!isImageType(responseFile[eachQuestTemplateRec.Id][0].contenttype);" href="{{sourceURL}}{{responseFile[eachQuestTemplateRec.Id][0].id}}" download="{{responseFile[eachQuestTemplateRec.Id][0].name}}">
+                            <span style="background-color: #54698d;" class="slds-icon__container slds-icon__container--square slds-icon-action-download">
+                               <svg aria-hidden="true" class="slds-icon slds-icon--small">
+                                   <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#download')}"> </use>
+                               </svg>
+                            </span>
+                        </a>
+                        <a ng-if="isImageType(responseFile[eachQuestTemplateRec.Id][0].contenttype);" href="{{sourceURL}}{{responseFile[eachQuestTemplateRec.Id][0].id}}" download="{{responseFile[eachQuestTemplateRec.Id][0].name}}">
+                            <img id="{{responseFile[eachQuestTemplateRec.Id][0].id}}" src="{{sourceURL}}{{responseFile[eachQuestTemplateRec.Id][0].id}}" style="width:90px;height:90px;" />
+                        </a>
+                    </div>
+                </div>
+                <div ng-if="responseFile[eachQuestTemplateRec.Id][0].resultbody && isImageType(responseFile[eachQuestTemplateRec.Id][0].contenttype);" style="float:left;padding-right:4px;">
+                    <img src="data:image/png;base64,{{responseFile[eachQuestTemplateRec.Id][0].resultbody}}" style="width:90px;height:90px;"/>
+                </div>
+                <div class="slds-align-bottom " ng-if="(responseFile[eachQuestTemplateRec.Id][0].resultbody != null || responseFile[eachQuestTemplateRec.Id][0].id)">
+                    <span class="slds-icon__container slds-icon__container--square slds-icon-action-delete" ng-click="removeAttachment(eachQuestTemplateRec,false);">
+                       <svg aria-hidden="true" class="slds-icon slds-icon--small" >
+                           <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#delete')}"> </use>
+                       </svg>
+                    </span>
+                </div>
+            </div>
+            <c:Primary_Question_Action renderCommentIcon="false" renderPhotoIcon="false" />
+        </div>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!isDependentFileAMOrObject}">
+        <div ng-if="nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c == 'File Question - AM' || nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c == 'File Question - Assessable Object'" class="slds-col slds-size--12-of-12 slds-medium-size--8-of-12 {{eachQuestTemplateRec.Id}}" ng-init = "addFileAttchAM(nextDependentQuestion[eachQuestTemplateRec.Id]);" >
+            <c:Dependent_Question_Property />
+            <div style="padding-bottom:15px; display: flex;" class="validateFile{{nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Is_Mandatory__c}} " id="file{{nextDependentQuestion[eachQuestTemplateRec.Id].Id}}">
+                <div class="slds-size--8-of-12 slds-align-bottom slds-m-right--medium slds-truncate" >
+                    <input type="button" id="fileButtonId{{nextDependentQuestion[eachQuestTemplateRec.Id].Id}}" value="Choose File" ng-click="amFile(nextDependentQuestion[eachQuestTemplateRec.Id],false);"/>
+                    <span title="{{responseFile[nextDependentQuestion[eachQuestTemplateRec.Id].Id][0].name}}">{{responseFile[nextDependentQuestion[eachQuestTemplateRec.Id].Id][0].name}}</span>
+                    <input ng-hide="true" name="{{nextDependentQuestion[eachQuestTemplateRec.Id].Name}}" type="file" alt="{{nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c}}" id="fileAttId{{nextDependentQuestion[eachQuestTemplateRec.Id].Id}}" data-file="responseFile[nextDependentQuestion[eachQuestTemplateRec.Id].Id][0]" onchange="angular.element(this).scope().fileChangedAM(this);"/>
+                </div>
+                <div ng-if="responseFile[nextDependentQuestion[eachQuestTemplateRec.Id].Id][0].resultbody && isImageType(responseFile[nextDependentQuestion[eachQuestTemplateRec.Id].Id][0].contenttype);" style="float:left;padding-right:4px;">
+                    <img src="data:image/png;base64,{{responseFile[nextDependentQuestion[eachQuestTemplateRec.Id].Id][0].resultbody}}" style="width:90px;height:90px;"/>
+                </div>
+                <div class="slds-align-bottom" style="width:26%" ng-if="(responseFile[nextDependentQuestion[eachQuestTemplateRec.Id].Id][0].resultbody != null || responseFile[nextDependentQuestion[eachQuestTemplateRec.Id].Id][0].id)">
+                    <span class="slds-icon__container slds-icon__container--square slds-icon-action-delete" ng-click="removeAttachment(nextDependentQuestion[eachQuestTemplateRec.Id],false);">
+                       <svg aria-hidden="true" class="slds-icon slds-icon--small">
+                           <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#delete')}"> </use>
+                       </svg>
+                    </span>
+                </div>
+            </div>
+            <c:Dependent_Question_Action />
+        </div>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!isDecisionTreeFileAMOrObject}">
+        <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'File Question - AM' || decisionTreeQuestion.ExAM__Question_Type__c == 'File Question - Assessable Object'" class="col-md-12">
+            <c:DecisionTree_Question_Property />
+            <div id="file{{decisionTreeQuestion.Id}}">
+                <div class="slds-size--4-of-12 slds-align-bottom slds-m-right--medium slds-truncate float-left">
+                    <input type="button" id="fileButtonId{{decisionTreeQuestion.Id}}" value="Choose File" ng-click="amFile(decisionTreeQuestion,true);"/>
+                    <span title="{{dtResponseFile[decisionTreeQuestion.Id][0].name}}">{{dtResponseFile[decisionTreeQuestion.Id][0].name}}</span>
+                    <input class="slds-col slds-size--4-of-12" ng-hide="true" name="{{decisionTreeQuestion.Name}}" type="file" alt="{{decisionTreeQuestion.ExAM__Question_Type__c}}" id="fileAttId{{decisionTreeQuestion.Id}}" data-file="dtResponseFile[decisionTreeQuestion.Id][0]" onchange="angular.element(this).scope().fileChangedAM(this);"/>
+                </div>
+                <div ng-if="dtResponseFile[decisionTreeQuestion.Id][0].resultbody && isImageType(dtResponseFile[decisionTreeQuestion.Id][0].contenttype);" style="float:left;padding-right:4px;">
+                    <img src="data:image/png;base64,{{dtResponseFile[decisionTreeQuestion.Id][0].resultbody}}" style="width:90px;height:90px;"/>
+                </div>
+                <div class="slds-align-bottom" ng-if="(dtResponseFile[decisionTreeQuestion.Id][0].resultbody != null)">
+                    <span class="slds-icon__container slds-icon__container--square slds-icon-action-delete" ng-click="removeAttachment(decisionTreeQuestion,true);" style="padding: 1px 4px 2px 4px;float:left;">
+                       <svg aria-hidden="true" class="slds-icon slds-icon--small">
+                           <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#delete')}"> </use>
+                       </svg>
+                    </span>
+                </div>
+            </div> 
+            <c:DecisionTree_Question_Action />
+        </div>
+    </apex:outputPanel>
+
+</apex:component>

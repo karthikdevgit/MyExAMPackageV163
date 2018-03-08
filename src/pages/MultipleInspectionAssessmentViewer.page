@@ -1,0 +1,1009 @@
+<apex:page controller="MultipleInspectionAssessmentViewCtrller" standardStylesheets="false" docType="html-5.0" sidebar="false">
+
+    <apex:includeScript value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-1.10.2.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-ui.min.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-ui.min.css')}"/>
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"/>
+    <apex:includeScript value="{!$Resource.sanitize}"/>
+    <!--<apex:includeScript value="{!URLFOR($Resource.UnderscoreAndAngularJS,'UnderscoreAndAngularJS/angular.min.js')}"/>-->
+    <apex:includeScript value="{!URLFOR($Resource.UnderscoreAndAngularJS,'UnderscoreAndAngularJS/underscore-min.js')}"/>
+    <apex:includeScript value="{!$Resource.JSSignaturePad}"/>
+    <apex:includeScript value="{!$Resource.hilightHotspot}"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular-touch.min.js"/>     
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular-touch.js"/>     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.js"/>     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"/>     
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <title>Multiple Inspection Assessment Viewer And Process</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS052, '/assets/styles/salesforce-lightning-design-system-vf.css')}" />   
+        </head>
+        <style>
+            .slds .slds-tabs--scoped .slds-active > a { background-color: white;color: #0070d2;border-color: #d8dde6; }
+            .slds .slds-tabs--scoped .slds-active > a:focus { text-decoration: underline; }
+            .vfHelpText { text-decoration: none;position: absolute;display: none;width: 15em;z-index: 12;background-color: #fefdb9;padding: 2px 5px;border: 1px solid orange;text-align: left;white-space: normal;font-weight: normal;color: #000; }
+            .dependentQuestDivStyle { margin-left: 4% !important; }
+            .imgStyle, .imgDTStyle { height: 100px !important; 
+                width: 100px !important;
+            }
+            .slds-radio { display: block !important; }
+            .knowledgeArticle, .AnsweredQues { margin-left:2px;text-decoration: none;position: relative;display: none;width: 10em;z-index: 12;background-color: #fefdb9;padding: 2px 5px;border: 1px solid orange;text-align: left;font-weight: normal;color: #000; }
+            .slds-table--bordered { border-top: none !important; border-bottom: none !important;}
+            .selected { border:'1px solid black';background-color:'lightblue'; }
+            .deselected { border:none;background-color:''; }
+            /* .slds .slds-modal {position:fixed !important;} */        
+            .slds-button.btnBorder {        
+                border: 2px solid !important;       
+                background-color:lightblue !important;      
+            }       
+            .slds-button.noneBorder {       
+                border: 1px solid #d8dde6 !important;       
+            }       
+            .imgBorder {        
+                border : 1px solid black !important;        
+            }       
+            .noneImgBorder {        
+                border : none !important;       
+            }       
+            .hideText {     
+                color : transparent !important;     
+            }
+            .FTQtable tbody tr:hover > td, tbody tr:hover > th {
+                box-shadow: white 0 -1px 0 inset !important;
+            }
+            .slds-select { width: 80% !important}
+            .slds-badge{ background-color : #33cd5f !important; }
+            .slds-grid--reverse {
+                padding: 0px 0px 0px 10px;
+            }
+            .slds-no-row-hover {
+                padding: 0px 0px 0px 10px;
+            }
+            .float-left { float:left; }
+            .float-none { float:none; }
+            .slds-icon__container--square {
+                padding:4px;
+            }
+        </style>
+        
+        <script>
+            $('.spinner, .slds-spinner--small').show();
+            var mainApp = angular.module('mainApp', ['underscore','ngSanitize','ngTouch']).
+            run(function() {        
+                FastClick.attach(document.body);       
+            });
+            mainApp.controller('mainController', function($scope, $timeout,commonAppService, $rootScope,_) {
+                //Start - new code for Tab or Mobile view 18-07-2016
+                $("#dropdownListId").hide();  // large screens here 
+                $("#tabId").hide();
+                var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                if ($(window).width() < 490 || isMobile) {
+                    $("#tabId").hide();
+                    $("#tabId").parent('div').removeClass('slds-tabs--scoped');
+                    //$("#dropdownListId").removeClass('slds-hide');
+                    $("#dropdownListId").show();
+                    $("#secTemplateId").css("width","150px");
+        
+                } else {
+                     $("#dropdownListId").hide();
+                     $("#tabId").show();
+                     $("#tabId").parent('div').addClass('slds-tabs--scoped');
+                     //$("#tabId").removeClass('slds-hide');
+                }  
+                $(window).resize(function(){
+                    
+                    $scope.$apply(function(){
+                        if ($(window).width() < 490 || isMobile) {
+                            $("#tabId").hide();
+                            $("#tabId").parent('div').removeClass('slds-tabs--scoped');
+                            //$("#dropdownListId").removeClass('slds-hide');
+                            $("#dropdownListId").show();
+                            $("#secTemplateId").css("width","150px");
+                
+                        } else {
+                             $("#dropdownListId").hide();
+                             $("#tabId").show();
+                             $("#tabId").parent('div').addClass('slds-tabs--scoped');
+                             //$("#tabId").removeClass('slds-hide');
+                        }  
+                    });
+                });
+                //End - new code for Tab or Mobile view 18-07-2016
+                $scope.allAnswerObj = {};
+                $scope.allAssignmentManagersObj = new Object();
+                $scope.sf1 = false;
+                $scope.editAnswerObj = false;
+                
+                $scope.Unit_Template = '';
+                $scope.Related_Assessment_Type_1_Template = '';
+                $scope.Related_Assessment_Type_2_Template = '';
+                $scope.Related_Assessment_Type_3_Template = '';
+                $scope.Related_Assessment_Type_4_Template = '';
+                $scope.Unit_ManagerId = '';
+                $scope.relatedmanager_1_id = '';
+                $scope.relatedmanager_2_id = '';
+                $scope.relatedmanager_3_id = '';
+                $scope.relatedmanager_4_id = '';
+                
+                //Start lens variables
+                    $scope.sectionAndQuestionTemplateObjForCurrentASM = [];
+                    $scope.currentASMIdStr = '{!JSENCODE(currentASMId)}';
+                    $scope.relatedmanagerid = $scope.currentASMIdStr;
+                    $scope.currentASMAssesssmentTemplateTdStr = '{!JSENCODE(currentASMAssessmentTemplateId)}';
+                    $scope.showASMSection = false;
+                    $scope.showAccountSection = false;
+                    $scope.showSectionQuestions = true;
+                    $scope.showASMTable = false;
+                    $scope.showAcctTable = false;
+                    $scope.photoQuestionId = '';
+                    $scope.selecteQuestionId = '';
+                    $scope.response = {};
+                    $scope.comment = {};
+                    $scope.photo = {};
+                    $scope.photos = {};
+                    $scope.dtResponseFile = {};
+                    $scope.deleteAttFile = [];
+                    $scope.messageText = '';
+                    $scope.showPgMessage = false;
+                    $scope.showMessage = false;
+                    $scope.hasAnswersExistsForUnitTemplate = {!hasAnswersAvailableForUnitTemplate};
+                    $scope.selectedAnswerVal = '';
+                    $scope.errorFlag = false;
+                    $scope.setPgMsgColor = 'red';
+                    $scope.relatedmanagername = '{!currentASMNameString}';
+                    $scope.decisionTreeStartQuestionId = '';
+                    $scope.trustedUrl = {};
+                    $scope.unitDetail = true;
+                    $scope.assessableRecordId = '{!assessableRecordId}';
+                    $scope.assessableRecordName = '{!JSENCODE(assessableRecordName)}';
+                    $scope.currentASMAssessmentTemplateName = '{!currentASMAssessmentTemplateName}';
+                    $scope.decisionTreeResultTemplate = [];
+                    
+                    //Added on 14-06-2016 for Related Decision Tree chain functionality
+                    $scope.createdAnswerRecordIdForResultTemplate = '';
+        
+                    //Added on 19-07-2016 to store question which launches Decision Tree
+                    $scope.decisionTreeLaunchedQuestion = {};
+                    $scope.decisionTreeLaunchedQuestionRes = {};
+                    $scope.isCalledFirstTime = false;
+                    
+                    //Added on 20-07-2017 for Auto render next decision tree question and result question button text 
+                    $scope.decisionTreeStartQuestion = '';
+                    $scope.decisionTreeResultTemplate = [];
+                    $scope.resultQuesButtonText = 'Continue';
+                    $scope.renderNextQuesAuto = false;
+                    
+                    $('.spinner, .slds-spinner--small').show();
+        
+                    /* Set Assessment Template Id and Assignment Manager Id */
+                    $scope.assessmentTemplateId = $scope.currentASMAssesssmentTemplateTdStr;
+                    
+                    /** Variables For Decision Tree Functionality **/
+                    $scope.DecisionTreeresponse = {};
+                    $scope.decisionTreeQuestion = {};
+                    $scope.previousQuestion = {};            
+                    $scope.questionsList = [];
+                    $scope.questionNamewithQuestionTemplate = {};
+                    $scope.resultQuestionNamewithQuestionTemplate = {};
+                    $scope.DTResultResponse = {};
+                    $scope.DTResultQtnTag = {};
+                    $scope.DecisionTreeResponseArr = [];
+                    
+                    $scope.isRelatedAM = {!isRelatedAM};
+                    $scope.isLensViewerTemplate = {!isLensViewerTemplate};
+                    $scope.noExamConfig = {!isNoExamConfig};
+                    $scope.isLensViewerPage = true;
+                    $scope.primaryAMList = [];
+                    if ('{!JSENCODE(primaryAMListStr)}' != null && '{!JSENCODE(primaryAMListStr)}' != '' && '{!JSENCODE(primaryAMListStr)}' != 'null') {
+                        $scope.primaryAMList = JSON.parse('{!JSENCODE(primaryAMListStr)}');
+                    }
+                    $scope.primaryAMcls = false;
+                    $scope.template_type = '{!template_type}';
+                    $scope.primaryTemplateId = '{!JSENCODE(primaryTemplateId)}';
+                    $scope.isDisable = false;
+                    
+                    $scope.assessableObjectName = '{!objectReference}';
+
+                    /** 
+                        Variable to display error message when there are no section templates below the given
+                        Assessment template
+                    **/
+                    $scope.hasSectionTemplates = true;
+                    //Selected Button option
+                    $scope.isSelectBtnOptn = {};
+                    $scope.fileAttach = {};
+                    $scope.selectedImage = {};
+                    $scope.responseFile = {};
+                    <!--added on 20-09-2016-->
+                    var signature;
+                    $scope.signImage = {};
+                    $scope.dtSignImage = {};
+                    $scope.signAnsOption ='';
+                    $scope.showQuestionName_on_DecisionTree = {!show_Question_Name_on_Decision_Tree};
+                    
+                    $scope.caseResponse = {};
+                    $scope.decisionTreeQuesIdwithAnswerIdObj = {};
+                    $scope.alreadyAnsAttId = {};        
+                    $scope.quesIdANDAnsId = {};     
+                    $scope.selOptionIndex = {};    
+                    $scope.DTselOptionIndex = {}; 
+                    $scope.showValidateMsg = false;  
+                    $scope.contextQuesAndAnsField = '';
+                    $scope.resultQuestionIdDefaultVal = {};  
+                    $scope.dependentQuestionsAttObj = {};    
+                    $scope.showSaveButton = false;
+                    
+                    $scope.assessableObjId = '';
+                    $scope.assmId = '{!JSENCODE($CurrentPage.parameters.amid)}';
+                    $scope.assRecClsListJSON = "{!JSENCODE(assRecClsListJSON)}";
+                    $scope.assessableFieldAPIName = '{!assessableFieldAPIName}';
+                    $scope.currentActiveTabLabel = '';
+                    $scope.selectedAnswerVal = '';
+                    $scope.selectedAcctId = '';
+                    $scope.checkedManagerId = '';
+                    $scope.checkedManagerName = '';
+                    $scope.selectedManagerId = '';
+                    $scope.assessableObjectList = [];
+                    if ( '{!JSENCODE(assRecClsListJSON)}' != null && '{!JSENCODE(assRecClsListJSON)}' != '' && '{!JSENCODE(assRecClsListJSON)}' != 'null') {
+                        $scope.assessableObjectList = JSON.parse('{!JSENCODE(assRecClsListJSON)}');
+                    }
+                    $scope.nextDependentQuestion = {};
+                    $scope.quesIdAndResponseCount = {};
+                    $scope.sectionAndQuestionTemplateObj = {};
+                    $scope.viewerName = 'lens';
+                    $scope.sourceURL = '/servlet/servlet.FileDownload?file=';
+                    $scope.skipDTpath = false;
+                    $scope.assignmentManagerObj = [];
+                    
+                    //Added on  13-12-2017 to avoiding creating DOM initially for other lens viewer tabs
+                    $scope.enableTab = {'unit':true,'site':false,'systems':false,'commonarea':false,'exterior':false};
+
+                //End lens variables
+                if ( (typeof sforce != 'undefined') && (sforce != null) ) {
+                    $scope.sf1 = true;
+                }    
+                
+                // Added on 25-07-2016
+                ExAM.KnowledgeArticleController.returnKnowledgeArticles(function(result, event) {
+                    if (event.status) {
+                        if (result != null && result != '') {
+                            var resultObj = JSON.parse(_.unescape(JSON.stringify(result)));
+                            if (!resultObj["err"] ) {
+                                $scope.articlesObj = resultObj.sObjectRecords;
+                                $scope.summaryField = resultObj.summaryField;
+                            }
+                        }
+                    }
+                });
+                
+                $scope.openWithPrimaryAM = function(primaryAMId) {
+                    $scope.primaryAMcls = false;
+                    if ( angular.isDefined(primaryAMId) && primaryAMId != '' ) {
+                        window.open('/apex/MultipleInspectionAssessmentViewer?amid='+primaryAMId,'_self');
+                    } else {
+                        $scope.primaryAMcls = true;
+                    }
+                }
+                
+                $scope.createtempIdAndAMIdObj = function(assTempId, assManagerId) {
+                    $scope.tempIdAndAMIdObj = {
+                        assessmentTemplateId:assTempId,
+                        createdASMId:assManagerId,
+                        viewerName:'lens'
+                    };
+                }
+                $scope.assignOneTimeAssessmentResponses = function(filteredResponse){
+                    $scope.response = {};
+                    $scope.fileAttach = {};
+                    angular.forEach(filteredResponse, function(value, key) { 
+                        if( filteredResponse[key].questionTemp != null ){
+                            if(filteredResponse[key].questionTemp.ExAM__Question_Type__c == 'Signature' && filteredResponse[key].attachmentMap != null && filteredResponse[key].attachmentMap[0].id != null) { 
+                                $scope.signImage[filteredResponse[key].questionTemp.Id] = filteredResponse[key].attachmentMap[0].id;
+                                $scope.alreadyAnsAttId[filteredResponse[key].questionTemp.Id] = filteredResponse[key].attachmentMap[0].id;
+                                
+                            } else if(filteredResponse[key].questionTemp.ExAM__Question_Type__c == 'File Question - Answer' && filteredResponse[key].attachmentMap != null) {
+                                var arr = [];
+                                $scope.alreadyAnsAttId[filteredResponse[key].questionTemp.Id] = [];
+                                if(angular.isUndefined($scope.fileAttach[filteredResponse[key].questionTemp.Id])) {
+                                    $scope.fileAttach[filteredResponse[key].questionTemp.Id] = [];
+                                }
+                                angular.forEach(filteredResponse[key].attachmentMap, function(value1, key1) {
+                                    arr.push(value1);
+                                    $scope.alreadyAnsAttId[filteredResponse[key].questionTemp.Id][key1] = value1.id;
+                                });
+                                $scope.fileAttach[filteredResponse[key].questionTemp.Id] = arr;
+                                $scope.response[filteredResponse[key].questionTemp.Id] = filteredResponse[key].quesResponse.ExAM__Response__c;
+                            } else if((filteredResponse[key].questionTemp.ExAM__Question_Type__c == 'File Question - AM' || filteredResponse[key].questionTemp.ExAM__Question_Type__c == 'File Question - Assessable Object') && filteredResponse[key].attachmentMap[0].id != null) { 
+                                $scope.responseFile[filteredResponse[key].questionTemp.Id] = filteredResponse[key].attachmentMap;
+                            } else if(filteredResponse[key].questionTemp.ExAM__Question_Type__c == 'MultiselectPicklist' && filteredResponse[key].multiselectObj != null) {
+                                $scope.response[filteredResponse[key].questionTemp.Id] = filteredResponse[key].multiselectObj;
+                            } else if( filteredResponse[key].questionTemp.ExAM__Question_Type__c == 'Checkbox' ){
+                                $scope.response[filteredResponse[key].questionTemp.Id] = (filteredResponse[key].quesResponse.ExAM__Response__c === 'true');
+                            } else {
+                                $scope.response[filteredResponse[key].questionTemp.Id] = filteredResponse[key].quesResponse.ExAM__Response__c;
+                            }
+                        }
+                    });
+                }
+                //Start query question and sections
+                $scope.queryQuestionTemplates = function(tempIdAndAMIdObj){
+                    console.log('::tempIdAndAMIdObj::',tempIdAndAMIdObj);
+                    if( {!hasAssessableObj} === true ){
+                        $('.spinner, .slds-spinner--small').show();
+                        commonAppService.queryQuestionTemplates(tempIdAndAMIdObj).then(function(resobj) {
+                            console.log('::resobj::',resobj);
+                            if( resobj.error == null ){
+
+                                $scope.sectionAndQuestionTemplate = resobj.sectionAndQuestionTemplate != null ? resobj.sectionAndQuestionTemplate : [];
+                                $scope.sectionAndQuestionTemplateObj = resobj.sectionAndQuestionTemplate != null ? resobj.sectionAndQuestionTemplate : [];
+                                angular.forEach($scope.sectionAndQuestionTemplateObj, function(value, key) {
+                                    var divElement = angular.element( document.querySelector( '#tabpanel1' ) );
+                                    divElement.append('<div id="secLabelEscaped">'+value.sectionTemplateRecord.ExAM__Section_label__c+'</div>');
+                                    var escapedsec = document.getElementById("secLabelEscaped").textContent;
+                                    $scope.sectionAndQuestionTemplateObj[key].sectionTemplateRecord.ExAM__Section_label__c = escapedsec;
+                                    document.getElementById("secLabelEscaped").remove();
+                                });
+                                $scope.showSaveButton = true;
+                                if( $scope.sectionAndQuestionTemplate.length == 0 ){
+                                    $scope.hasSectionTemplates = false;
+                                    $scope.showSaveButton = false;
+                                }
+                                $scope.contextQuesAndAnsField = resobj.assessmentTemplateRecord.ExAM__Context_Questions_Mapping__c != null ? resobj.assessmentTemplateRecord.ExAM__Context_Questions_Mapping__c : '' ;
+                                $scope.showQuesNumIcon = resobj.assessmentTemplateRecord != null ? resobj.assessmentTemplateRecord.ExAM__Show_Question_Number__c : false;
+                                $scope.showImageUploadIcon = resobj.assessmentTemplateRecord != null ? resobj.assessmentTemplateRecord.ExAM__Show_Image_Upload_Icon__c : false;
+                                $scope.showCommentsIcon = resobj.assessmentTemplateRecord != null ? resobj.assessmentTemplateRecord.ExAM__Show_Notes_Icon__c : false;
+                                $scope.showClearIcon = resobj.assessmentTemplateRecord != null ? resobj.assessmentTemplateRecord.ExAM__Show_Refresh_Icon__c : false;
+                                $scope.oneTimeAss = resobj.assessmentTemplateRecord != null ? resobj.assessmentTemplateRecord.ExAM__One_Time_Assessment__c : false;
+                                $scope.decisionTreeResultTemplate = resobj.DTConfiguration.decisionTreeResultList.length > 0 ? resobj.DTConfiguration.decisionTreeResultList : [];
+                                $scope.resultQuesButtonText = (resobj.DTConfiguration.resultQuesButtonText != null && resobj.DTConfiguration.resultQuesButtonText != '') ? resobj.DTConfiguration.resultQuesButtonText : 'Continue';
+                                $scope.renderNextQuesAuto = resobj.DTConfiguration != null ? resobj.DTConfiguration.renderNextQuesAuto : false;
+                                $scope.questionNamewithQuestionTemplate = resobj.questionNamewithQuestionTemplate != null ? resobj.questionNamewithQuestionTemplate : {};
+                                $scope.resultQuestionNamewithQuestionTemplate = resobj.resultQuestionNamewithQuestionTemplate != null ? resobj.resultQuestionNamewithQuestionTemplate : {};
+                                $scope.resultQuestionIdDefaultVal = resobj.resultQuestionIdDefaultValueObj != null ? resobj.resultQuestionIdDefaultValueObj : {};
+                                $scope.dependentQuestionsObj = resobj.dependentQuestionNamewithQuestionTemplate != null ? resobj.dependentQuestionNamewithQuestionTemplate : {};
+                                $scope.dependentQuestionsAttObj = resobj.parentIdAndArrayOfPictureIdMap != null ? resobj.parentIdAndArrayOfPictureIdMap : {};
+                                $scope.quesIdAndResponseCount = resobj.quesIdAndResponseCount != null ? resobj.quesIdAndResponseCount : {};
+                                $scope.assessableObjId = resobj.assObjId != null ? resobj.assObjId : '';
+                                $scope.quesIdAndAnsAttId = resobj.quesIdAndAnsweredAttId != null ? resobj.quesIdAndAnsweredAttId : {};
+                                $scope.skipDTpath = resobj.DTConfiguration != null ? resobj.DTConfiguration.skipDTpath : false;
+                                $scope.quesIdANDAnsId = resobj.quesIdANDAnsIdMap != null ? resobj.quesIdANDAnsIdMap : {};
+                                $scope.quesIdWithQuestionTemplate = resobj.quesIdWithQuestionTemplate != null ? resobj.quesIdWithQuestionTemplate: {};
+                                if( resobj.answeredRecord != null && resobj.answeredRecord.length > 0 ) {
+                                    $scope.assignOneTimeAssessmentResponses(resobj.answeredRecord);
+                                }
+                                $rootScope.$broadcast('hideMessage',{response:$scope.response});
+                            } else {
+                                $scope.showMessage = true; // setting this variable as true to show exception message
+                                $(window).scrollTop(0);
+                                $scope.messageText = resobj.error.errMsg;
+                                
+                            }
+                            $('.spinner, .slds-spinner--small').hide();
+                            $('.showAllData').css('display', 'block');
+                        });
+                    } else {
+                        $('.showAllData').css('display', 'block');
+                        $scope.showSectionQuestions = false;
+                        $('.objectNotConfigured').css('display','block');
+                        $("#tabId").hide();
+                        $scope.hasAnswersExistsForUnitTemplate = false;
+                        $scope.unitDetail = false;
+                    }
+                }
+                $scope.createtempIdAndAMIdObj('{!JSENCODE(currentASMAssessmentTemplateId)}', '{!JSENCODE($CurrentPage.parameters.amid)}');
+                $scope.queryQuestionTemplates($scope.tempIdAndAMIdObj);
+                //End query questions and sections
+                
+                $scope.callRemoteActionTOQueryAllAnswerRecords = function() {
+        
+                    $('.spinner, .slds-spinner--small').show();
+                    commonAppService.fetchAllAnswerRecords().then(function(data){
+                        $scope.allAnswerObj = data;
+                        $('.spinner, .slds-spinner--small').hide();
+                    },function(errdata){
+        
+                        $('.spinner, .slds-spinner--small').hide();           
+                        if ( $scope.currentActiveTabLabel == 'Data Viewer' ) {
+                            $scope.showMessage = true;
+                            $(window).scrollTop(0);
+                            $scope.messageText = errdata.errMsg;
+                        }
+                    });
+                }
+                $scope.deleteAnswerRecord = function(answerId, indexval) {
+                    var confirmMsg = confirm('Are you sure?');
+                    
+                    if (confirmMsg) {
+                        $scope.allAnswerObj.answerList.splice(indexval,1);
+                        ExAM.DataManagementController.deleteAnswerRecord(answerId, function(result, event) {
+                            if(event.status) {
+                                if (result != null && result != '') {
+                                    console.log('success', result );   
+                                }
+                            }
+                            else {
+                                console.log('error', event.message );
+                            }
+                        });
+                    }
+                }
+    
+                $scope.callRemoteActionTOQueryAllAssignmentManagerRecords = function() {
+        
+                    $('.spinner, .slds-spinner--small').show();
+                    commonAppService.fetchAllManagerRecords().then(function(amdata){
+        
+                        $scope.allAssignmentManagersObj = amdata;
+                        $('.spinner, .slds-spinner--small').hide();
+                    },function(errordata){
+        
+                        $('.spinner, .slds-spinner--small').hide();           
+                        $scope.showMessage = true;
+                        $(window).scrollTop(0);
+                        $scope.messageText = errordata;
+                    });
+                }
+    
+                $scope.callTabViewChangeFn = function(event) {
+                    console.log(':::event:::',event);
+                    $("#menuId").hide();
+                    $scope.showMessage = false;
+                    $scope.sectionAndQuestionTemplate = {};
+                    $('.spinner, .slds-spinner--small').show();
+                    $scope.currentActiveTabLabel = event.target.attributes.title.value;
+                    commonAppService.queryReqdInputJS($scope.assmId, $scope.assessableFieldAPIName,$scope.assRecClsListJSON).then(function(data){
+                        console.log('::data::',data);
+                        if (data.hasActionSuccess === true) {
+                            $scope.inputObj = data.inputObj;
+                            if ( $scope.inputObj.exceptionMsg != null && $scope.inputObj.exceptionMsg != '' ){
+                                $scope.setPgMsgColor = 'red';
+                                $scope.showMessage = true; // setting this variable as true to show exception message
+                                $(window).scrollTop(0);
+                                $scope.messageText = $scope.inputObj.exceptionMsg;
+                            } else {
+                                if (event.target.attributes.title.value == '{!$Label.Related_Assessment_Type_1}') {
+                                    $scope.enableTab = {'unit':false,'site':true,'systems':false,'commonarea':false,'exterior':false};
+                                    $scope.currentASMAssesssmentTemplateTdStr = data.inputObj.examConfigurationRecord.ExAM__Related_Assessment_Type_1_Template__c;
+                                    $scope.assignmentManagerObj = data.inputObj.ASMListForSiteAssessmentTemplate;
+                                    if (angular.isDefined(data.inputObj.ASMListForUnitAssessmentTemplate) && angular.isDefined(data.inputObj.ASMListForUnitAssessmentTemplate[0].ExAM__Related_Assignment_Manager1__c)) {
+                                        //$scope.toggleQuestionNumberAndIconVisibility( data.inputObj.ASMListForUnitAssessmentTemplate[0].ExAM__Related_Assignment_Manager1__r.ExAM__InvestigationType__r );
+                                        $scope.relatedmanagerid = data.inputObj.ASMListForUnitAssessmentTemplate[0].ExAM__Related_Assignment_Manager1__c;
+                                        $scope.relatedmanagername = data.inputObj.ASMListForUnitAssessmentTemplate[0].ExAM__Related_Assignment_Manager1__r.Name;
+                                        $scope.showASMTable = false;
+                                        $scope.showAccountSection = false;
+                                        if ($scope.relatedmanagerid != null) {
+                                            $scope.currentASMIdStr = $scope.relatedmanagerid;
+                                            $scope.showSectionQuestions = true;
+                                            $scope.Related_Assessment_Type_1_Template = data.inputObj.examConfigurationRecord.ExAM__Related_Assessment_Type_1_Template__c;
+                                            $scope.relatedmanager_1_id = $scope.relatedmanagerid;
+                                            $scope.createtempIdAndAMIdObj($scope.Related_Assessment_Type_1_Template, $scope.relatedmanager_1_id);
+                                            $scope.queryQuestionTemplates($scope.tempIdAndAMIdObj);
+                                        }
+                                    } else {
+                                        $('.spinner, .slds-spinner--small').hide();
+                                        $scope.relatedmanagername = '';
+                                        $scope.showASMSection = true;
+                                        $scope.showASMTable = true;
+                                        $scope.showAccountSection = true;
+                                        $scope.showSaveButton = false;
+                                    }
+                                    $scope.showPgMessage = true;
+                                    $scope.unitDetail = false;
+                                } else if (event.target.attributes.title.value == '{!$Label.Related_Assessment_Type_2}') {
+
+                                    $scope.enableTab = {'unit':false,'site':false,'systems':true,'commonarea':false,'exterior':false};
+                                    $scope.currentASMAssesssmentTemplateTdStr = data.inputObj.examConfigurationRecord.ExAM__Related_Assessment_Type_2_Template__c;
+                                    $scope.assignmentManagerObj = data.inputObj.ASMListForSystemsAssessmentTemplate;
+                                    if (angular.isDefined(data.inputObj.ASMListForUnitAssessmentTemplate) && angular.isDefined(data.inputObj.ASMListForUnitAssessmentTemplate[0].ExAM__Related_Assignment_Manager2__c)) {
+                                        //$scope.toggleQuestionNumberAndIconVisibility( data.inputObj.ASMListForUnitAssessmentTemplate[0].ExAM__Related_Assignment_Manager2__r.ExAM__InvestigationType__r );
+                                        $scope.relatedmanagerid = data.inputObj.ASMListForUnitAssessmentTemplate[0].ExAM__Related_Assignment_Manager2__c;
+                                        $scope.relatedmanagername = data.inputObj.ASMListForUnitAssessmentTemplate[0].ExAM__Related_Assignment_Manager2__r.Name;
+                                        $scope.showASMTable = false;
+                                        $scope.showAccountSection = false;
+                                        if ($scope.relatedmanagerid != null) {
+                                            $scope.currentASMIdStr = $scope.relatedmanagerid;
+                                            $scope.showSectionQuestions = true;
+                                            $scope.Related_Assessment_Type_2_Template = data.inputObj.examConfigurationRecord.ExAM__Related_Assessment_Type_2_Template__c;
+                                            $scope.relatedmanager_2_id = $scope.relatedmanagerid;
+                                            $scope.createtempIdAndAMIdObj($scope.Related_Assessment_Type_2_Template, $scope.relatedmanager_2_id);
+                                            $scope.queryQuestionTemplates($scope.tempIdAndAMIdObj);
+                                        }
+                                    } else {
+                                        $('.spinner, .slds-spinner--small').hide();
+                                        $scope.relatedmanagername = '';
+                                        $scope.showASMSection = true;
+                                        $scope.showASMTable = true;
+                                        $scope.showAccountSection = true;
+                                        $scope.showSaveButton = false;
+                                    }
+                                    $scope.showPgMessage = true;
+                                    $scope.unitDetail = false;
+                                } else if (event.target.attributes.title.value == '{!$Label.Related_Assessment_Type_3}') {
+
+                                    $scope.enableTab = {'unit':false,'site':false,'systems':false,'commonarea':true,'exterior':false};
+                                    $scope.currentASMAssesssmentTemplateTdStr = data.inputObj.examConfigurationRecord.ExAM__Related_Assessment_Type_3_Template__c;
+                                    $scope.assignmentManagerObj = data.inputObj.ASMListForCommonAreasAssessmentTemplate;
+                                    if (angular.isDefined(data.inputObj.ASMListForUnitAssessmentTemplate) && angular.isDefined(data.inputObj.ASMListForUnitAssessmentTemplate[0].ExAM__Related_Assignment_Manager3__c)) {
+                                        //$scope.toggleQuestionNumberAndIconVisibility( data.inputObj.ASMListForUnitAssessmentTemplate[0].ExAM__Related_Assignment_Manager3__r.ExAM__InvestigationType__r );
+                                        $scope.relatedmanagerid = data.inputObj.ASMListForUnitAssessmentTemplate[0].ExAM__Related_Assignment_Manager3__c;
+                                        $scope.relatedmanagername = data.inputObj.ASMListForUnitAssessmentTemplate[0].ExAM__Related_Assignment_Manager3__r.Name;
+                                        $scope.showASMTable = false;
+                                        $scope.showAccountSection = false;
+                                        if ($scope.relatedmanagerid != null) {
+                                            $scope.currentASMIdStr = $scope.relatedmanagerid;
+                                            $scope.showSectionQuestions = true;
+                                            $scope.Related_Assessment_Type_3_Template = data.inputObj.examConfigurationRecord.ExAM__Related_Assessment_Type_3_Template__c;
+                                            $scope.relatedmanager_3_id = $scope.relatedmanagerid;
+                                            $scope.createtempIdAndAMIdObj($scope.Related_Assessment_Type_3_Template, $scope.relatedmanager_3_id);
+                                            $scope.queryQuestionTemplates($scope.tempIdAndAMIdObj);
+                                        }
+                                    } else {
+                                        $('.spinner, .slds-spinner--small').hide();
+                                        $scope.relatedmanagername = '';
+                                        $scope.showASMSection = true;
+                                        $scope.showASMTable = true;
+                                        $scope.showAccountSection = true;
+                                        $scope.showSaveButton = false;
+                                    }
+                                    $scope.showPgMessage = true;
+                                    $scope.unitDetail = false;
+                                } else if (event.target.attributes.title.value == '{!$Label.Related_Assessment_Type_4}') {
+
+                                    $scope.enableTab = {'unit':false,'site':false,'systems':false,'commonarea':false,'exterior':true};
+                                    $scope.currentASMAssesssmentTemplateTdStr = data.inputObj.examConfigurationRecord.ExAM__Related_Assessment_Type_4_Template__c;
+                                    $scope.assignmentManagerObj = data.inputObj.ASMListForExteriorAssessmentTemplate;
+                                    if (angular.isDefined(data.inputObj.ASMListForUnitAssessmentTemplate) && angular.isDefined(data.inputObj.ASMListForUnitAssessmentTemplate[0].ExAM__Related_Assignment_Manager4__c)) {
+                                        //$scope.toggleQuestionNumberAndIconVisibility( data.inputObj.ASMListForUnitAssessmentTemplate[0].ExAM__Related_Assignment_Manager4__r.ExAM__InvestigationType__r );
+                                        $scope.relatedmanagerid = data.inputObj.ASMListForUnitAssessmentTemplate[0].ExAM__Related_Assignment_Manager4__c;
+                                        $scope.relatedmanagername = data.inputObj.ASMListForUnitAssessmentTemplate[0].ExAM__Related_Assignment_Manager4__r.Name;
+                                        $scope.showASMTable = false;
+                                        $scope.showAccountSection = false;
+                                        if ($scope.relatedmanagerid != null) {
+                                            $scope.currentASMIdStr = $scope.relatedmanagerid;
+                                            $scope.showSectionQuestions = true;
+                                            $scope.Related_Assessment_Type_4_Template = data.inputObj.examConfigurationRecord.ExAM__Related_Assessment_Type_4_Template__c;
+                                            $scope.relatedmanager_4_id = $scope.relatedmanagerid;
+                                            $scope.createtempIdAndAMIdObj($scope.Related_Assessment_Type_4_Template, $scope.relatedmanager_4_id);
+                                            $scope.queryQuestionTemplates($scope.tempIdAndAMIdObj);
+                                        }
+                                    } else {
+                                        $('.spinner, .slds-spinner--small').hide();
+                                        $scope.relatedmanagername = '';
+                                        $scope.showASMSection = true;
+                                        $scope.showASMTable = true;
+                                        $scope.showAccountSection = true;
+                                        $scope.showSaveButton = false;
+                                    }
+                                    $scope.showPgMessage = true;
+                                    $scope.unitDetail = false;
+                                } else if (event.target.attributes.title.value == '{!$Label.Primary_Assessment_Type}') {
+
+                                    $scope.enableTab = {'unit':true,'site':false,'systems':false,'commonarea':false,'exterior':false};
+                                    $scope.currentASMAssesssmentTemplateTdStr = data.inputObj.examConfigurationRecord.ExAM__Primary_Assessment_Type_Template__c;
+                                    $scope.assignmentManagerObj = data.inputObj.ASMListForUnitAssessmentTemplate;
+                                    if (angular.isDefined(data.inputObj.ASMListForUnitAssessmentTemplate) && angular.isDefined(data.inputObj.ASMListForUnitAssessmentTemplate[0].Name)) {
+                                        $scope.relatedmanagerid = data.inputObj.ASMListForUnitAssessmentTemplate[0].Id;
+                                        $scope.relatedmanagername = data.inputObj.ASMListForUnitAssessmentTemplate[0].Name;
+                                        $scope.showASMTable = false;
+                                        $scope.showAccountSection = false;
+                                        if ($scope.relatedmanagerid != null) {
+                                            $scope.currentASMIdStr = $scope.relatedmanagerid;
+                                            $scope.showSectionQuestions = true;
+                                            $scope.Unit_Template = data.inputObj.examConfigurationRecord.ExAM__Primary_Assessment_Type_Template__c;
+                                            $scope.Unit_ManagerId = $scope.relatedmanagerid;
+                                            $scope.createtempIdAndAMIdObj($scope.Unit_Template, $scope.Unit_ManagerId);
+                                            $scope.queryQuestionTemplates($scope.tempIdAndAMIdObj);
+                                        }
+                                    } else {
+                                        $('.spinner, .slds-spinner--small').hide();
+                                        $scope.relatedmanagername = '';
+                                        $scope.showASMSection = true;
+                                        $scope.showASMTable = true;
+                                        $scope.showAccountSection = true;
+                                        $scope.showSaveButton = false;
+                                    }
+                                    $scope.showPgMessage = false;
+                                    $scope.unitDetail = true;
+                                }
+                                else {
+                                    $('.spinner, .slds-spinner--small').hide();
+                                    commonAppService.maphilightservice();
+                                }
+                                $scope.acctObj = data.inputObj.acctList;
+                                $scope.configRecord = data.inputObj.examConfigurationRecord;
+                            }
+                        } else {
+                            $('.spinner, .slds-spinner--small').hide();
+                            $scope.showMessage = data.showMessage;
+                            $scope.messageText = data.messageText;
+                        }
+                        
+                        //$('.spinner, .slds-spinner--small').hide();
+                        if (event.target.attributes.title.value == 'Data Viewer') {
+                            $scope.currentActiveTabLabel = event.target.attributes.title.value;
+                            $scope.callRemoteActionTOQueryAllAnswerRecords();
+                        }
+                    });
+                }
+                
+                $scope.linkSelectedManager = function() {
+    
+                    $('.asmIdBox').each(function() {
+    
+                        if($(this).prop('checked')) {
+    
+                            $scope.checkedManagerId = $(this).val().split('~')[0];
+                            $scope.checkedManagerName = $(this).val().split('~')[1];
+                            $scope.selectedManagerId = $scope.checkedManagerId;
+                        }
+                    });
+    
+                    if ($scope.selectedManagerId.length > 0) {
+    
+                        $('.spinner, .slds-spinner--small').show();
+                        commonAppService.linkSelectedManagerJS($scope.assmId, $scope.selectedManagerId, $scope.currentActiveTabLabel).then(function(data){
+            
+                            if (data.showMessage && !data.hasActionSuccess) {
+            
+                                $('.spinner, .slds-spinner--small').hide();
+                                $scope.showMessage = data.showMessage;
+                                $scope.messageText = data.messageText;
+                            }
+                            else if (data.hasActionSuccess === true) {
+            
+                                $('.spinner, .slds-spinner--small').hide();
+                                $scope.showASMTable = data.showASMTable;
+                                $scope.showAccountSection = false;
+                                if ( $scope.checkedManagerId.length > 0 && $scope.checkedManagerName.length > 0 ) {
+                                    $scope.currentASMIdStr = $scope.checkedManagerId;
+                                    $scope.relatedmanagername = $scope.checkedManagerName;
+                                    $scope.showPgMessage = true;
+                                    if( $scope.currentActiveTabLabel == '{!$Label.Related_Assessment_Type_1}' ){
+                                        $scope.Related_Assessment_Type_1_Template = $scope.configRecord.ExAM__Related_Assessment_Type_1_Template__c;
+                                        $scope.relatedmanager_1_id = $scope.checkedManagerId;
+                                        $scope.createtempIdAndAMIdObj($scope.Related_Assessment_Type_1_Template, $scope.relatedmanager_1_id);
+                                        $scope.queryQuestionTemplates($scope.tempIdAndAMIdObj);
+                                    } else if( $scope.currentActiveTabLabel == '{!$Label.Related_Assessment_Type_2}' ){
+                                        $scope.Related_Assessment_Type_2_Template = $scope.configRecord.ExAM__Related_Assessment_Type_2_Template__c;
+                                        $scope.relatedmanager_2_id = $scope.checkedManagerId;
+                                        $scope.createtempIdAndAMIdObj($scope.Related_Assessment_Type_2_Template, $scope.relatedmanager_2_id);
+                                        $scope.queryQuestionTemplates($scope.tempIdAndAMIdObj);
+                                    } else if( $scope.currentActiveTabLabel == '{!$Label.Related_Assessment_Type_3}' ){
+                                        $scope.Related_Assessment_Type_3_Template = $scope.configRecord.ExAM__Related_Assessment_Type_3_Template__c;
+                                        $scope.relatedmanager_3_id = $scope.checkedManagerId;
+                                        $scope.createtempIdAndAMIdObj($scope.Related_Assessment_Type_3_Template, $scope.relatedmanager_3_id);
+                                        $scope.queryQuestionTemplates($scope.tempIdAndAMIdObj);
+                                    } else if( $scope.currentActiveTabLabel == '{!$Label.Related_Assessment_Type_4}' ){
+                                        $scope.Related_Assessment_Type_4_Template = $scope.configRecord.ExAM__Related_Assessment_Type_4_Template__c;
+                                        $scope.relatedmanager_4_id = $scope.checkedManagerId;
+                                        $scope.createtempIdAndAMIdObj($scope.Related_Assessment_Type_4_Template, $scope.relatedmanager_4_id);
+                                        $scope.queryQuestionTemplates($scope.tempIdAndAMIdObj);
+                                    } else if( $scope.currentActiveTabLabel == '{!$Label.Primary_Assessment_Type}' ){
+                                        $scope.Unit_Template = $scope.configRecord.ExAM__Primary_Assessment_Type_Template__c;
+                                        $scope.Unit_ManagerId = $scope.checkedManagerId;
+                                        $scope.createtempIdAndAMIdObj($scope.Unit_Template, $scope.Unit_ManagerId);
+                                        $scope.queryQuestionTemplates($scope.tempIdAndAMIdObj);
+                                    }
+                                }
+                                $scope.showMessage = data.showMessage;
+                                $scope.messageText = data.messageText;
+                                $scope.searchManagerText = data.searchManagerText;    
+                            }
+                        },function(errrdata){
+            
+                            $('.spinner, .slds-spinner--small').hide();
+                            $scope.showMessage = errrdata.showMessage;
+                            $(window).scrollTop(0);
+                            $scope.messageText = errrdata.messageText;
+                        });
+                    }
+                    else {
+    
+                        $scope.showMessage = true;
+                        $(window).scrollTop(0);
+                        $scope.messageText = 'Please select a radio button to proceed';
+                    }
+                }
+                $scope.createNewPrimaryAssignmentManager = function (primaryTemplateId, template_type, relatedmanagerid, assessableField_API, assessableRecordId) {
+                    $scope.isDisable = true;
+                    $scope.primaryAMCreateErrMsg = '';                            
+                    ExAM.MultipleInspectionAssessmentViewCtrller.createNewPrimaryAM(primaryTemplateId, template_type, relatedmanagerid, assessableField_API, assessableRecordId,function(result, event) {
+                        if (event.status) {
+                            var s = JSON.parse(result.replace(/(&quot\;)/g,"\""));
+                            if (s.code) {
+                                window.open('/apex/MultipleInspectionAssessmentViewer?amid='+s.msg,'_self');
+                                $scope.isDisable = false;
+                            } else {
+                                $scope.isDisable = false;
+                                $scope.primaryAMCreateErrMsg = s.errMsg;                            
+                            }
+                        } else {
+                            $scope.isDisable = false;
+                        }
+                    });
+                    
+                }
+                $scope.createNewASManager = function(selectedAcctId) {
+                    if (selectedAcctId.length > 0) {
+                        
+                        $('.spinner, .slds-spinner--small').show();
+                        commonAppService.createNewASManagerJS($scope.assmId, selectedAcctId, $scope.currentASMAssesssmentTemplateTdStr, $scope.currentActiveTabLabel, $scope.assessableFieldAPIName).then(function(data){
+
+                            if (data.showMessage && !data.hasActionSuccess) {
+            
+                                $('.spinner, .slds-spinner--small').hide();
+                                $scope.showMessage = data.showMessage;
+                                $scope.messageText = data.messageText;
+                                $scope.showASMSection = data.showASMSection;
+                                $scope.showAccountSection = data.showAccountSection;
+                                $scope.showSectionQuestions = data.showSectionQuestions;
+                            }
+                            else if (data.hasActionSuccess === true) {
+            
+                                $('.spinner, .slds-spinner--small').hide();
+                                var secLen = data.questionTemplateObj.length;
+                                for(var i=0; i<secLen; i++) {
+                                    if(angular.isDefined(data.questionTemplateObj[i].questionTemplateRecords.length)){
+                                        $scope.showSaveButton = true;
+                                        break;
+                                    }
+                                }
+                                /** Code Below binds newly created Assignment Manager Id and Name to page message **/
+                                $scope.assessmentTemplateId = data.assessmentTemplateId;
+                                $scope.currentASMIdStr = data.newASMId;
+                                $scope.relatedmanagername = data.newASMName;
+                                $scope.showPgMessage = true;
+                                $scope.showAcctTable = false;
+                                $scope.showASMSection = data.showASMSection;
+                                $scope.showAccountSection = data.showAccountSection;
+                                $scope.showSectionQuestions = data.showSectionQuestions;
+                                $scope.showMessage = false;
+                                $scope.createtempIdAndAMIdObj($scope.assessmentTemplateId, $scope.currentASMIdStr );
+                                $scope.queryQuestionTemplates($scope.tempIdAndAMIdObj);
+                            }
+                        },function(erordata){
+
+                            $('.spinner, .slds-spinner--small').hide();
+                            $scope.showMessage = erordata.showMessage;
+                            $scope.messageText = erordata.messageText;
+                            $scope.showASMSection = erordata.showASMSection;
+                            $scope.showAccountSection = erordata.showAccountSection;
+                            $scope.showSectionQuestions = erordata.showSectionQuestions;
+                        });
+                    }
+                    else {
+    
+                        $scope.showMessage = true;
+                        $(window).scrollTop(0);
+                        $scope.messageText = 'Please select a assessable record to proceed';
+                    }
+                }
+                   
+                $scope.showMenu = function() { //for tab or mobile menu
+                    $("#menuId").show();
+                }
+                $scope.openAnswerRecord = function(ansId) {
+    
+                    window.location.href = '/'+ansId;
+                }
+                $scope.openAssignmentManagerRecord = function(selectedMngerId) {
+    
+                    window.location.href = '/'+selectedMngerId;
+                }
+                $scope.callRemoteActionTOQueryAllAssignmentManagerRecords();
+                $scope.callRemoteActionTOQueryAllAnswerRecords();
+            });
+        </script>
+
+        <apex:pageMessages />
+
+        <!-- Processing Image Code -->
+        <div class="slds">
+            <div style="display: none; background-color: rgba(0, 0, 0, 0.6); width: 100%; height: 100%; z-index: 1000; position: fixed; left: 0; top: 0; overflow: hidden; text-align: center; vertical-align: middle;padding-top:15%;" class="spinner">
+                <img src="{!URLFOR($Resource.SLDS052, '/assets/images/spinners/slds_spinner_brand.gif')}" alt="Loading..." class="slds-spinner--small" style="display: none;z-index: 10001; width: 80px; height: 80px; text-align: left; position: relative; top: 30%;vertical-align:middle;"/>
+                <h1 style="color:white;font-size:30px;vertical-align:middle;" class="attachNumber"></h1>
+                <h1 style="color:white;font-size:20px;vertical-align:middle;" class="attachMessage"></h1>
+            </div>
+        </div>
+        <!--End Processing Image Code -->
+
+        <div ng-app="mainApp">    
+            <div ng-controller="mainController">
+                <div class="showAllData" style="display:none">
+                    <body>
+                        <div class="slds slds-col--padded slds-size--1-of-1 slds-medium-size--1-of-1 slds-large-size--1-of-1 slds-p-around--xx-large slds-container--large slds-container--center">
+                            <div class="main" role="main">
+                                <div class="slds-page-header">
+                                    <div class="slds-tabs--scoped">
+                                        <ul class="slds-tabs--scoped__nav" role="tablist" id="tabId">
+                                            <li class="slds-tabs__item slds-text-heading--label slds-active" role="presentation" id="tab1" ng-click="callTabViewChangeFn($event);">
+                                                <a href="#" role="tab" tabindex="0" aria-selected="true" aria-controls="tab-scoped-1" title="{!$Label.Primary_Assessment_Type}" style="text-decoration:none;">{!$Label.Primary_Assessment_Type}</a>
+                                            </li>
+                                            <li class="slds-tabs__item slds-text-heading--label" role="presentation" id="tab2" ng-click="callTabViewChangeFn($event);" ng-show="{!NOT(hideRAMTab1)}">
+                                                <a href="#" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-scoped-2" title="{!$Label.Related_Assessment_Type_1}" style="text-decoration:none;">{!$Label.Related_Assessment_Type_1}</a>
+                                            </li>
+                                            <li class="slds-tabs__item slds-text-heading--label" role="presentation" id="tab3" ng-click="callTabViewChangeFn($event);" ng-show="{!NOT(hideRAMTab2)}">
+                                                <a href="#" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-scoped-3" title="{!$Label.Related_Assessment_Type_2}" style="text-decoration:none;">{!$Label.Related_Assessment_Type_2}</a>
+                                            </li>
+                                            <li class="slds-tabs__item slds-text-heading--label" role="presentation" id="tab4" ng-click="callTabViewChangeFn($event);" ng-show="{!NOT(hideRAMTab3)}">
+                                                <a href="#" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-scoped-4" title="{!$Label.Related_Assessment_Type_3}" style="text-decoration:none;">{!$Label.Related_Assessment_Type_3}</a>
+                                            </li>
+                                            <li class="slds-tabs__item slds-text-heading--label" role="presentation" id="tab5" ng-click="callTabViewChangeFn($event);" ng-show="{!NOT(hideRAMTab4)}">
+                                                <a href="#" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-scoped-5" title="{!$Label.Related_Assessment_Type_4}" style="text-decoration:none;">{!$Label.Related_Assessment_Type_4}</a>
+                                            </li>
+                                            <li class="slds-tabs__item slds-text-heading--label" role="presentation" id="tab6" ng-click="callTabViewChangeFn($event);" ng-show="{!NOT(hideDataViewerTab)}">
+                                                <a href="#" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-scoped-6" title="Data Viewer" style="text-decoration:none;">Data Viewer</a>
+                                            </li>
+                                            <li class="slds-tabs__item slds-text-heading--label" role="presentation" id="tab7" ng-click="callTabViewChangeFn($event);" ng-show="{!NOT(hideAMListTab)}">
+                                                <a href="#" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-scoped-7" title="{!$Label.Web_Assignment_Manager_Label}" style="text-decoration:none;">{!$Label.Web_Assignment_Manager_Label}</a>
+                                            </li>
+                                            <li class="slds-tabs__item slds-text-heading--label" role="presentation" id="tab8" ng-click="callTabViewChangeFn($event);" ng-show="{!NOT(hideAssessableRecordTab)}">
+                                                <a href="#" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-scoped-8" title="{!$Label.Assessable_Record_Tab_Name}" style="text-decoration:none;">{!$Label.Assessable_Record_Tab_Name}</a>
+                                            </li>
+                                            <li class="slds-tabs__item slds-text-heading--label" role="presentation" id="tab9" ng-click="callTabViewChangeFn($event);" ng-show="{!NOT(hideKnowledgeArticleTab)}">
+                                                <a href="#" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-scoped-9" title="Knowledge Article" style="text-decoration:none;">Knowledge Article</a>
+                                            </li>
+                                        </ul>
+
+                                        <!-- Start- Code for ipod, mobile view tab menu -->
+                                        <div class="slds-dropdown-trigger slds-dropdown-trigger--click slds-is-open slds-hide" aria-expanded="true" aria-selected="true" id="dropdownListId" style="display:none">
+                                            <button class="slds-button slds-button--icon-border-filled" aria-haspopup="true" ng-click="showMenu()">
+                                                <svg aria-hidden="true" class="slds-button__icon">
+                                                    <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#down')}"></use>
+                                                </svg>
+                                                <span class="slds-assistive-text">Show More</span>
+                                            </button>
+                                            <div class="slds-dropdown slds-dropdown--left" id="menuId">
+                                                <ul class="dropdown__list" role="menu">
+                                                    <li class="slds-dropdown__item slds-active" role="menuitem" id="tab1">
+                                                        <a title="{!$Label.Primary_Assessment_Type}" href="#" ng-click="callTabViewChangeFn($event);">
+                                                            {!$Label.Primary_Assessment_Type}
+                                                        </a>
+                                                    </li>
+                                                    <li class="slds-dropdown__item" role="menuitem" id="tab2" ng-show="{!NOT(hideRAMTab1)}">
+                                                        <a title="{!$Label.Related_Assessment_Type_1}" href="#" ng-click="callTabViewChangeFn($event);">
+                                                            {!$Label.Related_Assessment_Type_1}
+                                                        </a>
+                                                    </li>
+                                                    <li class="slds-dropdown__item" role="menuitem" id="tab3" ng-show="{!NOT(hideRAMTab2)}">
+                                                        <a title="{!$Label.Related_Assessment_Type_2}" href="#" ng-click="callTabViewChangeFn($event);">
+                                                            {!$Label.Related_Assessment_Type_2}
+                                                        </a>
+                                                    </li>
+                                                    <li class="slds-dropdown__item" role="menuitem" id="tab4" ng-show="{!NOT(hideRAMTab3)}">
+                                                        <a title="{!$Label.Related_Assessment_Type_3}" href="#" ng-click="callTabViewChangeFn($event);">
+                                                            {!$Label.Related_Assessment_Type_3}
+                                                        </a>
+                                                    </li>
+                                                    <li class="slds-dropdown__item" role="menuitem" id="tab5" ng-show="{!NOT(hideRAMTab4)}">
+                                                        <a title="{!$Label.Related_Assessment_Type_4}" href="#" ng-click="callTabViewChangeFn($event);">
+                                                            {!$Label.Related_Assessment_Type_4}
+                                                        </a>
+                                                    </li>
+                                                    <li class="slds-dropdown__item" role="menuitem" id="tab6" ng-show="{!NOT(hideDataViewerTab)}">
+                                                        <a title="Data Viewer" href="#" ng-click="callTabViewChangeFn($event);">
+                                                            Data Viewer
+                                                        </a>
+                                                    </li>
+                                                    <li class="slds-dropdown__item" role="menuitem" id="tab7" ng-show="{!NOT(hideAMListTab)}">
+                                                        <a title="{!$Label.Web_Assignment_Manager_Label}" href="#" ng-click="callTabViewChangeFn($event);">
+                                                            {!$Label.Web_Assignment_Manager_Label}
+                                                        </a>
+                                                    </li>
+                                                    <li class="slds-dropdown__item" role="menuitem" id="tab8" ng-show="{!NOT(hideAssessableRecordTab)}">
+                                                        <a title="{!$Label.Assessable_Record_Tab_Name}" href="#" ng-click="callTabViewChangeFn($event);">
+                                                            {!$Label.Assessable_Record_Tab_Name}
+                                                        </a>
+                                                    </li>
+                                                    <li class="slds-dropdown__item" role="menuitem" id="tab9" ng-show="{!NOT(hideKnowledgeArticleTab)}">
+                                                        <a title="Knowledge Article" href="#" ng-click="callTabViewChangeFn($event);">
+                                                            Knowledge Article
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <!-- End - Code for ipod, mobile view tab menu -->
+
+                                        <div class="slds-tabs__content slds-hide" role="tabpanel" id="tabpanel1" >
+                                            <div class="objectNotConfigured" style="display:none;">
+                                                <p style="color: red;font-weight:bold;padding: 7px;">{!$Label.Web_Assignment_Manager_Label} does not have Assessable Object</p>
+                                            </div>
+                                            <div ng-controller="viewerCommonController" ng-if="enableTab['unit']">
+                                                <c:SearchASMAcctAndShowItsRelatedTemplates />
+                                            </div>
+                                        </div>
+                                        <div class="slds-tabs__content slds-hide" role="tabpanel" id="tabpanel2" ng-if="{!NOT(hideRAMTab1)} || currentActiveTabLabel != '{!$Label.Related_Assessment_Type_1}'">
+                                            <div ng-controller="viewerCommonController" ng-if="enableTab['site']">
+                                                <c:SearchASMAcctAndShowItsRelatedTemplates />
+                                            </div>
+                                        </div>
+                                        <div class="slds-tabs__content slds-hide" role="tabpanel" id="tabpanel3" ng-if="{!NOT(hideRAMTab2)} || currentActiveTabLabel != '{!$Label.Related_Assessment_Type_2}'">
+                                            <div ng-controller="viewerCommonController" ng-if="enableTab['systems']">
+                                                <c:SearchASMAcctAndShowItsRelatedTemplates />
+                                            </div>
+                                        </div>
+                                        <div class="slds-tabs__content slds-hide" role="tabpanel" id="tabpanel4" ng-if="{!NOT(hideRAMTab3)} || currentActiveTabLabel != '{!$Label.Related_Assessment_Type_3}'">
+                                            <div ng-controller="viewerCommonController" ng-if="enableTab['commonarea']">
+                                                <c:SearchASMAcctAndShowItsRelatedTemplates />
+                                            </div>
+                                        </div>
+                                        <div class="slds-tabs__content slds-hide" role="tabpanel" id="tabpanel5" ng-if="{!NOT(hideRAMTab4)} || currentActiveTabLabel != '{!$Label.Related_Assessment_Type_4}'">
+                                            <div ng-controller="viewerCommonController" ng-if="enableTab['exterior']">
+                                                <c:SearchASMAcctAndShowItsRelatedTemplates />
+                                            </div>
+                                        </div>
+                                        <div class="slds-tabs__content slds-hide" role="tabpanel" id="tabpanel6" ng-if="{!NOT(hideDataViewerTab)}">
+                                            <c:DataManagement frmLensViewer="true"/>
+                                        </div>
+                                        <div class="slds-tabs__content slds-hide" role="tabpanel" id="tabpanel7" ng-if="{!NOT(hideAMListTab)}">
+                                            <c:AssignmentManagerList />
+                                        </div>
+                                        <div class="slds-tabs__content slds-hide" role="tabpanel" id="tabpanel8" ng-if="{!NOT(hideAssessableRecordTab)}">
+                                            <apex:iframe scrolling="false" src="{!$Page.AssessableRecord}?amid={!currentASMId}" id="iFrameAssessableRecord"/>
+                                        </div>
+                                        <div class="slds-tabs__content slds-hide" role="tabpanel" id="tabpanel9" ng-if="{!NOT(hideKnowledgeArticleTab)}"> 
+                                              <c:KnowledgeArticle />
+                                        </div>
+                                    </div><!-- end class slds-tabs--scoped -->
+                                </div><!-- end class slds-page-header -->
+                            
+                            </div><!-- end class main -->
+                        </div><!-- end class slds-p-around--xx-large -->
+                    </body><!-- end Body -->
+                </div><!-- end if showAllData equals true -->
+            </div><!-- end controller mainController -->
+        </div><!-- end module mainApp -->
+        <c:ViewersCommonAppComponent ></c:ViewersCommonAppComponent>
+    </html>     
+    <script>
+        $( document ).ready(function() {
+            $("#tabpanel1").addClass('slds-show');
+            if ('{!JSENCODE($CurrentPage.parameters.launchtab)}' == 'dataviewer') {
+                $('li.slds-tabs__item').each(function() {
+                    if($(this).hasClass('slds-active')) {
+    
+                        activeComponentId = $(this).attr('id');
+                        activeComponentIndex = activeComponentId.substring(activeComponentId.length-1, activeComponentId.length);
+                        $(this).removeClass('slds-active');
+                        $('#tabpanel'+activeComponentIndex).removeClass('slds-show');
+                    }
+                });
+                $('#tab6').addClass('slds-active');
+                $('#tabpanel6').addClass('slds-show');
+            }
+            var activeComponentId, activeComponentIndex, selectedComponentId, selectedComponentIndex;
+            
+            $('li.slds-tabs__item').click(function() {
+                $('li.slds-tabs__item').each(function() {
+                    if($(this).hasClass('slds-active')) {
+                        activeComponentId = $(this).attr('id');
+                        activeComponentIndex = activeComponentId.substring(activeComponentId.length-1, activeComponentId.length);
+                        $(this).removeClass('slds-active');
+                        $('#tabpanel'+activeComponentIndex).removeClass('slds-show');
+                    }
+                });
+                selectedComponentId = $(this).attr('id');
+                selectedComponentIndex = selectedComponentId.substring(selectedComponentId.length-1, selectedComponentId.length);
+                $(this).addClass('slds-active');
+                $('#tabpanel'+selectedComponentIndex).addClass('slds-show');
+            });
+            $('li.slds-dropdown__item').click(function() {
+                $('li.slds-dropdown__item').each(function() {
+                    if($(this).hasClass('slds-active')) {
+    
+                        activeComponentId = $(this).attr('id');
+                        activeComponentIndex = activeComponentId.substring(activeComponentId.length-1, activeComponentId.length);
+                        $(this).removeClass('slds-active');
+                        $('#tabpanel'+activeComponentIndex).removeClass('slds-show');
+                    }
+                });
+                selectedComponentId = $(this).attr('id');
+                selectedComponentIndex = selectedComponentId.substring(selectedComponentId.length-1, selectedComponentId.length);
+                $(this).addClass('slds-active');
+                $('#tabpanel'+selectedComponentIndex).addClass('slds-show');
+            });
+        });
+    </script>
+</apex:page>

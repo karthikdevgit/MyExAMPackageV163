@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>The survey is submitted to the manager of the facility.Please approve or reject</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Survey submitted for approval</name>
+    <style>none</style>
+    <subject>The survey for &quot;{!Account.Name}&quot; is submitted</subject>
+    <type>text</type>
+</EmailTemplate>

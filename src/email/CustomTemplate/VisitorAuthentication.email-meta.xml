@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>The Visitor has registered and is waiting for authentication.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>MB_A</letterhead>
+    <name>Visitor Authentication</name>
+    <style>freeForm</style>
+    <subject>Visitor has registered please authenticate</subject>
+    <textOnly>Hello,
+
+Visitor  {!Visitor_Register__c.Visitor__c}  has submitted the request for badge.
+
+To authenticate the visitor please Click Here.
+
+Thanks
+
+Administration Team</textOnly>
+    <type>html</type>
+</EmailTemplate>

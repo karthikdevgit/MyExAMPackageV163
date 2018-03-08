@@ -1,0 +1,157 @@
+<apex:page controller="AssessmentMapBuilderController" showHeader="true" sidebar="false" id="mapbuilder" tabstyle="Map_Builder__tab">
+
+    <apex:stylesheet value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-ui.min.css')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-1.10.2.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-ui.min.js')}"/>
+    <apex:form id="templateForm" style="bgcolor:#EEEEEE;border-color:#666666;" >
+        <input style="height:0px; border:white;width:0px" id="Box"/>
+        <apex:pageMessages id="msgBlock"></apex:pageMessages>
+        <apex:actionFunction name="updateQuestions" rerender="{!$Component.mapbuilder.templateForm.innerdetail}"/>
+        <div style="background-color:#EEEEEE;border-color:#666666;" id="outermost">
+            <div style="margin-right:3px;margin-left:3px;text-align:center;font-size:18px;padding:10px 0 10px 0px;font-style:bold;" >
+                <apex:outputText value="Assessment Map Builder"/>
+            </div>
+            <apex:actionFunction name="changeAssessableObject" action="{!assessableObjectChanged}" reRender="msgBlock, assableObjectPanel" oncomplete="$('.searchWaitingDivOpacity').hide();" status="objectChangeStatus">
+                <apex:param name="selectedObjectAPIName" value=""/>
+            </apex:actionFunction>
+            <apex:pageBlock title="Select Assessable object with include condition">
+                <apex:outputPanel id="assableObjectPanel">
+                    <table>
+                        <tr>
+                            <td>
+                                Assessable Object 
+                            </td>
+                            <td>
+                                <apex:selectList value="{!assessableObject}" multiselect="false" size="1" onchange="changeAssessableObject(this.Value);">
+                                    <apex:selectOptions value="{!AssessableObjects}"/>
+                                </apex:selectList>
+                                <apex:actionStatus id="objectChangeStatus" startText="Processing...." startStyle="font-size:12px;color:red;"></apex:actionStatus>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Assessment Group 
+                            </td>
+                            <td>
+                                <apex:selectList value="{!assessmentGroup}" multiselect="false" size="1">
+                                    <apex:actionSupport event="onchange" action="{!assessmentGroupChanged}" reRender="msgBlock, assableObjectPanel" status="groupChangeStatus"/>
+                                    <apex:selectOptions value="{!assessmentGroups}"/>
+                                </apex:selectList>
+                                <apex:actionStatus id="groupChangeStatus" startText="Processing...." startStyle="font-size:12px;color:red;"></apex:actionStatus>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Assessment Event 
+                            </td>
+                            <td>
+                                <apex:selectList value="{!assessmentEvent}" multiselect="false" size="1">
+                                    <apex:selectOptions value="{!assessmentEvents}"/>
+                                </apex:selectList>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Pin Color By
+                            </td>
+                            <td>
+                                <apex:selectList value="{!colormapping}" multiselect="false" size="1">
+                                    <apex:selectOptions value="{!pinColorConfigurationList}"/>
+                                </apex:selectList>
+                            </td>
+                        </tr>
+                    </table>
+                </apex:outputPanel>
+            </apex:pageBlock>
+
+            <apex:pageBlock title="Select the fields to include in Map">      
+                <table>
+                    <tr>
+                        <td>
+                            <apex:selectCheckboxes id="sectionlist" value="{!MapType}" layout="pageDirection" borderVisible="true"> 
+                              <apex:selectOption itemValue="AssessmentCompletion" itemLabel="Assessment Completion"/>
+                              <apex:selectOption itemValue="Priority" itemLabel="Priority"/>
+                              <apex:selectOption itemValue="Status" itemLabel="Status"/>
+                            </apex:selectCheckboxes>
+                        </td>
+                        <td>
+                            <div style="padding: 1px 1px 1px 1px;">
+                                <apex:selectList id="AssComp" value="{!assessmentCompletionVal }" size="1">
+                                    <apex:selectOptions value="{!AMAssessmentCompletion}"/>
+                                </apex:selectList>
+                            </div>
+                            <div style="padding: 1px 1px 1px 1px;">                
+                                <apex:selectList id="prio" value="{!priorityVal}" size="1">
+                                    <apex:selectOptions value="{!AMPriority}"/>
+                                </apex:selectList>
+                            </div>
+                            <div style="padding: 1px 1px 1px 1px;">                
+                                <apex:selectList id="Status" value="{!statusVal}" size="1">
+                                    <apex:selectOptions value="{!AMStatus}"/>
+                                </apex:selectList>
+                            </div>
+                        </td>
+                    </tr>
+                </table>            
+                <br/>
+                <table>
+                    <tr>
+                        <td style="text-align:right"><b><apex:outputLabel value="Filter by Assessment Type :"/></b></td>
+                        <td><apex:selectList id="assessmentType" value="{!assessmentTypeVal}" size="1">
+                                <apex:selectOptions value="{!AMAssessmentType}"/>
+                            </apex:selectList>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:right"><b><apex:outputLabel value="Scheduled From:"/></b></td>
+                        <td><input type="text" id="from"/></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:right"><b><apex:outputLabel value="Scheduled To:"/></b></td>
+                        <td><input type="text" id="to"/></td>
+                    </tr>
+                    <!--
+                    <tr>
+                        <td style="text-align:right"> <b><apex:outputText value="Color By :"/></b></td>
+                        <td>  <apex:selectList id="colorby" size="1" title="Color By" value="{!ColorBy}">
+                                  <apex:selectOption itemValue="AssessmentCompletion" itemLabel="Assessment Completion"/>
+                                  <apex:selectOption itemValue="Priority" itemLabel="Priority"/>
+                                  <apex:selectOption itemValue="Status" itemLabel="Status"/>
+                              </apex:selectList> 
+                        </td>
+                    </tr>
+                    -->
+                </table><br/><br/>
+                <!--<apex:pageBlock title="Select Accounts to Show in the Map">
+                    Mapping Group &nbsp;
+                    <apex:selectList id="MappingGroup" value="{!selectedmappingValues}" multiselect="true" size="6">
+                        <apex:selectOptions value="{!MappingGroup}"/>
+                    </apex:selectList>
+                </apex:pageBlock> <br/><br/>-->
+                <apex:pageBlock title="Show Users position in Map">
+                    Show users location  ?<apex:inputCheckbox value="{!showUsers}" title="Show users location?"/>
+                </apex:pageBlock>
+                <apex:commandButton value="Submit" action="{!submitmap}" style="text-align:center;font-style:bold;padding:5px 5px 5px 5px;" reRender="msgBlock"/>
+                <apex:inputHidden id="hiddenfromDate" value="{!scheduledFrom}"/>
+                <apex:inputHidden id="hiddentoDate" value="{!scheduledTo}"/>
+            </apex:pageBlock>
+        </div>
+    </apex:form>
+    <script>
+        $(document).ready(function(){
+            document.getElementById("Box").focus();
+            $("#from").datepicker({
+                onSelect: function(selected) {
+                    $('[id$=hiddenfromDate]').val( selected );
+                    $("#to").datepicker("option","minDate", selected)
+                }
+            });
+            $("#to").datepicker({ 
+                onSelect: function(selected) {
+                    $('[id$=hiddentoDate]').val( selected );
+                    $("#from").datepicker("option","maxDate", selected)
+                }
+            });
+        });
+    </script>
+</apex:page>

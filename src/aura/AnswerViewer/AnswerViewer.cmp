@@ -1,0 +1,56 @@
+<aura:component access="public">
+	
+    <aura:handler name="ctrlLinkMenuEvt" event="c:ctrlLinkMenuEvt" action="{!c.getAction}" description="for Menu control action"/>
+
+    <aura:attribute name="hasQuestionsQueried" type="Boolean" default="false" access="public" />
+    <aura:attribute name="selcOptValue" type="String" access="public"/>
+    <aura:attribute name="QuestionTemplate" type="Question_Template__c" access="public"/>
+    <aura:attribute name="type" type="String" access="public"/>
+    <aura:attribute name="imageSrc" type="String[]" access="public"/>
+    <aura:attribute name="imagePrefix" type="String" default="/servlet/servlet.FileDownload?file=" access="public"/>
+    <aura:attribute name="hasCheck" type="Boolean" default="false" access="public"/>
+    <aura:attribute name="answerOptions" type="Answer_Option__c[]" access="public"/>
+    
+    <aura:registerEvent name="notificationEvent" type="c:notificationEvt"/>
+
+    <aura:method name="doInitMethod" action="{!c.doInit}" access="public"/>
+
+    <div aura:id="createUiCmp" class="{!v.QuestionTemplate.ExAM__Question_Type__c == 'Horizontal Radiopicklist' || v.QuestionTemplate.ExAM__Question_Type__c == 'RadioPicklist' ?
+                                      'slds slds-p-around--small' : v.QuestionTemplate.ExAM__Question_Type__c == 'Image' ? 'div-container imgHover' : ''}">
+
+    </div>
+    <aura:if isTrue="{!v.hasCheck}">
+        <div class="slds-p-around--small">
+            <div class="slds-form-element">
+                <label class="slds-form-element__label" for="text-input-01">
+                    <abbr class="slds-required" title="required">*</abbr> Name</label>
+                <div class="slds-form-element__control">
+                    <ui:inputText class="slds-input "  required="true"/>
+                </div>
+            </div>
+            <div class="slds-form-element">
+                <label class="slds-form-element__label" for="text-input-01">
+                    <abbr class="slds-required" title="required">*</abbr> Email</label>
+                <div class="slds-form-element__control">
+                    <ui:inputEmail aura:id="email" class="slds-input " />
+                </div>
+            </div>
+            <div class="slds-form-element">
+                <label class="slds-form-element__label" for="text-input-01">
+                    <abbr class="slds-required" title="required">*</abbr> Subject</label>
+                <div class="slds-form-element__control">
+                    <ui:inputText class="slds-input "  required="true"/>
+                </div>
+            </div>
+            <div class="slds-form-element">
+                <label class="slds-form-element__label" for="text-input-01">Description</label>
+                <div class="slds-form-element__control">
+                    <ui:inputText class="slds-input "/>
+                </div>
+            </div>
+
+        </div>
+
+    </aura:if>
+
+</aura:component>

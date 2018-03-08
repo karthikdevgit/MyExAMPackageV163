@@ -1,0 +1,46 @@
+<apex:component >
+
+    <apex:attribute name="isPrimaryNumber" type="Boolean" default="false" description="Renders Primary Number Question"/>
+    <apex:attribute name="isDependentNumber" type="Boolean" default="false" description="Renders Dependent Number Question"/>
+    <apex:attribute name="isDecisionTreeNumber" type="Boolean" default="false" description="Renders Decision Tree Number Question"/>
+
+    <apex:outputPanel rendered="{!isPrimaryNumber}">
+        <div ng-if="eachQuestTemplateRec.ExAM__Question_Type__c == 'Number'">
+            <c:Primary_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <input type="text" ng-model="response[eachQuestTemplateRec.Id]"
+                       maxLength="{{eachQuestTemplateRec.ExAM__Field_Length__c}}"
+                       class="slds-size--8-of-12 slds-input validateCurrency validate{{eachQuestTemplateRec.ExAM__Is_Mandatory__c}}"
+                       id="{{eachQuestTemplateRec.Id}}"/>
+                <c:Primary_Question_Action />
+            </div> 
+        </div>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!isDependentNumber}">
+        <div ng-if="nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c == 'Number'">
+            <c:Dependent_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <input type="text" ng-model="response[nextDependentQuestion[eachQuestTemplateRec.Id].Id]"
+                       maxLength="{{nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Field_Length__c}}"
+                       class="slds-size--8-of-12 slds-input validateCurrency validate{{nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Is_Mandatory__c}}"
+                       id="{{nextDependentQuestion[eachQuestTemplateRec.Id].Id}}"/>
+                <c:Dependent_Question_Action />
+            </div> 
+        </div>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!isDecisionTreeNumber}">
+        <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'Number'">
+            <c:DecisionTree_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <input type="text" ng-model="DecisionTreeresponse[decisionTreeQuestion.Id]"
+                       maxLength="{{decisionTreeQuestion.ExAM__Field_Length__c}}"
+                       class="slds-size--8-of-12 slds-input validateDTCurrency"
+                       id="{{decisionTreeQuestion.Id}}"/>
+                <c:DecisionTree_Question_Action />
+            </div> 
+        </div>
+    </apex:outputPanel>
+
+</apex:component>

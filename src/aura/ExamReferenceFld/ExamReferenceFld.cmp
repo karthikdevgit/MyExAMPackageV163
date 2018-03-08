@@ -1,0 +1,84 @@
+<aura:component extends="c:ExamFieldBase" access="public">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:attribute name="oldValue" type="String" access="public"/>
+    <aura:attribute name="newValue" type="String" access="public"/>
+    <aura:attribute name="questionList" type="List" access="public"/>
+    <aura:attribute name="disabled" type="Boolean" access="public"/>
+	
+	<aura:registerEvent name="questionTemplateChanged" type="c:fireSectionChangedEvt"/>
+    
+    <div class="{!join( ' ', v.cssClass, 'slds-grid--align-spread slds-grid slds-wrap slds-grid--vertical-align-center')}">
+        
+        <aura:if isTrue="{!v.mode == 'view'}">
+            
+            <div class="label-override">
+                <ui:outputText value="{!v.fieldLabel}" class="slds-m-right_xx-small"/>
+                <lightning:helpText class="{!v.helpText ? '' : 'slds-hide'}"  content="{!v.helpText}" iconName="utility:info"/>
+            </div>
+            <div class="slds-size--1-of-1 " aura:id="createOutputCmp">
+                <ui:outputText value="{!v.newValue}"/>
+            </div>
+            
+            <aura:set attribute="else">
+                <aura:if isTrue="{!v.defaultMode == 'view'}">
+                    <aura:if isTrue="{!v.hideLabel}">
+                        <div class="slds-size-1-of-1 " aura:id="createOutputCmp">
+                            <a class="label-override" onclick="{!c.changevalue}">
+                                <ui:outputText value="{!v.newValue}"/>
+                            </a>
+                        </div>
+                        <aura:set attribute="else">
+                            <div>
+                                <a class="{!v.disabled ? 'disabled slds-m-right_xx-small' : 'exam-bold slds-m-right_xx-small label-override'}" onclick="{!c.changevalue}">
+                                    {!v.fieldLabel}
+                                </a>
+                                <lightning:helptext class="{!v.helpText ? '' : 'slds-hide'}" content="{!v.helpText}"  iconName="utility:info"/>
+                            </div>
+                            <div class="slds-size--1-of-1 " aura:id="createOutputCmp">
+                                <ui:outputText value="{!v.newValue}"/>
+                            </div>
+                        </aura:set>
+                    </aura:if>
+                    <aura:set attribute="else">
+                        
+                        <div class="{!v.hideLabel ? 'slds-hide' : 'slds-show'}">
+                            <a class="exam-bold slds-m-right_xx-small label-override">
+                                {!v.fieldLabel}
+                            </a>
+                            <lightning:helptext class="{!v.helpText ? '' : 'slds-hide'}" content="{!v.helpText}" iconName="utility:info"/>
+                        </div>
+                        
+                        <div class="slds-col slds-grid slds-grid--align-spread slds-wrap slds-grid--vertical-align-center">
+                            <span class="slds-grid slds-truncate_container_25">
+                                <ui:outputText class="slds-truncate" title="{!v.newValue}" value="{!v.newValue ? v.newValue : ''}"/>
+                            </span>
+                            
+                            <span aura:id="createInputCmp" class="slds-col slds-m-right--medium slds-p-vertical--x-small">
+                                <lightning:buttonMenu variant="container" aura:id="menu" 
+                                                      disabled="{!v.disabled}"
+                                                      alternativeText="Show menu" onselect="{! c.singleNextQuestionSelect }">
+                                    <lightning:menuItem label="--None--"
+                                                        value="" checked="{!v.record.ExAM__Single_Next_Question__c == ''}"/>
+                                    <aura:iteration items="{!v.questionList}" var="question">
+                                        <lightning:menuItem label="{! question.ExAM__Question_Label__c }"
+                                                            value="{! question.Id }" title="{! question.ExAM__Question_Label__c }" checked="{!v.record.ExAM__Single_Next_Question__c == question.Id}"/>
+                                    </aura:iteration>
+                                </lightning:buttonMenu>
+                            </span>
+                            <aura:if isTrue="{! !v.newField}">
+                                <span class="slds-col slds-p-vertical--x-small">
+                                    <a class="slds-button slds-button--neutral slds-button--save slds-m-right--small" onclick="{!c.updateFieldValue}">
+                                        Save
+                                    </a>
+                                    <a class="slds-button slds-button--neutral" onclick="{!c.cancelUpdateFieldVal}">
+                                        Cancel</a>
+                                </span>
+                            </aura:if>
+                        </div>
+                    </aura:set>
+                </aura:if>
+            </aura:set>
+        </aura:if>
+    </div>
+</aura:component>

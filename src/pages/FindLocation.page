@@ -1,0 +1,74 @@
+<apex:page controller="FindLocationController"   standardStylesheets="false"  id="ServiceForm" showHeader="false" sidebar="false" docType="html-5.0">
+<meta name="viewport" content="width=device-width-5, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes;" />  
+<head>
+   
+    <script>
+    /*function SaveLocation() {
+  if(navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(successCallback,errorCallback);
+  } else {
+    alert("geoloaction not suported");
+  }
+}*/
+window.onload=function(){if(navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(successCallback,errorCallback);
+  } else {
+    alert("geoloaction not suported");
+  }}
+
+function successCallback(position) {
+  var lat = position.coords.latitude;
+  var lon = position.coords.longitude;
+  document.getElementById(
+        '{!$Component.form.block.longitude}').value=lon;
+        document.getElementById(
+        '{!$Component.form.block.latitude}').value=lat;//alert('Saving the Location');
+  //alert("latitude:" + lat +", longitude:" + lon);
+  callSave();
+   //alert('Location saved');  
+  sforce.one.back(true);
+  //alert('Location saved');//save();
+}
+
+
+function errorCallback() {
+ alert("Activate the location service on mobile");
+  if( (typeof sforce.one != 'undefined') && (sforce.one != null) )
+         {
+    // Salesforce1 navigation
+    sforce.one.navigateToURL(urlform);
+}
+else {
+    // Set the window's URL using a Visualforce expression
+    window.location.href = '/home/home.jsp';
+
+        
+    }   
+}
+ </script>
+</head>
+
+<apex:form id="form">
+<apex:actionFunction name="callSave" action="{!submit}" />
+<!--<apex:actionFunction name="callCancel" action="{!cancel}" />-->
+    <apex:pageBlock id="block">     
+      
+   <b>Name: <apex:outputField value="{!currentuser.name}"/><br/><br/>
+   Email: <apex:outputField value="{!currentuser.Email}"/></b>
+
+ 
+    
+<apex:inputHidden value="{!currentuser.Location__Latitude__s}"  id="Latitude"/>
+    
+<apex:inputHidden value="{!currentuser.Location__Longitude__s}"   id="longitude" /><br /><br />
+<apex:outputPanel id="locationdetail" rendered="{!NOT(ISNULL(currentuser.Location__Latitude__s))}">
+    Location Latitude :<apex:outputField value="{!currentuser.Location__Latitude__s}"/><br/>
+    Location Longitude : <apex:outputField value="{!currentuser.Location__Longitude__s}"/>
+
+</apex:outputPanel>
+   <!-- <button type="button" value="GPS"   onclick="SaveLocation();"> Save location </button>
+    <apex:commandButton action="{!save}" value="Save!" />-->
+    </apex:pageBlock>
+</apex:form>
+
+</apex:page>

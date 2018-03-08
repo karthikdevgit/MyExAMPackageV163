@@ -1,0 +1,63 @@
+<apex:component >
+
+    <apex:attribute name="isPrimaryButton" type="Boolean" default="false" description="Renders Primary Button Question"/>
+    <apex:attribute name="isDependentButton" type="Boolean" default="false" description="Renders Dependent Button Question"/>
+    <apex:attribute name="isDecisionTreeButton" type="Boolean" default="false" description="Renders Decision Tree Button Question"/>
+
+    <apex:outputPanel rendered="{!isPrimaryButton}">
+        <div ng-if="eachQuestTemplateRec.ExAM__Question_Type__c == 'Button'">
+            <c:Primary_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <div ng-init="setDefaultBtn(eachQuestTemplateRec.Id)"
+                    class="slds-size--8-of-12 slds-button-group validateBtn{{eachQuestTemplateRec.ExAM__Is_Mandatory__c}}" id="Btn{{eachQuestTemplateRec.Id}}">
+                    <div style="padding-left:15px;" ng-repeat="option in optionsArr = splitOptions(eachQuestTemplateRec) track by $index" role="group">
+                        <button ng-model="response[eachQuestTemplateRec.Id]"
+                                ng-click="setSelectedOption(eachQuestTemplateRec, option, optionsArr, false); returnRelatedDependentQuestion(eachQuestTemplateRec, response[eachQuestTemplateRec.Id]);"
+                                ng-class="{btnBorder:response[eachQuestTemplateRec.Id]==option,noneBorder:response[eachQuestTemplateRec.Id]!=option}"
+                                class="slds-button slds-button--neutral" id="{{$index}}{{eachQuestTemplateRec.Id}}">
+                                    {{option}}
+                        </button>
+                    </div>
+                </div>
+                <c:Primary_Question_Action renderClearIcon="true" />
+            </div> 
+        </div>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!isDependentButton}">
+        <div ng-if="nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c == 'Button'">
+            <c:Dependent_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <div class="slds-size--8-of-12 slds-button-group validateBtn{{nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Is_Mandatory__c}}"
+                     id="Btn{{nextDependentQuestion[eachQuestTemplateRec.Id].Id}}">
+                    <div style="padding-left:15px;" ng-repeat="option in optionsArr = splitOptions(nextDependentQuestion[eachQuestTemplateRec.Id]) track by $index" role="group">
+                        <button ng-model="response[nextDependentQuestion[eachQuestTemplateRec.Id].Id]"
+                                ng-click="setSelectedOption(nextDependentQuestion[eachQuestTemplateRec.Id], option, optionsArr, false);"
+                                ng-class="{btnBorder:response[nextDependentQuestion[eachQuestTemplateRec.Id].Id]==option,noneBorder:response[nextDependentQuestion[eachQuestTemplateRec.Id].Id]!=option}"
+                                class="slds-button slds-button--neutral" id="{{$index}}{{nextDependentQuestion[eachQuestTemplateRec.Id].Id}}">
+                                    {{option}}
+                        </button>
+                    </div>
+                </div>
+                <c:Dependent_Question_Action />
+            </div> 
+        </div>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!isDecisionTreeButton}">
+        <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'Button'">
+            <c:DecisionTree_Question_Property />
+            <div class="slds-grid--reverse slds-wrap slds-button-group">
+                <div style="padding-left:15px;" ng-repeat="option in optionsArr = splitOptions(decisionTreeQuestion) track by $index" role="group">
+                    <button ng-model="DecisionTreeresponse[decisionTreeQuestion.Id]"
+                            ng-click="setSelectedOption(decisionTreeQuestion, option, optionsArr, true);"
+                            ng-class="{btnBorder:DecisionTreeresponse[decisionTreeQuestion.Id]==option,noneBorder:DecisionTreeresponse[decisionTreeQuestion.Id]!=option}"
+                            class="slds-button slds-button--neutral btnStyle" id="{{$index}}{{decisionTreeQuestion.Id}}">
+                                {{option}}
+                    </button>
+                </div>
+            </div> 
+        </div>
+    </apex:outputPanel>
+
+</apex:component>

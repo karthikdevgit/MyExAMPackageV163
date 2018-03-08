@@ -1,0 +1,4 @@
+<aura:event type="APPLICATION" access="public">
+    <aura:attribute name="sectionId" type="String" access="public"/>
+    <aura:attribute name="dependent" type="Boolean" access="public"/>
+</aura:event>

@@ -1,0 +1,127 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" standardController="Section_Template__c" extensions="QuestionnaireFieldsSiteOutput"  recordSetVar="sitem" action="{!sectionStatus}" id="thePage" renderAs="pdf">
+<!--<apex:page showHeader="false" sidebar="false" standardStylesheets="false" standardController="Section_Template__c" extensions="QuestionnaireFieldsReportOutput"  recordSetVar="sitem" action="{!sectionStatus}" id="thePage" contenttype="application/vnd.ms-excel">
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" standardController="Section_Template__c" extensions="QuestionnaireFieldsReportOutput"  recordSetVar="sitem" action="{!sectionStatus}" id="thePage" contentType="application/msWord" cache="true">-->
+ <!-- This is the page for banner include it in all pages
+<apex:include pageName="BannerTemplate"/>-->
+<style>
+@page Section1 {
+mso-footer:f1;
+}
+div.Section1 {
+page:Section1;
+}
+p.MsoFooter, li.MsoFooter, div.MsoFooter {
+mso-pagination:widow-orphan;
+}
+</style>
+<script language="JavaScript" type="text/javascript">
+
+</script>
+<div class='Section1'>
+<apex:form id="templateForm">
+      <table><tr><td width="70%">
+  <apex:outputfield value="{!acc.School_Logo__c}"/> </td><td width="25%"><apex:image value="{!$Resource.CompanyLogo}" height="100"/></td></tr></table>
+
+     
+
+        <p style="text-align:center;font-size:35px;">{!accountName} Assessment</p>
+       
+        <apex:pageBlock >
+                
+            <apex:pageBlockSection id="sectionBlock"  columns="1" >
+                  <apex:variable var="snum" value="{!1}"/> 
+                  
+                                                                       
+                    <apex:repeat value="{!sectionList}" var="section" > 
+                   <b> <apex:outputText value="{!snum}.  {!section.Name}" style="font-style:bold;"/> </b><hr/>
+                   <apex:variable var="qnum" value="{!1}"/> 
+                  
+                  
+<!--<div class="table" style="width:500px;">
+ <apex:repeat value="{!section.questionList}" var="question" >
+<div class="question-num" style="background-color:pink; width:50px;">
+        {!snum}.{!qnum}.
+</div>
+<div class="question-and-answer" style="background-color:gray; width:450px; float:right;">
+    <div class="question" style="color:green;">
+            {!question.Name} 
+    </div>
+    <div class="answer" style="color:blue;">
+    12345
+    <apex:outputText value="{!question.responsename}" rendered="{!NOT(ISNULL(question.responsename))}" /> 
+    </div>
+</div>
+ </apex:repeat>
+<apex:variable var="qnum" value="{!qnum+1}"/> 
+<apex:variable var="snum" value="{!snum+1}"/> 
+</div>-->
+
+
+
+                   <table cols="2">
+                   
+                        <apex:repeat value="{!section.questionList}" var="question" > 
+                        <tr>
+                          <td valign="top" width="50px">
+                            {!snum}.{!qnum}.</td>                   
+                          <td valign="top">
+                             {!question.Name} 
+                          </td>
+                        </tr>
+                        <tr>
+                          <td></td>
+                          <td valign="top">
+                             <apex:outputText value="{!question.responsename}" rendered="{!NOT(ISNULL(question.responsename))}" style="color:blue;font-style:normal;padding-left:53px;"/> 
+                            <!-- <apex:outputText value="{!IF(ISNULL(question.responsename)),'No response','res'}" rendered="{!NOT(ISNULL(question.responsename))}" />-->
+                                                                                
+                           </td>
+                        </tr>
+                              <apex:variable var="qnum" value="{!qnum+1}"/> 
+                        </apex:repeat> 
+                        <apex:variable var="snum" value="{!snum+1}"/> 
+                      </table>  <p style="text-align:right;page-break-after:always;"/> 
+                    </apex:repeat>
+
+                   
+                      
+                      
+                      
+                                           
+                        
+            </apex:pageBlockSection>
+            
+      </apex:pageBlock> 
+     
+       
+                
+  </apex:form>
+
+
+
+
+<br clear='all' style='page-break-before:always' />
+<!--<div style='mso-element:footer'>
+<p>
+<hr />
+<table>
+<tr>
+<td colspan='2' style='text-align:center;'>
+Page&nbsp;
+</td>
+</tr>
+<tr>
+<td style='width:80%'>
+&nbsp;
+</td>
+<td style='width:20%'>
+
+<img width='124' height='54' src='YourImageUrlHere'/>
+</td>
+</tr>
+</table>
+</p>
+</div>-->
+</div>
+
+ 
+</apex:page>

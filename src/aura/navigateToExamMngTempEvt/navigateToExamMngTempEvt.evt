@@ -1,0 +1,4 @@
+<aura:event type="Component" access="public" >
+    <aura:attribute name="assessmentId" type="String" access="public" />
+    <aura:attribute name="showSection" type="Boolean" access="public" default="false"/>
+</aura:event>

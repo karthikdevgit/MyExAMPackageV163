@@ -1,0 +1,565 @@
+<apex:page controller="CreateAMAndAnswersController" showHeader="false" sidebar="false" cache="false" standardStylesheets="false" docType="html-5.0" applyBodyTag="false">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=11" />
+        <apex:repeat value="{!pathList}" var="path">
+           <link rel="stylesheet" type="text/css" href="{!srName+path}"/>
+        </apex:repeat>
+        <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"/>
+        <apex:stylesheet value="{!URLFOR($Resource.PublicAssessment,'PublicAssessment/basic.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-ui.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.SLDS052, '/assets/styles/salesforce-lightning-design-system-vf.css')}" />
+        <apex:includeScript value="{!$Resource.svg4everybody}"/>
+        <apex:includeScript value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-1.10.2.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-ui.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.AngularGoogleMap, '/AngularGoogleMapsJS/lodash.min.js')}"/>
+        <apex:includeScript value="{!$Resource.sanitize}"/>
+        <apex:includeScript value="{!$Resource.JSSignaturePad}"/>
+        <apex:includeScript value="{!$Resource.hilightHotspot}"/>
+    </head>
+    <body>         
+        <!-- Processing Image Code -->
+        <div class="slds">
+            <div style="display: none; background-color: rgba(0, 0, 0, 0.6); width: 100%; height: 100%; z-index: 1000; position: fixed; left: 0; top: 0; overflow: hidden; text-align: center; vertical-align: middle;padding-top:15%;" class="spinner">
+                <img src="{!URLFOR($Resource.SLDS052, '/assets/images/spinners/slds_spinner_brand.gif')}" alt="Loading..." class="slds-spinner--small" style="display: none;z-index: 10001; width: 80px; height: 80px; text-align: left; position: relative; top: 30%;vertical-align:middle;"/>
+                <h1 style="color:white;font-size:30px;vertical-align:middle;" class="attachNumber"></h1>
+                <h1 style="color:white;font-size:20px;vertical-align:middle;" class="attachMessage"></h1>
+            </div>
+        </div>
+        <!--End Processing Image Code -->
+
+        <div class="slds" ng-app="mainApp" ng-controller="mainCtrller">
+            <div class="showAllData" style="display:none">
+                <div class="headerPCls" ng-controller="viewerCommonController" ng-if="{!singleQuestionMode}" ng-class="{autoSubmitTrue:{!autosubmit}===true,autoSubmitFalse:{!autosubmit}===false}"> 
+                    <div compile-template="compiler" id="headerHtml" ng-bind-html="headerHTML"/>
+                    <style compile-template="compiler" ng-bind-html="basicStyle"/>
+                    <!-- style compile-template="compiler" ng-bind-html="srStyle"/ -->
+                    <div class="main" role="main">
+                        <div style="padding-top:10px;" ng-bind-html="introTextHTML" ng-if="showIntroText"/>
+                        <div class="slds-notify_container notifyContainerTop" ng-if="{!moveforward}">
+                            <c:PublicSiteViewer_SingleQuestionMode />
+                        </div>
+                        <center>
+                            <div class="slds-notify_container" ng-if="{!NOT(moveforward)}" >
+                                <div class="slds-notify slds-notify--toast slds-theme--error" role="alert">
+                                    <span class="slds-assistive-text">Info</span>
+                                    <center>
+                                        <div class="slds-notify__content">
+                                            <h2 class="slds-text-heading--small" ng-show="{!AND(NOT(moveforward), hasLinkExpired)}">{!$Label.Public_Assessment_Link_Expiration_Error_Message}</h2>
+                                            <h2 class="slds-text-heading--small" ng-show="{!AND(NOT(moveforward),NOT(hasLinkExpired))}">{!$Label.Public_Assessment_Not_Exists}</h2>
+                                        </div>
+                                    </center>
+                                </div>
+                            </div>
+                        </center>
+                    </div>
+                    <div compile-template="compiler" ng-bind-html="footerHTML"></div>
+                </div>
+                <div class="headerPCls" ng-controller="viewerCommonController" ng-if="{!NOT(singleQuestionMode)}" ng-class="{autoSubmitTrue:{!autosubmit}===true,autoSubmitFalse:{!autosubmit}===false}">
+                    <div compile-template="compiler" id="headerHtml" ng-bind-html="headerHTML"/>
+                    <style compile-template="compiler" ng-bind-html="basicStyle"/>
+                    <style compile-template="compiler" ng-bind-html="srStyle"/>
+                    <div class="main" role="main">
+                        <div style="padding-top:10px;" ng-bind-html="introTextHTML" ng-if="showIntroText"/>
+                        <div class="slds-notify_container notifyContainerTop" ng-show="{!moveforward}">
+                            <c:PublicSiteAMAndAnswerCreationComponent />
+                        </div>
+                        <center>
+                            <div class="slds-notify_container" ng-if="{!NOT(moveforward)}">
+                                <div class="slds-notify slds-notify--toast slds-theme--error" role="alert">
+                                    <span class="slds-assistive-text">Info</span>
+                                    <center>
+                                        <div class="slds-notify__content">
+                                            <h2 class="slds-text-heading--small" ng-show="{!AND(NOT(moveforward), hasLinkExpired)}">{!$Label.Public_Assessment_Link_Expiration_Error_Message}</h2>
+                                            <h2 class="slds-text-heading--small" ng-show="{!AND(NOT(moveforward),hasLinkNotValid)}">This link will be available on  {{startDate | date:'MM/dd/yyyy'}} </h2>
+                                            <h2 class="slds-text-heading--small" ng-show="{!AND(NOT(moveforward),NOT(hasLinkExpired),NOT(hasLinkNotValid))}">{!$Label.Public_Assessment_Not_Exists}</h2>
+                                        </div>
+                                    </center>
+                                </div>
+                            </div>
+                        </center>
+                    </div>
+                    <div compile-template="compiler" ng-bind-html="footerHTML"></div>
+                 </div>
+                 <div ng-class="{autoSubmitTrue:{!autosubmit}===true,autoSubmitFalse:{!autosubmit}===false}">
+                    <div id="modalPopUp" class="slds" style="display:none;">
+                        <c:ModalPopUpContainer />
+                    </div>  
+                </div>
+            </div>
+            <div otc-scripts="script" scripts="scripts">
+            </div>
+        </div>
+    </body>
+    <script type="text/javascript">
+        Visualforce.remoting.timeout = 120000; // Set timeout at page level
+    </script>
+    
+    <script>
+        polyFill();
+        svg4everybody();
+        /* Start Page title image and title */
+        if ('{!JSENCODE(tabIconSRName)}' != '') {
+            var link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+            link.type = 'image/x-icon';
+            link.rel = 'shortcut icon';
+            link.href = '{!JSENCODE(tabIconSRName)}';
+            document.getElementsByTagName('head')[0].appendChild(link);
+        }
+        if ('{!JSENCODE(tabTitle)}' != '') {
+            document.title = '{!JSENCODE(tabTitle)}';
+        }
+        /* End Page title image and title */
+        
+        /* Start Apply Google Analytic script */
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.charset = 'utf-8';
+        script.id = 'testing';
+        script.defer = true;
+        script.async = true;
+        //script.src = '{!JSENCODE(customScriptConfigured)}';
+        script.text = [
+            '{!JSENCODE(customScriptConfigured)}'
+        ].join('');
+        document.getElementsByTagName('head')[0].appendChild(script);
+        /* End Apply Google Analytic script */
+        
+        var underscore = angular.module('underscore', []);
+        underscore.factory('_', ['$window', function($window) {
+            return $window._; // assumes underscore has already been loaded on the page
+        }]);
+        var mainApp = angular.module('mainApp', ['underscore', 'ngSanitize']);
+        mainApp.directive("otcScripts", function() {
+ 
+            var updateScripts = function (element) {
+                return function (source) {
+                    element.empty();
+                     var scriptTag = angular.element(
+                     document.createElement("script"));
+                     scriptTag.text(source);
+                     element.append(scriptTag);
+                };
+            };
+         
+            return {
+                restrict: "EA",
+                scope: {
+                  scripts: "=" 
+                },
+                link: function(scope,element) {
+                    scope.$watch("scripts", updateScripts(element));
+                }
+            };
+        });
+        mainApp.directive('compileTemplate', function($compile, $parse){
+            return {
+                link: function(scope, element, attr){
+                    var parsed = $parse(attr.ngBindHtml);
+                    function getStringValue() {
+                        return (parsed(scope) || '').toString();
+                    }
+        
+                    // Recompile if the template changes
+                    scope.$watch(getStringValue, function() {
+                        $compile(element, null, -9999)(scope);  // The -9999 makes it skip directives so that we do not recompile ourselves
+                    });
+                }
+            }
+        });
+        mainApp.controller('mainCtrller', function(commonAppService,$scope, _,$sce, $timeout, $http ) {
+            $scope.startDate = '{!JSENCODE(startDate)}';
+            //Variable for Survey Overlay 
+            $scope.overlayDetailMap = '{!JSENCODE(overlayDetailStr)}' != '' ? JSON.parse('{!JSENCODE(overlayDetailStr)}') : {};
+            $scope.tqMessage = '{!JSENCODE(tqMessageStr)}';
+            // Variable start css oriented declarations and definitions
+            var headerFilePath = '{!JSENCODE(headerFilePath)}';
+            var footerFilePath = '{!JSENCODE(footerFilePath)}';
+            var scriptFilePath = '{!JSENCODE(scriptFilePath)}';
+            $scope.headerText = '{!JSENCODE(headerText)}';
+            $scope.logoURL = '{!JSENCODE(imgURl)}';
+            $scope.basicStyle = $sce.trustAsHtml('{!JSENCODE(basicStyle)}');
+            $scope.footerHTML = $sce.trustAsHtml('{!JSENCODE(footerStr)}');
+            $scope.introTextHTML = $sce.trustAsHtml('{!JSENCODE(headerStr)}');
+            $scope.showIntroText = {!showIntroText};
+            $scope.showSecDesc = {!showSecDesc};
+            if( headerFilePath == '') {
+                headerFilePath = "{!URLFOR($Resource.PublicAssessment,'/PublicAssessment/header.html')}";
+            }  
+            $http.get(headerFilePath).then(function(response) {
+                $scope.headerHTML =  $sce.trustAsHtml(response.data);
+            });
+            if (footerFilePath != '') {
+                $http.get(footerFilePath).then(function(response) {
+                    $scope.footerHTML =  $sce.trustAsHtml(response.data);
+                });
+            }
+            if (scriptFilePath != '') {
+                $http.get(scriptFilePath).then(function(response) {
+                    $scope.scripts =  $sce.trustAsHtml(response.data);
+                });
+            }
+            if ('{!JSENCODE(errHandler)}' != null && '{!JSENCODE(errHandler )}' != '' && '{!JSENCODE(errHandler)}' != 'null') {
+                $scope.errHandler = JSON.parse('{!JSENCODE(errHandler)}');
+                $scope.showMessage = true;
+                $scope.hasActionSuccess = false;
+                $(window).scrollTop(0);
+                $scope.messageText = $scope.errHandler.errMsg;
+            }
+            // variable used for section temp related
+            $scope.hideSection = {!hideSectionTitles};
+            $scope.hasSectionTemplates = true;
+            $scope.showSectionQuestions = false;
+            
+            //Variables used for all around public viewer page
+            $scope.autoSubmit = {!autoSubmit};
+            $scope.webIntercept = '{!webIntercept}';
+            $scope.startTime = '{!JSENCODE(startTime)}';
+            $scope.assessableObjId = '{!JSENCODE(objId)}';
+            $scope.PARecordId = '{!JSENCODE(PARecordId)}';
+            $scope.ipAddress = '{!JSENCODE(ipAddress)}';
+            $scope.assessbleObjAPI = '{!JSENCODE(assessbleObjAPI)}';
+            $scope.currentASMAssesssmentTemplateTdStr = '{!JSENCODE(tempId)}';
+            $scope.currentASMIdStr = '{!JSENCODE(amId)}';
+            $scope.viewerName = 'public';
+            $scope.sourceURL = '{!$Setup.Public_Assessment_Configuration__c.Site_URL__c}'+'/servlet/servlet.FileDownload?file=';
+            
+            
+            // Dependent Question 
+            $scope.nextDependentQuestion = {};
+            
+            $scope.response = {};
+            $scope.caseResponse = {};
+            $scope.hotspot = [];
+            $scope.isSelectBtnOptn = {};
+            $scope.selectedImage = {};
+            $scope.selOptionIndex = {};
+            $scope.signImage = {};
+            $scope.dtSignImage = {};
+            $scope.comment = {};
+            $scope.photo = {};
+            $scope.showMessage = false;
+            $scope.calledOnce = false;
+            $scope.trustedUrl = {};
+            //Attachments
+            $scope.responseFile = {};
+            $scope.fileAttach = {};
+            $scope.deleteAttFile = [];
+            
+            //Variables used for Decision tree
+            $scope.DecisionTreeresponse = {};
+            $scope.DTResultResponse = {};
+            $scope.DTResultQtnTag = {};
+            $scope.DecisionTreeResponseArr = [];
+            $scope.dtResponseFile = {};
+            $scope.photos = {};
+            $scope.DTselOptionIndex = {};
+            $scope.previousQuestion = {};
+            $scope.createdAnswerRecordIdForResultTemplate = '';
+            $scope.decisionTreeLaunchedQuestion = {};
+            $scope.decisionTreeLaunchedQuestionRes = {};
+            
+            // Variable used to single Question mode
+            $scope.questionNumber = 1;
+            $scope.questionNamewithNextQuestion = {};
+            $scope.lastSequenceQuestionName = 'start';
+            $scope.eachQuestTemplateRec = {};
+            $scope.singleQuestionMode = {!singleQuestionMode};
+            
+            // Variable used to call a queryQuestionTemplates method
+            var tempIdAndAMIdObj = {
+                assessmentTemplateId: $scope.currentASMAssesssmentTemplateTdStr,
+                createdASMId: $scope.currentASMIdStr,
+                viewerName: $scope.viewerName
+            };            
+            $scope.close = function() {
+                $('#modalPopUp').css('display','none');
+            }
+            
+            if({!hasAssessableObj} === true) {
+                if(angular.isDefined($scope.overlayDetailMap['Body']) &&
+                   angular.isDefined($scope.overlayDetailMap['Header']) &&
+                   angular.isDefined($scope.overlayDetailMap['ButtonText']) &&
+                   angular.isDefined($scope.overlayDetailMap['isEnable']) &&
+                   $scope.overlayDetailMap.isEnable == 'true'){
+                    
+                    $scope.modalHeader = $scope.overlayDetailMap.Header; 
+                    $scope.modalBody = $scope.overlayDetailMap.Body;
+                    $scope.buttonText = $scope.overlayDetailMap.ButtonText;
+                    $('#modalPopUp').css('display','');
+                }
+                $('.spinner, .slds-spinner--small').show();
+                commonAppService.queryQuestionTemplates(tempIdAndAMIdObj).then(function(resultObj) {
+                    if( resultObj.error == null ) {
+
+                        $scope.sectionAndQuestionTemplateObj = resultObj.sectionAndQuestionTemplate != null ? resultObj.sectionAndQuestionTemplate : [] ;
+                        if($scope.sectionAndQuestionTemplateObj.length == 0 ) {
+
+                           $scope.hasSectionTemplates = false; 
+                        } else {
+
+                            $scope.showSectionQuestions = true;
+                            $scope.previousQuestionName = 'start';
+                            if ( ($scope.hideSection && $scope.sectionAndQuestionTemplateObj.length > 0) || $scope.singleQuestionMode == true ) {
+                                var allSectionandQuestionTemp = {'sectionTemplateRecord':{},'questionTemplateRecords':[]};
+                                
+                                for (var i = 0; i < $scope.sectionAndQuestionTemplateObj.length ; i++) {
+                                     for (var j = 0; j < $scope.sectionAndQuestionTemplateObj[i].questionTemplateRecords.length; j++) {
+                                        if($scope.singleQuestionMode == true) {
+                                            $scope.questionNamewithNextQuestion[$scope.previousQuestionName] = $scope.sectionAndQuestionTemplateObj[i].questionTemplateRecords[j];
+                                            $scope.previousQuestionName = $scope.sectionAndQuestionTemplateObj[i].questionTemplateRecords[j].Name;
+                                        } else {
+                                            allSectionandQuestionTemp.questionTemplateRecords.push($scope.sectionAndQuestionTemplateObj[i].questionTemplateRecords[j]);
+                                        }
+                                    }
+
+                                }
+                                if( $scope.singleQuestionMode ) {
+                                    $scope.eachQuestTemplateRec = $scope.questionNamewithNextQuestion['start'];
+                                    if ( angular.isDefined($scope.eachQuestTemplateRec)){
+                                        $scope.lastSequenceQuestionName = $scope.eachQuestTemplateRec.Name;
+                                    }
+                                } else {
+                                    $scope.sectionAndQuestionTemplateObj = [];
+                                    $scope.sectionAndQuestionTemplateObj.push(allSectionandQuestionTemp);
+                                    /*[0].questionTemplateRecords.push($scope.sectionAndQuestionTemplateObj[i].questionTemplateRecords[j]);
+                                    $scope.sectionAndQuestionTemplateObj.splice(1,$scope.sectionAndQuestionTemplateObj.length-1);*/
+                                }
+                            }
+                        }
+                        if(resultObj.assessmentTemplateRecord != null) {
+                            $scope.showQuesNumIcon = angular.isDefined(resultObj.assessmentTemplateRecord.ExAM__Show_Question_Number__c) ? resultObj.assessmentTemplateRecord.ExAM__Show_Question_Number__c : false;
+                            $scope.showImageUploadIcon = angular.isDefined(resultObj.assessmentTemplateRecord.ExAM__Show_Image_Upload_Icon__c) ? resultObj.assessmentTemplateRecord.ExAM__Show_Image_Upload_Icon__c : false;
+                            $scope.showCommentsIcon = angular.isDefined(resultObj.assessmentTemplateRecord.ExAM__Show_Notes_Icon__c) ? resultObj.assessmentTemplateRecord.ExAM__Show_Notes_Icon__c: false;
+                            $scope.showClearIcon = angular.isDefined(resultObj.assessmentTemplateRecord.ExAM__Show_Refresh_Icon__c) ? resultObj.assessmentTemplateRecord.ExAM__Show_Refresh_Icon__c : false;
+                            $scope.contextQuesAndAnsField = angular.isDefined(resultObj.assessmentTemplateRecord.ExAM__Context_Questions_Mapping__c) ? resultObj.assessmentTemplateRecord.ExAM__Context_Questions_Mapping__c : '';
+                            $scope.showModalWindow = angular.isDefined(resultObj.assessmentTemplateRecord.ExAM__Show_Modal_Window__c) ? resultObj.assessmentTemplateRecord.ExAM__Show_Modal_Window__c: false;
+                            $scope.modalWindowTxt = angular.isDefined(resultObj.assessmentTemplateRecord.ExAM__Modal_Window_Text__c) ? resultObj.assessmentTemplateRecord.ExAM__Modal_Window_Text__c: '';
+                            $scope.templateNameObj = angular.isDefined(resultObj.assessmentTemplateRecord.ExAM__Template_Name__c) ? resultObj.assessmentTemplateRecord.ExAM__Template_Name__c : '';
+                        }
+                        if( resultObj.DTConfiguration != null ) {
+                            $scope.decisionTreeResultTemplate = resultObj.DTConfiguration.decisionTreeResultList.length > 0 ? resultObj.DTConfiguration.decisionTreeResultList : [] ;
+                            $scope.resultQuesButtonText = resultObj.DTConfiguration.resultQuesButtonText != '' ? resultObj.DTConfiguration.resultQuesButtonText : 'Continue';
+                            $scope.renderNextQuesAuto = resultObj.DTConfiguration.renderNextQuesAuto != false ?resultObj.DTConfiguration.renderNextQuesAuto : false;
+                            $scope.skipDTpath = resultObj.DTConfiguration.skipDTpath != false ?resultObj.DTConfiguration.skipDTpath : false;
+                        }
+                        $scope.questionNamewithQuestionTemplate = resultObj.questionNamewithQuestionTemplate != null ? resultObj.questionNamewithQuestionTemplate : {} ;
+                        $scope.resultQuestionNamewithQuestionTemplate = resultObj.resultQuestionNamewithQuestionTemplate != null ? resultObj.resultQuestionNamewithQuestionTemplate:{};
+                        $scope.resultQuestionIdDefaultVal = resultObj.resultQuestionIdDefaultValueObj != null ? resultObj.resultQuestionIdDefaultValueObj: {};
+                        $scope.dependentQuestionsObj = resultObj.dependentQuestionNamewithQuestionTemplate != null ? resultObj.dependentQuestionNamewithQuestionTemplate: {};
+                        $scope.dependentQuestionsAttObj = resultObj.parentIdAndArrayOfPictureIdMap != null ? resultObj.parentIdAndArrayOfPictureIdMap: {};
+                        $scope.quesIdANDAnsId = resultObj.quesIdANDAnsIdMap != null ? resultObj.quesIdANDAnsIdMap: {};
+                        $scope.quesIdAndAnsAttId = resultObj.quesIdAndAnsAnsweredAttId != null ? resultObj.quesIdAndAnsAnsweredAttId: {};
+                        $scope.quesIdWithQuestionTemplate = resultObj.quesIdWithQuestionTemplate != null ? resultObj.quesIdWithQuestionTemplate: {};
+                        if( resultObj.answeredRecord != null ) {
+
+                            var allResponse = resultObj.answeredRecord;
+                            angular.forEach(allResponse, function(value, key) {
+                                if( allResponse[key].questionTemp != null ) {
+                                    if( allResponse[key].questionTemp.ExAM__Question_Type__c == 'Signature' 
+                                        && allResponse[key].attachmentMap != null 
+                                        && allResponse[key].attachmentMap.length > 0
+                                        && angular.isDefined(allResponse[key].attachmentMap[0].id) ) { 
+                                        $scope.signImage[allResponse[key].questionTemp.Id] = allResponse[key].attachmentMap[0].id;
+                                    } else if(allResponse[key].questionTemp.ExAM__Question_Type__c == 'File Question - Answer' 
+                                        && allResponse[key].attachmentMap != null 
+                                        && allResponse[key].attachmentMap.length > 0) {
+                                        var arr = [];
+                                        if(angular.isUndefined($scope.fileAttach[allResponse[key].questionTemp.Id])) {
+                                            $scope.fileAttach[allResponse[key].questionTemp.Id] = [];
+                                        }
+                                        angular.forEach(allResponse[key].attachmentMap, function(value1, key1) {
+                                            arr.push(value1);
+                                        });
+                                        $scope.fileAttach[allResponse[key].questionTemp.Id] = arr;
+                                        if( allResponse[key].quesResponse !=null
+                                           && angular.isDefined(allResponse[key].quesResponse.ExAM__Response__c) ) {
+                                            $scope.response[allResponse[key].questionTemp.Id] = allResponse[key].quesResponse.ExAM__Response__c;
+                                        }
+                                    } else if( ( allResponse[key].questionTemp.ExAM__Question_Type__c == 'File Question - AM'
+                                            || allResponse[key].questionTemp.ExAM__Question_Type__c == 'File Question - Assessable Object')
+                                        && allResponse[key].attachmentMap != null 
+                                        && allResponse[key].attachmentMap.length > 0
+                                        && allResponse[key].attachmentMap[0].id != null ) {
+                                        var arr = [];
+                                        arr.push(allResponse[key].attachmentMap[0]);
+                                        $scope.responseFile[allResponse[key].questionTemp.Id] = arr;
+                                    } else if(allResponse[key].questionTemp.ExAM__Question_Type__c == 'MultiselectPicklist' 
+                                        && allResponse[key].multiselectObj != null) {
+                                        $scope.response[allResponse[key].questionTemp.Id] = allResponse[key].multiselectObj;
+                                    } else if(allResponse[key].questionTemp.ExAM__Question_Type__c == 'Checkbox'
+                                        && allResponse[key].quesResponse !=null
+                                        && angular.isDefined(allResponse[key].quesResponse.ExAM__Response__c)) {
+                                        $scope.response[allResponse[key].questionTemp.Id] = allResponse[key].quesResponse.ExAM__Response__c == 'true';
+                                    } else {
+                                        if( allResponse[key].quesResponse !=null
+                                           && angular.isDefined(allResponse[key].quesResponse.ExAM__Response__c) ) {
+                                            $scope.response[allResponse[key].questionTemp.Id] = allResponse[key].quesResponse.ExAM__Response__c;
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                        $('.spinner, .slds-spinner--small').hide();
+                        $('.showAllData').css('display', 'block');
+                        if ( $scope.autoSubmit === true ) {
+
+                            commonAppService.saveUsrEnteredAnswers($scope.quesIdANDAnsIdMap, {}, 
+                                                                   {}, {}, $scope.currentASMAssesssmentTemplateTdStr, $scope.currentASMIdStr, 
+                                                                   false, [], {}, '', {}, $scope.assessableObjId, $scope.assessbleObjAPI,
+                                                                   $scope.viewerName, $scope.ipAddress, 
+                                                                   $scope.PARecordId, $scope.startTime, {}, {}, true, false, {}).then(function(savedResponseData){
+
+                                if (savedResponseData.showMessage && !savedResponseData.hasActionSuccess) {
+        
+                                    $scope.showMessage = savedResponseData.showMessage;
+                                    $scope.messageText = savedResponseData.messageText;
+                                    $scope.hasActionSuccess = savedResponseData.hasActionSuccess;                            
+                                } else if (!savedResponseData.showMessage && savedResponseData.hasActionSuccess) {
+                            
+                                    if (savedResponseData.returnUrl != null && savedResponseData.returnUrl.length > 0  && $scope.webIntercept === 'false') {
+                                        window.open(savedResponseData.returnUrl, '_self');
+                                    } else if($scope.webIntercept === 'true') {
+                                        $timeout(function() {
+                                            parent.postMessage("Success Submit","*");
+                                        },0);
+                                    }        
+                                    $scope.response = {};
+                                }
+                            },function(errordata){
+
+                                $scope.showMessage = errordata.showMessage;
+                                $scope.messageText = errordata.messageText;                            
+                            });
+                        }
+                    } else {
+                        $('.showAllData').css('display', 'block');
+                        $('.spinner, .slds-spinner--small').hide();
+                        $scope.showMessage = true;
+                        if(resultObj.error != null && angular.isDefined(resultObj.error.errMsg) ) {
+                            $scope.hasActionSuccess = false;
+                            $scope.messageText = resultObj.error.errMsg;
+                        }
+                        $(window).scrollTop(0);
+                    }
+                },function(data){
+                    $('.showAllData').css('display', 'block');
+                    $('.spinner, .slds-spinner--small').hide();
+                    $scope.showMessage = true;
+                    $scope.hasActionSuccess = false;
+                    $scope.messageText = data.errMsg;  
+                    $(window).scrollTop(0); 
+                });
+            } else {
+                $('.showAllData').css('display', 'block');
+                $('.spinner, .slds-spinner--small').hide();
+                $scope.showMessage = true;
+                $scope.hasActionSuccess = false;
+                $scope.messageText = 'Public Assessment is not linked to any of the Assessable object';
+                $(window).scrollTop(0);
+            }   
+            
+            //single question mode functionality
+            $scope.previousQuestionSingleQuesFun = function() {
+            
+                commonAppService.doReqdFieldValidation($scope.response[$scope.eachQuestTemplateRec],$scope.isSelectBtnOptn[$scope.eachQuestTemplateRec],
+                                                       $scope.selectedImage[$scope.eachQuestTemplateRec],false,$scope.signImage[$scope.eachQuestTemplateRec],
+                                                       $scope.fileAttach[$scope.eachQuestTemplateRec],
+                                                       $scope.responseFile[$scope.eachQuestTemplateRec]).then(function(validateSuccessResponse) {
+                    if( typeof validateSuccessResponse == 'object' ) {
+                        $.each(validateSuccessResponse, function(key, value) {
+                            if ($scope.response[key]) {
+                                $scope.response[key] = value;
+                            }
+                        });
+                    }
+                    if (angular.isDefined($scope.eachQuestTemplateRec) && angular.isDefined($scope.previousQuestion[$scope.eachQuestTemplateRec.Name]) && $scope.questionNumber > 1) {
+                        $scope.eachQuestTemplateRec = $scope.previousQuestion[$scope.eachQuestTemplateRec.Name];
+                        $scope.questionNumber -= 1;
+                        $('.singleQNext').removeAttr('Disabled');
+                    }
+    
+                    if (angular.isDefined($scope.questionNamewithNextQuestion) && angular.isDefined($scope.questionNamewithNextQuestion[$scope.eachQuestTemplateRec.Name])) {
+    
+                        $scope.lastSequenceQuestionName = $scope.eachQuestTemplateRec.Name;
+                    } 
+                    if ($scope.questionNumber <= 1 ) {
+                        $('.singleQPrevious').attr('Disabled','Disabled');
+                    }
+                },function(validateErrorResponse) {
+                    $(window).scrollTop(0); 
+                    //$('.singleQPrevious').attr('Disabled','Disabled');
+                });
+            }
+            $scope.nextQuestionFun = function(isNextBtn) {
+        
+                $scope.showMessage = false;
+                commonAppService.doReqdFieldValidation($scope.response[$scope.eachQuestTemplateRec],$scope.isSelectBtnOptn[$scope.eachQuestTemplateRec],
+                                                       $scope.selectedImage[$scope.eachQuestTemplateRec],false,$scope.signImage[$scope.eachQuestTemplateRec],
+                                                       $scope.fileAttach[$scope.eachQuestTemplateRec],
+                                                       $scope.responseFile[$scope.eachQuestTemplateRec]).then(function(validateSuccessResponse) {
+                    if( typeof validateSuccessResponse == 'object' ) {
+                        $.each(validateSuccessResponse, function(key, value) {
+                            if ($scope.response[key]) {
+                                $scope.response[key] = value;
+                            }
+                        });
+                    }
+                    if (isNextBtn) {
+                        if (angular.isDefined($scope.questionNamewithNextQuestion)
+                            && angular.isDefined($scope.questionNamewithNextQuestion[$scope.lastSequenceQuestionName])) {
+        
+                            $scope.previousQuestion[$scope.questionNamewithNextQuestion[$scope.lastSequenceQuestionName].Name] = $scope.eachQuestTemplateRec;
+                            $scope.eachQuestTemplateRec = $scope.questionNamewithNextQuestion[$scope.lastSequenceQuestionName];
+                            $scope.lastSequenceQuestionName = $scope.eachQuestTemplateRec.Name;
+        
+                            $scope.questionNumber += 1;
+                            $('.singleQPrevious').removeAttr('Disabled');
+                            if(angular.isUndefined($scope.questionNamewithNextQuestion[$scope.eachQuestTemplateRec.Name])) {
+                                $('.singleQNext').attr('Disabled','Disabled');
+                            }
+                        } else {
+                            $('.singleQNext').attr('Disabled','Disabled');
+                        }
+                    }
+                },function(validateErrorResponse) {
+                    $(window).scrollTop(0); 
+                    //$('.singleQNext').attr('Disabled','Disabled');
+                });
+            }  
+            $scope.cancelAnswer = function() {
+                $scope.response = {};
+                $scope.comment = {};
+                $scope.photo = {};
+                $scope.responseFile = {};
+                $scope.previousQuestion = {}; 
+                $scope.eachQuestTemplateRec = $scope.questionNamewithNextQuestion['start'];
+                $scope.lastSequenceQuestionName = $scope.eachQuestTemplateRec.Name; 
+                $scope.questionNumber = 1;
+                $('.singleQPrevious').attr('Disabled','Disabled');
+                $('.singleQNext').removeAttr('Disabled');
+            }
+            
+        });
+        
+        // This function is to fix includes method in IE
+        function polyFill() {
+            if (!String.prototype.includes) {
+              String.prototype.includes = function(search, start) {
+                'use strict';
+                if (typeof start !== 'number') {
+                  start = 0;
+                }
+            
+                if (start + search.length > this.length) {
+                  return false;
+                } else {
+                  return this.indexOf(search, start) !== -1;
+                }
+              };
+            }
+        }
+    </script>
+    <c:ViewersCommonAppComponent ></c:ViewersCommonAppComponent>
+</apex:page>

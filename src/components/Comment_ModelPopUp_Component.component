@@ -1,0 +1,28 @@
+<apex:component >
+
+    <div xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <div aria-hidden="false" role="dialog" class="slds-modal slds-modal__close answercomment" style="background-color: rgba(128, 128, 128, 0.75);">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <h2 class="slds-text-heading--medium">Comment Note</h2>
+                    <button class="slds-button slds-button--icon-inverse slds-modal__close" ng-click="closecomment()">
+                        <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                            <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                        </svg>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                </div>
+                <div class="slds-modal__content">
+                    <div>
+                        <textarea class="slds-textarea" placeholder="Comment Text" ng-model="comment[selecteQuestionId]"></textarea>
+                    </div>
+                </div>
+                <div class="slds-modal__footer">
+                    <button class="slds-button slds-button--neutral" ng-click="closecomment()">Cancel</button>
+                    <button class="slds-button slds-button--neutral slds-button--brand" ng-click="savecomment()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</apex:component>

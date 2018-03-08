@@ -1,0 +1,71 @@
+<aura:component access="public" extends="c:ExamFieldBase">
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:attribute name="newValue" type="String" access="public"/>
+    <aura:attribute name="staticResourceFilePaths" type="List" access="public" default="[]"/>
+    <aura:attribute name="index" type="Integer" access="private" default=""/>
+    <aura:attribute name="currentValue" type="String" access="private"/>
+    <aura:attribute name="newFilePath" type="Boolean" access="private" default="false"/>
+    <aura:attribute name="hideButton" type="Boolean" access="private" default="false"/>
+    
+    <article class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__body">
+                    <h2>
+                        
+                            <span class="slds-text-heading_small">{!v.fieldLabel}</span>
+                        
+                    </h2>
+                </div>
+            </header>
+            <div class="{!v.hideButton ? 'slds-hide' : 'slds-show slds-no-flex'}">
+                <button class="slds-button slds-button_neutral" onclick="{!c.CreateNewFilePath}">New</button>
+            </div>
+        </div>
+        <div class="slds-card__body">
+            
+            <div class="{!v.staticResourceFilePaths.length ? 'slds-hide' : 'slds-show exam-bold'}">
+                No FilePath
+            </div>
+            <aura:iteration items="{!v.staticResourceFilePaths}" var="filePath" indexVar="index">
+                <aura:if isTrue="{!v.hideLabel == false}">
+                    <div class="slds-m-bottom--x-small">
+                        <a class="exam-bold label-override" data-index="{!index}" onclick="{!c.changevalue}">
+                            {!filePath}
+                        </a>
+                    </div>
+                </aura:if>
+                
+                <div class="{!v.index == index ? 'slds-show' : 'slds-hide'}">
+                    <ui:inputText value="{!v.currentValue}" class="slds-input slds-m-vertical--small"/>
+                    <div>
+                        <a class="slds-button slds-button--neutral slds-button--save slds-m-right--small" data-index="{!index}" onclick="{!c.updateFieldValue}">
+                            Save
+                        </a>
+                        <a class="slds-button slds-button--neutral slds-button--save slds-m-right--small" data-index="{!index}" onclick="{!c.removeFieldValue}">
+                            Remove
+                        </a>
+                        <a class="slds-button slds-button--neutral" data-index="{!index}" onclick="{!c.cancelUpdateFieldVal}">
+                            Cancel</a>
+                    </div>
+                </div>
+                
+            </aura:iteration>
+            <div class="{!v.newFilePath ? 'slds-show' : 'slds-hide'}">
+                <ui:inputText value="{!v.currentValue}" placeholder="e.g. /MainFolderName/FileName" class="slds-input slds-m-vertical--small"/>
+                <div>
+                    <a class="slds-button slds-button--neutral slds-button--save slds-m-right--small" data-index="{!v.staticResourceFilePaths.length}" onclick="{!c.updateFieldValue}">
+                        Save
+                    </a>
+                    <a class="slds-button slds-button--neutral" data-index="{!v.staticResourceFilePaths.length}" onclick="{!c.cancelUpdateFieldVal}">
+                        Cancel</a>
+                </div>
+            </div>
+        </div>
+        <footer class="slds-card__footer">
+        </footer>
+    </article>
+    
+</aura:component>

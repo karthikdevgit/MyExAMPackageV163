@@ -1,0 +1,147 @@
+<apex:page >
+    <div xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+         <script type="text/javascript">
+            var __sfdcSessionId = '{!GETSESSIONID()}';
+        </script>
+        <script src="../../soap/ajax/35.0/connection.js" type="text/javascript"></script>
+        <script src="../../soap/ajax/35.0/apex.js" type="text/javascript"></script>
+        <head>
+            <title>Upload Question Image</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS052, '/assets/styles/salesforce-lightning-design-system-vf.css')}" />
+        </head>
+        <body>
+            <div class="slds" ng-app="UploadQuesImageApp" ng-controller="UploadQuesImageCtrl">
+                <div class="slds-notify_container" ng-show ="failedFlag">
+                    <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert" >
+                        <h2>Upload Failed</h2>
+                    </div>
+                </div>
+                <form class="slds-form">
+                    <div class="slds-card slds-m-top--x-small slds-m-bottom--x-large">
+                        <div class="slds-card__header slds-grid">
+                            <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                <div class="slds-media__body">
+                                    <h2 class="slds-text-heading--small slds-truncate" style="font-size: x-large;font-weight: 300;">Upload Question Image</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-card__body" style="background-color:white;">
+                            <div class="slds-form-element__help errorSelect" ng-show ="ErrorFlag" style="color:red;font-size:15px;padding-left:30px;"> Please choose a valid Image File </div>
+                            <div class="slds-grid slds-wrap slds-p-around--small" style="padding-left:30px;">
+                                <input type="file" style="font-size: medium;" data-file="imageUpload" accept="image/*"/>
+                            </div>
+                        </div>  
+                        <div class="slds-card__footer" style="background-color:white;padding-left: 100px;">
+                            <button class="slds-button slds-button--neutral" type="button" ng-click="uploadImage()" style="background-color: #0070D2;color:white;">Upload</button>
+                            <button class="slds-button slds-button--neutral" type="button" ng-click="uploadCancel()" style="background-color: #0070D2;color:white;">Cancel</button>
+                        </div>  
+                    </div>
+                </form>
+            </div>    
+        </body>
+        <script>
+            var app = angular.module('UploadQuesImageApp', []);
+            app.directive('file', function() {
+                return {
+                    scope: {
+                        file: '='
+                    },
+                    link: function(scope, el, attrs){
+                        el.bind('change', function(event){
+                            var files = event.target.files;
+                            var file = files[0];
+                            var reader = new FileReader();
+                            reader.onload = loaded;
+                            reader.onerror = errorHandler;
+                            reader.readAsDataURL(file);
+                            
+                            function loaded(evt){
+                                scope.file = {};
+                                var fileContent = String(evt.target.result);
+                                fileContent = fileContent.substr(fileContent.indexOf(',') + 1);
+                                
+                                scope.file.resultbody = fileContent ;
+                                scope.file.name = file ? file.name : undefined;
+                                scope.file.contenttype = file ? file.type : undefined;
+                                
+                                scope.$apply(); 
+                            }
+                            
+                            function errorHandler(evt) {
+                                if (evt.target.error.name == 'NotReadableError') {
+                                    alert('File could not be read');
+                                }
+                                else {
+                                    alert(evt.target.error);
+                                }
+                            }
+                            
+                        });
+                    }
+                };
+            });
+                
+            app.controller('UploadQuesImageCtrl',function($scope){
+            
+                var pid = "{!JSENCODE($CurrentPage.parameters.quesTempId)}";
+                $scope.ErrorFlag = false;
+                $scope.failedFlagFlag = false;
+                $scope.imageUpload =[];
+                
+                $scope.uploadImage = function() { 
+                    var attObList = [];
+                    var attachmentOb = new sforce.SObject("Attachment");
+                     
+                    if($scope.imageUpload.contenttype=='image/jpeg' || $scope.imageUpload.contenttype=='image/png' || $scope.imageUpload.contenttype=='image/gif' || $scope.imageUpload.contenttype=='image/jpg' && $scope.imageUpload != '' ){
+                        attachmentOb.Name = 'Question-Image';
+                        attachmentOb.Body = $scope.imageUpload.resultbody;
+                        attachmentOb.ContentType = $scope.imageUpload.contenttype;
+                        attachmentOb.ParentId = pid; 
+                        attObList.push(attachmentOb);
+                        $scope.ErrorFlag = false;
+                    } else {
+                        if(($scope.imageUpload.resultbody != '' && $scope.imageUpload.contenttype == '')) {
+                            $scope.ErrorFlag = true;
+                        } else if($scope.imageUpload != ''){
+                            $scope.ErrorFlag = true;
+                        }
+                    }
+    
+                    if(attObList.length > 0 ) {
+                        var att_result = sforce.connection.create(attObList);
+                        if (att_result != null && att_result.length > 0) {
+                             if (att_result[0].success == 'true') {
+                                 $scope.successAtt = true;
+                             }else {
+                                 $scope.failedFlag = true;
+                             }
+                        }   
+                    }
+                    if($scope.successAtt) {
+                         var quesTemp =[];
+                         var quesTempObj = new sforce.SObject("ExAM__Question_Template__c");
+                         quesTempObj.Id = pid;
+                         quesTempObj.ExAM__Has_Picture__c = true;
+                         quesTemp.push(quesTempObj);
+                         
+                         if(quesTemp.length > 0 ) {
+                            var qt_result = sforce.connection.update(quesTemp);
+                            if (qt_result != null && qt_result.length > 0) {
+                                 if (qt_result[0].success == 'true') {
+                                     window.location =  "{!LEFT($CurrentPage.URL,FIND('/',$CurrentPage.URL,9))}{!JSENCODE($CurrentPage.parameters.quesTempId)}";
+                                 } else {
+                                     $scope.failedFlag = true;
+                                 }
+                            }   
+                        }
+                    }
+                }
+                $scope.uploadCancel = function() {
+                    window.location =  "{!LEFT($CurrentPage.URL,FIND('/',$CurrentPage.URL,9))}{!JSENCODE($CurrentPage.parameters.quesTempId)}";
+                }
+            });
+        </script>
+    </div>
+</apex:page>

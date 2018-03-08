@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>Where ExAM stores the response data from your Assessments.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fieldSets>
+        <fullName>Data_Viewer_FieldSet</fullName>
+        <availableFields>
+            <field>Account_to_Response__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </availableFields>
+        <availableFields>
+            <field>Answer_External_Id__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </availableFields>
+        <availableFields>
+            <field>CreatedById</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </availableFields>
+        <availableFields>
+            <field>Id</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </availableFields>
+        <availableFields>
+            <field>IsDeleted</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </availableFields>
+        <availableFields>
+            <field>LastActivityDate</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </availableFields>
+        <availableFields>
+            <field>LastModifiedById</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </availableFields>
+        <availableFields>
+            <field>LastModifiedDate</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </availableFields>
+        <availableFields>
+            <field>LastReferencedDate</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </availableFields>
+        <availableFields>
+            <field>LastViewedDate</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </availableFields>
+        <availableFields>
+            <field>Name</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </availableFields>
+        <availableFields>
+            <field>Question_Weight__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </availableFields>
+        <availableFields>
+            <field>Questionnaire_Taker_user__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </availableFields>
+        <availableFields>
+            <field>SystemModstamp</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </availableFields>
+        <description>It is used for Data Viewer tab on Lens Viewer</description>
+        <displayedFields>
+            <field>Response__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Account_Name__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>CreatedDate</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <label>Data Viewer FieldSet</label>
+    </fieldSets>
+    <fields>
+        <fullName>Account_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>Account_to_Response__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>If the response is related to a specific account it will be listed here.</inlineHelpText>
+        <label>Account Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Account_to_Response__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>This is the lookup object that will be used in a survey.So we are not using user but accounts to create number of surveys.The no of surveys would be same as no of accounts whose craete_survey field(on Account object) is set to true</description>
+        <externalId>false</externalId>
+        <inlineHelpText>If the response is related to a specific account it will be listed here.</inlineHelpText>
+        <label>Account to Response</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Answers</relationshipLabel>
+        <relationshipName>Questionnaire_Response</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Answer_External_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>true</externalId>
+        <label>Answer External Id</label>
+        <length>200</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Answer_Text__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Answer Text</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comment__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Any user comment associated with this specific Answer record.</inlineHelpText>
+        <label>Comment</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Decision_Tree_Launched_Question__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>If the Answer is related to a Decision Tree then this is the Question record associated with the Decision Tree that launched the series of questions resulting in this Answer record.</inlineHelpText>
+        <label>Decision Tree Launched Question</label>
+        <referenceTo>Question_Template__c</referenceTo>
+        <relationshipLabel>Answers (Decision Tree Launched Question)</relationshipLabel>
+        <relationshipName>Answers</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Issue_Request__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>This is the Assignment Manager related to the Answer record.</inlineHelpText>
+        <label>Assignment Manager</label>
+        <referenceTo>IssueRequest_Life_Cycle__c</referenceTo>
+        <relationshipLabel>Answers</relationshipLabel>
+        <relationshipName>Questionnaire_Response</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Max_Score__c</fullName>
+        <deprecated>false</deprecated>
+        <description>For responses which are negative i.e like N/A or for any response which u do not want to score put negative value and this question would not be counted in total question score and max score</description>
+        <externalId>false</externalId>
+        <formula>if( Weight_Response__c&lt;0,0,Question_Template__r.Weight_Of_Question__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>The total number of points that the Answer record could have scored.</inlineHelpText>
+        <label>Max Score</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Priority__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>This is the priority of the Answer being provided.</inlineHelpText>
+        <label>Priority</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Routine</fullName>
+                    <default>true</default>
+                </value>
+                <value>
+                    <fullName>Emergency</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>High</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Question_Label__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>Question_Template__r.Question_Restricted_Length__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>This is the label of the question that is related to the Answer being provided.</inlineHelpText>
+        <label>Question Label</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Question_Template__c</fullName>
+        <deprecated>false</deprecated>
+        <description>question to response table</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This is the Question Id for the question that was the basis for this Answer.</inlineHelpText>
+        <label>Question Template - Response</label>
+        <referenceTo>Question_Template__c</referenceTo>
+        <relationshipLabel>Answers (Question Template - Response)</relationshipLabel>
+        <relationshipName>Questionnaire_Response</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Question_Weight__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Question WeightOLD</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>3</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Questionnaire_Taker_user__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>This is the user that provided the answer if this is known.</inlineHelpText>
+        <label>Questionnaire Taker(user)</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Questionnaire_Response</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Related_Answer__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>If there is an answer related to this Answer then it would be listed here.</inlineHelpText>
+        <label>Related Answer</label>
+        <referenceTo>Questionnaire_Response__c</referenceTo>
+        <relationshipLabel>Answers</relationshipLabel>
+        <relationshipName>Answers</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Response__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>This is the response selected or entered by the participant.</inlineHelpText>
+        <label>Response</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Responsible_Party__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>Point of contact for the deficiency or the response</description>
+        <externalId>false</externalId>
+        <inlineHelpText>If there is a person responsible for the Answer they will be listed here.</inlineHelpText>
+        <label>Responsible Party</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Answers</relationshipLabel>
+        <relationshipName>Assessment_Responses</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Total_Score__c</fullName>
+        <deprecated>false</deprecated>
+        <description>For responses which are negative i.e like N/A or for any response which u do not want to put negative and this question would not be counted in total question score and max score.this is user score or issue score</description>
+        <externalId>false</externalId>
+        <formula>if( Weight_Response__c&lt;0,0,((Weight_Response__c/100)* Question_Template__r.Weight_Of_Question__c))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>The total number of points achieved by a specific Answer record.</inlineHelpText>
+        <label>Total Score</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Weight_Response__c</fullName>
+        <deprecated>false</deprecated>
+        <description>This is score that user gets .It is in percentages from 0-100%.For N/A the score as 0 and dont add it to numerator or denominator</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The percentage of the total possible score possible for the answer that was achieved by the Answer.</inlineHelpText>
+        <label>Raw Response Score(%)</label>
+        <precision>15</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>deficiency_status__c</fullName>
+        <deprecated>false</deprecated>
+        <description>For any question response this is the provides a mechanism to provide feedback on the status of this particular item.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This is the current value associated with the lifecycle of the Answer object record.</inlineHelpText>
+        <label>Answer Status</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Open</fullName>
+                    <default>true</default>
+                </value>
+                <value>
+                    <fullName>Closed</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Self-Certified</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <label>Answer</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>Response__c</columns>
+        <columns>NAME</columns>
+        <columns>Question_Template__c</columns>
+        <columns>Account_to_Response__c</columns>
+        <columns>Questionnaire_Taker_user__c</columns>
+        <columns>Issue_Request__c</columns>
+        <columns>LAST_UPDATE</columns>
+        <columns>Weight_Response__c</columns>
+        <columns>Total_Score__c</columns>
+        <columns>Max_Score__c</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>Deficiency_Status</fullName>
+        <columns>NAME</columns>
+        <columns>Account_to_Response__c</columns>
+        <columns>deficiency_status__c</columns>
+        <columns>Response__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>Deficiency Status</label>
+    </listViews>
+    <nameField>
+        <displayFormat>QR-{0}</displayFormat>
+        <label>Assessment Response id</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Answers</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Related_Answer__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Account_to_Response__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Response__c</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>deficiency_status__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Issue_Request__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Max_Score__c</lookupDialogsAdditionalFields>
+        <searchResultsAdditionalFields>deficiency_status__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Response__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Total_Score__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
+</CustomObject>

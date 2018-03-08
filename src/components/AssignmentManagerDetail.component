@@ -1,0 +1,20 @@
+<apex:component controller="AssignmentManagerDetailController">
+    <div class="slds-grid slds-wrap">
+        <apex:variable value="{!0}" var="countx"/>
+        <apex:repeat value="{!fields}" var="f">
+            <div class=" slds-col--padded slds-size--1-of-2 slds-medium-size--1-of-6 slds-large-size--3-of-12  slds-text-align--right slds-m-bottom--large" style="padding-right: 1%; font-weight: bold;">
+                {!f.Label}
+            </div>
+            <div class="slds-col--padded slds-size--1-of-2 slds-medium-size--1-of-6 slds-large-size--3-of-12"> 
+                <apex:outputField value="{!assignmenManagerRec[f.fieldPath]}"/>
+            </div>
+            <apex:variable value="{!countx+1}" var="countx"/>
+        </apex:repeat>
+        <div class=" slds-col--padded slds-size--1-of-2 slds-medium-size--1-of-6 slds-large-size--3-of-12 slds-text-align--right slds-m-bottom--large" style="padding-right: 1%; font-weight: bold;display:{!IF(MOD((countx),2)==1,'','none')};">
+            &nbsp;
+        </div>
+        <div class=" slds-col--padded slds-size--1-of-2 slds-medium-size--1-of-6 slds-large-size--3-of-12" style="display:{!IF(MOD((countx),2)==1,'','none')};"> 
+            &nbsp;
+        </div>
+    </div>    
+</apex:component>

@@ -1,0 +1,113 @@
+<apex:page showHeader="false" sidebar="false" controller="FetchDocumentId" tabstyle="account">
+  <!-- This is the page for banner include it in all pages-->
+<apex:include pageName="BannerTemplate"/>
+
+<apex:form id="governForm">
+        <br></br>
+        <p style="font-size:18px">Support Documents and Other Resources</p>
+       
+        <apex:pageBlock >
+         
+           <apex:pageMessages ></apex:pageMessages>
+              <br/><br/>
+               <apex:commandLink action="{!documentId}" oncomplete="window.location.href='../servlet/servlet.FileDownload?file={!docId}';" value="All-Terrain Vehicles Policy" styleClass="download_box">      
+                                  <apex:param name="documentname" value="All-Terrain Vehicles Policy" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>
+                            
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="American Indians and Crime Bureau of Justice Statistics" styleClass="download_box">     
+                                  <apex:param name="documentname" value="American Indians and Crime Bureau of Justice Statistics" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Child Victim Background Questionnaire" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Child Victim Background Questionnaire" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>
+                             <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="DOJ Vulnerability Assessment  Standards" styleClass="download_box">     
+                                  <apex:param name="documentname" value="DOJ Vulnerability Assessment  Standards" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Educational Facilities Threat Assessment" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Educational Facilities Threat Assessment" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Evaluation of Controls to Prevent Violence BIE Operated Education Facilities" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Evaluation of Controls to Prevent Violence BIE Operated Education Facilities" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="FBI Guide to Concealable Weapons" styleClass="download_box">     
+                                  <apex:param name="documentname" value="FBI Guide to Concealable Weapons" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="General Assessment Questionnaire for Violent Crimes" styleClass="download_box">     
+                                  <apex:param name="documentname" value="General Assessment Questionnaire for Violent Crimes" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>        
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="General Assessment Questionnaire_pg 2" styleClass="download_box">     
+                                  <apex:param name="documentname" value="General Assessment Questionnaire_pg 2" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>                         
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="General Assessment Questionnaire pg 3" styleClass="download_box">     
+                                  <apex:param name="documentname" value="General Assessment Questionnaire pg 3" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Government Accountability Office Guidance and Standards Are Needed for Measuring  Effectiveness of Agencies Facility Protect Efforts" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Government Accountability Office Guidance and Standards Are Needed for Measuring  Effectiveness of Agencies Facility Protect Efforts" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="GSA Background Investigations in Leased Space" styleClass="download_box">     
+                                  <apex:param name="documentname" value="GSA Background Investigations in Leased Space" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="GSA ID of Lessor Personnel" styleClass="download_box">     
+                                  <apex:param name="documentname" value="GSA ID of Lessor Personnel" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="GSA Minimum Lease Security Standards" styleClass="download_box">     
+                                  <apex:param name="documentname" value="GSA Minimum Lease Security Standards" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="GSA Pre Lease Building Security Plan" styleClass="download_box">     
+                                  <apex:param name="documentname" value="GSA Pre Lease Building Security Plan" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Improvised Explosive Threat Card" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Improvised Explosive Threat Card" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Indian Country Border Security and Tribal Interoperability Pilot Program" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Indian Country Border Security and Tribal Interoperability Pilot Program" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Law Enforcement Written Directives Handbook" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Law Enforcement Written Directives Handbook" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Leased Security Standards GSA" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Leased Security Standards GSA" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="National Counterterrorism Center" styleClass="download_box">     
+                                  <apex:param name="documentname" value="National Counterterrorism Center" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.location.href='../servlet/servlet.FileDownload?file={!docId}';" value="Neighborhood Canvass Form" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Neighborhood Canvass Form" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="OPMG Approval Letter" styleClass="download_box">     
+                                  <apex:param name="documentname" value="OPMG Approval Letter" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Paramilitary Terrorism A Neglected Threat" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Paramilitary Terrorism A Neglected Threat" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Property Receipt Form DI 105" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Property Receipt Form DI 105" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.location.href='../servlet/servlet.FileDownload?file={!docId}';" value="Roadblock Canvass Form" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Roadblock Canvass Form" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="The School Shooter A threat Assessment Perspective" styleClass="download_box">     
+                                  <apex:param name="documentname" value="The School Shooter A threat Assessment Perspective" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Vehicle Borne Improvised Explosive Devices Identification Guide Parked Vehicles" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Vehicle Borne Improvised Explosive Devices Identification Guide Parked Vehicles" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>                     
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Vehicle Borne Improvised Explosive Devices Protective Measures" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Vehicle Borne Improvised Explosive Devices Protective Measures" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>
+                                 
+      
+        <!-- </apex:pageBlockSectionItem>
+               
+                </apex:pageBlockSection>-->
+      </apex:pageBlock> 
+    
+         
+                
+  </apex:form>
+
+
+
+
+ 
+</apex:page>

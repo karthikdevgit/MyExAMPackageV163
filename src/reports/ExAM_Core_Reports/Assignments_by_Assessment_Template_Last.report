@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>IssueRequest_Life_Cycle__c$InvestigationType__c</field>
+    </columns>
+    <columns>
+        <field>IssueRequest_Life_Cycle__c$Assignment_Manager__c</field>
+    </columns>
+    <columns>
+        <field>IssueRequest_Life_Cycle__c.Assessment_Templates__r$Template_name__c</field>
+    </columns>
+    <columns>
+        <field>IssueRequest_Life_Cycle__c$Assessor_Resource__c</field>
+    </columns>
+    <columns>
+        <field>IssueRequest_Life_Cycle__c$CreatedDate</field>
+    </columns>
+    <columns>
+        <field>IssueRequest_Life_Cycle__c$Date_Assigned__c</field>
+    </columns>
+    <columns>
+        <field>IssueRequest_Life_Cycle__c$Assessment_Date_Time__c</field>
+    </columns>
+    <columns>
+        <field>IssueRequest_Life_Cycle__c$Date_Completed__c</field>
+    </columns>
+    <description>This identifies assignments by assessment type over the last 30 days.</description>
+    <format>Tabular</format>
+    <name>Assignments by Assessment Template Last</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>ExAM_Assignments_to_Assessments__c</reportType>
+    <scope>user</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>IssueRequest_Life_Cycle__c$Field_End_Time__c</dateColumn>
+        <interval>INTERVAL_LAST30</interval>
+    </timeFrameFilter>
+</Report>

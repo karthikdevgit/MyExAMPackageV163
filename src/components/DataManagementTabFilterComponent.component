@@ -1,0 +1,234 @@
+<apex:component >
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <title>Question Type Configuration</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS052, '/assets/styles/salesforce-lightning-design-system-vf.css')}" />
+        </head>
+        <div class="slds-form-element" ng-app="dataManagementFilterApp" ng-controller="dataManagementFilterCtrl">
+            <!-- Start Code to filter Answer Records based on Question Type -->
+            <div class="slds-card slds-m-top--x-small">
+                <div class="slds-card__header slds-grid">
+                    <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <h2 class="slds-text-heading--small slds-truncate">  Data Management Tab Filter  </h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-notify_container" id="showErrMessage_DMfilter">
+                    <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert">
+                        <button class="slds-button slds-notify__close slds-button--icon-inverse" title="Close" ng-click="closeAlert();">
+                            <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                                <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                            </svg>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                            <span class="slds-assistive-text">Error</span>
+                            <h2 id="showErrMessage_DMfilterMsg">
+                                {{errMessage_DMfilter}}
+                            </h2>
+                    </div>
+                </div>
+                <div class="slds-card__body">
+                    <div ng-show="showErrMessage_DMfilter" style="color: {{setPgMsgColor_DMfilter}};font-size: 15px;">{{ errMessage_DMfilter }}</div>
+                    <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                        <tbody>
+                            <tr class="slds-hint-parent">
+                                <td class="slds-size--1-of-4"> Filter Answers by Question Type: </td>
+                                <td class="slds-size--1-of-4 slds-cell-wrap">
+                                    <p ng-show="!showDMFilter">{{ existingFilter }}</p>
+                                </td>
+                                <td class="slds-size--2-of-4">
+                                    <input class="slds-button slds-button--brand" ng-show="!showDMFilter" ng-click="openTypeSelectionDiv()" type="button" value="Edit"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- End Code to filter Answer Records based on Question Type -->
+
+            <!-- Start Question Type Selection -->
+            <div ng-show="showDMFilter" aria-hidden="false" role="dialog" class="slds-modal slds-modal__close AssessmentSelectionDiv" style="background-color: rgba(128, 128, 128, 0.75);">
+                <div class="slds-modal__container">
+                    <div class="slds-modal__header">
+                        <button class="slds-button slds-button--icon-inverse slds-modal__close" ng-click="closeTypeSelectionDiv()">
+                            <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                                <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                            </svg>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-text-heading--medium">Choose Question Type</h2>
+                    </div>
+                    <div class="slds-modal__content">
+                        <center>
+                            <input class="slds-button slds-button--brand" ng-click="save()" type="button" value="Apply"/>
+                            <input class="slds-button slds-button--brand" ng-click="closeTypeSelectionDiv()" type="button" value="Cancel"/>
+                        </center>
+                        <table class="slds-table slds-table--bordered slds-max-medium-table--stacked" style="height:20%">
+                            <thead>
+                                <tr class="slds-text-heading--label">
+                                    <th scope="col"><span class="slds-truncate"><b>Action</b></span></th>
+                                    <th scope="col"><span class="slds-truncate"><b>Question Type</b></span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="t in (typeArray | orderBy:'type')">
+                                    <td>
+                                        <label class="slds-checkbox">
+                                            <input type="checkbox" name="options" ng-model="t.isChecked" ng-change="constructTypeString(t.type, t.isChecked);"/>
+                                            <span class="slds-checkbox--faux"></span>
+                                        </label>
+                                    </td>
+                                    <td>{{ t.type }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            var underscore = angular.module('underscore', []);
+            $('#showErrMessage_DMfilter').hide();
+            underscore.factory('_', ['$window', function($window) {
+                return $window._; // assumes underscore has already been loaded on the page
+            }]);
+            var app = angular.module('dataManagementFilterApp', ['underscore']);
+            app.service('dataManagementService', function($q,_) {
+
+                this.getExamConfigAndAssessmentTemplates = function() {
+                    var defer = $q.defer();
+                    ExAM.GeneralConfigController.queryExamConfigRecordAndAllAssessmentTemplates(function(result, event) {
+                        if(event.status) {
+                            defer.resolve(result);
+                        }
+                    });
+                    return defer.promise;
+                }
+                this.getQuestionTypes = function() {
+                    var defer = $q.defer();
+                    ExAM.GeneralConfigController.getAllQuestionTypes(function(result, event) {
+                        if(event.status) {
+                            defer.resolve( JSON.parse(_.unescape(result)) );
+                        }
+                    });
+                    return defer.promise;
+                }
+                this.saveTypeFilter = function(record) {
+                    var defer = $q.defer();
+                    ExAM.GeneralConfigController.saveSelectedQuestionTypesFilter(record, function(result, event) {
+                        if(event.status) {
+                            var respObj = JSON.parse(_.unescape(result));
+                            if(respObj["recId"] ) {
+                                defer.resolve( respObj );
+                            }
+                            else if(respObj["errType"] ) {
+                                defer.reject( respObj["errMsg"] );
+                            }
+                        }
+                    });
+                    return defer.promise;
+                }
+            });
+            app.controller('dataManagementFilterCtrl', function($scope, dataManagementService,_) {
+
+                var selectedQuestionTypes = [];
+                var selectedQuestionTypesCloned = [];
+
+                $scope.errMessage_DMfilter = '';
+                $scope.existingFilter = '';
+                $scope.setPgMsgColor_DMfilter = 'red';
+                $scope.showErrMessage_DMfilter = false;
+                $scope.showDMFilter = false;
+                $scope.typeArray = [];
+                $scope.examConfigObj = {};
+                $scope.exceptMsg = '';
+                dataManagementService.getExamConfigAndAssessmentTemplates().then(function(data) {
+                    if (angular.isDefined(data.examConfigRecord.Id)) {
+                        $scope.examConfigObj = data.examConfigRecord;
+                        $scope.existingFilter = data.examConfigRecord.ExAM__Data_Management_Tab_Filter__c;
+                        if (data.examConfigRecord.ExAM__Data_Management_Tab_Filter__c) {
+                            var arr = data.examConfigRecord.ExAM__Data_Management_Tab_Filter__c.split(',');
+                            for (var i=0;i<arr.length;i++) {
+                                selectedQuestionTypes.push(arr[i]);
+                                selectedQuestionTypesCloned.push(arr[i]);
+                            }
+                        }
+                    }
+                });
+                dataManagementService.getQuestionTypes().then(function(data) {
+                    $.each(data, function(key,value) {
+                        var obj = {};
+                        obj["type"] = value;
+                        obj["isChecked"] = false;
+                        if (selectedQuestionTypes.indexOf(value) >= 0) {
+                            obj["isChecked"] = true;
+                        }
+                        $scope.typeArray.push(obj);
+                    });
+                });
+
+                $scope.openTypeSelectionDiv = function() {
+                    $scope.showDMFilter = true;
+                    $('.AssessmentSelectionDiv').removeClass('slds-modal__close');
+                    $('.AssessmentSelectionDiv').addClass('slds-fade-in-open');
+                }
+                $scope.closeTypeSelectionDiv = function() {
+                    $scope.showDMFilter = false;
+                    selectedQuestionTypes = selectedQuestionTypesCloned;
+                    $('.AssessmentSelectionDiv').removeClass('slds-fade-in-open');
+                    $('.AssessmentSelectionDiv').addClass('slds-modal__close');
+                }
+                $scope.constructTypeString = function(type, isChecked) {
+                    if (isChecked && selectedQuestionTypes.indexOf(type) < 0) {
+                        selectedQuestionTypes.push(type);
+                    }
+                    else {
+                        var selectedTypeIndex = selectedQuestionTypes.indexOf(type);
+                        selectedQuestionTypes.splice(selectedTypeIndex, 1);
+                    }
+                }
+                $scope.closeAlert = function(){
+                    $('#showErrMessage_DMfilter').hide();
+                }
+                $scope.save = function() {
+                    var examConfigId = $('.hiddenExamConfigId').val();
+                    $scope.showDMFilter = false;
+                    $scope.examConfigObjToUpdate = {};
+                    if (examConfigId != undefined && examConfigId != null && examConfigId != '' ) {
+                        $scope.examConfigObjToUpdate.Id = examConfigId;
+                    }
+                    else if (angular.isDefined($scope.examConfigObj.Id) ) {
+                        $scope.examConfigObjToUpdate.Id = $scope.examConfigObj.Id;
+                    }
+                    $scope.examConfigObjToUpdate.Name = angular.isDefined($scope.examConfigObj.Name) ? $scope.examConfigObj.Name : 'Configuration';
+                    $scope.examConfigObjToUpdate.ExAM__Data_Management_Tab_Filter__c = '';
+
+                    $.each(selectedQuestionTypes, function(key, value) {
+                        if ($scope.examConfigObjToUpdate.ExAM__Data_Management_Tab_Filter__c != '') {
+                            $scope.examConfigObjToUpdate.ExAM__Data_Management_Tab_Filter__c += ','+value;
+                        }
+                        else {
+                            $scope.examConfigObjToUpdate.ExAM__Data_Management_Tab_Filter__c = value;
+                        }
+                    });
+                    dataManagementService.saveTypeFilter($scope.examConfigObjToUpdate).then(function(data) {
+                        $('.hiddenExamConfigId').val(data["recId"]);
+                        $('#showErrMessage_DMfilter').hide();
+                        $scope.showErrMessage_DMfilter = true;
+                        $scope.errMessage_DMfilter = data["successMsg"];
+                        $scope.setPgMsgColor_DMfilter = 'green';
+                        $scope.existingFilter = $scope.examConfigObjToUpdate.ExAM__Data_Management_Tab_Filter__c;
+                        selectedQuestionTypesCloned = selectedQuestionTypes;
+                    },
+                    function(errdata) {
+                        $scope.errMessage_DMfilter = errdata;
+                        $('#showErrMessage_DMfilter').show();
+                        $scope.showErrMessage_DMfilter = false;
+                    });
+                }
+            })
+        </script>
+    </html>
+</apex:component>

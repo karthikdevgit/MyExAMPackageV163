@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApexPage xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>29.0</apiVersion>
+    <availableInTouch>true</availableInTouch>
+    <confirmationTokenRequired>false</confirmationTokenRequired>
+    <description>Manages the weights on each section and question.One template is for weighted section,non weighted section,non weighted with N/A not counted</description>
+    <label>Assessment Weight Management</label>
+</ApexPage>

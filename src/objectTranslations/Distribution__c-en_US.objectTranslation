@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Distribution</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Distributions</value>
+    </caseValues>
+    <fields>
+        <label><!-- Assessable Object Type --></label>
+        <name>Assessable_Object_API__c</name>
+    </fields>
+    <fields>
+        <label><!-- Assessable Record --></label>
+        <name>Assessable_Record__c</name>
+    </fields>
+    <fields>
+        <label><!-- Assessment Template --></label>
+        <name>Assessment_Template__c</name>
+        <relationshipLabel><!-- Distributions --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Distribution DateTime --></label>
+        <name>Distribution_DateTime__c</name>
+    </fields>
+    <fields>
+        <label><!-- Distribution Group --></label>
+        <name>Distribution_Group__c</name>
+        <relationshipLabel><!-- Distributions --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Email Template --></label>
+        <name>Email_Template__c</name>
+    </fields>
+    <fields>
+        <help><!-- The date after which the link(s) in this distribution will no longer allow the user to provide information via the associated assessment. --></help>
+        <label><!-- Expiration Date --></label>
+        <name>Expiration_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Is Archive --></label>
+        <name>Is_Archive__c</name>
+    </fields>
+    <fields>
+        <label><!-- Landing Page --></label>
+        <name>Landing_Page__c</name>
+    </fields>
+    <fields>
+        <label><!-- Post Assessment Message --></label>
+        <name>Post_Assessment_Message__c</name>
+    </fields>
+    <fields>
+        <label><!-- Pre-Assessment Message --></label>
+        <name>Pre_Assessment_Message__c</name>
+    </fields>
+    <fields>
+        <label><!-- Send Mode --></label>
+        <name>Send_Mode__c</name>
+        <picklistValues>
+            <masterLabel>Anonymous Link</masterLabel>
+            <translation><!-- Anonymous Link --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Download as CSV</masterLabel>
+            <translation><!-- Download as CSV --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Email with Salesforce</masterLabel>
+            <translation><!-- Email with Salesforce --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Start Date --></label>
+        <name>Start_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Status --></label>
+        <name>Status__c</name>
+    </fields>
+    <fields>
+        <label><!-- Target Object Ids --></label>
+        <name>Target_Object_Ids__c</name>
+    </fields>
+    <fields>
+        <label><!-- Type --></label>
+        <name>Type__c</name>
+        <picklistValues>
+            <masterLabel>Anonymous Link</masterLabel>
+            <translation><!-- Anonymous Link --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Unique Link</masterLabel>
+            <translation><!-- Unique Link --></translation>
+        </picklistValues>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

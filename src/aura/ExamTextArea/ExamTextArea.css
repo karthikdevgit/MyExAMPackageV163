@@ -1,0 +1,17 @@
+.THIS {
+}
+.THIS .slds-m-bottom--x-small {
+    margin-bottom: .3rem;
+}
+.THIS .tooltip-container .slds-popover.slds-popover--tooltip {
+  top: -47px;
+  left: -8px;
+}
+.THIS .slds-icon-action-edit {
+    background-color: #002855;
+    -webkit-transition: all .5s ease-in-out;
+    transition: all .5s ease-in-out;
+}
+.THIS .slds-icon-action-edit:hover {
+    background-color: #005eb8;
+}

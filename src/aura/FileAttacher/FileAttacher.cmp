@@ -1,0 +1,38 @@
+<aura:component access="public">
+
+    <aura:attribute name="fileName" type="String" access="public"/>
+    <aura:attribute name="parentId" type="String" access="public"/>
+    <aura:attribute name="disabled" type="String" access="public"/>
+    <aura:attribute name="fileContent" type="Object" access="public" />
+    <aura:attribute name="sObjectName" type="String" access="public"/>
+    <aura:attribute name="attachmentId" type="String" access="public"/>
+    <aura:attribute name="preview" type="Boolean" access="public" default="false"/>
+
+    <aura:registerEvent name="fileAttachmentEvt" type="c:logoAttachmentEvt"/>
+    <aura:registerEvent name="notificationEvent" type="c:notificationEvt"/>
+
+    <aura:method name="uploadToServer" action="{!c.uploadFileToSerever}" access="public">
+        <aura:attribute name="onSuccess" type="Object" access="public"/>
+    </aura:method>
+
+    <a class="slds-button slds-button--neutral slds-button--browse slds-m-right--small"  onclick="{!c.uploadfile}">
+        Browse
+    </a>
+    
+    <input type="file" class="slds-hide"  aura:id="fileUpload" disabled="{!v.disabled}" onchange="{!c.uploadImg}"/>
+    <aura:if isTrue="{!v.preview}">
+        <div class="{!v.fileContent.fileContents ? 'slds-show' : 'slds-hide'}">
+            <img src="{!'data:image/png;base64,'+v.fileContent.fileContents}" class="img"/>
+        </div>
+        <div class="{! and(!v.fileContent.fileContents , v.attachmentId) ? 'slds-show' : 'slds-hide'}">
+            <img src="{!'/servlet/servlet.FileDownload?file='+v.attachmentId}" class="img"/>
+        </div>
+        <div class="{!and(!v.fileContent.fileContents, !v.attachmentId) ? 'slds-show' : 'slds-hide'}">
+            <img src="{!$Resource.NoImage}" class="img"/>
+        </div>
+        <aura:set attribute="else">
+            {!v.fileName}
+        </aura:set>
+    </aura:if>
+
+</aura:component>

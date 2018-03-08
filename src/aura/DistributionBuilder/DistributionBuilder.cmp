@@ -1,0 +1,211 @@
+<aura:component access="public">
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    
+    <aura:attribute name="assessmentId" type="String" access="public"/>
+    <aura:attribute name="wizardName" type="String" access="public" />
+    <aura:attribute name="emailDailyLtd" type="Map" access="public"/>
+    <aura:attribute name="hasEnabled" type="Map" access="public" default="{
+                                                                          'prompt' : false,
+                                                                          'label' : ''
+                                                                          }"/>
+    
+    <aura:attribute name="distributionRd" type="Distribution__c" access="public"/>
+    <aura:attribute name="nameOfObjs" type="Map" access="public" default="{'assessableObjs' : [],
+                                                                          'targetObjs' : [],
+                                                                          'emailTemplates' : []
+                                                                          }" />
+    <aura:attribute name="enabledViewers" type="Map" access="public" default="{
+                                                                              'audience' : false,
+                                                                              'manner' : false,
+                                                                              'review' : false
+                                                                              }"/>
+    <aura:attribute name="actionSelections" type="Map" access="public" default="{
+                                                                                'assessableRcd' : false,
+                                                                                'distr_Link' : false,
+                                                                                'distr_TargetObj' : false,
+                                                                                'criteria' : false,
+                                                                                'email' : false,
+                                                                                'newGroup' : false,
+                                                                                'existingGroup' : false,
+                                                                                'showCount' : false
+                                                                                }"/>
+    <aura:attribute name="selectedObjInfo" type="Map" access="public" default="{
+                                                                               'assessableObj' : {},
+                                                                               'assessableRcd' : {},
+                                                                               'targetObj' : {
+                                                                               'objAPI' : '',
+                                                                               'objLabel' : ''
+                                                                               },
+                                                                               'emailTemplate' : {},
+                                                                               'distributiongroup' : {}
+                                                                               }"/>
+    
+    <aura:registerEvent name="notificationEvent" type="c:notificationEvt"/>
+    <aura:handler name="promptEvent" event="c:promptEvt" action="{!c.destroyChilds}"/>
+    
+    <lightning:card title="Build your Distribution">
+        
+        <aura:set attribute="actions">
+            <button class="slds-button slds-button_neutral slds-button_save" onclick="{!c.cancel}">Back to Distribution Grid view</button>
+        </aura:set>
+        
+        <lightning:layout >
+            <lightning:layoutItem padding="around-small" size="12">
+                
+                <lightning:card title="ExAM Context">
+                    <div class="slds-text-heading_medium slds-m-bottom_small">
+                        <ui:inputText required="true" class="inputCmp" aura:id="distroName" value="{!v.distributionRd.Name}" placeholder="Enter a Nickname" updateOn="change" change="{!c.changeName}"/>
+                    </div>
+                    
+                    <ui:outputText value="Will you be assessing an existing Salesforce record?" class="slds-m-bottom_small slds-form-element__label slds-text-heading_small"/>
+                    
+                    <lightning:buttonGroup >
+                        <lightning:button label="Existing" aura:id="assObj_Yes" title="Assess a specific Salesforce record"  onclick="{!c.createObjSelected}"/>
+                        <lightning:button label="New" aura:id="assObj_No" title="Create a new assessable object for each ExAM"  onclick="{!c.createObjSelected}"/>
+                    </lightning:buttonGroup>
+                    
+                    <div aura:id="chooseObject" class="slds-text-heading_small slds-m-bottom_small slds-hide">
+                        <a>{!v.selectedObjInfo.assessableObj.assObjApiName ? v.selectedObjInfo.assessableObj.assObjLabel : '--None--'}</a>
+                        <lightning:buttonMenu variant="container" aura:id="menu" onselect="{! c.assessableObjSelection }" alternativeText="Show menu">
+                            <aura:iteration items="{!v.nameOfObjs.assessableObjs}" var="assessableObject" indexVar="index">
+                                <lightning:menuItem value="{!assessableObject.assObjApiName+'~'+index}" label="{!assessableObject.assObjLabel}" checked="{!assessableObject.assObjApiName == v.selectedObjInfo.assessableObj.assObjApiName}"/>
+                            </aura:iteration>
+                        </lightning:buttonMenu>
+                    </div>
+                    
+                    <aura:if isTrue="{!v.actionSelections.assessableRcd}">
+                        <div class="lookup">
+                            <c:ExamLookup aura:id="lookupCmp" selectedRecord="{!v.selectedObjInfo.assessableRcd}" objRefName="{!v.selectedObjInfo.assessableObj.assObjApiName}" labelName="Assessable Record"/>
+                        </div>
+                    </aura:if>
+                    
+                    <div class="{!v.selectedObjInfo.assessableObj.assObjApiName ? 'slds-show' : 'slds-hide'}">
+                        <div class="slds-p-vertical_medium slds-text-heading_medium">Continue to build your target list.
+                        </div>
+                        <div class="slds-p-top_medium slds-text-heading--medium">
+                            <button class="slds-m-right_small slds-button slds-button--neutral slds-button--save" onclick="{!c.enableSendersInfo}">Continue</button>
+                            <!--<button aura:id="Cancel" class="{!v.hasEnabled.senderViewer ? 'slds-hide' : 'slds-button slds-button_neutral slds-button_save'}" onclick="{!c.clearExAMContext}">Clear</button>-->
+                        </div>
+                    </div>
+                </lightning:card>
+                
+            </lightning:layoutItem>
+        </lightning:layout>
+        
+        <aura:if isTrue="{!v.enabledViewers.audience}">
+            
+            <lightning:layout >
+                <lightning:layoutItem padding="around-small" size="12">
+                    <c:DistributionAudience aura:id="audience" actionSelections="{!v.actionSelections}" 
+                                            selectedObjInfo="{!v.selectedObjInfo}" enabledViewers="{!v.enabledViewers}"
+                                            emailDailyLtd="{!v.emailDailyLtd}"
+                                            targetObjs="{!v.nameOfObjs.targetObjs}" distributionRd="{!v.distributionRd}"/>
+                </lightning:layoutItem>
+            </lightning:layout>
+            
+        </aura:if>
+        
+        <aura:if isTrue="{!v.enabledViewers.manner}">
+            
+            <lightning:layout >
+                <lightning:layoutItem padding="around-small" size="12">
+                    <c:DistributionType aura:id="distr_type" actionSelections="{!v.actionSelections}" 
+                                        selectedObjInfo="{!v.selectedObjInfo}" distributionRd="{!v.distributionRd}"  
+                                        emailTemplates="{!v.nameOfObjs.emailTemplates}" enabledViewers="{!v.enabledViewers}"/>
+                </lightning:layoutItem>
+            </lightning:layout>
+            
+        </aura:if>
+        
+        <aura:if isTrue="{!v.enabledViewers.review}">
+            
+            <lightning:layout >
+                <lightning:layoutItem padding="around-small" size="12">
+                    <lightning:card title="Review Distribution">
+                        <lightning:layout >
+                            <lightning:layoutItem class="hideHeader" padding="around-small" size="12" largeDeviceSize="6">
+                                <lightning:card title="readOnly">
+                                    <div class=" slds-grid slds-grid--align-spread slds-text-heading--small option-item">
+                                        <div class="label-override">
+                                            Distribution Name
+                                        </div>
+                                        <div >
+                                            <ui:outputText value="{!v.distributionRd.Name}"/>
+                                        </div>
+                                    </div>
+                                    <aura:if isTrue="{!v.actionSelections.email}">
+                                        <div class=" slds-grid slds-grid--align-spread slds-text-heading--small option-item">
+                                            <div class="label-override">
+                                                Start Date
+                                            </div>
+                                            <div>
+                                                <ui:outputDate format="MM/dd/yyyy" value="{!v.distributionRd.ExAM__Start_Date__c}"/>
+                                            </div>
+                                        </div>
+                                    </aura:if>
+                                    <div class=" slds-grid slds-grid--align-spread slds-text-heading--small option-item">
+                                        <div class="label-override">
+                                            Assessable Object Type
+                                        </div>
+                                        <div >
+                                            <ui:outputText value="{!v.selectedObjInfo.assessableObj.assObjLabel}"/>
+                                        </div>
+                                    </div>
+                                    <div class=" slds-grid slds-grid--align-spread slds-text-heading--small option-item">
+                                        <div class="label-override">
+                                            Assessable Record Name
+                                        </div>
+                                        <div >
+                                            <ui:outputText value="{!v.selectedObjInfo.assessableRcd.Name}"/>
+                                        </div>
+                                    </div>
+                                    <div class="slds-grid slds-grid--align-spread slds-text-heading--small option-item">
+                                        <div class="label-override">
+                                            Target Audience Group Name
+                                        </div>
+                                        <div >
+                                            <ui:outputText value="{!v.selectedObjInfo.distributiongroup.Name}"/>
+                                        </div>
+                                    </div>
+                                    <div class=" slds-grid slds-grid--align-spread slds-text-heading--small option-item">
+                                        <div class="label-override">
+                                            Send Mode
+                                        </div>
+                                        <div >
+                                            <ui:outputText value="{!v.distributionRd.ExAM__Send_Mode__c}"/>
+                                        </div>
+                                    </div>
+                                </lightning:card>
+                            </lightning:layoutItem>
+                            <lightning:layoutItem class="hideHeader" padding="around-small" size="12" largeDeviceSize="6">
+                                <c:DistributionOptionsViewer aura:id="dist_OptsViewer" mode="edit" defaultMode="edit" newField="true" distributionRd="{!v.distributionRd}" sendMode="{!v.distributionRd.ExAM__Send_Mode__c}"/>
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                    </lightning:card>
+                </lightning:layoutItem>
+            </lightning:layout>
+            
+            <div class="slds-m-around_small">
+                <button class="slds-m-right_small slds-button slds-button--neutral slds-button--save" onclick="{!c.saveDistr}">Save Distribution</button>
+            </div>
+            
+        </aura:if>
+        
+    </lightning:card>
+    
+    <aura:if isTrue="{!v.hasEnabled.prompt}">
+        <c:PromptNotifier headerMsg="Change" msgDescription="Are you sure you want to change this"/>
+    </aura:if>
+    
+    <div aura:id="spinner_container" class="slds-hide">
+        <div class="slds-spinner_container">
+            <div role="status" class="slds-spinner slds-spinner--medium slds-spinner--brand">
+                <span class="slds-assistive-text">Loading</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </div>
+</aura:component>

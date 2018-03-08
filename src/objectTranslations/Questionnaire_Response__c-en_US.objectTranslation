@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Answer</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Answers</value>
+    </caseValues>
+    <fields>
+        <help><!-- If the response is related to a specific account it will be listed here. --></help>
+        <label><!-- Account Name --></label>
+        <name>Account_Name__c</name>
+    </fields>
+    <fields>
+        <help><!-- If the response is related to a specific account it will be listed here. --></help>
+        <label><!-- Account to Response --></label>
+        <name>Account_to_Response__c</name>
+        <relationshipLabel><!-- Answers --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Answer External Id --></label>
+        <name>Answer_External_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Answer Text --></label>
+        <name>Answer_Text__c</name>
+    </fields>
+    <fields>
+        <help><!-- Any user comment associated with this specific Answer record. --></help>
+        <label><!-- Comment --></label>
+        <name>Comment__c</name>
+    </fields>
+    <fields>
+        <help><!-- If the Answer is related to a Decision Tree then this is the Question record associated with the Decision Tree that launched the series of questions resulting in this Answer record. --></help>
+        <label><!-- Decision Tree Launched Question --></label>
+        <name>Decision_Tree_Launched_Question__c</name>
+        <relationshipLabel><!-- Answers (Decision Tree Launched Question) --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- This is the Assignment Manager related to the Answer record. --></help>
+        <label><!-- Assignment Manager --></label>
+        <name>Issue_Request__c</name>
+        <relationshipLabel><!-- Answers --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- The total number of points that the Answer record could have scored. --></help>
+        <label><!-- Max Score --></label>
+        <name>Max_Score__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is the priority of the Answer being provided. --></help>
+        <label><!-- Priority --></label>
+        <name>Priority__c</name>
+        <picklistValues>
+            <masterLabel>Emergency</masterLabel>
+            <translation><!-- Emergency --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>High</masterLabel>
+            <translation><!-- High --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Routine</masterLabel>
+            <translation><!-- Routine --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <help><!-- This is the label of the question that is related to the Answer being provided. --></help>
+        <label><!-- Question Label --></label>
+        <name>Question_Label__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is the Question Id for the question that was the basis for this Answer. --></help>
+        <label><!-- Question Template - Response --></label>
+        <name>Question_Template__c</name>
+        <relationshipLabel><!-- Answers (Question Template - Response) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Question WeightOLD --></label>
+        <name>Question_Weight__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is the user that provided the answer if this is known. --></help>
+        <label><!-- Questionnaire Taker(user) --></label>
+        <name>Questionnaire_Taker_user__c</name>
+        <relationshipLabel><!-- Answers --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- If there is an answer related to this Answer then it would be listed here. --></help>
+        <label><!-- Related Answer --></label>
+        <name>Related_Answer__c</name>
+        <relationshipLabel><!-- Answers --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- This is the response selected or entered by the participant. --></help>
+        <label><!-- Response --></label>
+        <name>Response__c</name>
+    </fields>
+    <fields>
+        <help><!-- If there is a person responsible for the Answer they will be listed here. --></help>
+        <label><!-- Responsible Party --></label>
+        <name>Responsible_Party__c</name>
+        <relationshipLabel><!-- Answers --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- The total number of points achieved by a specific Answer record. --></help>
+        <label><!-- Total Score --></label>
+        <name>Total_Score__c</name>
+    </fields>
+    <fields>
+        <help><!-- The percentage of the total possible score possible for the answer that was achieved by the Answer. --></help>
+        <label><!-- Raw Response Score(%) --></label>
+        <name>Weight_Response__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is the current value associated with the lifecycle of the Answer object record. --></help>
+        <label><!-- Answer Status --></label>
+        <name>deficiency_status__c</name>
+        <picklistValues>
+            <masterLabel>Closed</masterLabel>
+            <translation><!-- Closed --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Open</masterLabel>
+            <translation><!-- Open --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Self-Certified</masterLabel>
+            <translation><!-- Self-Certified --></translation>
+        </picklistValues>
+    </fields>
+    <layouts>
+        <layout>Questionnaire Response Layout</layout>
+        <sections>
+            <label><!-- Answer Relationships --></label>
+            <section>Answer Relationships</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Scoring --></label>
+            <section>Scoring</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

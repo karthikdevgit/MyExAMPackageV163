@@ -1,0 +1,5 @@
+<aura:event type="APPLICATION" access="public">
+	<aura:attribute name="activeTab" type="Integer" access="public" />
+	<aura:attribute name="componentLink" type="String" access="public" />
+    <aura:attribute name="changeTab" type="Boolean" access="public" />
+</aura:event>

@@ -1,0 +1,25 @@
+<aura:component access="public">
+    
+    <aura:attribute name="currentPage" type="Integer" access="public"/>
+    <aura:attribute name="max" type="Integer" access="public"/>
+    <aura:attribute name="min" type="Integer" default="1" access="public"/>
+    <aura:attribute name="showNavigationPage" type="Boolean" default="true" access="public"/>
+    
+    <aura:registerEvent name="fireIndex" type="c:paginatorEvt"/>
+    
+    <div class="slds-text-align--center">
+        
+        <a  class="{! !v.showNavigationPage ? 'slds-hide' : (v.currentPage == v.min) ? 'not-active slds-p-around--xx-small' : 'slds-p-around--xx-small'}" onclick="{!c.firstPage}">First</a>
+        <a  class="{!(v.currentPage == v.min) ? 'not-active slds-p-around--xx-small' : 'slds-p-around--xx-small'}" onclick="{!c.previous}">
+            <lightning:icon iconName="utility:left" size="small" />
+            
+        </a>
+        <span class="slds-p-around--xx-small"> {!v.currentPage} / {!v.max} </span>
+        <a  class="{!(v.currentPage == v.max) ? 'not-active slds-p-around--xx-small' : 'slds-p-around--xx-small'}" onclick="{!c.next}">
+            
+            <lightning:icon iconName="utility:right" size="small" />
+        </a>
+        <a  class="{! !v.showNavigationPage ? 'slds-hide' : (v.currentPage == v.max) ? 'not-active slds-p-around--xx-small' : 'slds-p-around--xx-small'}" onclick="{!c.lastPage}">Last</a>
+    </div>
+    
+</aura:component>

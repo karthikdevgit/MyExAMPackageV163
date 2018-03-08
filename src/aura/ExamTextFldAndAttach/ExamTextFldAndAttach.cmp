@@ -1,0 +1,79 @@
+<aura:component access="public" extends="c:ExamFieldBase">
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:attribute name="value" type="String" access="public"/>
+    <aura:attribute name="oldValue" type="String" access="public"/>
+    <aura:attribute name="attachment" type="Map" access="public"/>
+    <aura:attribute name="preview" type="Boolean" access="public" default="false"/>
+    
+    <aura:method name="uploadImage" action="{!c.saveImage}">
+        <aura:attribute name="onSuccess" type="function" access="public"/>
+    </aura:method>
+    
+    <div class="slds-grid slds-wrap slds-grid--align-spread slds-grid--vertical-align-center">
+        <aura:if isTrue="{!v.mode == 'view'}">
+            <div class="label-override">
+                {!v.fieldLabel}
+            </div>
+            <span aura:id="createOutputCmp">
+                {!v.value}
+            </span>
+            <aura:set attribute="else">
+                <aura:if isTrue="{!v.defaultMode == 'view'}">
+                    <aura:if isTrue="{!v.hideLabel}">
+                        
+                        <aura:set attribute="else">
+                            <a class="slds-col exam-bold label-override" onclick="{!c.changevalue}">
+                                {!v.fieldLabel}
+                            </a>
+                            <div>
+                                <span class="{!v.preview ? 'slds-show' : 'slds-hide'}">
+                                    <aura:if isTrue="{!v.attachment.Id}">
+                                        <img src="{!'/servlet/servlet.FileDownload?file='+v.attachment.Id}" class="img"/>
+                                    </aura:if>
+                                </span>
+                                <span class="{!v.preview ? 'slds-hide' : 'slds-show'}" aura:id="createOutputCmp">
+                                    {!v.value}
+                                </span>
+                            </div>
+                        </aura:set>
+                    </aura:if>
+                    <aura:set attribute="else">
+                        <aura:if isTrue="{!v.newField}">
+                            <span class="slds-col">{!v.fieldLabel}</span>
+                            <span class="slds-col slds-size--2-of-3 slds-m-right--medium slds-p-vertical--x-small">
+                                <c:FileAttacher aura:id="fileAttachment" parentId="{!v.Id}" disabled="false" fileName="{!v.value}" sObjectName="{!v.sObjectName}" preview="{!v.preview}"/>
+                            </span>
+                            <aura:set attribute="else">
+                                <div class="{!v.hideLabel ? 'slds-hide' : 'slds-show'}">
+                                    <a class="exam-bold label-override" onclick="{!c.changevalue}">
+                                        {!v.fieldLabel}
+                                    </a>
+                                </div>
+                                <div class="slds-col slds-size--1-of-1 slds-grid slds-grid--align-spread slds-wrap ">
+                                    <span aura:id="createInputCmp" class="slds-col slds-size--2-of-3 slds-m-right--medium slds-p-vertical--x-small">
+                                        <c:FileAttacher aura:id="fileAttachment" parentId="{!v.record.Id}" disabled="false" fileName="{!v.value}" sObjectName="{!v.sObjectName}" attachmentId="{!v.attachment.Id}" preview="{!v.preview}"/>
+                                    </span>
+                                    <span class="slds-col slds-p-vertical--x-small">
+                                        <a class="slds-button slds-button--neutral slds-button--save slds-m-right--small" onclick="{!c.updateFieldValue}">
+                                            Save
+                                        </a>
+                                        <a class="slds-button slds-button--neutral" onclick="{!c.cancelUpdateFieldVal}">
+                                            Cancel
+                                        </a>
+                                    </span>
+                                </div>
+                                
+                            </aura:set>
+                        </aura:if>
+                        
+                    </aura:set>
+                </aura:if>
+                
+            </aura:set>
+            
+        </aura:if>
+        
+    </div>
+</aura:component>

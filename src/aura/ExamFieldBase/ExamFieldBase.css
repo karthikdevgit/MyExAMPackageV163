@@ -1,0 +1,6 @@
+.THIS.slds-spinner_container {
+    position: fixed !important;
+}
+.THIS .is-editable:hover{
+  background: #000;
+}

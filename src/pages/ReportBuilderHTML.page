@@ -1,0 +1,110 @@
+<apex:page controller="ReportBuilderController" standardStylesheets="true" action="{!ReportBuilderControllerAction}" applyBodyTag="false" sidebar="true" showHeader="true">
+    <!--<apex:stylesheet value="{!$Resource.ReportBuilderHTML}"/>-->
+    <head>
+        <style>
+            p.reportbuildertitle {
+                text-align:center !important;
+                font-size:35px !important;
+            }
+            span.subtitle {
+                font-size:18px;
+                font-weight:bold;
+            }
+            table.assignmentManagerDetail, table.AssessableObjectDetail {
+                width:75%;
+            }
+            td.fieldlabel {
+                padding: 3px 10px 3px 2px;
+                text-align: right;
+                font-weight: bold;
+            }
+            p.answer, .comment, .photo {
+                padding-left: 25px;
+            }
+            .noRecord {
+                color:red;font-weight: bold;font-size: 20px;
+            }
+            .footerImagediv,.headerImagediv{
+                text-align:center;
+            }
+            .headerimg, .footerimg {
+                height:150px;
+            } 
+        </style>
+    </head>
+    <div ng-app="ReportBuilderHTMLApp" ng-controller="reportBuilderHTMLCtrl">
+        <apex:pageMessages ></apex:pageMessages>
+        <apex:outputPanel rendered="{!amrecordList.size > 0}">
+            <div class="headerImagediv">
+                <!--<apex:image value="{!headerUrl}" rendered="{!IF(headerUrl !='', true, false)}" styleClass="headerimg"/>-->
+                <apex:outputText value="{!headerStr}" escape="false"/>
+            </div>
+            <p class="reportbuildertitle"> Assignment Manager Report</p>
+            <apex:repeat value="{!amrecordList}" var="am">
+
+                <span class="subtitle">
+                    Assignment Manager &nbsp;: {!am.amName}<br/>
+                    Assessment Template : {!templateName}<br/>
+                </span>
+
+                <table class="assignmentManagerDetail"> 
+                    <tbody>
+                        <apex:repeat value="{!am.amFieldValues}" var="amField">
+                            <tr>
+                                <td class="fieldlabel"><b> {!IF(amField.apiName =='',' ', amField.labelName)}</b> </td>
+                                <td> &nbsp;{!IF(amField.apiName =='',' ', amField.fieldvalue)} </td>    
+                                <td class="fieldlabel"> {!IF(amField.apiName2 =='',' ', amField.labelName2)} </td>
+                                <td> &nbsp;{!IF(amField.apiName2 =='',' ', amField.fieldvalue2)} </td>                                   
+                            </tr>
+                        </apex:repeat>
+                    </tbody>
+                </table>
+                <br/><br/>
+
+                <apex:outputPanel rendered="{!AND(NOT(ISBLANK(am.assessableObjName)), NOT(ISBLANK(am.assessableObjectFieldsList)))}">
+                    <span class="subtitle">
+                        Assessable Object Name &nbsp;: {!am.assessableObjName}<br/>
+                    </span>
+                    <table class="AssessableObjectDetail"> 
+                        <tbody>
+                            <apex:repeat value="{!am.assessableObjectFieldsList}" var="assessableObjField">
+                                <tr>
+                                    <td class="fieldlabel"><b> {!IF(assessableObjField.field1ApiName =='',' ', assessableObjField.field1LabelName)}</b> </td>
+                                    <td> &nbsp;{!IF(assessableObjField.field1ApiName =='',' ', assessableObjField.field1Value)} </td>    
+                                    <td class="fieldlabel"> {!IF(assessableObjField.field2ApiName =='',' ', assessableObjField.field2LabelName)} </td>
+                                    <td> &nbsp;{!IF(assessableObjField.field2ApiName =='',' ', assessableObjField.field2Value)} </td>                                   
+                                </tr>
+                            </apex:repeat>
+                        </tbody>
+                    </table>
+                </apex:outputPanel>
+                <br/><br/>
+
+                <span class="subtitle">
+                    Question Response<br/><br/>
+                </span>
+                <apex:variable var="count" value="{!1}"/>
+                <apex:repeat value="{!amIdwithListofAnswerMap[am.amId]}" var="ans">
+                    <strong>Q.{!count} {!ans.Question_Template__r.Question_Label__c}</strong><br/>
+                    <p class="answer">{!ans.Response__c}</p>
+                    
+                    <apex:outputPanel styleClass="comment" rendered="{!AND(isCommentShow,ans.Comment__c != null, ans.Comment__c != '')}"><strong> Comment : </strong>{!ans.Comment__c} <br/><br/></apex:outputPanel>
+                    <apex:outputPanel styleClass="photo" rendered="{!isPictureShow}">
+                    <apex:repeat value="{!ansIdwithListOfAttIdMap[ans.ID]}" var="attach">  
+                        <apex:image value="/servlet/servlet.FileDownload?file={!attach}" width="150" height="150"/>
+                    </apex:repeat> <br/><br/></apex:outputPanel>    
+                    <apex:variable var="count" value="{!count+1}" />
+                </apex:repeat><br/><br/>
+            </apex:repeat>
+            <!--<div ng-bind-html="footerObj"></div>-->
+            <div class="footerImagediv">
+                <!--<apex:image value="{!footerUrl}" rendered="{!IF(footerUrl !='', true, false)}"  styleClass="footerimg"/>-->
+                <apex:outputText value="{!footerStr}" escape="false"/>
+            </div>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!amrecordList.size <= 0}">
+            <center class="noRecord"> No records found </center>
+        </apex:outputPanel>
+    </div>
+    
+</apex:page>

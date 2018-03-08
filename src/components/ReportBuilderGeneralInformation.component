@@ -1,0 +1,936 @@
+<apex:component controller="ReportBuilderConfigController">
+    <apex:includeScript value="{!URLFOR($Resource.UnderscoreAndAngularJS,'UnderscoreAndAngularJS/angular.min.js')}"/>      
+    <apex:includeScript value="{!URLFOR($Resource.UnderscoreAndAngularJS,'UnderscoreAndAngularJS/underscore-min.js')}"/>
+    <apex:includeScript value="{!$Resource.ngsortable}"/>
+    <apex:stylesheet value="{!$Resource.ngsortablecss}"/>
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <title>Assessment Viewer</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS052, '/assets/styles/salesforce-lightning-design-system-vf.css')}" />
+        </head>
+            <apex:stylesheet value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-ui.min.css')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-1.10.2.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-ui.min.js')}"/>
+        <script type="text/javascript">
+            var __sfdcSessionId = '{!GETSESSIONID()}';
+        </script>
+        
+        <script src="../../soap/ajax/35.0/connection.js" type="text/javascript"></script>
+        <script src="../../soap/ajax/35.0/apex.js" type="text/javascript"></script>
+        
+        <div ng-app="reportBuilderApp" ng-controller="reportBuilderCtrl" class="slds">
+            <form class="slds-form" >
+                <div class="slds-card slds-m-top--x-small slds-m-bottom--x-large">
+                    <div class="slds-card__header slds-grid">
+                        <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <h2 class="slds-text-heading--small slds-truncate">General Information</h2>
+                                <span ng-show="errormsgAMorAT" style="color:red;"> Please select either Assignment Manager or Assessment Template </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-card__body slds-m-left--x-small slds-m-bottom--x-small slds-m-top--x-small slds-m-right--x-small">
+                        <div class="successfully_Saved slds-box slds-theme--success" style="display:none">
+                            <p>
+                                <strong id="resMsg"></strong> 
+                            </p>  
+                        </div>
+                        <div class="slds-box slds-theme--error error_Saved" style="display:none">
+                            <p>
+                                <strong id="errMsg"></strong>
+                            </p>
+                        </div>
+                        <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover slds-m-right--medium">
+                            <tbody>
+                                <tr class="slds-hint-parent">
+                                    <td colspan="4" class="slds-size--1-of-1" style="text-align:center;">
+                                        <span class="slds-size--1-of-4"> Saved Reports </span> &nbsp;&nbsp;&nbsp;  
+                                        <select class="slds-select slds-size--1-of-4" id="savedReportId" ng-model="selectedReportValue" ng-change="changeReportBuilder(selectedReportValue)" ng-options="reportbuilder as reportbuilder.Name for reportbuilder in savedreportBuilderList | orderBy:'Name':false"/>&nbsp;&nbsp;  
+                                        <a ng-click="showDeleteReport();" href="#"> Delete Report </a>   &nbsp; &nbsp;
+                                        <a ng-click="clearReport();" href="#"> Clear </a>                                          
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td class="slds-size--1-of-4">
+                                        Output format
+                                    </td>
+                                    <td class="slds-size--1-of-4">
+                                        <div class="outputformat">
+                                            <select class="slds-select" ng-model="selectFormat">
+                                                <option value="PDF"> PDF </option>
+                                                <option value="HTML"> HTML </option>
+                                                <option value="JSON"> JSON </option>                                                
+                                            </select>
+                                            <div style="display:none;" class="slds-form-element__help">This field is required</div>
+                                        </div>
+                                    </td>
+                                    <td class="slds-size--1-of-4">
+                                        Assignment Manager
+                                    </td>
+                                    <td class="slds-size--1-of-4">
+                                        <!--<select class="slds-select" ng-model="selectedAssignmentManager" ng-options="am.Id as am.Name for am in assignmentManagerList"/>-->
+                                        <input type="text" class="slds-input" ng-model="selectedAssignmentManager.Name"/>
+                                        <span ng-click="openAssignmentmanager();" class="slds-icon__container slds-align-middle slds-p-right--medium">
+                                            <svg aria-hidden="true" class="slds-icon icon__svg slds-icon-standard-marketing-actions slds-icon--small">
+                                                <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/standard-sprite/svg/symbols.svg#marketing_actions')}"></use>
+                                            </svg>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td class="slds-size--1-of-4">
+                                        Assessment Template Type
+                                    </td>
+                                    <td class="slds-size--1-of-4">
+                                        <div class="assTemplateName">
+                                            <select class="slds-select" id="asstempId" ng-model="selectedTemp" ng-options="assTemplate.Id as (assTemplate.Name+' ( '+assTemplate.ExAM__Template_name__c+' )') for assTemplate in assessmentTemplateList | orderBy:'ExAM__Template_name__c':false" ng-change="changeTemp(selectedTemp);"/>
+                                            <div style="display:none;" class="slds-form-element__help">This field is required</div>
+                                        </div>
+                                    </td>
+                                    <td class="slds-size--1-of-4">
+                                        Date Range
+                                    </td>
+                                    <td class="slds-size--1-of-4">
+                                        <input id="startdate" class="startdate datepicker1 slds-input slds-size--1-of-2" ng-model="startdate" type="text" placeholder="Pick a Start Date" label="Date Picker Label"/> to 
+                                        <input id="enddate" class="enddate datepicker2 slds-input slds-size--1-of-2" ng-model="enddate" type="text" placeholder="Pick a End Date" label="Date Picker Label"/>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td class="slds-size--1-of-4">
+                                        Overall Status
+                                    </td>
+                                    <td class="slds-size--1-of-4">
+                                        <select class="slds-select" id="status" style="height:150px" ng-model="selectedStatus" ng-options="eachStatus.assessibleFieldApiName as eachStatus.assessibleFieldLabel for eachStatus in statusOptions" multiple="test"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                
+                
+                <div class="slds-card slds-m-top--x-small slds-m-bottom--x-large">
+                    <div class="slds-card__header slds-grid">
+                        <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <h2 class="slds-text-heading--small slds-truncate">Assignment Manager Data</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-card__body">
+                        <div style="background:white;" class="slds-m-around--x-small">
+                            <select class="slds-select slds-size--1-of-3 slds-m-around--x-small" style="height:150px;" name="amfieldslist" ng-options="amPosition as amPosition.labelName for amPosition in assignmentManagerPositionList|orderBy:'labelName':false" ng-model="selectedOption" multiple="test"></select>  
+                            <button class="slds-button slds-size--1-of-6 slds-button--brand slds-m-left--x-medium slds-m-around--x-small" ng-click="movetoLayout();">Add</button>  
+                            <button class="slds-button slds-size--1-of-6 slds-button--brand slds-m-left--x-medium slds-m-around--x-small" ng-click="addBlankspace();">Blank Space</button>     
+                        </div>
+                        <div style="background:white;" class="slds-grid slds-wrap slds-m-around--x-small" data-as-sortable="board.dragControlListeners" data-ng-model="assignmentManagerPositionList2">
+                            <div class="slds-size--1-of-2 slds-col--padded"  ng-repeat="amfield in assignmentManagerPositionList2" data-as-sortable-item="test">
+                                <div class="slds-grid slds-wrap slds-m-bottom--x-small"  data-as-sortable-item-handle="test">
+                                    <div class="slds-size--1-of-1 slds-col--padded" >{{amfield.labelName}}
+                                        <span class="slds-icon_container" style="cursor: default;">
+                                            <svg aria-hidden="true" class="slds-icon icon-utility-clear slds-icon-text-default" style="width:16px;height:16px;" ng-click="removeCard($index);" >
+                                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#clear')}"></use>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <!--<div class="col-sm-2">
+                                        <a data-no-drag="" class=" removeCard pull-right btn btn-xs" ng-click="removeCard($index)">
+                                            <span class="glyphicon glyphicon-remove"></span>
+                                        </a>
+                                    </div>-->
+                                    <!--<div class="slds-size--1-of-2 slds-col--padded"> <input class="slds-input slds-size--1-of-4" ng-model="positionResult[amfield.apiName]" /></div>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+                
+                
+                <!-- Start Assessable object field position changes -->
+                <div class="slds-card slds-m-top--x-small slds-m-bottom--x-large">
+                    <div class="slds-card__header slds-grid">
+                        <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <h2 class="slds-text-heading--small slds-truncate">Assessable Data</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-card__body">
+                        <div style="background:white;" class="slds-m-around--x-small">
+                            <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover slds-m-right--medium">
+                                <tbody>
+                                    <tr class="slds-hint-parent">
+                                        <td class="slds-size--1-of-3">
+                                            <label class="slds-label">Assessable Object</label>
+                                        </td>
+                                        <td class="slds-size--2-of-3">
+                                            <select class="slds-select slds-size--1-of-3 slds-m-around--x-small" ng-options="assPosition as assPosition.assessableObjectLabel for assPosition in assessableobjectswithFields|orderBy:'assessableObjectLabel':false" ng-model="selectedAssOption" ng-change="assessableObjectwithFieldsList2 = [];"></select>
+                                        </td>
+                                    </tr>
+                                    <tr class="slds-hint-parent">
+                                        <td class="slds-size--1-of-3">
+                                            <label class="slds-label slds-align-middle">Assessable Object Fields</label>
+                                        </td>
+                                        <td class="slds-size--2-of-3">
+                                            <select ng-show="selectedAssOption" class="slds-select slds-size--1-of-3 slds-m-around--x-small" style="height:150px;" ng-options="assFld as assFld.labelName for assFld in selectedAssOption.assessablefields" ng-model="selectedAssFields" multiple="test" ></select>
+                                        </td>
+                                    </tr>
+                                    <tr class="slds-hint-parent">
+                                        <td class="slds-size--1-of-1" colspan="2">
+                                            <button class="slds-button slds-size--1-of-6 slds-button--brand slds-m-left--x-medium slds-m-around--x-small" ng-click="movetoAssessableLayout();">Add</button>  
+                                            <button class="slds-button slds-size--1-of-6 slds-button--brand slds-m-left--x-medium slds-m-around--x-small" ng-click="addAssessableBlankspace();">Blank Space</button>     
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>                            
+                        </div>
+                        <div style="background:white;" class="slds-grid slds-wrap slds-m-around--x-small" data-as-sortable="board.dragControlListeners" data-ng-model="assessableObjectwithFieldsList2">
+                            <div class="slds-size--1-of-2 slds-col--padded"  ng-repeat="assfield in assessableObjectwithFieldsList2" data-as-sortable-item="assessablefields">
+                                <div class="slds-grid slds-wrap slds-m-bottom--x-small"  data-as-sortable-item-handle="assessablefields">
+                                    <div class="slds-size--1-of-1 slds-col--padded" >{{assfield.labelName}}
+                                        <span class="slds-icon_container" style="cursor: default;">
+                                            <svg aria-hidden="true" class="slds-icon icon-utility-clear slds-icon-text-default" style="width:16px;height:16px;" ng-click="removeAssessableCard($index);" >
+                                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#clear')}"></use>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Assessable object field position changes -->
+                
+                <div class="slds-card slds-m-top--x-small" ng-show="sectionTemplateList.length">
+                    <div class="slds-card__header slds-grid">
+                        <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <h2 class="slds-text-heading--small slds-truncate">Assessment Data</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-card__body slds-m-around--x-small" style="background:white;">
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-size--1-of-3"> 
+                                <label><strong>Sections</strong></label>
+                                <div class="slds-size--1-of-1 slds-col--padded">
+                                    <div class="slds-grid slds-wrap slds-m-around--x-small">
+                                        <div class="slds-size--1-of-4 slds-col--padded">All</div>
+                                        <div class="slds-size--1-of-4 slds-col--padded">
+                                            <label class="slds-checkbox" for="AllSection">
+                                                <input name="default" type="checkbox" id="AllSection" ng-model="sectionSelectResult['All']" ng-click="selectAllSection()"/>
+                                                <span class="slds-checkbox--faux"></span>
+                                            </label>
+                                         </div>
+                                         
+                                    </div>
+                                </div>
+                                
+                                <div class="slds-size--1-of-1 slds-col--padded "  ng-repeat="sec in sectionTemplateList">
+                                    <div class="slds-grid slds-wrap slds-m-around--x-small">
+                                        <!--<div class="slds-size--1-of-2 slds-col--padded">{{sec.ExAM__Section_label__c}}</div>-->
+                                        <div class="slds-size--1-of-4 slds-col--padded">{{sec.ExAM__Section_label__c}}</div>
+                                        <div class="slds-size--1-of-4 slds-col--padded">
+                                            <label class="slds-checkbox" for="{{sec.Id}}">
+                                                <!--<span class="slds-form-element__label">{{sec.ExAM__Section_label__c}}</span>-->
+                                                <input name="default" type="checkbox" id="{{sec.Id}}" ng-model="sectionSelectResult[sec.Id]"  />
+                                                <span class="slds-checkbox--faux"></span>
+                                            </label>
+                                         <!--<input class="slds-input slds-size--1-of-4" ng-model="sectionSelectResult[sec.Id]" />-->
+                                         </div>
+                                         
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            
+                            
+                            <div class="slds-size--1-of-3"> 
+                                
+                                <label><strong> Details</strong></label>
+                                <div class="slds-size--1-of-1 slds-col--padded "  ng-repeat="dataconfig in dataConfigList">
+                                    <div class="slds-grid slds-wrap slds-m-around--x-small">
+                                        <div class="slds-size--1-of-4 slds-col--padded">{{dataconfig}}</div>
+                                        <div class="slds-size--1-of-4 slds-col--padded">
+                                            <label class="slds-checkbox" for="{{dataconfig}}">
+                                                <input name="default" type="checkbox" id="{{dataconfig}}" ng-model="dataConfigResult[dataconfig]"  />
+                                                <span class="slds-checkbox--faux"></span>
+                                            </label>
+                                         </div>                                         
+                                    </div>
+                                </div>
+                                
+                            </div>                           
+                            
+                        </div>
+                    </div>
+                </div> <!--End section card-->
+                </div>       <!-- Card end-->
+                <br/>
+                <div style="text-align:center;">
+                    <button class="slds-button slds-button--brand slds-m-bottom--x-large" ng-click="saveReportBuilderConfig(false);">Save &amp; Generate Report</button>
+                    <button class="slds-button slds-button--brand slds-m-bottom--x-large" ng-click="saveReportBuilderConfig(true);">Generate Report</button>
+                </div>
+                
+                <!-- Start Assignment manager -->
+                <div ng-show="showAssignmentmanagerDiv" aria-hidden="false" role="dialog" class="slds-modal slds-modal__close AssignmentManagerSelectionDiv" style="background-color: rgba(128, 128, 128, 0.75);">
+                    <div class="slds-modal__container">
+                        <div class="slds-modal__header">
+                            <button class="slds-button slds-button--icon-inverse slds-modal__close" ng-click="closeAssignmentmanager()">
+                                <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                                    <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                                </svg>
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                            <h2 class="slds-text-heading--medium">Assignment Manager</h2>
+                        </div>
+                        <div class="slds-modal__content">
+                            <div class="slds-m-around--small">    
+                                <input type="text" class="slds-input slds-size--3-of-12" ng-model="searchAM"/>
+                                <button class="slds-button slds-button--brand slds-size--1-of-12" ng-click="searchAMfunction();"> Go! </button>
+                                <div class="slds-size--7-of-12"/>
+                            </div>
+                            <label><strong> Search Result</strong> </label>
+                            <table class="slds-table slds-table--bordered slds-max-medium-table--stacked" style="height:20%">
+                                <thead>
+                                    <tr class="slds-text-heading--label">
+                                        <th scope="col"><span class="slds-truncate"><b>Name</b></span></th>
+                                        <th scope="col"><span class="slds-truncate"><b>Account Name</b></span></th><!--
+                                        <th scope="col"><span class="slds-truncate"><b>{!$ObjectType.IssueRequest_Life_Cycle__c.Fields.Status__c}</b></span></th>
+                                        <th scope="col"><span class="slds-truncate"><b>{!$ObjectType.IssueRequest_Life_Cycle__c.Fields.Priority__c}</b></span></th>-->
+                                    </tr>
+                                    
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="am in ( assignmentManagerList | orderBy:'Name') track by $index">
+                                        <td style="cursor: pointer;" ng-click="setSelectedAssignment(am);">{{ am.Name }}</td>
+                                        <td style="cursor: pointer;" ng-click="setSelectedAssignment(am);">{{ am.ExAM__Facility_Name__r.Name }}</td><!--
+                                        <td style="cursor: pointer;" ng-click="setSelectedAssessmentTemplate($index);">{{ am.Status__c }}</td>
+                                        <td style="cursor: pointer;" ng-click="setSelectedAssessmentTemplate($index);">{{ am.Priority__c}}</td>-->
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Asssignment manager -->
+                <div ng-show="reportNameModel" aria-hidden="false" role="dialog" class="slds-modal slds-modal__close reportNameModel" style="background-color: rgba(128, 128, 128, 0.75);">
+                     <div class="slds-modal__container">
+                        <div class="slds-modal__header">
+                            <button class="slds-button slds-button--icon-inverse slds-modal__close" ng-click="cancelreportName()">
+                                <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                                    <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                                </svg>
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                            <h2 class="slds-text-heading--medium">Create new configuration report</h2>
+                        </div>
+                        <div class="slds-modal__content">
+                            <table style="text-align:center;">
+                                <tr>
+                                    <td class="slds-size--1-of-4">
+                                        Report Name 
+                                    </td>
+                                    <td class="slds-size--1-of-4">
+                                        <div class="reportName">
+                                            <input type="text" class="slds-input" ng-model="reportBuilderName"  placeholder="Report Name"/>
+                                            <div style="display:none;" class="slds-form-element__help">This field is required</div>
+                                        </div>
+                                    </td>
+                                    <td class="slds-size--1-of-4">
+                                        <button class="slds-button slds-button--brand slds-m-left--x-small" ng-click="savereportName();">Save</button>
+                                        <button class="slds-button slds-button--brand " ng-click="cancelreportName();">Cancel</button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div><!-- End of assignment Manager -->
+                
+                <div ng-show="showReportList" aria-hidden="false" role="dialog" class="slds-modal slds-modal__close showReportListpopup" style="background-color: rgba(128, 128, 128, 0.75);">
+                    <div class="slds-modal__container">
+                        <div class="slds-modal__header">
+                            <button class="slds-button slds-button--icon-inverse slds-modal__close" ng-click="closeDeleteReport()">
+                                <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                                    <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                                </svg>
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                            <h2 class="slds-text-heading--medium">Report Builder Configuration List</h2>
+                            <span ng-show="showDeleteError" style="color:red;"> Select atleast one record before delete</span>
+                        </div>
+                        <div class="slds-modal__content">
+                            <table class="slds-table slds-table--bordered slds-max-medium-table--stacked" style="height:20%">
+                                <thead>
+                                    <tr class="slds-text-heading--label">
+                                        <th scope="col"><span class="slds-truncate"><b><input type="checkbox" ng-model="allreportSelected" ng-click="selectAllReport();" /> </b></span></th>
+                                        <th scope="col"><span class="slds-truncate"><b>Report Name</b></span></th>
+                                    </tr>                                    
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="reportbuilder in savedreportBuilderList | orderBy:'Name':false">
+                                        <td style="cursor: pointer;" >
+                                            <input name="default" type="checkbox" id="{{reportbuilder.Id}}" ng-model="deletedReports[reportbuilder.Id]"  />
+                                        </td>
+                                        <td style="cursor: pointer;">{{ reportbuilder.Name }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="slds-modal__footer slds-text-align--center">
+                            <button class="slds-button slds-button--neutral" ng-click="closeDeleteReport();">Cancel</button>
+                            <button class="slds-button slds-button--neutral slds-button--brand" ng-click="deleteReportConfig();">Delete</button>
+                        </div>
+                    </div>
+                </div>
+                
+            </form>
+            <!-- Processing Image Code -->
+            <div style="background-color: rgba(0, 0, 0, 0.6); width: 100%; height: 100%; z-index: 1000; position: fixed; left: 0; top: 0; overflow: hidden; text-align: center; vertical-align: middle;" class="maskDiv">
+                <img src="{!URLFOR($Resource.SLDS052, '/assets/images/spinners/slds_spinner.gif')}" alt="Loading..." class="slds-spinner--small" style=" z-index: 10001; background-color: white; width: 80px; height: 80px; padding: 15px; border-radius: 4px; text-align: left; position: relative; top: 30%;"/>
+            </div>
+            <!--End Processing Image Code -->
+             
+        </div>  
+    </html>
+    <script>
+        
+        $(document).ready(function() {
+            $('.datepicker1').datepicker();
+            $('.datepicker2').datepicker();                
+        });
+        var underscore = angular.module('underscore', ['as.sortable']);
+        underscore.factory('_', ['$window', function($window) {
+            return $window._; // assumes underscore has already been loaded on the page
+        }]);
+        
+        var app = angular.module('reportBuilderApp', ['underscore']);
+        app.controller('reportBuilderCtrl', function($scope,_,$filter) {
+            
+            $scope.savedreportBuilderList = [];
+            $scope.selectFormat = '';
+            $scope.startdate = '';
+            $scope.enddate = '';
+            
+            $scope.assessmentTemplateList = [];
+            $scope.selectedTemp = '';
+            
+            $scope.reportBuilderName = '';
+            $scope.selectedReportValue = {};
+            
+            $scope.assignmentManagerList = [];
+            $scope.selectedAssignmentManager = {};
+            
+            $scope.assignmentManagerPositionList = [];
+            
+            $scope.assignmentManagerPositionList2 = [];
+            $scope.selectedAMOption = [];
+            
+            $scope.positionResult = {};
+            
+            $scope.sectionTemplateList = [];
+            $scope.sectionSelectResult = {};
+            $scope.selectedAllSections = false;
+            
+            $scope.dataConfigList = [];
+            $scope.dataConfigResult = {};
+            
+            $scope.searchAM ='';
+            
+            $scope.result_msg = '';
+            $scope.selectedAssignmentManagerId = '';
+            
+            $scope.deletedReports = {};
+            $scope.allreportSelected = false;
+            $scope.showDeleteError = false;
+            $scope.errormsgAMorAT = false;
+            $('.maskDiv').hide();
+            
+            $scope.assessableobjectswithFields = [];
+            
+            $scope.assessableObjectwithFieldsList = [];
+            $scope.assessableObjectwithFieldsList2 = [];
+            $scope.selectedAssOption = {};
+            
+            $scope.selectedAssFields = [];
+            $scope.selectedStatus = [];                 
+            $scope.selectedOptns = '';
+
+            if ('{!JSENCODE(dataConfigJSON)}' != null && '{!JSENCODE(dataConfigJSON)}' != '' && '{!JSENCODE(dataConfigJSON)}' != 'null') {
+                $scope.dataConfigList = JSON.parse('{!JSENCODE(dataConfigJSON)}');
+            }
+            
+            $scope.dragControlListeners = {
+                accept: function (sourceItemHandleScope, destSortableScope) {return boolean},
+                itemMoved: function (event) {},
+                orderChanged: function(event) {},
+                containment: '#board',
+                clone: true,
+                allowDuplicates: false 
+            };
+            
+            if ('{!JSENCODE(savedReportsJSON)}' != null && '{!JSENCODE(savedReportsJSON)}' != '' && '{!JSENCODE(savedReportsJSON)}' != 'null') {
+                $scope.savedReports = JSON.parse('{!JSENCODE(savedReportsJSON)}');
+                    
+            }    
+            if ('{!JSENCODE(assessmentTemplateJSON)}' != null && '{!JSENCODE(assessmentTemplateJSON)}' != '' && '{!JSENCODE(assessmentTemplateJSON)}' != 'null') {
+                $scope.assessmentTemplateList = JSON.parse('{!JSENCODE(assessmentTemplateJSON)}');
+            }
+            if ('{!JSENCODE(reportBuilderListJSON)}' != null && '{!JSENCODE(reportBuilderListJSON)}' != '' && '{!JSENCODE(reportBuilderListJSON)}' != 'null') {
+                $scope.savedreportBuilderList = JSON.parse('{!JSENCODE(reportBuilderListJSON)}');
+            }
+            if ('{!JSENCODE(amPositionJSON)}' != null && '{!JSENCODE(amPositionJSON)}' != '' && '{!JSENCODE(amPositionJSON)}' != 'null') {
+                $scope.assignmentManagerPositionList = JSON.parse('{!JSENCODE(amPositionJSON)}');
+            }
+            if ('{!JSENCODE(assObswithFieldsJSON)}' != null && '{!JSENCODE(assObswithFieldsJSON)}' != '' && '{!JSENCODE(assObswithFieldsJSON)}' != 'null') {
+                $scope.assessableobjectswithFields = JSON.parse('{!JSENCODE(assObswithFieldsJSON)}');
+            }
+            if ('{!JSENCODE(assessibleFieldDetailsJSON)}' != null && '{!JSENCODE(assessibleFieldDetailsJSON)}' != '' && '{!JSENCODE(assessibleFieldDetailsJSON)}' != 'null') {      
+                $scope.statusOptions = JSON.parse('{!JSENCODE(assessibleFieldDetailsJSON)}');       
+            }
+
+            if ($scope.assessableobjectswithFields != null && angular.isDefined($scope.assessableobjectswithFields)) {                
+                $scope.TempVar = $filter('filter')($scope.assessableobjectswithFields, {assignmentManagerApi:'ExAM__Facility_Name__c'});
+                if (angular.isDefined($scope.TempVar) && $scope.TempVar.length > 0) {
+                    $scope.selectedAssOption = $scope.TempVar[0];
+                    $scope.assessableObjectwithFieldsList = $scope.selectedAssOption.assessablefields;
+                }
+            }
+            
+            $scope.changeTemp = function(selectedTemplate) {
+                $scope.assignmentManagerList = [];
+                $scope.sectionTemplateList = [];
+                if (selectedTemplate != null && selectedTemplate != '') {                    
+
+                    ExAM.ReportBuilderConfigController.querySectionTemplate(selectedTemplate, function(result, event) {
+                        if (event.status) {
+                            if ( typeof JSON.parse(_.unescape(result)) == 'object' ){
+                                $scope.sectionTemplateList = JSON.parse(_.unescape(result));
+                                $scope.$apply();
+                            } else {
+                                $("#errMsg" ).text(JSON.parse(_.unescape(result)));
+                                $(".error_Saved" ).css("display","" ); 
+                            }
+                        } else {
+                            console.log(event.message);    
+                        }
+                    });
+                }
+            }
+            
+            $scope.saveReportBuilderConfig = function(isTemporary) {
+                $('.maskDiv').show();
+                var fieldnamewithValue = '';                
+                $scope.errormsgAMorAT = false;
+
+                $( ".reportName,.outputformat,.assTemplateName" ).removeClass('slds-has-error');
+                $( ".reportName,.outputformat,.assTemplateName" ).find( ".slds-form-element__help" ).css("display","none" );
+
+                if ($scope.selectFormat != null && $scope.selectFormat != '' &&
+                    (($scope.selectedTemp != null && $scope.selectedTemp != '') || 
+                     ($scope.selectedAssignmentManager != null && $scope.selectedAssignmentManager.Name != null))) {
+                    
+                    var selectedReportId = '';
+                    if(angular.isDefined($scope.selectedReportValue) && angular.isDefined($scope.selectedReportValue.Id)) {
+                        selectedReportId = $scope.selectedReportValue.Id;        
+                    }
+                    $scope.selectedAssignmentManagerId = '';
+                    if (angular.isDefined($scope.selectedAssignmentManager) && angular.isDefined($scope.selectedAssignmentManager.Id)) {
+                        $scope.selectedAssignmentManagerId = $scope.selectedAssignmentManager.Id;
+                    }
+                    
+                    var i = 1;
+                    angular.forEach($scope.assignmentManagerPositionList2, function(selectOp) {
+                        selectOp.position = i;
+                        i++;
+                    });
+
+                    $.each($scope.selectedStatus, function(status) {        
+                        if ($scope.selectedOptns != '') {       
+                            $scope.selectedOptns = $scope.selectedOptns + ',' + $scope.selectedStatus[status];      
+                        }       
+                        else {      
+                            $scope.selectedOptns = $scope.selectedStatus[status];       
+                        }       
+                    });
+
+                    $(".successfully_Saved" ).css("display","none" );
+                    $(".error_Saved" ).css("display","none" );
+                    if (!isTemporary) {
+                        if ($scope.reportBuilderName == null || $scope.reportBuilderName.trim() == '') {
+                            $('.maskDiv').hide();
+                            $scope.reportNameModel = true;      
+                            $('.reportNameModel').removeClass('slds-modal__close');
+                            $('.reportNameModel').addClass('slds-fade-in-open');                  
+                        } else {
+                            $scope.upsertReportBuilderConfig(selectedReportId, false);
+                        }
+                    } else {
+                        $scope.reportBuilderName = 'Temporary Report Builder';
+                        $scope.upsertReportBuilderConfig(selectedReportId, true);
+                    }
+                } else {
+                    $('.maskDiv').hide();
+                    if ($scope.selectFormat == null || $scope.selectFormat == '') {
+                        $( ".outputformat" ).addClass('slds-has-error');
+                        $( ".outputformat" ).find( ".slds-form-element__help" ).css("display","" );
+                    }
+                    /*if ($scope.selectedTemp == null || $scope.selectedTemp == '') {
+                        $( ".assTemplateName" ).addClass('slds-has-error');
+                        $( ".assTemplateName" ).find( ".slds-form-element__help" ).css("display","" );
+                    
+                    }*/
+                    if (($scope.selectedTemp == null || $scope.selectedTemp == '') && 
+                         ($scope.selectedAssignmentManager == null || $scope.selectedAssignmentManager.Name == null)) {
+
+                        $scope.errormsgAMorAT = true;
+                    }  
+                }
+            }
+            
+            $scope.upsertReportBuilderConfig = function(selectedReportId, isTemporary) {
+                $scope.assableobjectFldConfigStr = '';
+                
+                if (angular.isDefined($scope.selectedAssOption) && angular.isDefined($scope.assessableObjectwithFieldsList2) && $scope.assessableObjectwithFieldsList2.length > 0) {
+                    $scope.tempVar = {};
+                    $scope.tempVar.assessableObjectAPI = $scope.selectedAssOption.assessableObjectAPI;
+                    $scope.tempVar.assessableObjectLabel = $scope.selectedAssOption.assessableObjectLabel;
+                    $scope.tempVar.assessablefields = $scope.assessableObjectwithFieldsList2;
+                    $scope.tempVar.assignmentManagerApi = $scope.selectedAssOption.assignmentManagerApi;
+                    $scope.assableobjectFldConfigStr = angular.toJson($scope.tempVar);     
+                }
+                ExAM.ReportBuilderConfigController.saveReportBuilderConfig(selectedReportId, $scope.selectedTemp, $scope.reportBuilderName, $('.startdate').val(), 
+                        $('.enddate').val(), $scope.selectFormat, $scope.selectedAssignmentManagerId, angular.toJson($scope.assignmentManagerPositionList2), 
+                        angular.toJson($scope.sectionSelectResult), isTemporary, angular.toJson($scope.dataConfigResult),$scope.assableobjectFldConfigStr, $scope.selectedOptns, function(result, event) {
+                
+                    $scope.result_msg = '';
+                    var responseMessage = JSON.parse(_.unescape(result));
+                    if (event.status) {
+                        if (responseMessage.resultMsg == 'success') {
+                            $("#resMsg").text('Successfully Configured Report');
+                            $(".successfully_Saved" ).css("display","" );
+                            //$scope.reportBuilderName = '';
+                            
+                            
+                            if ($scope.selectFormat == 'PDF') {
+                                $('.maskDiv').hide();
+                                window.open('/apex/ExAM__ReportBuilderPDFHeader?reportbuilderid='+responseMessage.recordId,'_blank');
+                            } else if ($scope.selectFormat == 'HTML') {
+                                $('.maskDiv').hide();
+                                window.open('/apex/ExAM__ReportBuilderHTML?reportbuilderid='+responseMessage.recordId,'_blank');
+                            } else if ($scope.selectFormat == 'JSON') {
+                                $('.maskDiv').hide();
+                                window.open('/apex/ExAM__AssignmentManagerAnswerJSONExport?reportbuilderid='+responseMessage.recordId,'_blank');
+                            }                                                         
+                        } else {
+                            $("#errMsg" ).text(responseMessage.resultMsg);
+                            $(".error_Saved" ).css("display","" );
+                        }
+                    } else {
+                        $("#errMsg" ).text(responseMessage.resultMsg);
+                        $(".error_Saved" ).css("display","" );
+                        
+                    }   
+                    $('.maskDiv').hide();
+                    $scope.$apply();    
+                });
+            }
+            $scope.savereportName = function() {
+                if ($scope.reportBuilderName == null || $scope.reportBuilderName == '') {
+                    $( ".reportName" ).addClass('slds-has-error');
+                    $( ".reportName" ).find( ".slds-form-element__help" ).css("display","" );
+                } else {
+                    $('.maskDiv').show();
+                    $scope.upsertReportBuilderConfig('', false);     
+                    $('.reportNameModel').addClass('slds-modal__close');
+                    $('.reportNameModel').removeClass('slds-fade-in-open');            
+                }
+            }
+            $scope.selectAllSection = function() {
+                angular.forEach($scope.sectionTemplateList, function(sec) {
+                    $scope.sectionSelectResult[sec.Id] = $scope.sectionSelectResult['All'];
+                });
+            }
+            
+            $scope.changeReportBuilder = function(reportbuilder) {
+
+                if (reportbuilder != null) {
+                    $scope.reportBuilderName = reportbuilder.Name;
+                    $scope.selectedTemp = angular.isDefined(reportbuilder.ExAM__Assessment_Template__c) ? reportbuilder.ExAM__Assessment_Template__c :'';
+                    $scope.startdate = angular.isDefined(reportbuilder.ExAM__Start_Date_Range__c) ? reportbuilder.ExAM__Start_Date_Range__c : '';
+                    $scope.enddate = angular.isDefined(reportbuilder.ExAM__End_Date_Range__c) ? reportbuilder.ExAM__End_Date_Range__c : '';
+                    $scope.selectFormat = angular.isDefined(reportbuilder.ExAM__Output_Format__c) ? reportbuilder.ExAM__Output_Format__c : '';
+                    if (angular.isDefined(reportbuilder.ExAM__Overall_Status__c) ) {        
+                        $scope.selectedStatus = reportbuilder.ExAM__Overall_Status__c.split(',');       
+                    }
+                    $scope.selectedAssignmentManager = {};
+                    if (reportbuilder.ExAM__Choosed_Assignment_manager__c != null && angular.isDefined(reportbuilder.ExAM__Choosed_Assignment_manager__c)) {
+                        ExAM.ReportBuilderConfigController.queryAssignmentManager(reportbuilder.ExAM__Choosed_Assignment_manager__c, function(result, event) {
+                            if (event.status) {
+                                $scope.selectedAssignmentManager = JSON.parse(_.unescape(result));              
+                            } else {
+                                console.log(event.message);
+                            }
+                            $scope.$apply();
+                            
+                        });
+                    }
+                    
+                    $scope.assignmentManagerPositionList = JSON.parse('{!JSENCODE(amPositionJSON)}');
+                    
+                    if (reportbuilder.ExAM__Assignment_Manager_position__c != null && reportbuilder.ExAM__Assignment_Manager_position__c != '' ) {
+                        $scope.assignmentManagerPositionList2 = JSON.parse(reportbuilder.ExAM__Assignment_Manager_position__c);
+                        
+                        
+                        angular.forEach($scope.assignmentManagerPositionList2, function (selectedOp) {                   
+                            for (var idx = 0; idx < $scope.assignmentManagerPositionList.length; idx++) {            
+                                if ($scope.assignmentManagerPositionList[idx].apiName == selectedOp.apiName) {
+                                    $scope.assignmentManagerPositionList.splice(idx, 1);
+                                    break;
+                                }
+                            }
+                        });
+                        
+                    } else {
+                        $scope.assignmentManagerPositionList2 = [];
+                    }   
+                    
+                    if (reportbuilder.ExAM__Assessable_Object_Field_Position__c != null && reportbuilder.ExAM__Assessable_Object_Field_Position__c != '' ) {
+                       var sf = JSON.parse(reportbuilder.ExAM__Assessable_Object_Field_Position__c);                       
+                       var assField =[];
+                       for(var j=0; j<$scope.assessableobjectswithFields.length;j++)    {             
+                            if (sf.assessableObjectAPI == $scope.assessableobjectswithFields[j].assessableObjectAPI) {
+                                $scope.selectedAssOption = $scope.assessableobjectswithFields[j];   
+                                for (var i = 0; i < sf.assessablefields.length; i++) { 
+                                   for (var idx = 0; idx < $scope.selectedAssOption.assessablefields.length; idx++) { 
+                                       if($scope.selectedAssOption.assessablefields[idx].apiName == sf.assessablefields[i].apiName) {
+                                           $scope.selectedAssOption.assessablefields.splice(idx,1);
+                                       }
+                                   }
+                                }
+                                break;
+                            }
+                        }
+                        //$scope.selectedAssFields = assField;
+                        $scope.assessableObjectwithFieldsList2 = sf.assessablefields;                        
+                    } else {
+                        if ($scope.assessableobjectswithFields != null && angular.isDefined($scope.assessableobjectswithFields)) {
+                            $scope.TempVar = $filter('filter')($scope.assessableobjectswithFields, {assignmentManagerApi:'ExAM__Facility_Name__c'});
+                            if (angular.isDefined($scope.TempVar)) {
+                                $scope.selectedAssOption = $scope.TempVar[0];
+                                $scope.assessableObjectwithFieldsList = $scope.selectedAssOption.assessablefields;
+                            }
+                        }
+                        $scope.assessableObjectwithFieldsList2 =[];
+                    }
+                         
+                    if (reportbuilder.ExAM__Selected_Sections__c != null && reportbuilder.ExAM__Selected_Sections__c != '' ) {            
+                        $scope.sectionSelectResult = JSON.parse(reportbuilder.ExAM__Selected_Sections__c);
+                    } 
+                    if (reportbuilder.ExAM__Assessment_Data_Config__c != null && reportbuilder.ExAM__Assessment_Data_Config__c != '') {
+                        $scope.dataConfigResult = JSON.parse(reportbuilder.ExAM__Assessment_Data_Config__c);
+                    }
+                    if ($scope.selectedTemp != null && $scope.selectedTemp != '') {
+                        $scope.changeTemp($scope.selectedTemp);
+                    }
+                }
+                
+                
+            }
+            
+            $scope.movetoLayout = function() {
+                if ($scope.selectedOption != null && $scope.selectedOption.length > 0) {
+                    var i = 1;
+                    angular.forEach($scope.selectedOption, function(selectOp) {
+                        selectOp.position = i;
+                        i++;
+                    });
+                    if (angular.isDefined($scope.assignmentManagerPositionList2) && $scope.assignmentManagerPositionList2.length == 0) {
+                        $scope.assignmentManagerPositionList2 = $scope.selectedOption;
+                    } else {
+                        $scope.assignmentManagerPositionList2 = $scope.assignmentManagerPositionList2.concat($scope.selectedOption);
+                    }
+                }
+                angular.forEach($scope.selectedOption, function (selectedOp) {                   
+                    for (var idx = 0; idx < $scope.assignmentManagerPositionList.length; idx++) {            
+                        if ($scope.assignmentManagerPositionList[idx].apiName == selectedOp.apiName) {
+                            $scope.assignmentManagerPositionList.splice(idx, 1);
+                            break;
+                        }
+                    }
+                });
+                
+            }
+            
+            $scope.movetoAssessableLayout = function() {
+                if ($scope.selectedAssFields != null && $scope.selectedAssFields.length > 0) {
+                    var i = 1;
+                    angular.forEach($scope.selectedAssFields, function(selectOp) {
+                        selectOp.position = i;
+                        i++;
+                    });
+                    if (angular.isDefined($scope.assessableObjectwithFieldsList2) && $scope.assessableObjectwithFieldsList2.length == 0) {
+                        $scope.assessableObjectwithFieldsList2 = $scope.selectedAssFields;
+                    } else {
+                        $scope.assessableObjectwithFieldsList2 = $scope.assessableObjectwithFieldsList2.concat($scope.selectedAssFields);
+                    }
+                }
+                angular.forEach($scope.selectedAssFields, function (selectedOp) {                   
+                    for (var idx = 0; idx < $scope.assessableObjectwithFieldsList.length; idx++) {            
+                        if ($scope.assessableObjectwithFieldsList[idx].apiName == selectedOp.apiName) {
+                            $scope.assessableObjectwithFieldsList.splice(idx, 1);
+                            break;
+                        }
+                    }
+                });
+            }
+            
+            $scope.removeCard = function(indexposition) {
+                if ($scope.assignmentManagerPositionList2[indexposition].apiName != null && $scope.assignmentManagerPositionList2[indexposition].apiName != '') {
+                    $scope.assignmentManagerPositionList.splice(0,0,$scope.assignmentManagerPositionList2[indexposition]);
+                }
+                $scope.assignmentManagerPositionList2.splice(indexposition, 1);
+                
+            }
+            $scope.removeAssessableCard = function(indexposition) {
+                if ($scope.assessableObjectwithFieldsList2[indexposition].apiName != null && $scope.assessableObjectwithFieldsList2[indexposition].apiName != '') {
+                    $scope.assessableObjectwithFieldsList.splice(0,0,$scope.assessableObjectwithFieldsList2[indexposition]);
+                }
+                $scope.assessableObjectwithFieldsList2.splice(indexposition, 1);
+                
+            }
+            $scope.openAssignmentmanager = function() {
+                if ($scope.selectedAssignmentManager != null && $scope.selectedAssignmentManager.Name != null) {
+                    $scope.searchAM = $scope.selectedAssignmentManager.Name;
+                    $scope.searchAMfunction();
+                }
+                $scope.showAssignmentmanagerDiv = true;
+                $('.AssignmentManagerSelectionDiv').removeClass('slds-modal__close');
+                $('.AssignmentManagerSelectionDiv').addClass('slds-fade-in-open');
+            }
+            $scope.closeAssignmentmanager = function() {
+                $('.AssignmentManagerSelectionDiv').addClass('slds-modal__close');
+                $('.AssignmentManagerSelectionDiv').removeClass('slds-fade-in-open');
+                $scope.assignmentManagerList = [];
+            }
+            $scope.cancelreportName = function() {
+                $('.reportNameModel').addClass('slds-modal__close');
+                $('.reportNameModel').removeClass('slds-fade-in-open');  
+                
+            }
+            
+            $scope.searchAMfunction = function() {
+
+                ExAM.ReportBuilderConfigController.queryAssignmentManagers($scope.searchAM, $scope.selectedTemp, $('.startdate').val(), $('.enddate').val(), function(result, event) {
+                    if (event.status) {
+                        $scope.assignmentManagerList = JSON.parse(_.unescape(result));
+                        $scope.$apply();
+                    } else {
+                        console.log(event.message);
+                    }
+                    
+                });
+                
+            }
+            $scope.setSelectedAssignment = function(selRec) {
+                $scope.selectedAssignmentManager = selRec;
+                $scope.closeAssignmentmanager();                
+            }
+            $scope.addBlankspace = function() {
+                $scope.temp = {};
+                $scope.temp.apiName = '';
+                $scope.temp.labelName = '[  Blank Space  ]';
+                $scope.temp.position = 100;
+                $scope.assignmentManagerPositionList2.push($scope.temp);                
+            }
+            $scope.addAssessableBlankspace = function() {
+                $scope.temp = {};
+                $scope.temp.apiName = '';
+                $scope.temp.labelName = '[  Blank Space  ]';
+                $scope.temp.position = 100;
+                $scope.assessableObjectwithFieldsList2.push($scope.temp);
+            }
+            $scope.showDeleteReport = function() {
+                $scope.showReportList = true;
+                $('.showReportListpopup').removeClass('slds-modal__close');
+                $('.showReportListpopup').addClass('slds-fade-in-open');  
+                
+            }
+            $scope.closeDeleteReport = function() {
+                $('.showReportListpopup').addClass('slds-modal__close');
+                $('.showReportListpopup').removeClass('slds-fade-in-open'); 
+                $scope.showDeleteError = false;
+                angular.forEach($scope.savedreportBuilderList, function(rep) {
+                    $scope.deletedReports[rep.Id] = false;
+                });
+                $scope.allreportSelected = false;
+            }
+            $scope.deleteReportConfig = function() {
+                var isSelected = false;
+                angular.forEach($scope.savedreportBuilderList, function(rep) {
+                    if ($scope.deletedReports[rep.Id]) {
+                        isSelected = true;
+                        
+                    }
+                });
+                if (isSelected) {
+                    var r = confirm("Are you sure?");
+                    if (r == true) {
+
+                        ExAM.ReportBuilderConfigController.deleteReportBuilderConfig(angular.toJson($scope.deletedReports), function(result, event) {
+                            if (event.status) {
+                                $scope.savedreportBuilderList = JSON.parse(_.unescape(result));
+                                $scope.$apply();
+                                $('.showReportListpopup').addClass('slds-modal__close');
+                                $('.showReportListpopup').removeClass('slds-fade-in-open'); 
+                                $scope.showDeleteError = false;
+                            } else {
+                                $('.showReportListpopup').addClass('slds-modal__close');
+                                $('.showReportListpopup').removeClass('slds-fade-in-open');     
+                            }
+                        });
+                    }
+                } else {
+                    $scope.showDeleteError = true;
+                }
+            }
+            $scope.selectAllReport = function() {
+                angular.forEach($scope.savedreportBuilderList, function(rep) {
+                    $scope.deletedReports[rep.Id] = $scope.allreportSelected;
+                });
+                $scope.showDeleteError = false;
+            }
+            $scope.clearReport = function() {
+                if ('{!JSENCODE(amPositionJSON)}' != null && '{!JSENCODE(amPositionJSON)}' != '' && '{!JSENCODE(amPositionJSON)}' != 'null') {
+                    $scope.assignmentManagerPositionList = JSON.parse('{!JSENCODE(amPositionJSON)}');
+                }
+                if ($scope.assessableobjectswithFields != null && angular.isDefined($scope.assessableobjectswithFields)) {
+                    $scope.TempVar = $filter('filter')($scope.assessableobjectswithFields, {assignmentManagerApi:'ExAM__Facility_Name__c'});
+                    if (angular.isDefined($scope.TempVar)) {
+                        $scope.selectedAssOption = $scope.TempVar[0];
+                        $scope.assessableObjectwithFieldsList = $scope.selectedAssOption.assessablefields;
+                    }
+                }
+                $scope.assessableObjectwithFieldsList2 =[];
+                $scope.selectFormat = '';
+                $scope.startdate = '';
+                $scope.enddate = '';
+                $scope.selectedTemp = '';
+                $scope.reportBuilderName = '';
+                $scope.selectedReportValue = {};
+                $scope.assignmentManagerPositionList2 = [];
+                $scope.result_msg = '';
+                $scope.selectedAssignmentManagerId = '';
+                $scope.selectedAssignmentManager = {};
+                $scope.allreportSelected = false;
+                $scope.showDeleteError = false;
+                $scope.errormsgAMorAT = false;
+                $scope.sectionTemplateList = [];
+                $(".successfully_Saved" ).css("display","none" );
+                $(".error_Saved" ).css("display","none" );
+                $scope.dataConfigResult = {};
+                $scope.sectionSelectResult = {};
+            }            
+        });           
+    </script>
+</apex:component>

@@ -1,0 +1,25 @@
+<aura:component access="public">
+    
+
+    <aura:attribute name="headerMsg" type="String" access="public" default="Delete"/>
+    <aura:attribute name="msgDescription" type="String" access="public" default="Are you sure you want to delete this"/>
+    
+    <aura:registerEvent name="promptEvent" type="c:promptEvt"/>
+    
+    <div role="alertdialog" tabindex="-1" aria-labelledby="prompt-heading-id" aria-describedby="prompt-message-wrapper" class="slds-modal slds-fade-in-open slds-modal--prompt">
+        <div class="slds-modal__container">
+            <div class="slds-modal__header slds-theme--error slds-theme--alert-texture">
+
+                <h2 class="slds-text-heading--medium">{!v.headerMsg + '?'}</h2>
+            </div>
+            <div class="slds-modal__content slds-p-around--medium">
+                <p class="slds-text-align--center">{!v.msgDescription + '?'}</p>
+            </div>
+            <div class="slds-modal__footer slds-theme--default">
+                <button data-index="true" onclick="{!c.confirmActionPerform}" class="slds-button slds-button--neutral">Confirm</button>
+                <button data-index="false" onclick="{!c.confirmActionPerform}" class="slds-button slds-button--neutral">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <div class="slds-backdrop slds-backdrop--open"></div>
+</aura:component>

@@ -1,0 +1,6 @@
+.THIS .slds-active .slds-tabs--scoped__link:focus{
+  text-decoration: none;
+}
+.THIS .slds-tabs--scoped__nav {
+  border-bottom: none;
+}

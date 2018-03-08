@@ -1,0 +1,81 @@
+<aura:component access="public">    
+    
+    <aura:attribute name="sectionTempLength" type="Integer" access="public"/>
+    <aura:attribute name="noOfQuestion" type="Integer" access="public"/>
+    <aura:attribute name="assessmentTemplate" type="Main_questionaire__c" access="public"/>
+    <aura:attribute name="fields" type="Map" access="public"/>
+    
+    <aura:registerEvent name="SettingSelectedTab" type="c:settingSelectedTabEvt" access="public"/>
+
+    <div class="layoutContainer">
+        <lightning:layout >
+            <lightning:layoutItem padding="around-small" size="12">
+                <lightning:card title="Template Overview">
+                    
+                    <div class="slds-p-horizontal_small">
+                        <div class="slds-text-heading--small">
+                            <span aura:id="createOutputCmp">
+                                Questions :
+                                <ui:outputNumber value="{!v.noOfQuestion}"/>
+                            </span>,
+                            <span aura:id="createOutputCmp">
+                                Sections :
+                                <ui:outputNumber value="{!v.sectionTempLength}"/>
+                            </span>
+                        </div>
+                        
+                        <aura:iteration items="{!v.fields.ExAM__lightningComp_TemplateOverview_FieldSet}" var="field">
+                            <div class="slds-text-heading--small">
+                                
+                                <c:ExamField valType="{!field.fieldDataType}" record="{!v.assessmentTemplate}"
+                                                helpText="{!field.inLineHelpText}"
+                                             mode="view" fieldName="{!field.fieldApi}" fieldLabel="{!field.fieldLabel}"/>
+                            </div>
+                        </aura:iteration>
+                        
+                    </div>
+                    <aura:set attribute="footer">
+                        <div>
+                            <button onclick="{!c.showEditQuestions}" class="slds-button slds-button--neutral">Edit Questions</button>
+                        </div>
+                        <div>
+                            <button onclick="{!c.showTemplateOptions}" class="slds-button slds-button--neutral">Template Options</button>
+                        </div>
+                    </aura:set>
+                    
+                </lightning:card>
+                
+                
+            </lightning:layoutItem>
+            
+            
+        </lightning:layout>
+    </div>
+    
+    <lightning:layout >
+        <lightning:layoutItem padding="around-small" size="12">
+           <c:WidgetAMAnalytics assessmentId="{!v.assessmentTemplate.Id}" 
+                                     apexMethodName="getAmByCompletedDate"
+                                     title="Completed Date"/>
+        </lightning:layoutItem>
+    </lightning:layout>
+    
+    <lightning:layout >
+        <lightning:layoutItem padding="around-small" size="12">
+            <c:WidgetAMAnalytics assessmentId="{!v.assessmentTemplate.Id}" 
+                                 apexMethodName="getAmByOverallStatus"
+                                 chartType="pie"
+                                 title="Overall Status"
+                                 selectedItem=""/>
+        </lightning:layoutItem>
+    </lightning:layout>
+    
+    <lightning:layout >
+        <lightning:layoutItem padding="around-small" size="12">
+            <c:WidgetAMAnalytics assessmentId="{!v.assessmentTemplate.Id}" 
+                                 apexMethodName="getAmByCreatedDate"
+                                 title="Created Date"/>
+        </lightning:layoutItem>
+    </lightning:layout>
+
+</aura:component>

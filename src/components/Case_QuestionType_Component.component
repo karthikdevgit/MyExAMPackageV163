@@ -1,0 +1,48 @@
+<apex:component >
+
+    <apex:attribute name="isPrimaryCase" type="Boolean" default="false" description="Renders Primary Case Question"/>
+    <apex:attribute name="isDependentCase" type="Boolean" default="false" description="Renders Dependent Case Question"/>
+    <apex:attribute name="isDecisionTreeCase" type="Boolean" default="false" description="Renders Decision Tree Case Question"/>
+
+    <apex:outputPanel rendered="{!isPrimaryCase}">
+        <div ng-if="eachQuestTemplateRec.ExAM__Question_Type__c == 'Case'" class="col-md-12" style="background-color:#F4F6F9; padding: 10px 0px 10px 0px;">
+            
+            <label class="slds-checkbox" style="padding-left: 25px;">
+                <input type="checkbox" name="options" id="checkbox-01" ng-model="caseResponse[eachQuestTemplateRec.Id].isCheck"/>
+                <span class="slds-checkbox--faux"></span>
+                <span class="slds-form-element__label"><label ng-bind-html="eachQuestTemplateRec.ExAM__Question_Label__c"></label></span>
+            </label>
+            <div ng-if="caseResponse[eachQuestTemplateRec.Id].isCheck" class="slds-grid slds-wrap slds-grid--pull-padded">
+                <div class="slds-col--padded slds-size--1-of-2 slds-medium-size--3-of-6 slds-large-size--2-of-12 slds-align-middle" style="text-align:right;">
+                    <label class="slds-form-element__label" for="text-input-01">Name<b style="color:#C23934;"> *</b></label>
+                </div>
+                <div class="slds-col--padded slds-size--1-of-2 slds-medium-size--3-of-6 slds-large-size--10-of-12">
+                    <input type="text" ng-model="caseResponse[eachQuestTemplateRec.Id].Name" class="caseValidate{{caseResponse[eachQuestTemplateRec.Id].isCheck}} slds-input slds-size--1-of-1 slds-medium-size--4-of-6 slds-large-size--6-of-12 slds-m-around--xx-small"/>
+                    <span class="slds-form-element__help requiredMessage" style="color:#C23934;display:none;">This field is required</span>
+                </div>
+                <div class="slds-col--padded slds-size--1-of-2 slds-medium-size--3-of-6 slds-large-size--2-of-12 slds-align-middle" style="text-align:right;">
+                    <label class="slds-form-element__label" for="text-input-01">Email<b style="color:#C23934;"> *</b></label>
+                </div>
+                <div class="slds-col--padded slds-size--1-of-2 slds-medium-size--3-of-6 slds-large-size--10-of-12">
+                    <input type="text" ng-model="caseResponse[eachQuestTemplateRec.Id].Email" class="caseEmailValidate{{caseResponse[eachQuestTemplateRec.Id].isCheck}} caseValidate{{caseResponse[eachQuestTemplateRec.Id].isCheck}} slds-input slds-size--1-of-1 slds-medium-size--4-of-6 slds-large-size--6-of-12 slds-m-around--xx-small"/>
+                    <span class="slds-form-element__help requiredMessage" style="color:#C23934;display:none;">This field is required</span>
+                    <span class="slds-form-element__help requiredEmailMessage" style="color:#C23934;display:none;">Invalid Email Address</span>
+                </div>
+                <div class="slds-col--padded slds-size--1-of-2 slds-medium-size--3-of-6 slds-large-size--2-of-12 slds-align-middle" style="text-align:right;">
+                    <label class="slds-form-element__label" for="text-input-01">Subject<b style="color:#C23934;"> *</b></label>
+                </div>
+                <div class="slds-col--padded slds-size--1-of-2 slds-medium-size--3-of-6 slds-large-size--10-of-12">
+                    <input type="text" ng-model="caseResponse[eachQuestTemplateRec.Id].Subject" class="caseValidate{{caseResponse[eachQuestTemplateRec.Id].isCheck}} slds-input slds-size--1-of-1 slds-medium-size--4-of-6 slds-large-size--6-of-12 slds-m-around--xx-small"/>
+                    <span class="slds-form-element__help requiredMessage" style="color:#C23934;display:none;">This field is required</span>
+                </div>
+                <div class="slds-col--padded slds-size--1-of-2 slds-medium-size--3-of-6 slds-large-size--2-of-12 slds-align-middle" style="text-align:right;">
+                    <label class="slds-form-element__label" for="text-input-01">Description</label>
+                </div>
+                <div class="slds-col--padded slds-size--1-of-2 slds-medium-size--3-of-6 slds-large-size--10-of-12">
+                    <input type="text" ng-model="caseResponse[eachQuestTemplateRec.Id].Descrip" class="slds-input slds-size--1-of-1 slds-medium-size--4-of-6 slds-large-size--6-of-12 slds-m-around--xx-small"/>
+                </div>
+            </div>
+        </div>
+    </apex:outputPanel>
+
+</apex:component>

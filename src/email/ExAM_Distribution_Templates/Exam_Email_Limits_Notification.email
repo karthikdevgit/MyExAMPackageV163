@@ -1,0 +1,3 @@
+Dear {!User.Name}, 
+
+Your email distribution did not run because you have reached the Salesforce limit for the number of emails you can send today. Please update your distribution appropriately.

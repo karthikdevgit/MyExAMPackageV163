@@ -1,0 +1,64 @@
+<apex:component controller="DataManagementController">
+
+    <apex:attribute name="frmLensViewer" assignTo="{!isFromLensViewer}" type="Boolean" description="page from which this component is called"/>
+
+    <div class="slds-scrollable--x">
+        <div class="slds-card__body slds-p-horizontal--small"> 
+            <div ng-show="ErrorMsg.errMsg.length">{{ErrorMsg.errMsg}}</div>  
+            
+            <div ng-show="!ErrorMsg.errMsg.length">
+            <div ng-show="!allAnswerObj.answerList.length">There are no Answer records for this {!$Label.Web_Assignment_Manager_Label}</div>        
+            <div ng-show="allAnswerObj.answerList.length">
+                <div class="slds-grid slds-wrap slds-grid--pull-padded">
+                    <div class="slds-col--padded slds-size--1-of-3 slds-medium-size--1-of-3 slds-large-size--9-of-12">
+                        
+                    </div>
+                    <div class="slds-col--padded slds-size--2-of-3 slds-medium-size--2-of-3 slds-large-size--3-of-12">
+                        <input id="text-input-01" class="slds-input" type="text" placeholder="Search record" ng-model="answerSearchbox" />
+                    </div>
+                </div><br/>
+                <div class="slds-scrollable--x">
+                    <table class="slds-table slds-table--bordered slds-max-medium-table--stacked">
+                        <thead>
+                            <tr class="slds-text-heading--label">
+                                <th scope="col"><span class="slds-truncate"><b>Action</b></span></th>
+                                <th scope="col"><span class="slds-truncate"><b>Section</b></span></th>
+                                <th scope="col"><span class="slds-truncate"><b>Question</b></span></th>
+                                <th scope="col"><span class="slds-truncate"><b>Has Picture?</b></span></th>
+                                <th scope="col" ng-repeat="ansField in allAnswerObj.configuredAnswerFieldsJson">
+                                    <span class="slds-truncate"><b>{{ansField.label}}</b></span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="ans.answer.id" ng-repeat="ans in ansList = (allAnswerObj.answerList | filter:answerSearchbox)">
+                                <td data-label="action">
+                                    <span class="slds-truncate">
+                                        <a class="slds-truncate" ng-click="deleteAnswerRecord(ans.answer.Id, $index);" style="cursor:pointer;">Del</a>
+                                        &nbsp;
+                                        <a  class="slds-truncate" ng-hide="editAnswerObj" href="/{{ans.answer.Id}}/e?retURL=/apex/ExAM__MultipleInspectionAssessmentViewer?amid={!$CurrentPage.parameters.amid}%26launchtab=dataviewer" target="_self">Edit</a>
+                                        <!--<a class="slds-truncate" ng-hide="editAnswerObj" ng-click="EditAnswerRecord(ans.answer.Id, $index);" style="cursor:pointer;">Edit</a>-->
+                                    </span>
+                                </td>
+                                <td data-label="section">
+                                    <span class="slds-truncate">{{ ans.answer.ExAM__Question_Template__r.ExAM__Section_Question__r.ExAM__Section_label__c }}</span>
+                                </td>                
+                                <td class="slds-cell-wrap" data-label="Question">
+                                    <span>{{ ans.answer.ExAM__Question_Template__r.ExAM__Question_Label__c }}</span>
+                                </td>                
+                                <td data-label="Has Picture?">
+                                    <span class="slds-truncate">{{ ans.hasAttached }}</span>
+                                </td>
+                                <td data-label="{{ansField.label}}" ng-repeat="ansField in allAnswerObj.configuredAnswerFieldsJson">
+                                    <span ng-show="ansField.label != 'Created Date'" class="slds-truncate">{{ans.answer[ansField.fieldPath]}}</span>
+                                    <span ng-show="ansField.label == 'Created Date'">{{ ans.answer[ansField.fieldPath] | date : 'MM/dd/yyyy hh:mm a' }}</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</apex:component>

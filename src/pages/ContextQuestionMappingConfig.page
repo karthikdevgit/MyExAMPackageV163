@@ -1,0 +1,294 @@
+<apex:page controller="ContextQuestionMappingConfigCtlr">
+    <div xmlns= "http://www.w3.org/2000/svg" xmlns:xlink = "http://www.w3.org/1999/xlink">
+       <head>
+            <title> Context Questions </title>
+            <apex:includeScript value="{!URLFOR($Resource.UnderscoreAndAngularJS,'UnderscoreAndAngularJS/angular.min.js')}" />
+            <apex:includeScript value="{!URLFOR($Resource.UnderscoreAndAngularJS,'UnderscoreAndAngularJS/underscore-min.js')}" />
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS052, '/assets/styles/salesforce-lightning-design-system-vf.css')}" />
+            <apex:includeScript value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-1.10.2.js')}"/>
+        </head>
+        <body>
+            <apex:pageMessages ></apex:pageMessages>
+            <div class="slds slds-m-around--medium" ng-app="contextQuestionApp" ng-controller="contextQuestionCtlr">
+                <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture slds-m-bottom--xx-small" role="alert" style="display:none">
+                    <button class="slds-button slds-button--icon-inverse slds-notify__close" ng-click="closeNotificationFunc()">
+                        <svg aria-hidden="true" class="slds-button__icon">
+                            <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                        </svg>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <span class="slds-assistive-text">Error</span>
+                    <h2 class="errorMsg" style="color:white"></h2>
+                </div>
+
+                <div class="slds-card"> 
+                    <div class="slds-card__header slds-grid">
+                        <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <div class="slds-grid">
+                                    <h2 class="slds-text-heading--small slds-truncate" style="font-weight: bold;">
+                                        Context Questions Mapping
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-no-flex slds-align-bottom">
+                            <span class="slds-icon__container slds-icon__container--circle slds-icon-action-new" ng-click="addingMappingFields();">
+                                <svg aria-hidden="true" class="slds-icon slds-icon-action-new slds-icon--small ">
+                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#new')}">
+                                    </use>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="slds-card__body">
+                        <table class="slds-table slds-max-medium-table--stacked-horizontal slds-no-row-hover" width="100%">
+                            <thead>
+                                <th scope = "col">
+                                    <span style="font-weight: bold;" class="slds-truncate">Question Template</span>
+                                </th>
+                                <th scope ="col">
+                                    <span style="font-weight: bold;" class="slds-truncate">Answer Fields</span>
+                                </th>
+                                <th></th>
+                            </thead>
+                            <tbody>
+                                <tr class="slds-hint-parent slds-size--12-of-12" ng-repeat="quesAndField in quesAndAnsFieldList track by $index">
+                                    <td class="slds-truncate slds-size--6-of-12 td1{{$index}} tdError" data-label="Question Template">
+                                        <select class="slds-select" ng-model="quesAndField.questionId" ng-options="ques.Id as ques.ExAM__Question_Label__c for ques in filterQuestion(quesAndField.questionId)">
+                                        </select>
+                                        <span class="slds-form-element__help msg1{{$index}} ErrorMessage" style="display:none;">Please select Question Template</span>
+                                    </td>
+                                    <td class="slds-truncate slds-size--4-of-12 td2{{$index}} tdError" data-label="Answer Fileds">
+                                        <select class="slds-select" ng-model="quesAndField.answerFieldApi" ng-options="eachfield.fieldApi as eachfield.fieldLabel for eachfield in filterAnsFileds(quesAndField.answerFieldApi)">
+                                        </select>
+                                        <span class="slds-form-element__help msg2{{$index}} ErrorMessage" style="display:none;">Please select Answer Field</span>
+                                    </td>
+                                    <td class="slds-truncate slds-size--2-of-12" data-label="Actions">
+                                        <div class="slds-media__figure" ng-click="removeMappingFields($index)">
+                                            <span class="slds-icon_container">
+                                                <svg aria-hidden="true" class="slds-icon icon-utility-delete slds-icon-text-default">
+                                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#delete')}">
+                                                    </use>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                       </table>
+                   </div>
+                   <div class="slds-card__footer slds-grid slds-wrap slds-size--1-of-1">
+                        <div class="slds-size--1-of-2" style="display:inline-block;text-align: right;">
+                            <button class="slds-button slds-button--brand" type="button" ng-click="saveMappingFields();">Save</button>
+                            <button class="slds-button slds-button--neutral" ng-click="cancelMappingFileds()" type="button">Cancel</button>
+                        </div>
+                   </div>
+                </div>
+            </div>   
+        </body>
+        <script type="text/javascript">
+            var underscore = angular.module('underscore', []);
+            underscore.factory('_', ['$window', function($window) {
+                return $window._; // assumes underscore has already been loaded on the page
+            }]);
+
+            var app = angular.module('contextQuestionApp', ['underscore']);
+            app.controller('contextQuestionCtlr', function($scope, _,$timeout) {
+                $scope.answerFields = [];
+                $scope.questionList = [];
+                $scope.quesAndAnsFieldList = [];
+                
+                $scope.questionArray = [];
+                $scope.fieldArray = [];
+                
+                $scope.answerFields = JSON.parse('{!JSENCODE(answerFieldsStr)}');
+                $scope.questionList = JSON.parse('{!JSENCODE(questionListStr)}');
+                $scope.quesAndAnsFieldList = JSON.parse('{!JSENCODE(quesAndAnsFieldStr)}');
+                if($scope.quesAndAnsFieldList.length > 0) {
+                    $scope.isReqForUpdation = true;
+                } else {
+                    $scope.isReqForUpdation = false;
+                }
+                
+                var quesIdAndVal = _.indexBy($scope.questionList, 'Id');
+                var fileldapiAndval = _.indexBy($scope.answerFields, 'fieldApi');
+                
+                $scope.addingMappingFields = function() {
+                
+                    var isErrorValidate = true;
+                    
+                    $('.tdError').removeClass('slds-form-element slds-has-error');
+                    $('.ErrorMessage').css('display','none');
+                    $('.slds-notify--alert.slds-theme--error').hide();
+                    
+                    if(($scope.quesAndAnsFieldList[0].questionId == null || $scope.quesAndAnsFieldList[0].questionId == '' )) {
+                        $('.td1'+0).addClass('slds-form-element slds-has-error');
+                        $('.msg1'+0).css('display','');
+                        isErrorValidate = false;
+                    }   
+                    if(($scope.quesAndAnsFieldList[0].answerFieldApi == null || $scope.quesAndAnsFieldList[0].answerFieldApi == '' )) {
+                        $('.td2'+0).addClass('slds-form-element slds-has-error');
+                        $('.msg2'+0).css('display','');
+                        isErrorValidate = false;
+                    }
+                    if($scope.quesAndAnsFieldList[0].questionId != null && $scope.quesAndAnsFieldList[0].questionId != '' &&
+                       $scope.quesAndAnsFieldList[0].answerFieldApi != null || $scope.quesAndAnsFieldList[0].answerFieldApi != '' ) {
+                       
+                        var fieldType = fileldapiAndval[$scope.quesAndAnsFieldList[0].answerFieldApi]['fieldType'];
+                        var quesType = quesIdAndVal[$scope.quesAndAnsFieldList[0].questionId]['ExAM__Question_Type__c'];
+                        
+                        if( (fieldType == 'EMAIL' && quesType != 'Email') || (fieldType == 'PHONE' && quesType != 'Phone Number')
+                            || (fieldType == 'DOUBLE' && quesType != 'Number') ) {
+                            
+                            $('.td2'+0).addClass('slds-form-element slds-has-error');
+                            $('.msg2'+0).css('display','');
+                            $('.msg2'+0).text('Please choose right field to map based on data type');
+                            isErrorValidate = false;
+                        }
+                       
+                    }
+                    if($scope.fieldArray.length == 1 || $scope.questionArray.length == 1) {
+                        if($scope.fieldArray.length == 1) {
+                            $('.errorMsg').text('All answer fields were mapped');
+                        } else {
+                            $('.errorMsg').text('All question template were mapped');
+                        }
+                        $('.slds-notify--alert.slds-theme--error').show();
+                        isErrorValidate = false;
+                    }
+                    
+                    if(isErrorValidate) {
+                        $scope.quesAndAnsFieldList.splice(0,0,{questionId:"",answerFieldApi:""});
+                    }
+                }
+                $scope.removeMappingFields = function(index) {
+                    var sizeOfArr = $scope.quesAndAnsFieldList.length;
+                    if(index == 0) {
+                       $('.tdError').removeClass('slds-form-element slds-has-error');
+                       $('.ErrorMessage').css('display','none'); 
+                    }
+                    if(sizeOfArr == 1) {
+                        $scope.quesAndAnsFieldList[index].questionId = '';
+                        $scope.quesAndAnsFieldList[index].answerFieldApi = '';
+                    } else {
+                        $scope.quesAndAnsFieldList.splice(index,1);
+                    }
+                }
+                $scope.cancelMappingFileds = function() {
+                    window.location =  "{!LEFT($CurrentPage.URL,FIND('/',$CurrentPage.URL,9))}{!JSENCODE($CurrentPage.parameters.assTempId)}";
+                }
+                $scope.closeNotificationFunc = function() {
+                    $('.slds-notify--alert.slds-theme--error').hide();
+                }
+                $scope.saveMappingFields = function() {
+                    $('.tdError').removeClass('slds-form-element slds-has-error');
+                    $('.ErrorMessage').css('display','none');
+                    $('.slds-notify--alert.slds-theme--error').hide();
+                    
+                    var isErrorValidate = true;
+                    var lengthOfMapping = $scope.quesAndAnsFieldList.length;
+                    
+                    if(lengthOfMapping == 1 &&
+                       ($scope.quesAndAnsFieldList[0].questionId == null || $scope.quesAndAnsFieldList[0].questionId == '' ) &&
+                       ($scope.quesAndAnsFieldList[0].answerFieldApi == null || $scope.quesAndAnsFieldList[0].answerFieldApi == '')) {
+                       
+                        var retVal = confirm("Are you sure?");
+                        if( retVal == true ){
+                            $scope.quesAndAnsFieldList = [];
+                        } else {
+                            isErrorValidate = false;
+                        }
+                    } else {
+                        if(($scope.quesAndAnsFieldList[0].questionId == null || $scope.quesAndAnsFieldList[0].questionId == '' )) {
+                            $('.td1'+0).addClass('slds-form-element slds-has-error');
+                            $('.msg1'+0).css('display','');
+                            isErrorValidate = false;
+                        }   
+                        if(($scope.quesAndAnsFieldList[0].answerFieldApi == null || $scope.quesAndAnsFieldList[0].answerFieldApi == '' )) {
+                            $('.td2'+0).addClass('slds-form-element slds-has-error');
+                            $('.msg2'+0).css('display','');
+                            isErrorValidate = false;
+                        }
+                        if($scope.quesAndAnsFieldList[0].questionId != null && $scope.quesAndAnsFieldList[0].questionId != '' &&
+                           $scope.quesAndAnsFieldList[0].answerFieldApi != null || $scope.quesAndAnsFieldList[0].answerFieldApi != '' ) {
+                           
+                            var fieldType = fileldapiAndval[$scope.quesAndAnsFieldList[0].answerFieldApi]['fieldType'];
+                            var quesType = quesIdAndVal[$scope.quesAndAnsFieldList[0].questionId]['ExAM__Question_Type__c'];
+                            
+                            if( (fieldType == 'EMAIL' && quesType != 'Email') || (fieldType == 'PHONE' && quesType != 'Phone Number')
+                                || (fieldType == 'DOUBLE' && quesType != 'Number') ) {
+                                
+                                $('.td2'+0).addClass('slds-form-element slds-has-error');
+                                $('.msg2'+0).css('display','');
+                                $('.msg2'+0).text('Please choose right field to map based on data type');
+                                isErrorValidate = false;
+                            }
+                           
+                        }
+                    }
+                    if(isErrorValidate) {
+                        ExAM.ContextQuestionMappingConfigCtlr.saveMappingFieldsFunc($scope.quesAndAnsFieldList,'{!JSENCODE($CurrentPage.parameters.assTempId)}',$scope.isReqForUpdation,  function(result, event) {
+                            if(event.status) {
+                                if(result == 'success') {
+                                     window.location =  "{!LEFT($CurrentPage.URL,FIND('/',$CurrentPage.URL,9))}{!JSENCODE($CurrentPage.parameters.assTempId)}";
+                                } else {
+                                    $('.errorMsg').text( result );
+                                    $('.slds-notify--alert.slds-theme--error').show();
+                                }
+                            } else {
+                                $('.errorMsg').text( result );
+                                $('.slds-notify--alert.slds-theme--error').show();
+                            }
+                        });
+                    }
+                }
+                
+                $scope.filterQuestion = function(selectedQuestion) {
+                    $scope.questionArray = [];
+                    if($scope.questionList.length > 0) {
+                        if($scope.quesAndAnsFieldList.length > 0) {
+                            for(var i =0;i<$scope.questionList.length;i++) {
+                                var isAddedQues = false;
+                                for(var j =0;j<$scope.quesAndAnsFieldList.length;j++) {
+                                    if($scope.questionList[i].Id == $scope.quesAndAnsFieldList[j].questionId
+                                        && $scope.questionList[i].Id != selectedQuestion) {
+                                        isAddedQues = true;
+                                    }
+                                }
+                                if(!isAddedQues) {
+                                    $scope.questionArray.push($scope.questionList[i]);
+                                }
+                            }
+                            
+                        }
+                    }
+                    return $scope.questionArray;
+                }
+                
+                $scope.filterAnsFileds = function(selectedField) {
+                    $scope.fieldArray = [];
+                    if($scope.answerFields.length > 0) {
+                        if($scope.quesAndAnsFieldList.length > 0) {
+                            for(var i = 0;i<$scope.answerFields.length;i++) {
+                                var isAddedField = false;
+                                for(var j = 0;j<$scope.quesAndAnsFieldList.length;j++) {
+                                    if($scope.answerFields[i].fieldApi == $scope.quesAndAnsFieldList[j].answerFieldApi
+                                        && $scope.answerFields[i].fieldApi != selectedField) {
+                                        isAddedField = true;
+                                    }
+                                }
+                                if(!isAddedField) {
+                                    $scope.fieldArray.push($scope.answerFields[i]);
+                                }
+                            }
+                            
+                        }
+                    }
+                    return $scope.fieldArray;
+                }
+            });
+            
+        </script>
+    </div>  
+</apex:page>

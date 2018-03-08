@@ -1,0 +1,28 @@
+<aura:component access="public" controller="StaticResourceLookupController">
+
+    <aura:attribute name="searchString" type="String"  access="public"/>
+    <aura:attribute name="matches" type="Map" access="public"/>
+    
+	<aura:registerEvent name="notificationEvent" type="c:notificationEvt"/>
+    
+    <ui:inputText aura:id="lookup" value="{!v.searchString}" class="slds-input slds-size--10-of-12" updateOn="keyup" keyup="{!c.search}" />
+
+
+    <div aura:id="lookuplist" class="slds-lookup__menu slds-hide slds-size--2-of-8" role="listbox">
+        <div class="slds-lookup__item">
+
+            &quot;{!v.searchString}&quot; in Static Resource
+
+        </div>
+        <ul aura:id="lookuplist-items" class="slds-lookup__list" role="presentation">
+            <aura:iteration items="{!v.matches}" var="match">
+                <li class="slds-lookup__item">
+                    <a role="option" onclick="{!c.select}">
+                        {!match.Name}
+                    </a>
+                </li>
+            </aura:iteration>
+        </ul>
+    </div>
+
+</aura:component>

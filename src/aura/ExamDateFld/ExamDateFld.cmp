@@ -1,0 +1,97 @@
+<aura:component access="public" extends="c:ExamFieldBase">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="change" value="{!v.newValue}" action="{!c.changeObjValue}"/>
+    <aura:attribute name="oldValue" type="String" access="public"/>
+    <aura:attribute name="newValue" type="String" access="public"/>
+    <aura:attribute name="validator" type="Object" access="public"/>
+    <aura:attribute name="hasValidator" type="Boolean" access="public"/>
+    <aura:attribute name="isValid" type="Boolean" access="public" default="true"/>
+    
+    <aura:method name="validateValues" action="{!c.removeDependencyCmpErrors}" 
+                 description="validateErrors method with parameters"> 
+    </aura:method>
+    
+    <div class="{!join( ' ', v.cssClass, 'slds-size--1-of-1 slds-grid slds-wrap  slds-grid--align-spread slds-grid--vertical-align-center')}">
+        
+        <aura:if isTrue="{!v.mode == 'view'}">
+            
+            <div class="label-override">
+                
+                <ui:outputText value="{!v.fieldLabel}" class="slds-m-right_xx-small"/>
+                <lightning:helptext class="{!v.helpText ? '' : 'slds-hide'}" content="{!v.helpText}"  iconName="utility:info"/>
+            </div>
+            <div aura:id="createOutputCmp">
+                <ui:outputDate format="MM/dd/yyyy" value="{!v.newValue}"/>
+            </div>
+            
+            <aura:set attribute="else">
+                <aura:if isTrue="{!v.defaultMode == 'view'}">
+                    <aura:if isTrue="{!v.hideLabel}">
+                        <div aura:id="createOutputCmp">
+                            <a class="label-override" onclick="{!c.changevalue}">
+                                <ui:outputDate value="{!v.newValue}"/>
+                            </a>
+                        </div>
+                        <aura:set attribute="else">
+                            <div>
+                                <a class="exam-bold slds-m-right_xx-small label-override" onclick="{!c.changevalue}">
+                                    {!v.fieldLabel}
+                                </a>
+                                <lightning:helptext class="{!v.helpText ? '' : 'slds-hide'}" content="{!v.helpText}" iconName="utility:info"/>
+                            </div>
+                            <div aura:id="createOutputCmp">
+                                <ui:outputDate format="MM/dd/yyyy" value="{!v.newValue}"/>
+                            </div>
+                        </aura:set>
+                    </aura:if>
+                    <aura:set attribute="else">
+                        <aura:if isTrue="{!v.newField}">
+                            <span class="slds-col">
+                                <ui:outputText value="{!v.fieldLabel}" class="slds-m-right_xx-small"/>
+                                <lightning:helptext class="{!v.helpText ? '' : 'slds-hide'}" content="{!v.helpText}"  iconName="utility:info"/>
+                            </span>
+                            <aura:if isTrue="{!(v.hasValidator == true)}">
+                                <span class="slds-col slds-size--2-of-3 slds-m-right--medium slds-p-vertical--x-small">
+                                    <ui:inputDate aura:id="uiDate" class="slds-input" format="MM/dd/yyyy" value="{!v.newValue}" displayDatePicker="true" change="{!c.dateValidate}"/>
+                                </span>
+                                <aura:set attribute="else">
+                                    <span class="slds-col slds-size--2-of-3 slds-m-right--medium slds-p-vertical--x-small">
+                                        <ui:inputDate aura:id="uiDate" class="slds-input" format="MM/dd/yyyy" value="{!v.newValue}" displayDatePicker="true"/>
+                                    </span>
+                                </aura:set>
+                            </aura:if>
+                            
+                            <aura:set attribute="else">
+                                
+                                <div class="{!v.hideLabel ? 'slds-hide' : 'slds-show'}">
+                                    <a class="exam-bold slds-m-right_xx-small label-override" onclick="{!c.changevalue}">
+                                        {!v.fieldLabel}
+                                    </a>
+                                    <lightning:helptext class="{!v.helpText ? '' : 'slds-hide'}" content="{!v.helpText}"  iconName="utility:info"/>
+                                </div>
+                                
+                                <div class="slds-col slds-size--1-of-1 slds-grid slds-wrap ">
+                                    <span aura:id="createInputCmp" class="slds-col slds-size--2-of-3 slds-m-right--medium slds-p-vertical--x-small">
+                                        <ui:inputDate aura:id="uiDate" class="slds-input" format="MM/dd/yyyy" value="{!v.oldValue}" displayDatePicker="true" change="{!c.dateValidate}"/>
+                                    </span>
+                                    <span class="slds-col slds-p-vertical--x-small">
+                                        <a class="slds-button slds-button--neutral slds-button--save slds-m-right--small" onclick="{!c.updateFieldValue}">
+                                            Save
+                                        </a>
+                                        <a class="slds-button slds-button--neutral" onclick="{!c.cancelUpdateFieldVal}">
+                                            Cancel</a>
+                                    </span>
+                                </div>
+                                
+                                
+                            </aura:set>
+                        </aura:if>
+                        
+                        
+                    </aura:set>
+                </aura:if>
+            </aura:set>
+        </aura:if>
+    </div>
+    
+</aura:component>

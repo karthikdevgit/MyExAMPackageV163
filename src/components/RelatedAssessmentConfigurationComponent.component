@@ -1,0 +1,866 @@
+<apex:component >
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+        <div class="slds-form-element" ng-app="examConfigureApp" ng-controller="examConfigureCtrl">
+
+            <!-- Start Exam Related Assessment Template Configuration -->
+            <div class="slds-card__header slds-grid">
+                <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                    <div class="slds-media__body">
+                        <h2 class="slds-text-heading--small slds-truncate">Related Assessment Configuration</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-card__body">
+                <div ng-show="showErrMessage1" style="color: {{setPgMsgColor1}};font-size: 15px;">{{ errMessage1 }}</div>
+                <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                    <tbody>
+                        <tr class="slds-hint-parent">
+                            <td class="slds-size--1-of-4">
+                                {!$Label.Primary_Assessment_Type} Template
+                            </td>
+                            <td class="slds-size--3-of-4">
+                                <p ng-show="!showTemplateSelectionBox">{{ primaryAssessmentTemplateObj.Name }} ({{ primaryAssessmentTemplateObj.ExAM__Template_name__c }})</p>
+                                <div ng-show="showTemplateSelectionBox">
+                                    <input type="text" placeholder="Enter {!$Label.Primary_Assessment_Type} Assessment Template" class="slds-col slds-size--8-of-12 slds-input" id="primaryAssessmentTemplate" ng-model="primaryAssessmentTemplateObj.Name"/>
+                                    <span ng-click="openAssessmentSelectionDiv('unit')" class="slds-icon__container slds-align-middle slds-p-right--medium">
+                                        <svg aria-hidden="true" class="slds-icon icon__svg slds-icon-standard-marketing-actions slds-icon--small">
+                                            <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/standard-sprite/svg/symbols.svg#marketing_actions')}"></use>
+                                        </svg>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td class="slds-size--1-of-4">
+                                {!$Label.Related_Assessment_Type_1}  Template
+                            </td>
+                            <td class="slds-size--3-of-4">
+                                <p ng-show="!showTemplateSelectionBox">{{ relatedAssessmentTemplate1Obj.Name }} ({{ relatedAssessmentTemplate1Obj.ExAM__Template_name__c }})</p>
+                                <div ng-show="showTemplateSelectionBox">
+                                    <input type="text" placeholder="Enter {!$Label.Related_Assessment_Type_1} Assessment Template" class="slds-col slds-size--8-of-12 slds-input" id="relateAssessmentTemplate1" ng-model="relatedAssessmentTemplate1Obj.Name"/>
+                                    <span ng-click="openAssessmentSelectionDiv('site')" class="slds-icon__container slds-align-middle slds-p-right--medium">
+                                        <svg aria-hidden="true" class="slds-icon icon__svg slds-icon-standard-marketing-actions slds-icon--small">
+                                            <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/standard-sprite/svg/symbols.svg#marketing_actions')}"></use>
+                                        </svg>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td class="slds-size--1-of-4">
+                                {!$Label.Related_Assessment_Type_2}  Template
+                            </td>
+                            <td class="slds-size--3-of-4">
+                                <p ng-show="!showTemplateSelectionBox">{{ relatedAssessmentTemplate2Obj.Name }} ({{ relatedAssessmentTemplate2Obj.ExAM__Template_name__c }})</p>
+                                <div ng-show="showTemplateSelectionBox">
+                                    <input type="text" placeholder="Enter {!$Label.Related_Assessment_Type_2} Assessment Template" class="slds-col slds-size--8-of-12 slds-input" id="relateAssessmentTemplate2" ng-model="relatedAssessmentTemplate2Obj.Name"/>
+                                    <span ng-click="openAssessmentSelectionDiv('systemandexterior')" class="slds-icon__container slds-align-middle slds-p-right--medium">
+                                        <svg aria-hidden="true" class="slds-icon icon__svg slds-icon-standard-marketing-actions slds-icon--small">
+                                            <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/standard-sprite/svg/symbols.svg#marketing_actions')}"></use>
+                                        </svg>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td class="slds-size--1-of-4">
+                                {!$Label.Related_Assessment_Type_3}  Template
+                            </td>
+                            <td class="slds-size--3-of-4">
+                                <p ng-show="!showTemplateSelectionBox">{{ relatedAssessmentTemplate3Obj.Name }} ({{ relatedAssessmentTemplate3Obj.ExAM__Template_name__c }})</p>
+                                <div ng-show="showTemplateSelectionBox">
+                                    <input type="text" placeholder="Enter {!$Label.Related_Assessment_Type_3} Assessment Template" class="slds-col slds-size--8-of-12 slds-input" id="relateAssessmentTemplate3" ng-model="relatedAssessmentTemplate3Obj.Name"/>
+                                    <span ng-click="openAssessmentSelectionDiv('commonarea')" class="slds-icon__container slds-align-middle slds-p-right--medium">
+                                        <svg aria-hidden="true" class="slds-icon icon__svg slds-icon-standard-marketing-actions slds-icon--small">
+                                            <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/standard-sprite/svg/symbols.svg#marketing_actions')}"></use>
+                                        </svg>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td class="slds-size--1-of-4">
+                                {!$Label.Related_Assessment_Type_4}  Template
+                            </td>
+                            <td class="slds-size--3-of-4">
+                                <p ng-show="!showTemplateSelectionBox">{{ relatedAssessmentTemplate4Obj.Name }} ({{ relatedAssessmentTemplate4Obj.ExAM__Template_name__c }})</p>
+                                <div ng-show="showTemplateSelectionBox">
+                                    <input type="text" placeholder="Enter {!$Label.Related_Assessment_Type_4} Assessment Template" class="slds-col slds-size--8-of-12 slds-input" id="relateAssessmentTemplate4" ng-model="relatedAssessmentTemplate4Obj.Name"/>
+                                    <span ng-click="openAssessmentSelectionDiv('exterior')" class="slds-icon__container slds-align-middle slds-p-right--medium">
+                                        <svg aria-hidden="true" class="slds-icon icon__svg slds-icon-standard-marketing-actions slds-icon--small">
+                                            <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/standard-sprite/svg/symbols.svg#marketing_actions')}"></use>
+                                        </svg>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td colspan="2">
+                                <center>
+                                    <input class="slds-button slds-button--brand" ng-show="!showTemplateSelectionBox" ng-click="toggleView('edit')" type="button" value="Edit Configuration"/>
+                                    <input class="slds-button slds-button--brand" ng-show="showTemplateSelectionBox" ng-click="validateSelectedAssessmentTemplates()" type="button" value="Save"/>
+                                    <input class="slds-button slds-button--brand" ng-show="showTemplateSelectionBox" ng-click="toggleView('cancel')" type="button" value="Cancel"/>
+                                </center>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- End Exam Related Assessment Template Configuration -->
+
+            <!-- Start Toggle Assignment Manager Tab Visibility Configuration on Lens Viewer -->
+            <div class="slds-card__header slds-grid">
+                <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                    <div class="slds-media__body">
+                        <h2 class="slds-text-heading--small slds-truncate">Related Tab Visibility Configuration</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-card__body">
+                <div ng-show="showErrMessage2" style="color: {{setPgMsgColor2}};font-size: 15px;">{{ errMessage2 }}</div>
+                <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                    <tbody>
+                        <tr class="slds-hint-parent">
+                            <td class="slds-size--1-of-4">
+                                Hide {!$Label.Related_Assessment_Type_1} Assignment Manager Tab
+                            </td>
+                            <td class="slds-size--3-of-4">
+                                <p ng-show="!showASMSelectionCBox">
+                                    <label class="slds-checkbox">
+                                        <input type="checkbox" name="options" id="checkbox-03" disabled="true" ng-model="examConfigObj1.ExAM__Hide_Related_Assignment_Manager1_Tab__c"/>
+                                        <span class="slds-checkbox--faux"></span>
+                                    </label>
+                                </p>
+                                <div ng-show="showASMSelectionCBox">
+                                    <label class="slds-checkbox">
+                                        <input type="checkbox" name="options" id="checkbox-04" ng-model="cBoxObj.showRAM1"/>
+                                        <span class="slds-checkbox--faux"></span>
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td class="slds-size--1-of-4">
+                                Hide {!$Label.Related_Assessment_Type_2} Assignment Manager Tab
+                            </td>
+                            <td class="slds-size--3-of-4">
+                                <p ng-show="!showASMSelectionCBox">
+                                    <label class="slds-checkbox">
+                                        <input type="checkbox" name="options" id="checkbox-05" disabled="true" ng-model="examConfigObj1.ExAM__Hide_Related_Assignment_Manager2_Tab__c"/>
+                                        <span class="slds-checkbox--faux"></span>
+                                    </label>
+                                </p>
+                                <div ng-show="showASMSelectionCBox">
+                                    <label class="slds-checkbox">
+                                        <input type="checkbox" name="options" id="checkbox-06" ng-model="cBoxObj.showRAM2"/>
+                                        <span class="slds-checkbox--faux"></span>
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td class="slds-size--1-of-4">
+                                Hide {!$Label.Related_Assessment_Type_3} Assignment Manager Tab
+                            </td>
+                            <td class="slds-size--3-of-4">
+                                <p ng-show="!showASMSelectionCBox">
+                                    <label class="slds-checkbox">
+                                        <input type="checkbox" name="options" id="checkbox-07" disabled="true" ng-model="examConfigObj1.ExAM__Hide_Related_Assignment_Manager3_Tab__c"/>
+                                        <span class="slds-checkbox--faux"></span>
+                                    </label>
+                                </p>
+                                <div ng-show="showASMSelectionCBox">
+                                    <label class="slds-checkbox">
+                                        <input type="checkbox" name="options" id="checkbox-08" ng-model="cBoxObj.showRAM3"/>
+                                        <span class="slds-checkbox--faux"></span>
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td class="slds-size--1-of-4">
+                                Hide {!$Label.Related_Assessment_Type_4}  Assignment Manager Tab
+                            </td>
+                            <td class="slds-size--3-of-4">
+                                <p ng-show="!showASMSelectionCBox">
+                                    <label class="slds-checkbox">
+                                        <input type="checkbox" name="options" id="checkbox-09" disabled="true" ng-model="examConfigObj1.ExAM__Hide_Related_Assignment_Manager4_Tab__c"/>
+                                        <span class="slds-checkbox--faux"></span>
+                                    </label>
+                                </p>
+                                <div ng-show="showASMSelectionCBox">
+                                    <label class="slds-checkbox">
+                                        <input type="checkbox" name="options" id="checkbox-10" ng-model="cBoxObj.showRAM4"/>
+                                        <span class="slds-checkbox--faux"></span>
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td class="slds-size--1-of-4">
+                                Hide Data Viewer Tab
+                            </td>
+                            <td class="slds-size--3-of-4">
+                                <p ng-show="!showASMSelectionCBox">
+                                    <label class="slds-checkbox">
+                                        <input type="checkbox" name="options" id="checkbox-09" disabled="true" ng-model="examConfigObj1.ExAM__Hide_Data_Viewer_Tab__c"/>
+                                        <span class="slds-checkbox--faux"></span>
+                                    </label>
+                                </p>
+                                <div ng-show="showASMSelectionCBox">
+                                    <label class="slds-checkbox">
+                                        <input type="checkbox" name="options" id="checkbox-10" ng-model="cBoxObj.showDataViewerTab"/>
+                                        <span class="slds-checkbox--faux"></span>
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td class="slds-size--1-of-4">
+                                Hide Assignment Manager List Tab
+                            </td>
+                            <td class="slds-size--3-of-4">
+                                <p ng-show="!showASMSelectionCBox">
+                                    <label class="slds-checkbox">
+                                        <input type="checkbox" name="options" id="checkbox-09" disabled="true" ng-model="examConfigObj1.ExAM__Hide_AM_List_Tab__c"/>
+                                        <span class="slds-checkbox--faux"></span>
+                                    </label>
+                                </p>
+                                <div ng-show="showASMSelectionCBox">
+                                    <label class="slds-checkbox">
+                                        <input type="checkbox" name="options" id="checkbox-10" ng-model="cBoxObj.showAMListTab"/>
+                                        <span class="slds-checkbox--faux"></span>
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td class="slds-size--1-of-4">
+                                Hide Assessable Record Tab
+                            </td>
+                            <td class="slds-size--3-of-4">
+                                <p ng-show="!showASMSelectionCBox">
+                                    <label class="slds-checkbox">
+                                        <input type="checkbox" name="options" id="checkbox-09" disabled="true" ng-model="examConfigObj1.ExAM__Hide_Assessable_Record_Tab__c"/>
+                                        <span class="slds-checkbox--faux"></span>
+                                    </label>
+                                </p>
+                                <div ng-show="showASMSelectionCBox">
+                                    <label class="slds-checkbox">
+                                        <input type="checkbox" name="options" id="checkbox-10" ng-model="cBoxObj.showAssesableRecordTab"/>
+                                        <span class="slds-checkbox--faux"></span>
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td class="slds-size--1-of-4">
+                                Hide Knowledge Article Tab
+                            </td>
+                            <td class="slds-size--3-of-4">
+                                <p ng-show="!showASMSelectionCBox">
+                                    <label class="slds-checkbox">
+                                        <input type="checkbox" name="options" id="checkbox-09" disabled="true" ng-model="examConfigObj1.ExAM__Hide_Knowledge_Article_Tab__c"/>
+                                        <span class="slds-checkbox--faux"></span>
+                                    </label>
+                                </p>
+                                <div ng-show="showASMSelectionCBox">
+                                    <label class="slds-checkbox">
+                                        <input type="checkbox" name="options" id="checkbox-10" ng-model="cBoxObj.showKnowledgeArticleTab"/>
+                                        <span class="slds-checkbox--faux"></span>
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td class="slds-size--1-of-4">
+                                Hide Save Button
+                            </td>
+                            <td class="slds-size--3-of-4">
+                                <p ng-show="!showASMSelectionCBox">
+                                    <label class="slds-checkbox">
+                                        <input type="checkbox" name="options" id="checkbox-11" disabled="true" ng-model="examConfigObj1.ExAM__Hide_Save_Button__c"/>
+                                        <span class="slds-checkbox--faux"></span>
+                                    </label>
+                                </p>
+                                <div ng-show="showASMSelectionCBox">
+                                    <label class="slds-checkbox">
+                                        <input type="checkbox" name="options" id="checkbox-12" ng-model="cBoxObj.showSaveBtn"/>
+                                        <span class="slds-checkbox--faux"></span>
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td colspan="2">
+                                <center>
+                                    <input class="slds-button slds-button--brand" ng-show="!showASMSelectionCBox" ng-click="toggleCBoxView('edit')" type="button" value="Edit Configuration"/>
+                                    <input class="slds-button slds-button--brand" ng-show="showASMSelectionCBox" ng-click="validateSelectedCBoxConfiguration()" type="button" value="Save"/>
+                                    <input class="slds-button slds-button--brand" ng-show="showASMSelectionCBox" ng-click="toggleCBoxView('cancel')" type="button" value="Cancel"/>
+                                </center>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- End Toggle Assignment Manager Tab Visibility Configuration on Lens Viewer -->
+
+            <!-- Start Code to get Hours Since Record is Created Configuration -->
+            <div class="slds-card__header slds-grid">
+                <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                    <div class="slds-media__body">
+                        <h2 class="slds-text-heading--small slds-truncate">Business Rule - Acceptable Age for Related Assignments</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-card__body">
+                <div ng-show="showErrMessage" style="color: {{setPgMsgColor}};font-size: 15px;">{{ errMessage }}</div>
+                <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                    <tbody>
+                        <tr class="slds-hint-parent">
+                            <td class="slds-size--1-of-4">Hours</td>
+                            <td class="slds-size--1-of-4">
+                                <p ng-show="!showHoursSelectionBox">{{ hrs }}</p>
+                                <div ng-show="showHoursSelectionBox">
+                                    <input type="text" placeholder="Enter Acceptable Age for Related Assignments" class="slds-col slds-size--8-of-12 slds-input" ng-model="hrs"/>
+                                </div>
+                            </td>
+                            <td class="slds-size--2-of-4">
+                                <input class="slds-button slds-button--brand" ng-show="!showHoursSelectionBox" ng-click="toggleHoursView('edit')" type="button" value="Edit"/>
+                                <input class="slds-button slds-button--brand" ng-show="showHoursSelectionBox" ng-click="saveHoursInBackEnd()" type="button" value="Save"/>
+                                <input class="slds-button slds-button--brand" ng-show="showHoursSelectionBox" ng-click="toggleHoursView('cancel')" type="button" value="Cancel"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- End Code to get Hours Since Record is Created Configuration -->
+
+            <!-- Processing Image Code -->
+            <div style="display: none; background-color: rgba(0, 0, 0, 0.6); width: 100%; height: 100%; z-index: 1000; position: absolute; left: 0; top: 0; overflow: hidden; text-align: center; vertical-align: middle;" class="maskDiv">
+                <img src="{!URLFOR($Resource.SLDS052, '/assets/images/spinners/slds_spinner.gif')}" alt="Loading..." class="slds-spinner--small" style="display: none; z-index: 10001; background-color: white; width: 80px; height: 80px; padding: 15px; border-radius: 4px; text-align: left; position: relative; top: 30%;"/>
+            </div>
+            <!--End Processing Image Code -->
+        
+            <!-- Start Assessment Template Selection -->
+            <div ng-show="showAssessmentSelectionDiv" aria-hidden="false" role="dialog" class="slds-modal slds-modal__close AssessmentSelectionDiv" style="background-color: rgba(128, 128, 128, 0.75);">
+                <div class="slds-modal__container">
+                    <div class="slds-modal__header">
+                        <button class="slds-button slds-button--icon-inverse slds-modal__close" ng-click="closeAssessmentSelectionDiv()">
+                            <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                                <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                            </svg>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-text-heading--medium">Assessment Template</h2>
+                    </div>
+                    <div class="slds-modal__content">
+                        <table class="slds-table slds-table--bordered slds-max-medium-table--stacked" style="height:20%">
+                            <thead>
+                                <tr class="slds-text-heading--label">
+                                    <th scope="col"><span class="slds-truncate"><b>Name</b></span></th>
+                                    <th scope="col"><span class="slds-truncate"><b>Template Name</b></span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="eachAssessmentTemplate in (assessmentTemplateObj | orderBy:'ExAM__Template_name__c')">
+                                    <td style="cursor: pointer;" ng-click="setSelectedAssessmentTemplate(eachAssessmentTemplate);">{{ eachAssessmentTemplate.Name }}</td>
+                                    <td style="cursor: pointer;" ng-click="setSelectedAssessmentTemplate(eachAssessmentTemplate);">{{ eachAssessmentTemplate.ExAM__Template_name__c }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- End Assessment Template Selection -->
+
+            <!-- Start code to configure Knowledge Article type and content field -->
+            <div class="slds-card__header slds-grid">
+                <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                    <div class="slds-media__body">
+                        <h2 class="slds-text-heading--small slds-truncate">Knowledge Article Summary Field Configuration</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-card__body">
+                <c:KnowledgeArticleTypeConfiguration />
+            </div>
+            <!-- End code to configure Knowledge Article type and content field -->
+
+        </div>
+        <!-- End examConfigureApp -->
+    </html>
+    <script>
+        var app = angular.module('examConfigureApp', []);
+        app.service('examConfigureService', function($q) {
+
+            var inputData = {};
+
+            this.getExamConfigAndAssessmentTemplates = function() {
+
+                var defer = $q.defer();
+
+                ExAM.GeneralConfigController.queryExamConfigRecordAndAllAssessmentTemplates(function(result, event) {
+
+                    if(event.status) {
+                        defer.resolve(JSON.parse( _.unescape(JSON.stringify(result)) ));
+                    }
+                });
+                return defer.promise;
+            }
+
+            this.saveExamConfiguration = function(obj) {
+
+                var defer = $q.defer();
+
+                ExAM.GeneralConfigController.saveSelectedTemplateIdsIntoExamConfigurationRecord(obj, function(result, event) {
+
+                    if(event.status && result.indexOf('@@') >= 0) {
+                        if (result.indexOf('@@') >= 0) {
+                            defer.resolve(result.split('@@')[1]);
+                        }
+                    }else {
+                        defer.reject(result);
+                    }
+                });
+                return defer.promise;
+            }
+        });
+        app.controller('examConfigureCtrl', function($scope, examConfigureService) {
+
+            $scope.assessmentTemplateObj = [];
+
+            $scope.examConfigObj = {};
+            $scope.examConfigObjToUpdate = {};
+            $scope.assessmentTemplateMap = {};
+            $scope.primaryAssessmentTemplateObj = {};
+            $scope.relatedAssessmentTemplate1Obj = {};
+            $scope.relatedAssessmentTemplate2Obj = {};
+            $scope.relatedAssessmentTemplate3Obj = {};
+
+            //Variable Added on 30-06-2016 for 4th Assessment Template
+            $scope.relatedAssessmentTemplate4Obj = {};
+
+            $scope.tobeStoredField = '';
+            $scope.errMessage = '';
+            $scope.errMessage1 = '';
+
+            $scope.showAssessmentSelectionDiv = false;
+            $scope.showTemplateSelectionBox = false;
+            $scope.showHoursSelectionBox = false;
+            $scope.showErrMessage = false;
+            $scope.showErrMessage1 = false;
+
+            $scope.initialHrs = 1;
+            $scope.hrs = 1;
+            $scope.setPgMsgColor = 'red';
+            $scope.setPgMsgColor1 = 'red';
+
+            $scope.showASMSelectionCBox = false;
+            $scope.examConfigObj1 = {};
+            $scope.examConfigObjToUpdate1 = {};
+            $scope.cBoxObj = {};
+
+            examConfigureService.getExamConfigAndAssessmentTemplates().then(function(data) {
+
+                if (data.questionaireRecordsList.length > 0) {
+                    $scope.assessmentTemplateObj = data.questionaireRecordsList;
+                    $scope.assessmentTemplateMap = data.questionaireMap;
+                }
+                if (angular.isDefined(data.examConfigRecord.Id)) {
+
+                    $scope.examConfigObj = data.examConfigRecord;
+                    $scope.initialHrs = (data.examConfigRecord.ExAM__Hours__c > 0) ? data.examConfigRecord.ExAM__Hours__c : 1;
+                    $scope.hrs = (data.examConfigRecord.ExAM__Hours__c > 0) ? data.examConfigRecord.ExAM__Hours__c : 1;
+                    $scope.loadLookUpValues();
+
+                    $scope.examConfigObj1 = data.examConfigRecord;
+                    $scope.setExistingCBoxValue();
+                }
+            });
+
+            $scope.loadLookUpValues = function() {
+                
+                if ($scope.examConfigObj.ExAM__Primary_Assessment_Type_Template__c) {
+                    var assTemp = $scope.examConfigObj.ExAM__Primary_Assessment_Type_Template__c;
+                    if($scope.assessmentTemplateMap[assTemp]) {
+                        $scope.primaryAssessmentTemplateObj.Id = angular.isDefined($scope.assessmentTemplateMap[assTemp].Id)?$scope.assessmentTemplateMap[assTemp].Id :'';
+                        $scope.primaryAssessmentTemplateObj.Name = angular.isDefined($scope.assessmentTemplateMap[assTemp].Name)?$scope.assessmentTemplateMap[assTemp].Name:'';
+                        $scope.primaryAssessmentTemplateObj.ExAM__Template_name__c = angular.isDefined($scope.assessmentTemplateMap[assTemp].ExAM__Template_name__c)?$scope.assessmentTemplateMap[assTemp].ExAM__Template_name__c:'';
+                    }
+                }
+                if ($scope.examConfigObj.ExAM__Related_Assessment_Type_1_Template__c) {
+                    var assTemp = $scope.examConfigObj.ExAM__Related_Assessment_Type_1_Template__c;
+                    if($scope.assessmentTemplateMap[assTemp]) {
+                        $scope.relatedAssessmentTemplate1Obj.Id = angular.isDefined($scope.assessmentTemplateMap[assTemp].Id)?$scope.assessmentTemplateMap[assTemp].Id :'';
+                        $scope.relatedAssessmentTemplate1Obj.Name = angular.isDefined($scope.assessmentTemplateMap[assTemp].Name)?$scope.assessmentTemplateMap[assTemp].Name:'';
+                        $scope.relatedAssessmentTemplate1Obj.ExAM__Template_name__c = angular.isDefined($scope.assessmentTemplateMap[assTemp].ExAM__Template_name__c)?$scope.assessmentTemplateMap[assTemp].ExAM__Template_name__c:'';
+                    }
+                }
+                if ($scope.examConfigObj.ExAM__Related_Assessment_Type_2_Template__c) {
+                    var assTemp = $scope.examConfigObj.ExAM__Related_Assessment_Type_2_Template__c;
+                    if($scope.assessmentTemplateMap[assTemp]) {
+                        $scope.relatedAssessmentTemplate2Obj.Id = angular.isDefined($scope.assessmentTemplateMap[assTemp].Id)?$scope.assessmentTemplateMap[assTemp].Id :'';
+                        $scope.relatedAssessmentTemplate2Obj.Name = angular.isDefined($scope.assessmentTemplateMap[assTemp].Name)?$scope.assessmentTemplateMap[assTemp].Name:'';
+                        $scope.relatedAssessmentTemplate2Obj.ExAM__Template_name__c = angular.isDefined($scope.assessmentTemplateMap[assTemp].ExAM__Template_name__c)?$scope.assessmentTemplateMap[assTemp].ExAM__Template_name__c:'';
+                    }
+                }
+                if ($scope.examConfigObj.ExAM__Related_Assessment_Type_3_Template__c) {
+                    var assTemp = $scope.examConfigObj.ExAM__Related_Assessment_Type_3_Template__c;
+                    if($scope.assessmentTemplateMap[assTemp]) {
+                        $scope.relatedAssessmentTemplate3Obj.Id = angular.isDefined($scope.assessmentTemplateMap[assTemp].Id)?$scope.assessmentTemplateMap[assTemp].Id :'';
+                        $scope.relatedAssessmentTemplate3Obj.Name = angular.isDefined($scope.assessmentTemplateMap[assTemp].Name)?$scope.assessmentTemplateMap[assTemp].Name:'';
+                        $scope.relatedAssessmentTemplate3Obj.ExAM__Template_name__c = angular.isDefined($scope.assessmentTemplateMap[assTemp].ExAM__Template_name__c)?$scope.assessmentTemplateMap[assTemp].ExAM__Template_name__c:'';
+                    }
+                }
+                if ($scope.examConfigObj.ExAM__Related_Assessment_Type_4_Template__c) {
+                    var assTemp = $scope.examConfigObj.ExAM__Related_Assessment_Type_4_Template__c;
+                    if($scope.assessmentTemplateMap[assTemp]) {
+                        $scope.relatedAssessmentTemplate4Obj.Id = angular.isDefined($scope.assessmentTemplateMap[assTemp].Id)?$scope.assessmentTemplateMap[assTemp].Id :'';
+                        $scope.relatedAssessmentTemplate4Obj.Name = angular.isDefined($scope.assessmentTemplateMap[assTemp].Name)?$scope.assessmentTemplateMap[assTemp].Name:'';
+                        $scope.relatedAssessmentTemplate4Obj.ExAM__Template_name__c = angular.isDefined($scope.assessmentTemplateMap[assTemp].ExAM__Template_name__c)?$scope.assessmentTemplateMap[assTemp].ExAM__Template_name__c:'';
+                    }
+                }
+            }
+
+            $scope.setSelectedAssessmentTemplate = function(selAssTempRec) {
+
+                $scope.selectedTemplateObj = selAssTempRec;
+
+                if ($scope.tobeStoredField == 'unit') {
+                    $scope.primaryAssessmentTemplateObj.Id = $scope.selectedTemplateObj.Id;
+                    $scope.primaryAssessmentTemplateObj.Name = $scope.selectedTemplateObj.Name;
+                    $scope.primaryAssessmentTemplateObj.ExAM__Template_name__c = $scope.selectedTemplateObj.ExAM__Template_name__c;
+                }
+                if ($scope.tobeStoredField == 'site') {
+                    $scope.relatedAssessmentTemplate1Obj.Id = $scope.selectedTemplateObj.Id;
+                    $scope.relatedAssessmentTemplate1Obj.Name = $scope.selectedTemplateObj.Name;
+                    $scope.relatedAssessmentTemplate1Obj.ExAM__Template_name__c = $scope.selectedTemplateObj.ExAM__Template_name__c;
+                }
+                if ($scope.tobeStoredField == 'systemandexterior') {
+                    $scope.relatedAssessmentTemplate2Obj.Id = $scope.selectedTemplateObj.Id;
+                    $scope.relatedAssessmentTemplate2Obj.Name = $scope.selectedTemplateObj.Name;
+                    $scope.relatedAssessmentTemplate2Obj.ExAM__Template_name__c = $scope.selectedTemplateObj.ExAM__Template_name__c;
+                }
+                if ($scope.tobeStoredField == 'commonarea') {
+                    $scope.relatedAssessmentTemplate3Obj.Id = $scope.selectedTemplateObj.Id;
+                    $scope.relatedAssessmentTemplate3Obj.Name = $scope.selectedTemplateObj.Name;
+                    $scope.relatedAssessmentTemplate3Obj.ExAM__Template_name__c = $scope.selectedTemplateObj.ExAM__Template_name__c;
+                }
+                if ($scope.tobeStoredField == 'exterior') {
+                    $scope.relatedAssessmentTemplate4Obj.Id = $scope.selectedTemplateObj.Id;
+                    $scope.relatedAssessmentTemplate4Obj.Name = $scope.selectedTemplateObj.Name;
+                    $scope.relatedAssessmentTemplate4Obj.ExAM__Template_name__c = $scope.selectedTemplateObj.ExAM__Template_name__c;
+                }
+                $scope.closeAssessmentSelectionDiv();
+            }
+
+            $scope.validateSelectedAssessmentTemplates = function() {
+
+                var isDataValid = false;
+                $scope.showErrMessage1 = false;
+                $scope.errMessage1 = '';
+                $scope.setPgMsgColor1 = 'red';
+                $scope.templateIdArr = [];
+
+                if (!$scope.primaryAssessmentTemplateObj.Name) {
+                    $scope.errMessage1 = 'Enter value for '+'{!$Label.Primary_Assessment_Type}'+' Template';
+                    $scope.showErrMessage1 = true;
+                }
+                else if (!$scope.relatedAssessmentTemplate1Obj.Name) {
+                    $scope.errMessage1 = 'Enter value for '+'{!$Label.Related_Assessment_Type_1}'+' Template';
+                    $scope.showErrMessage1 = true;
+                }
+                else if (!$scope.relatedAssessmentTemplate2Obj.Name) {
+                    $scope.errMessage1 = 'Enter value for '+'{!$Label.Related_Assessment_Type_2}'+' Template';
+                    $scope.showErrMessage1 = true;
+                }
+                else if (!$scope.relatedAssessmentTemplate3Obj.Name) {
+                    $scope.errMessage1 = 'Enter value for '+'{!$Label.Related_Assessment_Type_3}'+' Template';
+                    $scope.showErrMessage1 = true;
+                }
+                else if (!$scope.relatedAssessmentTemplate4Obj.Name) {
+                    $scope.errMessage1 = 'Enter value for '+'{!$Label.Related_Assessment_Type_4}'+' Template';
+                    $scope.showErrMessage1 = true;
+                }
+                else {
+
+                    if ($scope.templateIdArr.indexOf($scope.primaryAssessmentTemplateObj.Id) == -1) {
+                        $scope.templateIdArr.push($scope.primaryAssessmentTemplateObj.Id);
+                    }
+                    else {
+                        $scope.errMessage1 = 'Please select another '+'{!$Label.Primary_Assessment_Type}'+' Template';
+                        $scope.showErrMessage1 = true;
+                        return false;
+                    }
+
+                    if ($scope.templateIdArr.indexOf($scope.relatedAssessmentTemplate1Obj.Id) == -1) {
+                        $scope.templateIdArr.push($scope.relatedAssessmentTemplate1Obj.Id);
+                    }
+                    else {
+                        $scope.errMessage1 = 'Please select another '+'{!$Label.Related_Assessment_Type_1}'+' Template';
+                        $scope.showErrMessage1 = true;
+                        return false;
+                    }
+
+                    if ($scope.templateIdArr.indexOf($scope.relatedAssessmentTemplate2Obj.Id) == -1) {
+                        $scope.templateIdArr.push($scope.relatedAssessmentTemplate2Obj.Id);
+                    }
+                    else {
+                        $scope.errMessage1 = 'Please select another '+'{!$Label.Related_Assessment_Type_2}'+' Template';
+                        $scope.showErrMessage1 = true;
+                        return false;
+                    }
+
+                    if ($scope.templateIdArr.indexOf($scope.relatedAssessmentTemplate3Obj.Id) == -1) {
+                        $scope.templateIdArr.push($scope.relatedAssessmentTemplate3Obj.Id);
+                    }
+                    else {
+                        $scope.errMessage1 = 'Please select another '+'{!$Label.Related_Assessment_Type_3}'+' Template';
+                        $scope.showErrMessage1 = true;
+                        return false;
+                    }
+
+                    if ($scope.templateIdArr.indexOf($scope.relatedAssessmentTemplate4Obj.Id) == -1) {
+                        $scope.templateIdArr.push($scope.relatedAssessmentTemplate4Obj.Id);
+                    }
+                    else {
+                        $scope.errMessage1 = 'Please select another '+'{!$Label.Related_Assessment_Type_4}'+' Template';
+                        $scope.showErrMessage1 = true;
+                        return false;
+                    }
+                    isDataValid = true;
+                }
+                if(isDataValid) {
+                    $scope.saveSelectedAssessmentTemplates();
+                }
+            }
+
+            $scope.saveSelectedAssessmentTemplates = function() {
+
+                var hasFieldLeftEmpty = true;
+                $scope.showErrMessage1 = false;
+                $scope.errMessage1 = '';
+                $scope.setPgMsgColor1 = 'red';
+
+                $('.maskDiv, .slds-spinner--small').show();
+
+                //Below code added on 25-3-2016 to set configuration id from hidden variable from form
+                if ($('.hiddenExamConfigId').val() != '' && $('.hiddenExamConfigId').val() != null) {
+                    $scope.examConfigObjToUpdate.Id = $('.hiddenExamConfigId').val();
+                }
+                else if (angular.isDefined($scope.examConfigObj.Id) ) {
+                    $scope.examConfigObjToUpdate.Id = $scope.examConfigObj.Id;
+                }
+                $scope.examConfigObjToUpdate.Name = angular.isDefined($scope.examConfigObj.Name) ? $scope.examConfigObj.Name : 'Configuration';
+                $scope.examConfigObjToUpdate.ExAM__Primary_Assessment_Type_Template__c = $scope.primaryAssessmentTemplateObj.Id;
+                $scope.examConfigObjToUpdate.ExAM__Related_Assessment_Type_1_Template__c = $scope.relatedAssessmentTemplate1Obj.Id;
+                $scope.examConfigObjToUpdate.ExAM__Related_Assessment_Type_2_Template__c = $scope.relatedAssessmentTemplate2Obj.Id;
+                $scope.examConfigObjToUpdate.ExAM__Related_Assessment_Type_3_Template__c = $scope.relatedAssessmentTemplate3Obj.Id;
+                $scope.examConfigObjToUpdate.ExAM__Related_Assessment_Type_4_Template__c = $scope.relatedAssessmentTemplate4Obj.Id;
+
+                examConfigureService.saveExamConfiguration($scope.examConfigObjToUpdate).then(function(data) {
+
+                    $('.maskDiv, .slds-spinner--small').hide();
+                    $('.hiddenExamConfigId').val(data);
+                    $scope.showErrMessage1 = true;
+                    $scope.errMessage1 = 'Related Assessment configuration updated successfully';
+                    $scope.setPgMsgColor1 = 'green';
+                    $scope.showTemplateSelectionBox = false;
+                    $scope.examConfigObj = $scope.examConfigObjToUpdate;
+                },
+                function(data) {
+
+                    $('.maskDiv, .slds-spinner--small').hide();
+                    $scope.showErrMessage1 = true;
+                    $scope.errMessage1 = data;
+
+                });
+            }
+
+            $scope.saveHoursInBackEnd = function() {
+                var hasFieldLeftEmpty = true;
+                $scope.showHoursSelectionBox = true;
+                $scope.showErrMessage = false;
+                $scope.setPgMsgColor = 'red';
+                $scope.errMessage = '';
+                
+                if ($.isNumeric($scope.hrs) && $scope.hrs > 0) {
+                    hasFieldLeftEmpty = false;
+                }
+                if (!hasFieldLeftEmpty) {
+
+                    /**
+                        If condition added on 07-01-2015 
+                        to prevent configuration record update
+                        if the hours value is not changed
+                    **/
+                    
+                    if ($scope.hrs != $scope.initialHrs) {
+
+                        $('.maskDiv, .slds-spinner--small').show();
+    
+                        if ($('.hiddenExamConfigId').val() != '' && $('.hiddenExamConfigId').val() != null) {
+                            $scope.examConfigObjToUpdate.Id = $('.hiddenExamConfigId').val();
+                        }
+                        else if (angular.isDefined($scope.examConfigObj.Id) ) {
+                            $scope.examConfigObjToUpdate.Id = $scope.examConfigObj.Id;
+                        }
+                        $scope.examConfigObjToUpdate.Name = angular.isDefined($scope.examConfigObj.Name) ? $scope.examConfigObj.Name : 'Configuration';
+                        $scope.examConfigObjToUpdate.ExAM__Hours__c = $scope.hrs;
+    
+                        examConfigureService.saveExamConfiguration($scope.examConfigObjToUpdate).then(function(data) {
+                            $scope.initialHrs = $scope.hrs;
+                            $('.maskDiv, .slds-spinner--small').hide();
+                            $('.hiddenExamConfigId').val(data);
+                            $scope.showHoursSelectionBox = false;
+                            $scope.showErrMessage = true;
+                            $scope.setPgMsgColor = 'green';
+                            $scope.errMessage = 'Hours configured successfully...';
+                        },
+                        function(data) {
+                            $('.maskDiv, .slds-spinner--small').hide();
+                            $scope.showErrMessage = true;
+                            $scope.errMessage = data;
+                        });
+                    }
+                    else {
+
+                        $scope.showHoursSelectionBox = false;
+                    }   
+                }
+                else {
+                    $scope.showErrMessage = true;
+                    $scope.errMessage = 'Enter hours in number and it should be greater than zero';
+                }
+            }
+
+            $scope.openAssessmentSelectionDiv = function(str) {
+                $scope.tobeStoredField = str;
+                $scope.showAssessmentSelectionDiv = true;
+                $('.AssessmentSelectionDiv').removeClass('slds-modal__close');
+                $('.AssessmentSelectionDiv').addClass('slds-fade-in-open');
+            }
+            $scope.closeAssessmentSelectionDiv = function() {
+                $('.AssessmentSelectionDiv').addClass('slds-modal__close');
+                $('.AssessmentSelectionDiv').removeClass('slds-fade-in-open');
+            }
+            $scope.toggleView = function(from) {
+
+                $scope.showTemplateSelectionBox = false;
+                $scope.errMessage1 = false;
+                $scope.showErrMessage1 = false;
+
+                if (from == 'edit') {
+                    $scope.showTemplateSelectionBox = true;
+                }
+                else if(from == 'cancel') {
+
+                    $scope.loadLookUpValues();
+                }
+            }
+            $scope.toggleHoursView = function(from) {
+                
+                $scope.showErrMessage = false;
+                $scope.errMessage = '';
+                $scope.setPgMsgColor = 'red';
+
+                if (from == 'edit') {
+                    $scope.showHoursSelectionBox = true;
+                }
+                else if(from == 'cancel') {
+                    $scope.hrs = $scope.initialHrs;
+                    $scope.showHoursSelectionBox = false;
+                }
+            }
+            $scope.setExistingCBoxValue = function() {
+                if ($scope.examConfigObj1.ExAM__Hide_Related_Assignment_Manager1_Tab__c) {
+                    $scope.cBoxObj.showRAM1 = $scope.examConfigObj1.ExAM__Hide_Related_Assignment_Manager1_Tab__c;
+                }
+                if ($scope.examConfigObj1.ExAM__Hide_Related_Assignment_Manager2_Tab__c) {
+                    $scope.cBoxObj.showRAM2 = $scope.examConfigObj1.ExAM__Hide_Related_Assignment_Manager2_Tab__c;
+                }
+                if ($scope.examConfigObj1.ExAM__Hide_Related_Assignment_Manager3_Tab__c) {
+                    $scope.cBoxObj.showRAM3 = $scope.examConfigObj1.ExAM__Hide_Related_Assignment_Manager3_Tab__c;
+                }
+                if ($scope.examConfigObj1.ExAM__Hide_Related_Assignment_Manager4_Tab__c) {
+                    $scope.cBoxObj.showRAM4 = $scope.examConfigObj1.ExAM__Hide_Related_Assignment_Manager4_Tab__c;
+                }
+                if ($scope.examConfigObj1.ExAM__Hide_Data_Viewer_Tab__c) {
+                    $scope.cBoxObj.showDataViewerTab = $scope.examConfigObj1.ExAM__Hide_Data_Viewer_Tab__c;
+                }
+                if ($scope.examConfigObj1.ExAM__Hide_AM_List_Tab__c) {
+                    $scope.cBoxObj.showAMListTab = $scope.examConfigObj1.ExAM__Hide_AM_List_Tab__c;
+                }
+                if ($scope.examConfigObj1.ExAM__Hide_Assessable_Record_Tab__c) {
+                    $scope.cBoxObj.showAssesableRecordTab = $scope.examConfigObj1.ExAM__Hide_Assessable_Record_Tab__c;
+                }
+                if ($scope.examConfigObj1.ExAM__Hide_Knowledge_Article_Tab__c) {
+                    $scope.cBoxObj.showKnowledgeArticleTab = $scope.examConfigObj1.ExAM__Hide_Knowledge_Article_Tab__c;
+                }
+                if ($scope.examConfigObj1.ExAM__Hide_Save_Button__c) {
+                    $scope.cBoxObj.showSaveBtn = $scope.examConfigObj1.ExAM__Hide_Save_Button__c;
+                }
+            }
+            $scope.toggleCBoxView = function(from) {
+
+                $scope.showASMSelectionCBox = false;
+                $scope.errMessage2 = false;
+                $scope.showErrMessage2 = false;
+
+                if (from == 'edit') {
+                    $scope.showASMSelectionCBox = true;
+                }
+                else {
+                    $scope.setExistingCBoxValue();
+                }
+            }
+            $scope.validateSelectedCBoxConfiguration = function() {
+
+                $scope.showErrMessage2 = false;
+                $scope.errMessage2 = '';
+                $scope.setPgMsgColor2 = 'red';
+                $scope.examConfigObj1ToUpdate1 = {};
+                var examConfigId = $('.hiddenExamConfigId').val();
+
+                //$('.maskDiv, .slds-spinner--small').show();
+
+                //Below code added on 25-3-2016 to set configuration id from hidden variable from form
+                if (examConfigId != undefined && examConfigId != null && examConfigId != '' ) {
+                    $scope.examConfigObj1ToUpdate1.Id = examConfigId;
+                }
+                else if (angular.isDefined($scope.examConfigObj1.Id) ) {
+                    $scope.examConfigObj1ToUpdate1.Id = $scope.examConfigObj1.Id;
+                }
+                $scope.examConfigObj1ToUpdate1.Name = angular.isDefined($scope.examConfigObj1.Name) ? $scope.examConfigObj1.Name : 'Configuration';
+                $scope.examConfigObj1ToUpdate1.ExAM__Hide_Related_Assignment_Manager1_Tab__c = ($scope.cBoxObj.showRAM1) ? true : false;
+                $scope.examConfigObj1ToUpdate1.ExAM__Hide_Related_Assignment_Manager2_Tab__c = ($scope.cBoxObj.showRAM2) ? true : false;
+                $scope.examConfigObj1ToUpdate1.ExAM__Hide_Related_Assignment_Manager3_Tab__c = ($scope.cBoxObj.showRAM3) ? true : false;
+                $scope.examConfigObj1ToUpdate1.ExAM__Hide_Related_Assignment_Manager4_Tab__c = ($scope.cBoxObj.showRAM4) ? true : false;
+                $scope.examConfigObj1ToUpdate1.ExAM__Hide_Data_Viewer_Tab__c = ($scope.cBoxObj.showDataViewerTab) ? true : false;
+                $scope.examConfigObj1ToUpdate1.ExAM__Hide_AM_List_Tab__c = ($scope.cBoxObj.showAMListTab) ? true : false;
+                $scope.examConfigObj1ToUpdate1.ExAM__Hide_Assessable_Record_Tab__c = ($scope.cBoxObj.showAssesableRecordTab) ? true : false;
+                $scope.examConfigObj1ToUpdate1.ExAM__Hide_Knowledge_Article_Tab__c = ($scope.cBoxObj.showKnowledgeArticleTab) ? true : false;
+                $scope.examConfigObj1ToUpdate1.ExAM__Hide_Save_Button__c = ($scope.cBoxObj.showSaveBtn) ? true : false;
+
+                examConfigureService.saveExamConfiguration($scope.examConfigObj1ToUpdate1).then(function(data) {
+
+                    $('.maskDiv, .slds-spinner--small').hide();
+                    $('.hiddenExamConfigId').val(data);
+                    $scope.showErrMessage2 = true;
+                    $scope.errMessage2 = 'Related Assessment configuration updated successfully';
+                    $scope.setPgMsgColor2 = 'green';
+                    $scope.showASMSelectionCBox = false;
+                    $scope.examConfigObj1 = $scope.examConfigObj1ToUpdate1;
+                },
+                function(data) {
+
+                    $('.maskDiv, .slds-spinner--small').hide();
+                    $scope.showErrMessage2 = true;
+                    $scope.errMessage2 = data;
+                });
+            }
+        });
+    </script>
+</apex:component>

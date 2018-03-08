@@ -1,0 +1,664 @@
+<apex:page controller="AnswerSurveyController" standardStylesheets="false" docType="html-5.0" sidebar="false" showHeader="false">
+    <div xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <title>Answer Survey</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+            <apex:includeScript value="{!URLFOR($Resource.UnderscoreAndAngularJS,'UnderscoreAndAngularJS/underscore-min.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.WordSurveyUsingJQcloud ,'www/lib/angular/jquery.min.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.DataTable,'DataTables/jquery.dataTables.min.js')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.DataTable,'DataTables/jquery.dataTables.min.css')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.WordSurveyUsingJQcloud,'www/lib/angular/angular.min.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.DataTable,'DataTables/angular-datatables.min.js')}"/> 
+            <apex:includeScript value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-ui.min.js')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-ui.min.css')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS052, '/assets/styles/salesforce-lightning-design-system-vf.css')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.WordSurveyUsingJQcloud,'www/lib/exam/css/main.min.css')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.WordSurveyUsingJQcloud,'www/lib/exam/css/bootstrap.min.css')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.WordSurveyUsingJQcloud,'www/lib/exam/css/font-awesome.min.css')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.WordSurveyUsingJQcloud,'www/lib/angular/jqcloud.css')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.WordSurveyUsingJQcloud,'www/lib/angular/angular-jqcloud.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.WordSurveyUsingJQcloud,'www/lib/angular/jqcloud.js')}"/>
+            <apex:includeScript value="{!$Resource.sanitize}"/>
+            <apex:includeScript value="{!$Resource.ngcsv}"/>
+        </head>
+        
+        <style>
+            .slds .slds-table .quesTempModal{
+                white-space: normal;
+                vertical-align: middle;
+            }
+            .dataTables_info {
+                display: none;
+            }
+        </style>
+        <body>
+            <div ng-app="analyticsAnswer"  class="slds">
+                <div  id="AnalysisAnswerId" ng-controller="cloudCtrl">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h2 class="slds-text-heading--small slds-truncate">Word Cloud</h2>
+                        </div>
+                        <div class="panel-body">
+                            <form class="slds-form">
+                                <div ng-show="warningInfo" id="warningInfo" style="color:#9F6000;background-color:#FEEFB3;display:none">
+                                    <div style="margin-bottom: 10px;"><i style="margin:10px 22px;font-size:2em;vertical-align:middle;" class="fa fa-warning"></i><label>{{resultsWarning}}</label></div>
+                                </div>
+                                <div class="failedFlag" style="color:#D8000C;background-color:#FFBABA;display:none">
+                                   <div style="margin-bottom: 10px;" ><i style="margin:10px 22px;font-size:2em;vertical-align:middle;" class="fa fa-times-circle"></i><label>{{resultsWarning}}</label></div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                                            <tbody>
+                                                <tr class="slds-hint-parent">
+                                                    <td class="slds-size--1-of-4">
+                                                        <label class="slds-text-heading--small">Assessment Template<b style="color:#C23934;">*</b></label>
+                                                    </td>
+                                                    <td class="slds-size--3-of-4" id="AssessmentTemplateTd" >
+                                                        <div style="display: inline;">
+                                                            <input type="text" placeholder="Select Assessment Template" class="slds-col slds-size--8-of-12 slds-input" ng-model="selectedTemplateObj.ExAM__Template_name__c" ng-click="openSelectionDiv('AssessmentTemplate')"/>
+                                                        </div>
+                                                        <div id="requiredValue" style="display:none;" class="slds-form-element__help">This field is required</div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="slds-hint-parent">
+                                                    <td class="slds-size--1-of-4">
+                                                        <label class="slds-text-heading--small" for="date">Created date range</label>
+                                                    </td>
+                                                    <td class="slds-size--3-of-4">
+                                                        <div class="slds-form-element">
+                                                            <div class="slds-form-element__control">
+                                                                <div class="slds-input-has-icon slds-input-has-icon--right createdDatecls  slds-size--1-of-3">
+                                                                    <input id="startDate" class="startDatepicker slds-input" type="text" placeholder="Pick a Start Date" label="Date Picker Label"/>
+                                                                    <input id="hiddenfromDate" type="hidden"/>
+                                                                    <input id="endDate" class="endDatepicker slds-input" type="text" placeholder="Pick a End Date" label="Date Picker Label"/>
+                                                                    <input id="hiddentoDate" type="hidden"/>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="slds-hint-parent">
+                                                    <td class="slds-size--1-of-4">
+                                                        <label class="slds-form-element__label slds-text-heading--small">Question</label>
+                                                    </td>
+                                                    <td class="slds-size--3-of-4">
+                                                        <div>
+                                                             <textarea rows="2" cols="20" wrap="hard" ng-click="openSelectionDiv('QuestionTemplate')" placeholder="Select Question Template" class="slds-col slds-size--8-of-12 slds-textarea" id="QuestionTemplateId" ng-model="selectedQuesLabel"/>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="slds-hint-parent">
+                                                    <td class="slds-size--1-of-4">
+                                                        <label class="slds-text-heading--small">Overall Status</label>
+                                                    </td>
+                                                    <td class="slds-size--3-of-4">
+                                                         <select class="slds-col slds-size--8-of-12 slds-select" ng-model="statusVal" ng-options="status for status in overallStatusList">
+                                                         </select> 
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                         <center>
+                                            <input class="slds-button slds-button--brand" type="button" value="Load Word Cloud" ng-click="filter();"/>
+                                            <input class="slds-button slds-button--brand" type="button" value="Cancel" ng-click="cancelFilter();"/>
+                                        </center>
+                                    </div><!--end body-->
+                                </div><!--end panel-->
+                                <div ng-if="isCloud" class="panel panel-default">
+                                    <div class="panel-body">
+                                         <jqcloud words="words" id="cloud-dynamic" auto-resize="true" steps="4" delay="2" colors="{{cloudColors}}" font-size="{{cloudWords}}"></jqcloud>
+                                    </div><!--end body-->
+                                </div><!--end panel-->
+                                
+                                <div ng-if="isRecord" class="panel panel-default">
+                                     <div class="panel-heading">
+                                        <h2 class="slds-text-heading--small slds-truncate">Comments Retrieved</h2>
+                                     </div>
+                                     <div class="panel-body">
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-4 slds-cell-wrap"><div ng-if="recordCount >1000"><h5 style="font-style: oblique;">Displaying only <b>1</b> to <b>1000</b> of <b>{{recordCount}}</b> records.</h5></div></td>
+                                                    <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-4 slds-cell-wrap" style="text-align-last: end;"> 
+                                                        <svg aria-hidden="true" class="slds-icon slds-icon--x-small slds-icon-text-default">
+                                                            <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#download')}"></use>
+                                                        </svg>
+                                                        <a href="javascript:void(0);" class="slds-text-link" ng-csv="csvList" csv-header="['ID', 'Question Label','Response','Priority','Assignment Manager']" filename="AnswerRecord.csv" field-separator="," decimal-separator=".">Download CSV</a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div style="margin-top: 16px;">
+                                            <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover" id="CommentTable" datatable="ng">
+                                                <thead>
+                                                    <tr class="slds-text-heading--label">
+                                                        <th scope="col"><span class="slds-truncate"><b>Question</b></span></th>
+                                                        <th scope="col"><span class="slds-truncate"><b>Response</b></span></th>
+                                                        <th scope="col"><span class="slds-truncate"><b>Priority</b></span></th>
+                                                        <th scope="col"><span class="slds-truncate"><b>Assignment Manager</b></span></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>  
+                                                    <tr class="slds-hint-parent" ng-repeat="field in wordArrList">
+                                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-4 slds-cell-wrap" data-label="Question">
+                                                             {{ field.Question }}
+                                                        </td>
+                                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-4 slds-cell-wrap" data-label="Response">
+                                                            {{ field.Response }}
+                                                        </td>
+                                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-4 slds-cell-wrap" data-label="Priority">
+                                                            {{ field.Priority }}
+                                                        </td>
+                                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-4 slds-cell-wrap" data-label="Am Name">
+                                                            <a href="/{{field.AmId}}" target="_blank">{{ field.AmName }}</a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div><!--end body-->
+                                </div><!--end Panel-->
+                            </form>
+                            <!-- Processing Image Code -->
+                            <div style="display: none; background-color: rgba(0, 0, 0, 0.6); width: 100%; height: 100%; z-index: 1000; position: fixed; left: 0; top: 0; overflow: hidden; text-align: center; vertical-align: middle;" class="maskDiv">
+                                <img src="{!URLFOR($Resource.SLDS052, '/assets/images/spinners/slds_spinner.gif')}" alt="Loading..." class="slds-spinner--small" style="z-index: 10001; background-color: white; width: 80px; height: 80px; padding: 15px; border-radius: 4px; text-align: left; position: relative; top: 30%;"/>
+                            </div>
+                            <!--End Processing Image Code -->
+                        </div><!-- Main Caed Body -->
+                    </div><!-- Main Card End -->
+                    
+                    <!-- Start Assessment Template Selection -->
+                    <div ng-show="showAssessmentSelectionDiv" aria-hidden="false" role="dialog" class="slds-modal slds-modal__close AssessmentSelectionDiv" style="background-color: rgba(128, 128, 128, 0.75);">
+                        <div class="slds-modal__container">
+                            <div class="slds-modal__header">
+                                <button class="slds-button slds-button--icon-inverse slds-modal__close" ng-click="closeSelectionDiv('AssessmentTemplate')">
+                                    <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                                        <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                                    </svg>
+                                    <span class="slds-assistive-text">Close</span>
+                                </button>
+                                <h2 class="slds-text-heading--medium">Assessment Template</h2>
+                            </div>
+                            <div class="slds-modal__content">
+                                <table class="slds-table slds-table--bordered slds-max-medium-table--stacked" style="height:20%">
+                                    <thead>
+                                        <tr class="slds-text-heading--label">
+                                            <th scope="col"><span class="slds-truncate"><b>Name</b></span></th>
+                                            <th scope="col"><span class="slds-truncate"><b>Template Name</b></span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="assTempRecord in (assTemp | orderBy:'ExAM__Template_name__c') track by $index">
+                                            <td style="cursor: pointer;" ng-click="setSelectedAssessmentTemplate(assTempRecord);">{{ assTempRecord.Name }}</td>
+                                            <td style="cursor: pointer;" ng-click="setSelectedAssessmentTemplate(assTempRecord);">{{ assTempRecord.ExAM__Template_name__c }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Assessment Template Selection -->
+                                        
+                    <!-- Start Question Template Selection -->
+                    <div ng-show="showQuestionSelectionDiv" aria-hidden="false" role="dialog" class="slds-modal slds-modal__close QuestionSelectionDiv" style="background-color: rgba(128, 128, 128, 0.75);">
+                        <div class="slds-modal__container">
+                            <div class="slds-modal__header">
+                                <button class="slds-button slds-button--icon-inverse slds-modal__close" ng-click="closeSelectionDiv('QuestionTemplate')">
+                                    <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                                        <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                                    </svg>
+                                    <span class="slds-assistive-text">Close</span>
+                                </button>
+                                <h2 class="slds-text-heading--medium">Question Template</h2>
+                            </div>
+                            <div class="slds-modal__content">
+                                <table class="slds-table slds-table--bordered slds-max-medium-table--stacked slds-no-row-hover" style="height:20%">
+                                    <thead>
+                                        <tr class="slds-text-heading--label">
+                                            <th class="slds-cell-shrink"></th>
+                                            <th class="slds-is-sortable" scope="col"><span class="slds-truncate"><b>Name</b></span></th>
+                                            <th class="slds-is-sortable" scope="col"><span class="slds-truncate"><b>Template Name</b></span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="slds-hint-parent" ng-repeat="selectedRecords in (questionsList | orderBy:'Name')">
+                                            <td class="slds-cell-shrink" data-label="Select Row" style="vertical-align: middle;">
+                                                <label class="slds-checkbox">
+                                                  <input type="checkbox" name="options" ng-model="selectedRecords.isSelected"/>
+                                                  <span class="slds-checkbox--faux"></span>
+                                                  <span class="slds-assistive-text">Select Row</span>
+                                                </label>
+                                            </td>
+                                            <td class="slds-cell-shrink" data-label="Name" style="vertical-align: middle;">{{ selectedRecords.Name }}</td>
+                                            <td class="slds-cell-shrink quesTempModal" data-label="Template Name">
+                                                {{ selectedRecords.ExAM__Question_Label__c }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="slds-modal__footer">
+                                <button class="slds-button slds-button--neutral" ng-click="closeSelectionDiv('QuestionTemplate')">Cancel</button>
+                                <button class="slds-button slds-button--brand" ng-click="setSelectedQuestionTemplate()">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Question Template Selection -->
+                </div>
+            </div>
+        </body>
+        <script>
+            Visualforce.remoting.timeout = 120000; // Set timeout at page level
+            
+            $(document).ready(function(){
+                
+                $(".startDatepicker").datepicker({
+                    onSelect: function(selected) {
+                        $('[id$=hiddenfromDate]').val(selected);
+                        $(".endDatepicker").datepicker("option","minDate", selected)
+                    }
+                });
+                $(".endDatepicker").datepicker({ 
+                    onSelect: function(selected) {
+                        $('[id$=hiddentoDate]').val(selected);
+                        $(".startDatepicker").datepicker("option","maxDate", selected)
+                    }
+                });
+             });
+               
+            $(function() {
+                $('.startDatepicker').datepicker();
+                $('.endDatepicker').datepicker();
+            });
+            
+            var app = angular.module('analyticsAnswer', ['angular-jqcloud','datatables','ngSanitize','ngCsv']);
+            var wordList = {};
+            var listFull = [];
+            app.service('serviceWordCloud',function($q) {
+                this.surveyComments = function(selectedAssTemp,AMstartDate,AMendDate,selectedQuesTemp,overallStatus) {
+                    
+                    var defer = $q.defer();
+                    var lastRecCreatedDate = '';
+                    getAnswerRecords(selectedAssTemp,AMstartDate,AMendDate,selectedQuesTemp,overallStatus,defer,lastRecCreatedDate);
+                    return defer.promise;
+                }
+                var yesProceed;
+                getAnswerRecords = function(selectedAssTemp, AMstartDate, AMendDate,selectedQuesTemp,overallStatus,defer,lastRecCreatedDate) {
+                    yesProceed = false;
+
+                    var searchMap = {};
+                    searchMap['templateId'] = selectedAssTemp;
+                    searchMap['createdDate'] = lastRecCreatedDate;
+                    searchMap['amStartDate'] = AMstartDate;
+                    searchMap['amEndDate'] = AMendDate;
+                    searchMap['status'] = overallStatus;
+                    searchMap['qtnIdList'] = selectedQuesTemp;
+
+                    ExAM.AnswerSurveyController.queryAnswers(JSON.stringify(searchMap), function(result, event) {
+                        if(event.status) {
+                            var response = JSON.parse( _.unescape(result));
+                            if (response != null && (response['errorMsg'] != '' || response['answers'].length > 0)) {
+                                yesProceed = true;                                
+    
+                                if (response['errorMsg'] != '') {
+                                    defer.reject( response['errorMsg'] );
+                                }
+                                else {
+    
+                                    if (response['answers'].length > 0) {
+                                        listFull = listFull.concat( response['answers'] );
+                                        var recLen = (listFull.length)-1;
+                                        var lastRecCreatedDate = listFull[recLen].CreatedDate;
+                                        if(yesProceed) {
+                                            getAnswerRecords(selectedAssTemp,AMstartDate,AMendDate,selectedQuesTemp,overallStatus,defer,lastRecCreatedDate);
+                                        }
+                                    }
+                                }
+                            } else if (listFull.length > 0) {
+                                callToGetWordFreq(defer);
+                            } else {
+                                defer.reject('Answers not exists. Please refine your search criteria');
+                            }
+                        }
+                    },
+                    function(error) {
+                        defer.reject( error );
+                    });
+                }  
+                
+                callToGetWordFreq = function(defer) {
+                    var returnObject = {};
+                    var wordArray = []; //make word Array
+                    if(listFull != null) {
+                        for (var i = 0, len = listFull.length; i < len; i++) {
+                            var _Response__c = listFull[i].ExAM__Response__c;
+                            var ansId = listFull[i].Id;
+                            if (_Response__c != null) {
+                                wordArray.push((_Response__c));
+                                //var strArray = [];
+                                if(_Response__c){
+                                    _Response__c = _Response__c.toLowerCase().trim().replace(/[,;.]/g, ' ').split(/[\s\/]+/g).sort();
+                                }
+                                
+                                if(_Response__c.length > 0) {
+                                    for(var j=0;j<_Response__c.length;j++) {
+                                        if(wordList[_Response__c[j]]){
+                                            wordList[_Response__c[j]].push(ansId);
+                                        }else{
+                                            wordList[_Response__c[j]] =  [];
+                                            wordList[_Response__c[j]].push(ansId);
+                                        }
+                                    }
+                                }
+                                
+                            }
+                        }
+                        //join and count
+                        returnObject.frequencyResult = wordArray.length > 0?getWordFrequency(wordArray.join(' ')):'';
+                        returnObject.listFull = listFull;
+                        defer.resolve(returnObject);
+                    }
+                }
+               
+                getWordFrequency = function(wordString) {
+                    var counts = {}; // object for math
+                    var sWords = wordString.toLowerCase().trim().replace(/[,;.]/g, ' ').split(/[\s\/]+/g).sort();
+                    var iWordsCount = sWords.length; // count w/ duplicates
+                    var skipwords = "and,an,any,me,so,or,are,the,to,a,of,for,as,i,with,it,is,on,that,this,can,in,be,has,if,do";
+                    var ignore = skipwords.split(',');
+                    ignore = (function() {
+                        var o = {}; // object prop checking > in array checking
+                        var iCount = ignore.length;
+                        for (var i = 0; i < iCount; i++) {
+                            o[ignore[i]] = true;
+                        }
+                        return o;
+                    }());
+                    for (var i = 0; i < iWordsCount; i++) {
+                        var sWord = sWords[i];
+                        if(!ignore[sWord]) {
+                            counts[sWord] = counts[sWord] || 0;
+                            counts[sWord]++;
+                        }
+                    }
+                    
+                    var arr = []; // an array of objects to return
+                    for (sWord in counts) {
+                        arr.push({
+                            text: sWord,
+                            weight: counts[sWord],
+                            link: "javascript:;"
+                        });
+                    }
+                    // add on 16/12/2016 for word cloud contains first high weight 40 words
+                    arr.sort(function(obj1, obj2) {
+                        return obj1.weight - obj2.weight;
+                    }); 
+                    var aSize = arr.length;
+                    if(aSize > 40) {
+                        var totalshowWord = arr.length - 40;
+                        arr = arr.slice(totalshowWord)
+                    }
+                    return arr;
+                }
+               
+            });
+            
+            app.controller('cloudCtrl', function($scope,$timeout, serviceWordCloud) {
+                
+                $scope.cloudColors = ["#800026", "#bd0026", "#e31a1c", "#fed976"];
+                $scope.cloudWords =["32px", "26px", "20px", "16px"];
+                //$scope.cloudColors = ["#800026", "#bd0026", "#e31a1c", "#fc4e2a", "#fd8d3c", "#feb24c", "#fed976", "#ffeda0", "#ffffcc"];
+                //$scope.wordArrList =[];
+                $scope.currentPageStIndex =0;
+                $scope.currentPageEndIndex =0;
+                $scope.pageSize =0;
+                $scope.pageNo =0;
+                $scope.totalRecords =0;
+                
+                $scope.overallStatusList = {};
+                $scope.statusVal = '---None---';
+                $scope.showAssessmentSelectionDiv = false;
+                $scope.showQuestionSelectionDiv = false;
+                $scope.questionsList = [];
+                $scope.isCloud = false;
+                $scope.isRecord = false;
+                $scope.resultsWarning = "";
+                $scope.warningInfo = false;
+                $scope.selectedQuestionTempObj =[];
+                $scope.recordCount = '';
+                
+
+                if ('{!JSENCODE(assTempJSON)}' != '' && '{!JSENCODE(assTempJSON)}' != null) {
+                    $scope.assTemp = JSON.parse(_.unescape('{!JSENCODE(assTempJSON)}'));
+                }
+                if ('{!JSENCODE(statusJSON)}' != '' && '{!JSENCODE(statusJSON)}' != null) {
+                    $scope.overallStatusList = JSON.parse('{!JSENCODE(statusJSON)}');
+                }
+                if ('{!JSENCODE(accessViolationMsg)}' != '' && '{!JSENCODE(accessViolationMsg)}' != null) {
+                    $scope.resultsWarning = '{!JSENCODE(accessViolationMsg)}';
+                    $scope.warningInfo = true;
+                }
+
+                $timeout(function(){
+                    $('#warningInfo').show();
+                },100);
+                
+                $scope.cancelFilter = function() {
+                    $scope.isCloud = false;
+                    $scope.isRecord = false;
+                    $scope.selectedTemplateObj = {};
+                    $scope.selectedQuestionTempObj =[];
+                    $scope.selectedQuesLabel ='';
+                    $scope.statusVal = '---None---';
+                    $('.startDatepicker').val('');
+                    $('.endDatepicker').val('');
+                }
+                $scope.filter = function() {
+                
+                    $scope.resultsWarning = '';
+                    $scope.words = '';
+                    $scope.listFull = '';
+                    $scope.isRecord = false;
+                    var isError = false;
+                    var overallStatus = '';
+                    var selectedQuestTempId = [];
+                    $scope.startDate ='';
+                    $scope.endDate ='';
+                    $scope.warningInfo = false;
+                    $('.maskDiv').show();
+                    listFull = [];
+                    if ($scope.selectedTemplateObj == null || $scope.selectedTemplateObj == '' || angular.isUndefined($scope.selectedTemplateObj.Id)) {
+                        $('.maskDiv').hide();
+                        $( "#AssessmentTemplateTd" ).addClass('slds-has-error');
+                        $( "#requiredValue" ).css("display","" );  
+                        $scope.isCloud = false;
+                        isError = true;
+                    } else {
+                        $( "#AssessmentTemplateTd" ).removeClass('slds-has-error');
+                        $( "#requiredValue" ).css("display","none" ); 
+                    }
+                    if ($scope.selectedQuestionTempObj != null&& $scope.selectedQuestionTempObj.length > 0) {
+                        selectedQuestTempId = $scope.selectedQuestionTempObj;
+                    }
+                    if($scope.statusVal != '---None---') {
+                        overallStatus = $scope.statusVal;
+                    }
+                    if(!isError)  {
+                        $scope.startDate = $('.startDatepicker').val();
+                        $scope.endDate = $('.endDatepicker').val();
+                        serviceWordCloud.surveyComments($scope.selectedTemplateObj.Id,$scope.startDate,$scope.endDate,selectedQuestTempId, overallStatus).then( 
+                            function(returnObject) {
+                                $scope.selectedQuestionTempObj =[];
+                                $timeout(function(){
+                                    if(returnObject != 'Remote Action Failed') {
+                                        $scope.words = returnObject.frequencyResult;
+                                        $scope.listFull = returnObject.listFull;
+                                        $('.maskDiv').hide();
+                                        $scope.isCloud = true;                                    
+                                        if ($scope.listFull.length == 0 && $scope.words.length == 0) {
+                                            $scope.resultsWarning = " Unable to generate word cloud.Try to change filters";
+                                            $scope.warningInfo = true;
+                                            $scope.isCloud = false;
+                                        } 
+                                    } else {
+                                        $('.maskDiv').hide();
+                                        $scope.resultsWarning = " Remote Action Failed";
+                                        $('.failedFlag').show();
+                                        $scope.isCloud = false;
+                                    }
+                                },500);
+                                $timeout(function() {
+                                    window.parent.resizeWindow();
+                                },600);
+                            },
+                            function(error) {
+                                $scope.resultsWarning = error;
+                                $scope.warningInfo = true;
+                                $('.maskDiv').hide();
+                            }
+                        );
+                    }                
+                }
+               
+               $scope.getWordToShowTable = function(linkWord) {
+                   $('.maskDiv').show();
+                   $timeout(function(){
+                       getWordToShowTable(linkWord);
+                   },10);
+               }
+               function getWordToShowTable(linkWord){
+                   $scope.wordArrList = [];
+                   $scope.csvList = [];
+                   var arrval = [];
+                   arrval = wordList[linkWord];
+                   if( arrval != null && arrval.length > 0 ) {
+                       $scope.recordCount = arrval.length;
+                       for (var i = 0; i < arrval.length; i++) {
+                           for (var j = 0; j < $scope.listFull.length; j++) {
+                               if($scope.listFull[j].Id === arrval[i]) {
+                                   var x = $scope.listFull[j];
+                                   $scope.wordArrList.push({Id:x.Id,Question:x.ExAM__Question_Template__r.ExAM__Question_Label__c ,Response:x.ExAM__Response__c,Priority:x.ExAM__Issue_Request__r.ExAM__Priority__c,AmName:x.ExAM__Issue_Request__r.Name,AmId:x.ExAM__Issue_Request__c});                              
+                               }
+                          }
+                          if(i==999) {
+                              break;
+                          }
+                       } 
+                       //added logic for to download csv
+                       for (var i = 0; i < arrval.length; i++) {
+                           for (var j = 0; j < $scope.listFull.length; j++) {
+                               if($scope.listFull[j].Id === arrval[i]) {
+                                   var x = $scope.listFull[j];
+                                   $scope.csvList.push({Id:x.Id,Question:x.ExAM__Question_Template__r.ExAM__Question_Label__c ,Response:x.ExAM__Response__c,Priority:x.ExAM__Issue_Request__r.ExAM__Priority__c,AmName:x.ExAM__Issue_Request__r.Name});                              
+                               }
+                          }
+                       } 
+                   }
+                   
+                   if(!angular.isUndefined($scope.wordArrList) && $scope.wordArrList.length > 0) {
+                        $scope.isRecord = true;
+                        $scope.$apply();
+                        $timeout(function() {
+                            paginationButtonClick();
+                            window.parent.resizeWindow();
+                        },600);
+                   }
+                   $('.maskDiv').hide();
+               }
+
+                //**Start Modal Function
+                
+                $scope.openSelectionDiv = function(str) {
+                    $scope.isCloud = false;
+                    $scope.isRecord = false;
+                    if(str == 'AssessmentTemplate') {
+                        $scope.selectedQuesLabel = '';
+                        $scope.selectedQuestionTempObj =[];
+                        $scope.showAssessmentSelectionDiv = true;
+                        $('.AssessmentSelectionDiv').removeClass('slds-modal__close');
+                        $('.AssessmentSelectionDiv').addClass('slds-fade-in-open');
+                    } else if(str == 'QuestionTemplate') {
+                        $scope.questionsList = angular.copy($scope.questionsListOriginal);
+                        $scope.showQuestionSelectionDiv = true;
+                        $('.QuestionSelectionDiv').removeClass('slds-modal__close');
+                        $('.QuestionSelectionDiv').addClass('slds-fade-in-open');
+                    }
+                }
+                $scope.closeSelectionDiv = function(str) {
+                    if(str == 'AssessmentTemplate') {
+                        $scope.showAssessmentSelectionDiv = false;
+                        
+                    } else if(str == 'QuestionTemplate') {
+                        $scope.questionsList = angular.copy($scope.questionsListOriginal);
+                        $scope.showQuestionSelectionDiv = false;
+                    }
+                    
+                }
+                $scope.setSelectedAssessmentTemplate = function(assTemp) {
+                    $('.maskDiv').show();
+                    $scope.resultsWarning = '';
+                    $scope.warningInfo = false;
+                    $scope.selectedTemplateObj = assTemp;
+                     if (!angular.isUndefined($scope.selectedTemplateObj)) {
+                         var searchMap = {};
+                         searchMap['templateId'] = $scope.selectedTemplateObj.Id;
+                         ExAM.AnswerSurveyController.queryQuestionTemplates(JSON.stringify(searchMap), function(result,event){
+                             if(event.status) {
+                                 var response = JSON.parse(_.unescape(result));
+                                 if (response['errorMsg'] != '') {
+                                     $scope.resultsWarning = response['errorMsg'];
+                                     $scope.warningInfo = true;
+                                 }
+                                 else {
+                                     $scope.questionsList = response['questions'];
+                                     angular.forEach($scope.questionsList, function(value, key) {
+                                         $scope.questionsList[key].isSelected = false; 
+                                     });
+                                     $scope.questionsListOriginal = angular.copy($scope.questionsList);
+                                 }
+                                 $('.maskDiv').hide();$scope.$apply();
+                             }
+                         },function(error){
+                             $scope.resultsWarning = error;
+                             $scope.warningInfo = true;
+                         });
+                     }
+                     $scope.showAssessmentSelectionDiv = false;
+                }
+                $scope.setSelectedQuestionTemplate = function() {
+                     $scope.quesLabel = [];
+                     for(var i=0;i<$scope.questionsList.length;i++) {
+                         if($scope.questionsList[i].isSelected == true){
+                             $scope.selectedQuestionTempObj.push($scope.questionsList[i].Id);
+                             $scope.quesLabel.push($scope.questionsList[i].ExAM__Question_Label__c);
+                         }
+                     }
+                     $scope.selectedQuesLabel = $scope.quesLabel.join(",");
+                     $scope.showQuestionSelectionDiv = false;
+                }
+                //**End Modal Function
+            });
+            //End Angular controller
+            
+            function getComments(linkWord) {  
+               linkWord = unescape(linkWord);
+               angular.element(document.getElementById('AnalysisAnswerId')).scope().getWordToShowTable(linkWord);
+            }
+            function resizeTable() {
+                window.parent.resizeWindow();
+                paginationButtonClick();
+            }
+            
+            function paginationButtonClick() {
+                var paginationButtons = document.getElementsByClassName('paginate_button');
+                for(var i = 0; i < paginationButtons.length; i++) {
+                    paginationButtons[i].addEventListener('click', function() {
+                        window.setTimeout(resizeTable, 0);
+                    });
+                }
+            } 
+        </script>
+    </div>
+</apex:page>

@@ -1,0 +1,4 @@
+<aura:event type="COMPONENT">
+    <aura:attribute name="type" type="String" access="public"/>
+    <aura:attribute name="Id" type="String" access="public"/>
+</aura:event>

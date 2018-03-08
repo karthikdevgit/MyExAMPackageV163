@@ -1,0 +1,176 @@
+<apex:page sidebar="false" standardStylesheets="true" standardController="Section_Template__c" extensions="SafeandHealthySchoolReportController" recordSetVar="sitem" action="{!sectionStatus}" id="thePage">
+
+<!--<apex:page showHeader="false" sidebar="false" standardStylesheets="false" standardController="Section_Template__c" extensions="QuestionnaireFieldsReportOutput"  recordSetVar="sitem" action="{!sectionStatus}" id="thePage" renderAs="pdf">
+-<apex:page showHeader="false" sidebar="false" standardStylesheets="false" standardController="Section_Template__c" extensions="QuestionnaireFieldsReportOutput"  recordSetVar="sitem" action="{!sectionStatus}" id="thePage" contenttype="application/vnd.ms-excel">
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" standardController="Section_Template__c" extensions="QuestionnaireFieldsReportOutput"  recordSetVar="sitem" action="{!sectionStatus}" id="thePage" contentType="application/msWord" cache="true">-->
+ <!-- This is the page for banner include it in all pages
+<apex:include pageName="BannerTemplate"/>-->
+<style>
+
+.blue {
+    font-family: Cambria, "Hoefler Text", "Liberation Serif", Times, "Times New Roman", serif;
+    font-size: 36px;
+    color: blue;
+    align:center;
+    float:inherit;
+    padding: 10px 10px;
+}
+@charset "UTF-8";
+/* CSS Document */
+
+@media all {
+    .page-break { display: none; }
+}
+
+@media print {
+    .page-break { display: block; page-break-before: always; }
+}
+
+h1,h2,h3    { font-weight:bold; font-family:Cambria, "Hoefler Text", "Liberation Serif", Times, "Times New Roman", serif }
+h1      { font-size:24px; }
+h2      { font-size:16px;  padding:0 0 2px 0; margin:0 0 5px 0; }
+h3      { font-size:13px; margin:0 0 2px 0; }
+
+table {width: 100%; margin:0; float:none;}
+.bigger {
+    font-family: Cambria, "Hoefler Text", "Liberation Serif", Times, "Times New Roman", serif;
+    font-size: 44px;
+    color: #0001FF;
+    border: #0001FF;
+    float:inherit;
+}
+.red {
+    font-family: Cambria, "Hoefler Text", "Liberation Serif", Times, "Times New Roman", serif;
+    font-size: 36px;
+    color: red;
+    align:center;
+    float:inherit;
+    padding: 15px 5px;
+}
+.small_red {
+    font-size: 14px;
+        color: red;
+}
+
+@page Section1 {
+mso-footer:f1;
+}
+div.Section1 {
+page:Section1;
+}
+p.MsoFooter, li.MsoFooter, div.MsoFooter {
+mso-pagination:widow-orphan;
+}
+</style>
+<script language="JavaScript" type="text/javascript">
+
+</script>
+<div class='Section1'>
+<apex:form id="templateForm">
+    
+<div align="center"><h1>GOVERNMENT OF THE DISTRICT OF COLUMBIA</h1><br/><br/>
+DEPARTMENT OF GENERAL SERVICES <br/>
+
+Environmental and Safety Unit,<br/>
+1709 3rd Street N.E., Ground Floor
+<br/> Washington, D.C. 20002<br/>
+Telephone (202) 576-6053 </div>
+    
+ <!--    <hr color="#2936FF"></hr>
+<h1 align="center" class="bigger">DGS Work Authorization</h1>
+<hr color="#2936FF"></hr>
+<h1 align="center" class="red">Post at Work Site</h1>-->
+
+     <div align="center"><div class="bigger"><hr color="#2936FF"></hr><h1>DGS Work Authorization</h1></div>
+         <div class="red"><hr color="#2936FF"></hr><h1>Post at Work Site</h1><br/></div>
+     </div>
+     <table>
+    <tr>
+    <td>Facility: {!accountName}</td>
+    </tr>
+    </table>
+   
+    <apex:repeat value="{!sectionList}" var="section" > 
+    <apex:outputPanel rendered="{!IF(section.Name=='Facility',true,false)}">
+     <table>
+        <apex:repeat value="{!section.questionList}" var="question" > 
+        <apex:outputPanel rendered="{!IF((question.qid=='Q-845') ||(question.qid=='Q-846'),true,false)}">
+            <tr height="150"><td valign="top" colspan="2">
+                      <apex:outputText value="{!question.Name}: {!question.responsename} " rendered="{!IF((question.qid=='Q-845') ||(question.qid=='Q-846'),true,false)}" /> </td>
+            </tr> 
+         </apex:outputPanel>
+          </apex:repeat>  
+          <apex:variable var="q847num" value=""/>
+          <apex:variable var="q848num" value=""/>
+           <apex:repeat value="{!section.questionList}" var="question" >
+           <apex:variable var="q847num" value="{!question.Name}: {!question.responsename} " rendered="{!IF((question.qid=='Q-847'),true,false)}"/>
+           <apex:variable var="q848num" value="{!question.Name}: {!question.responsename} " rendered="{!IF((question.qid=='Q-848'),true,false)}"/>
+           </apex:repeat>
+         <apex:outputPanel >
+            <tr><td >
+                      {!q847num} </td>
+                  <td >
+                     {!q848num} </td>    
+            </tr> 
+           
+         </apex:outputPanel>  
+           <apex:variable var="q849num" value=""/>
+           <apex:variable var="q850num" value=""/>
+           <apex:repeat value="{!section.questionList}" var="question" >
+           <apex:variable var="q849num" value="{!question.Name}: {!question.responsename} " rendered="{!IF((question.qid=='Q-849'),true,false)}"/>
+           <apex:variable var="q850num" value="{!question.Name}: {!question.responsename} " rendered="{!IF((question.qid=='Q-850'),true,false)}"/>
+           </apex:repeat> 
+           <apex:outputPanel >
+            <tr><td >
+                      {!q849num} </td>
+                  <td >
+                     {!q850num} </td>    
+            </tr> 
+           
+         </apex:outputPanel> 
+           <apex:variable var="q851num" value=""/>
+           <apex:variable var="q852num" value=""/>
+           <apex:repeat value="{!section.questionList}" var="question" >
+           <apex:variable var="q851num" value="{!question.Name}: {!question.responsename} " rendered="{!IF((question.qid=='Q-851'),true,false)}"/>
+           <apex:variable var="q852num" value="{!question.Name}: {!question.responsename} " rendered="{!IF((question.qid=='Q-852'),true,false)}"/>
+           </apex:repeat> 
+           <apex:outputPanel >
+            <tr><td >
+                      {!q851num} </td>
+                  <td >
+                     {!q852num} </td>    
+            </tr> 
+           
+         </apex:outputPanel> 
+           
+      </table>
+        <hr color="#2936FF"></hr>
+        </apex:outputPanel>
+     </apex:repeat> 
+   <apex:repeat value="{!sectionList}" var="section" > 
+    <apex:outputPanel rendered="{!IF(section.Name=='Issued by',true,false)}">
+   
+    <br/>
+     <table>
+        <apex:repeat value="{!section.questionList}" var="question" > 
+       
+            <tr><td>
+                      <apex:outputText value="{!question.Name}: {!question.responsename} " /> </td>
+            </tr> 
+        
+          </apex:repeat>  
+      </table>
+       
+        </apex:outputPanel>
+     </apex:repeat>
+     <br/>
+      <hr color="#2936FF"></hr>
+   <p2 class="small_red">Note: This DGS Work Authorization is not a substitute for any required building permits</p2>
+
+  </apex:form>
+
+
+</div>
+
+ 
+</apex:page>

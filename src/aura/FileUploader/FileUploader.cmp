@@ -1,0 +1,27 @@
+<aura:component access="public">
+    
+    <aura:attribute name="index" type="Integer" access="public" />
+    <aura:attribute name="indexWthImageMap" type="Map" access="public"/>
+    
+    <aura:registerEvent name="fileUpload" type="c:fileUploadEvt"/>
+    <aura:registerEvent name="notificationEvent" type="c:notificationEvt"/>
+    
+    <div class="slds-p-around--xx-small">
+        <div>Image upload</div>
+        <a class="slds-button slds-button--neutral slds-button--browse slds-m-right--small" onclick="{!c.uploadfile}">
+            Browse
+        </a>
+        
+        <div class="{!v.indexWthImageMap.fileContent.fileContents ? 'slds-show' : 'slds-hide'}">
+            <img src="{!'data:image/png;base64,'+v.indexWthImageMap.fileContent.fileContents}" class="img"/>
+        </div>
+        <div class="{!v.indexWthImageMap.attachmentId ? 'slds-show' : 'slds-hide'}">
+            <img src="{!'/servlet/servlet.FileDownload?file='+v.indexWthImageMap.attachmentId}" class="img"/>
+        </div>
+        <div class="{!and(!v.indexWthImageMap.fileContent.fileContents, !v.indexWthImageMap.attachmentId) ? 'slds-show' : 'slds-hide'}">
+            <img src="{!$Resource.NoImage}" class="img"/>
+        </div>
+    </div>
+    <input type="file" class="slds-hidden" data-index="{!v.index}" id="{!'file' + v.index}" aura:id="file" onchange="{!c.uploadImg}" accept="image/*"/>
+    
+</aura:component>

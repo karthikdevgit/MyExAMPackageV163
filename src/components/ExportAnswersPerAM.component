@@ -1,0 +1,521 @@
+<apex:component controller="ExportAnswersPerAMController" allowDML="false">
+    <head>
+        <title>Export Answer CSV</title>
+        <apex:includeScript value="{!$Resource.sanitize}"/>
+        <apex:includeScript value="{!$Resource.ngcsv}"/>
+    </head>
+    
+    <div class="slds" ng-app="exportAnswersPerAMApp" ng-controller="exportAnswersPerAMCtrl" >
+        <form class="slds-form">
+            <div class="slds-notify_container  toast" style="display:none;" >
+                <div id="toast" class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert">
+                    <span class="slds-assistive-text">Info</span>
+                    <h2>{{toastMessage}}</h2>
+                </div>
+            </div>
+            <div class="slds-card slds-m-top--x-small">
+                <div class="slds-card__header slds-grid">
+                    <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <h2 class="slds-text-heading--small slds-truncate">Answers Per Assignment Manager Export (CSV)</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-card__body slds-m-left--x-small slds-m-top--x-small slds-m-right--x-small tempHead">
+                    <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                        <tbody>
+                            <tr class="slds-hint-parent"  id="assessmentTemplateNameSelection">
+                                <td class="slds-size--1-of-4">
+                                    <label class="slds-form-element__label slds-text-heading--small" for="lookup1">Assessment Template</label>
+                                </td>
+                                <td class="slds-size--3-of-4">
+                                    <div class="slds-lookup" data-select="multi" data-scope="single" data-typeahead="true">
+                                        <div class="slds-form-element">
+                                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right asstemplateCls">
+                                                <input id="lookup1" class="slds-input slds-size--1-of-2" type="text" ng-model="searchAssTemplateText" ng-change="searchfocus();" ng-blur="blurtemp();" ng-copy="copied();" ng-paste="pasted();" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-activedescendant="" autocomplete="off" />
+                                                <div style="display:none;" class="slds-form-element__help required">This field is required</div>
+                                            </div>
+                                        </div>
+                                        <div class="slds-lookup__menu slds-size--1-of-2" role="listbox" ng-show="showAssTemp">
+                                            <ul class="slds-lookup__list" role="presentation">
+                                                <li class="slds-lookup__item" ng-click="selectAssTemplate(assTemp);" ng-repeat="assTemp in assTempList  = ( assessmentTemplateList | filter:{ ExAM__Template_name__c : searchAssTemplateText })">
+                                                    <a role="option" > 
+                                                        {{assTemp.ExAM__Template_name__c}}
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td class="slds-size--1-of-4">
+                                    <label class="slds-form-element__label slds-text-heading--small" for="date">Created Date Range</label>
+                                </td>
+                                <td class="slds-size--3-of-4">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-input-has-icon slds-input-has-icon--right createdDatecls  slds-size--1-of-3">
+                                                <input id="startDatePerAm1" class="startAssTempDatepicker slds-input" ng-model="startAssTempDatepicker" type="text" placeholder="Pick a Start Date" label="Date Picker Label" autocomplete="off" />
+                                                <input id="TemplateFromDatePerAm1" type="hidden"/>
+                                                <label class="slds-label"> to </label>
+                                                <input id="endDatePerAm1" class="endAssTempDatepicker slds-input" ng-model="endAssTempDatepicker" type="text" placeholder="Pick a End Date" label="Date Picker Label" autocomplete="off" />
+                                                <input id="TemplateToDatePerAm1" type="hidden"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td class="slds-size--1-of-4">
+                                    <label class="slds-form-element__label slds-text-heading--small" for="date">Assessment Completed Date Range</label>
+                                </td>
+                                <td class="slds-size--3-of-4">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-input-has-icon slds-input-has-icon--right slds-size--1-of-3">
+                                                <input id="startCompletedDatePerAm1" class="startAssCompletedDatepicker slds-input" ng-model="startAssCompletedDatepicker" type="text" placeholder="Pick a Start Date" label="Date Picker Label" autocomplete="off" />
+                                                <input id="CompletedFromDatePerAm1" type="hidden"/>
+                                                <label class="slds-label"> to </label>
+                                                <input id="endCompletedDatePerAm1" class="endAssCompletedDatepicker slds-input" ng-model="endAssCompletedDatepicker" type="text" placeholder="Pick a End Date" label="Date Picker Label" autocomplete="off" />
+                                                <input id="CompletedToDatePerAm1" type="hidden"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td class="slds-size--1-of-4" >
+                                    <label class="slds-checkbox"  for="addResScoreId">
+                                        <input ng-disabled="disableflag" type="checkbox" id="addResScoreId" ng-model="addResScore"></input>
+                                        <span class="slds-checkbox--faux"></span>
+                                        <span class="slds-form-element__label">
+                                            Add Response Score
+                                        </span>
+                                    </label>
+                               </td>
+                               <td class="slds-size--3-of-4" >
+                                  <button class="slds-button slds-button--brand" ng-show="showButton" type="button" ng-click="saveConfig()">Save</button>
+                                  <button class="slds-button slds-button--brand" ng-show="showButton" type="button" ng-click="cancelConfig()">Cancel</button>
+                                  <button class="slds-button slds-button--brand" ng-show="!showButton" type="button" ng-click="editConfig()">Edit</button>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td colspan="2">
+                                    <center>
+                                        <input class="slds-button slds-button--brand" type="button" value="Export Answer" ng-click="validateDataFun();"/>
+                                    </center>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div><!--end card body-->
+            </div>
+            <button class="btn btn-default csvperambutton" style="visibility: hidden;" ng-csv="groupedArray" csv-header="getHeaders()" filename="Answer Export.csv" field-separator="," decimal-separator=".">Export to CSV with header</button>
+        </form>  
+        <!-- Processing Image Code -->
+        <div style="display: none; background-color: rgba(0, 0, 0, 0.6); width: 100%; height: 100%; z-index: 1000; position: fixed; left: 0; top: 0; overflow: hidden; text-align: center; vertical-align: middle;" class="maskSpinnerDiv">
+            <img src="{!URLFOR($Resource.SLDS052, '/assets/images/spinners/slds_spinner.gif')}" alt="Loading..." class="slds-spinner--small" style="display: none; z-index: 10001; background-color: white; width: 80px; height: 80px; padding: 15px; border-radius: 4px; text-align: left; position: relative; top: 30%;"/>
+        </div>
+        <!--End Processing Image Code -->   
+    </div>       
+    <script>
+         
+        $(document).ready(function(){
+            
+            $(".startAssTempDatepicker").datepicker({
+                onSelect: function(selected) {
+                    $('[id$=TemplateFromDate]').val(selected);
+                    $(".endAssTempDatepicker").datepicker("option","minDate", selected)
+                }
+            });
+            $(".endAssTempDatepicker").datepicker({ 
+                onSelect: function(selected) {
+                    $('[id$=TemplateToDate]').val(selected);
+                    $(".startAssTempDatepicker").datepicker("option","maxDate", selected)
+                }
+            });
+            $(".startAssCompletedDatepicker").datepicker({
+                onSelect: function(selected) {
+                    $('[id$=CompletedFromDate]').val(selected);
+                    $(".endAssCompletedDatepicker").datepicker("option","minDate", selected)
+                }
+            });
+            $(".endAssCompletedDatepicker").datepicker({ 
+                onSelect: function(selected) {
+                    $('[id$=CompletedToDate]').val(selected);
+                    $(".startAssCompletedDatepicker").datepicker("option","maxDate", selected)
+                }
+            });
+        });
+           
+        $(function() {
+            $('.startAssTempDatepicker').datepicker();
+            $('.endAssTempDatepicker').datepicker();
+            $('.startAssCompletedDatepicker').datepicker();
+            $('.endAssCompletedDatepicker').datepicker();
+        });
+        
+        var underscore = angular.module('underscore', []);
+        underscore.factory('_', ['$window', function($window) {
+            return $window._; // assumes underscore has already been loaded on the page  ['underscore']
+        }]);
+        
+        var exportapp = angular.module('exportAnswersPerAMApp', ['underscore', "ngSanitize", "ngCsv"]);
+        exportapp.controller('exportAnswersPerAMCtrl', function($scope,$timeout,$filter) {
+            $scope.assfieldList = JSON.parse(_.unescape('{!assessibleFieldListStr}'));
+            $scope.assessmentTemplateList = [];
+            $scope.showAssTemp = false;
+            $scope.searchAssTemplateText = '';
+            $scope.selectedTemplateRecord = {};
+            $scope.startAssTempDatepicker = '';
+            $scope.endAssTempDatepicker = '';
+            $scope.startAssCompletedDatepicker = '';
+            $scope.endAssCompletedDatepicker = '';
+            $scope.toastMessage = '';
+            $scope.getArray = [];
+            $scope.questionLabelArray = [];
+            $scope.disableflag = true;
+            $scope.showButton =false;
+            
+            if ('{!JSENCODE(assessmentTemplateJSON)}' != null && '{!JSENCODE(assessmentTemplateJSON)}' != '' && '{!JSENCODE(assessmentTemplateJSON)}' != 'null') {
+                $scope.assessmentTemplateList = JSON.parse('{!JSENCODE(assessmentTemplateJSON)}');
+            }
+               
+            //Added on 25-10-2017 configuration for Add (or) Remove response score in the report
+            $scope.addResScore = {!addResponseScore};
+            $scope.cancelConfig = function() {
+                $scope.disableflag = true;
+                $scope.showButton =false;  
+                $scope.addResScore = {!addResponseScore};
+            }
+            $scope.editConfig = function() {
+                $scope.disableflag = false;
+                $scope.showButton =true;
+            }
+            $scope.saveConfig = function() {
+                $scope.configId = '{!exConfigId}';
+                ExAM.ExportAnswersPerAMController.saveExAMConfiguration($scope.configId,$scope.addResScore,function(result, event) {
+                    if(event.status && result != null && result != '') {
+                        if(result == 'Success') {
+                            console.log('::Success::');
+                        }
+                    }  
+                });
+                $scope.disableflag = true;
+                $scope.showButton =false;
+            }
+            
+            $scope.blurtemp = function() {
+                $timeout(function(){
+                    $scope.showAssTemp = false;
+                },300); 
+            }
+            $scope.selectAssTemplate = function(selectedTemp) {
+                $('.toast').css('display','none');
+                $scope.selectedTemplateRecord = selectedTemp;
+                $scope.searchAssTemplateText = $scope.selectedTemplateRecord.ExAM__Template_name__c;
+                
+            }
+            $scope.searchfocus = function() {
+                if($scope.searchAssTemplateText.length > 0) { 
+                    $scope.showAssTemp = true; 
+                }
+            }
+            
+            $scope.copied = function(){
+            }
+            $scope.pasted = function(){
+                $scope.searchAssTemplateText = $scope.searchAssTemplateText;
+                if ( $scope.selectedTemplateRecord.Id != null ){
+                    $scope.selectedTemplateRecord = {};
+                }
+                
+            }
+            
+            $scope.validateDataFun = function() {
+                
+                var isError = false;
+                var endAssTempDatepicker = '';
+                var startAssTempDatepicker = '';
+                var endAssCompletedDatepicker = '';
+                var startAssCompletedDatepicker = '';
+                var assTempId = '';
+                
+                if(angular.isUndefined($scope.selectedTemplateRecord.Id) || $scope.searchAssTemplateText == null || $scope.searchAssTemplateText == '') {
+                    assTempId = '';
+                } else {
+                    assTempId = $scope.selectedTemplateRecord.Id;
+                }
+                startAssTempDatepicker = $('.startAssTempDatepicker').val();
+                endAssTempDatepicker = $('.endAssTempDatepicker').val();
+                startAssCompletedDatepicker = $('.startAssCompletedDatepicker').val();
+                endAssCompletedDatepicker = $('.endAssCompletedDatepicker').val();
+                if( $scope.searchAssTemplateText == '' && assTempId == '' ) {  
+                    $('.toast').css('display','none');
+                    $("#assessmentTemplateNameSelection").addClass('slds-has-error');
+                    $( ".required" ).css('display','');               
+                    isError = true;
+                } else {
+                    $("#assessmentTemplateNameSelection").removeClass('slds-has-error');
+                    $( ".required" ).css('display','none');
+                    $('.toast').css('display','none');
+                }
+                if ( $scope.searchAssTemplateText != null && $scope.searchAssTemplateText != '' && assTempId == '' ){
+                    var tempLen = $scope.assessmentTemplateList.length;
+                    for( var i=0; i<tempLen; i++ ){
+                        if ( $scope.assessmentTemplateList[i].ExAM__Template_name__c.toUpperCase() === $scope.searchAssTemplateText.toUpperCase() ){
+                            $scope.selectedTemplateRecord = $scope.assessmentTemplateList[i];
+                            assTempId = $scope.selectedTemplateRecord.Id;
+                            $("#assessmentTemplateNameSelection").removeClass('slds-has-error');
+                            $( ".required" ).css('display','none');
+                            $('.toast').css('display','none');
+                            isError = false;
+                            break;
+                        } else {
+                            isError = true;
+                            $("#assessmentTemplateNameSelection").removeClass('slds-has-error');
+                            $( ".required" ).css('display','none');
+                            $('.toast').css('display','none');
+                            $timeout(function(){
+                                $scope.toastMessage = 'The given Assessment Template Name is not exist.' ;
+                            },0);
+                            $('.toast').css('display','');
+                        }
+                    }
+                }
+                if ( !isError ) {
+                    $('.maskSpinnerDiv, .slds-spinner--small').show();
+                    ExAM.ExportAnswersPerAMController.exportAnswersRecords(startAssTempDatepicker,endAssTempDatepicker,assTempId,$scope.assfieldList, startAssCompletedDatepicker, endAssCompletedDatepicker, function(result, event) {
+                        var ansArray = [];
+                        if( event.status && result != null && result.status == 'OK' ) {
+                            $scope.getArray = [];
+                            $scope.addResScore = result.addResScore;
+                            $scope.questionLabelArray = result.quesList;
+                            $scope.questionIdArray = result.quesIdList;
+                            var quesLen = $scope.questionLabelArray.length;
+                            for(var i= 0; i<quesLen; i++){
+                                $scope.questionLabelArray[i] = _.unescape($scope.questionLabelArray[i]);
+                            }
+                            ansArray = result.ansList;
+                            $scope.searchAssTemplateText = '';
+                            $scope.selectedTemplateRecord = {};
+                            $('.toast').css('display','none');
+                            $('.maskSpinnerDiv, .slds-spinner--small').hide();
+                            if(  result.ansLength > 0 && ansArray.length > 0 ){
+                                for (var i = 0; i < ansArray.length; i++) {
+                                    var crDate = $filter('date')(ansArray[i].CreatedDate, "yyyy-MM-dd HH:mm:ss Z");
+                                    $scope.getArray.push({a: ansArray[i].assignmentManagerId,
+                                                        b: ansArray[i].assessmentTemplateId,
+                                                        c: ansArray[i].assessibleObjectName,
+                                                        d: ansArray[i].assessibleObjectId,
+                                                        e: ansArray[i].status,
+                                                        f: ansArray[i].questionLabel ? _.unescape(ansArray[i].questionLabel) :ansArray[i].questionId,
+                                                        g: _.unescape(ansArray[i].response),
+                                                        h: ansArray[i].totalScore,
+                                                        i: ansArray[i].score,
+                                                        j: ansArray[i].assmgrCreatedDate,
+                                                        k: ansArray[i].assmgrLastModifiedDate,
+                                                        l: ansArray[i].questionId,
+                                                        m: ansArray[i].questionShortName ? _.unescape(ansArray[i].questionShortName) :ansArray[i].questionId,
+                                                        n: ansArray[i].assessmentCompletedDate});                      
+                                }
+                                $scope.$apply();
+                                $scope.retrieveHeader();
+                                $('.maskSpinnerDiv, .slds-spinner--small').hide();
+                            } else {
+                                $('.maskSpinnerDiv, .slds-spinner--small').hide();
+                                $('.toast').css('display','none');
+                                $timeout(function(){
+                                    $scope.toastMessage = 'The selected assessment template has no answers';
+                                },0);
+                                $('.toast').css('display','');
+                            }  
+                            
+                        } else if( event.status && result != null && result.status == 'FAIL' && result.length == 0 ){                   
+                            $('.maskSpinnerDiv, .slds-spinner--small').hide();
+                            $('.toast').css('display','none');
+                            $timeout(function(){
+                                $scope.toastMessage = 'The selected assessment template has no Questions.' ;
+                            },0);
+                            $('.toast').css('display','');
+                        } else if(result.status.indexOf('Exception') != -1){
+                            $('.maskSpinnerDiv, .slds-spinner--small').hide();
+                            $('.toast').css('display','none');
+                            $timeout(function(){
+                                $scope.toastMessage = result.status ;
+                            },0);
+                            $('.toast').css('display','');
+                        }else {
+                            $('.maskSpinnerDiv, .slds-spinner--small').hide();
+                            $('.toast').css('display','none');
+                            $timeout(function(){
+                                $scope.toastMessage = 'Failed.' ;
+                            },0);
+                            $('.toast').css('display','');
+                        } 
+                        $('.startAssTempDatepicker').val('');
+                        $('.endAssTempDatepicker').val(''); 
+                        $scope.createdGroupedAMObject = {} ;    
+                        $('.startAssCompletedDatepicker').val('');
+                        $('.endAssCompletedDatepicker').val('');
+                    });
+                }
+            }
+            
+            $scope.headerArray = [];
+            $scope.headerArrayWithQuesId = [];
+            
+            $scope.groupAnsRec = function(){
+                $scope.groupedArray = [];
+                var indexOfQuesArr = 7;
+                var tempHeaderArr = $scope.headerArrayWithQuesId[indexOfQuesArr]; //it assigns the questions array to tempHeaderArr.
+                var tempHeaderQuesLabelArr = $scope.headerArray[indexOfQuesArr];
+                var headerLen = ($scope.headerArrayWithQuesId.length+$scope.questionIdArray.length)-1; //overall header length.
+                
+                //it groups all remote action result array(getArray) records by using AssessmentTemplateId.
+                $scope.grpBy_b = _.groupBy($scope.getArray, function(object){return (object.b);});
+                
+                //it iterates "grpBy_b" object for group equal AssignmentManager records
+                angular.forEach($scope.grpBy_b,function(value,key){
+                    
+                    //it groups "grpBy_b" by using AssignmentManagerId.
+                    $scope.grpBy_b[key] = _.groupBy(value, function(object){return (object.a);});
+                });
+                
+                angular.forEach($scope.grpBy_b,function(value,key){ //used for iterate grouped AssessmentTemplate records.
+                    
+                    // it assigns array of assignmentManager objects in the form of object. Example: AMId:[[AM records],[AM records]]
+                    $scope.tempObj = $scope.grpBy_b[key];
+                    angular.forEach($scope.tempObj,function(value,key){ //used for iterate array of AssignmentManager object records.
+                        var tempAMArray = $scope.tempObj[key]; 
+                        $scope.createdGroupedAMObject = {} ;
+                        var arrLen = tempAMArray.length; // it assigns AssignmentManagerArray
+                        $scope.createdGroupedAMObject[0] = tempAMArray[0].a;
+                        $scope.createdGroupedAMObject[1] = tempAMArray[0].c;
+                        $scope.createdGroupedAMObject[2] = tempAMArray[0].d;
+                        $scope.createdGroupedAMObject[3] = tempAMArray[0].e;
+                        $scope.createdGroupedAMObject[4] = tempAMArray[0].n;
+                        $scope.createdGroupedAMObject[5] = tempAMArray[0].j;
+                        $scope.createdGroupedAMObject[6] = tempAMArray[0].k;
+                        $scope.createdGroupedAMObject[headerLen-1] = tempAMArray[0].h>0 ? tempAMArray[0].h : 0;
+                        for(var i = 0;i< arrLen;i++ ){ // it iterates every AssignmentManager record from AssignmentManagerArray.
+                            
+                            for(var j = indexOfQuesArr;j < headerLen-1;j++) { // it iterates "question label" from header question array.
+                                // "j" starts from "indexOfQuesArr", because question label starts from value of "indexOfQuesArr" in header array (questionLabelArray).
+                                // "headerLen-1" used. because header contains "total score" field also.So, i would not check that(total score) field with question label.
+                                
+                                if( tempAMArray[i].m == tempHeaderQuesLabelArr[j-indexOfQuesArr] ){
+                                    if($scope.createdGroupedAMObject[j] != undefined && $scope.createdGroupedAMObject[j] != '' ){
+                                        var e = $scope.createdGroupedAMObject[j];
+                                        var f ='##';
+                                        f += tempAMArray[i].g;
+                                        var g = e+f;
+                                        $scope.createdGroupedAMObject[j] = g;
+                                    } else {
+                                        $scope.createdGroupedAMObject[j] = tempAMArray[i].g ? tempAMArray[i].g : '';
+                                    }
+                                    // it assigns the response value under related question label.
+                                   if($scope.addResScore){ //this verification is for adding response score column to the report.
+                                       if ( angular.isDefined(tempAMArray[i].i) && tempAMArray[i].i > 0 ){
+                                           var oldScore = '';
+                                           if( angular.isDefined($scope.createdGroupedAMObject[j+1]) && $scope.createdGroupedAMObject[j+1] != '' ){
+                                               oldScore = $scope.createdGroupedAMObject[j+1];
+                                               $scope.createdGroupedAMObject[j+1] = oldScore +'##'+ tempAMArray[i].i;
+                                           } else {
+                                               $scope.createdGroupedAMObject[j+1] = tempAMArray[i].i;
+                                           }
+                                       } else {
+                                           $scope.createdGroupedAMObject[j+1] = '';
+                                       }
+                                       j++;
+                                   }
+                                   
+                                } else if( tempAMArray[i].f == tempHeaderQuesLabelArr[j-indexOfQuesArr] ){
+                                    if($scope.createdGroupedAMObject[j] != undefined && $scope.createdGroupedAMObject[j] != '' ){
+                                        var e = $scope.createdGroupedAMObject[j];
+                                        var f ='##';
+                                        f += tempAMArray[i].g;
+                                        var g = e+f;
+                                        $scope.createdGroupedAMObject[j] = g;
+                                    } else {
+                                        $scope.createdGroupedAMObject[j] = tempAMArray[i].g ? tempAMArray[i].g : '';
+                                    }
+                                    // it assigns the response value under related question label.
+                                   if($scope.addResScore){ //this verification is for adding response score column to the report.
+                                       if ( angular.isDefined(tempAMArray[i].i) && tempAMArray[i].i > 0 ){
+                                           var oldScore = '';
+                                           if( angular.isDefined($scope.createdGroupedAMObject[j+1]) && $scope.createdGroupedAMObject[j+1] != '' ){
+                                               oldScore = $scope.createdGroupedAMObject[j+1];
+                                               $scope.createdGroupedAMObject[j+1] = oldScore +'##'+ tempAMArray[i].i;
+                                           } else {
+                                               $scope.createdGroupedAMObject[j+1] = tempAMArray[i].i;
+                                           }
+                                       } else {
+                                           $scope.createdGroupedAMObject[j+1] = '';
+                                       }
+                                       j++;
+                                   }
+                                   
+                                } else if(tempAMArray[i].l == tempHeaderArr[j-indexOfQuesArr]) { //the AM question label matches the questionHeaderArray question label, it reurns "true" 
+                                   if($scope.createdGroupedAMObject[j] != undefined && $scope.createdGroupedAMObject[j] != '' ){
+                                       var e = $scope.createdGroupedAMObject[j];
+                                       var f ='##';
+                                       f += tempAMArray[i].g;
+                                       var g = e+f;
+                                       $scope.createdGroupedAMObject[j] = g;
+                                   } else {
+                                       $scope.createdGroupedAMObject[j] = tempAMArray[i].g ? tempAMArray[i].g : '';
+                                   }
+                                    // it assigns the response value under related question label.
+                                   if($scope.addResScore){ //this verification is for adding response score column to the report.
+                                       if ( angular.isDefined(tempAMArray[i].i) && tempAMArray[i].i > 0 ){
+                                           var oldScore = '';
+                                           if( angular.isDefined($scope.createdGroupedAMObject[j+1]) && $scope.createdGroupedAMObject[j+1] != '' ){
+                                               oldScore = $scope.createdGroupedAMObject[j+1];
+                                               $scope.createdGroupedAMObject[j+1] = oldScore +'##'+ tempAMArray[i].i;
+                                           } else {
+                                               $scope.createdGroupedAMObject[j+1] = tempAMArray[i].i;
+                                           }
+                                       } else {
+                                           $scope.createdGroupedAMObject[j+1] = '';
+                                       }
+                                       j++;
+                                   }
+                                } else {
+                                    if( $scope.createdGroupedAMObject[j] == undefined ) {
+                                        $scope.createdGroupedAMObject[j] = '';
+                                        if( $scope.addResScore ){
+                                            $scope.createdGroupedAMObject[j+1] = '';
+                                            j++;
+                                        }
+                                    }
+                                }  
+                            }                            
+                        }
+                        $scope.groupedArray.push($scope.createdGroupedAMObject); 
+                    });
+                });
+            };
+            
+            $scope.retrieveHeader = function () {
+                
+                $scope.headerArrayWithQuesId =  ["Assignment Manager ID", "Assessable object Name","Assessable object Id","Overall Status","Assessment Completed Date","Created Date","Last Modified Date", $scope.questionIdArray, "Total Score"];
+                $scope.headerArray =  ["Assignment Manager ID", "Assessable object Name","Assessable object Id","Overall Status","Assessment Completed Date","Created Date","Last Modified Date", $scope.questionLabelArray, "Total Score"];
+                $scope.groupAnsRec();
+                $('.csvperambutton').click();
+                $scope.searchAssTemplateText = '';
+                $('.startAssTempDatepicker').val('');
+                $('.endAssTempDatepicker').val(''); 
+                $scope.createdGroupedAMObject = {} ;    
+                $('.startAssCompletedDatepicker').val('');
+                $('.endAssCompletedDatepicker').val(''); 
+            };
+            
+            $scope.getHeaders = function () {
+                return $scope.headerArray;
+            };
+            
+        });
+    </script>  
+</apex:component>

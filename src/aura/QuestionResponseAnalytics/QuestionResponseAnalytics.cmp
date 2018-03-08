@@ -1,0 +1,44 @@
+<aura:component controller="QuestionResponseAnalyticsController" access="public">
+    
+    <ltng:require scripts="{!join(',', $Resource.amChart, $Resource.pie,
+                           $Resource.highCharts +'/code/highcharts.js',
+                           $Resource.highCharts +'/code/modules/wordcloud.js',
+                           $Resource.lightJs)}" afterScriptsLoaded="{!c.scriptsLoaded}"/>
+    
+    
+    <aura:handler name="fireIndex" event="c:paginatorEvt" action="{!c.gotoPage}"/>
+    <aura:registerEvent name="notificationEvent" type="c:notificationEvt"/>
+    
+    <aura:attribute name="assessmentId" type="String" access="public"/>
+    <aura:attribute name="lengthOfQuestionsResponse" type="Integer" access="public"/>
+    <aura:attribute name="totalQuestionsResponse" type="List" access="public"/>
+    <aura:attribute name="currentQuestionsResponse" type="List" access="public"/>
+    <aura:attribute name="max" type="Integer" access="public"/>
+    <aura:attribute name="currentPage" type="Integer" default="1" access="public"/>
+    <div class="editor-options-card">
+        <lightning:card variant="narrow" title="Question Response Report Charts" class="slds-m-around--large">
+            
+            <div class="slds-grid slds-wrap" aura:id="funnelChart">
+                
+                <aura:iteration items="{!v.currentQuestionsResponse}" var="questionResponse">
+                    <div class="slds-size_1-of-1  slds-large-size_1-of-2">
+                        <c:RptQRAnalytics questionResponse="{!questionResponse}"/>
+                    </div>
+                </aura:iteration>
+                
+                <div class="{!v.totalQuestionsResponse.length == 0 ? 'slds-show slds-align_absolute-center' : 'slds-hide'}">
+                    No answers currently submitted for this assessment
+                </div>
+                
+            </div>
+            
+            <div class="{!v.totalQuestionsResponse.length > 0 ? 'slds-show' : 'slds-hide'}">
+                <c:Paginator max="{!v.max}" currentPage="{!v.currentPage}" showNavigationPage="false"/>
+            </div>
+            
+            <div aura:id="spinner_container" class="slds-hide">
+                <lightning:spinner variant="brand" alternativeText="loading"/>
+            </div>
+        </lightning:card>
+    </div>
+</aura:component>

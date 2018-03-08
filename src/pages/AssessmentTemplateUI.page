@@ -1,0 +1,60 @@
+<apex:page showHeader="true">
+    <apex:stylesheet value="{!$Resource.TabStyleSheet}"/>
+
+   
+   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"> </script>
+   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"> </script>
+   
+   <apex:form >
+   <apex:pageMessages ></apex:pageMessages>
+   <div id="tabs"> 
+        <ul>
+            <li><a href="#tabs-1"> Builder </a></li>  
+            <li><a href="#tabs-2"> Group Manager </a></li> 
+            <li><a href="#tabs-3"> Event Manager </a></li>             
+            <li><a href="#tabs-4"> Public Assessments Manager </a></li>
+            <li><a href="#tabs-5"> Assignments Generator </a></li>                  
+        </ul>
+        <div id="tabs-1">
+            <apex:iframe scrolling="true"  src="{!$Page.AssessmentTemplateBuilder}" id="iFrameBuilder" />
+        </div> 
+        <div id="tabs-2"> 
+            <apex:iframe scrolling="true"  src="{!$Page.AssignmentGroupAndAssignmentManagerGroup}" id="iFrameGroup" />
+        </div>         
+        <div id="tabs-3"> 
+            <apex:iframe scrolling="true" src="{!$Page.AssignmentManagerGroupStep2}" id="iFrameEvent" />
+        </div>
+        <div id="tabs-4"> 
+            <apex:iframe scrolling="true" src="{!$Page.CreatePublicAssessmentRecords}" id="iFramePublicAssessments" />
+        </div>
+        <div id="tabs-5"> 
+            <apex:iframe scrolling="true" src="{!$Page.AssignmentManagerGenerator}" id="iFrameAssignmentManagerGenerator" />
+        </div>
+    </div> 
+    <script type="text/javascript">
+       $(function() {
+            $( "#tabs" ).tabs();
+        });
+
+        $(document).ready(function(){
+            var docHeight = $(document).height() + "px";
+            
+            $('#iFrameBuilder').attr("height", "525px");
+            $('#iFrameGroup').attr("height", "525px");
+            $('#iFrameEvent').attr("height", "550px");
+            $('#iFramePublicAssessments').attr("height", "550px");
+            $('#iFrameAssignmentManagerGenerator').attr("height", "550px");            
+        });
+
+        $(window).load(function() {
+            var iFrameID = document.getElementById('iFrameBuilder');
+            if(iFrameID) {
+                // here you can make the height, I delete it first, then I make it again
+                iFrameID.height = "";
+                var iframHeight = iFrameID.contentWindow.document.body.scrollHeight;
+                iFrameID.height = iframHeight + "px";
+            } 
+        });
+   </script> 
+   </apex:form>
+</apex:page>

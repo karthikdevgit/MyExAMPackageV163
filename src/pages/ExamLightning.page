@@ -1,0 +1,21 @@
+<apex:page showHeader="false" sidebar="false">
+    <apex:includeLightning />
+    <div id="lightning" />
+    <script>
+        var app = "{!$CurrentPage.parameters.app}";
+        var cmp = "{!$CurrentPage.parameters.cmp}";
+        var nsp = "{!$CurrentPage.parameters.nsp}";
+        if (nsp == '')
+        {
+          nsp = 'c';
+        }
+        $Lightning.use(nsp + ':' + app , function() {
+          $Lightning.createComponent(nsp + ':' + cmp,
+          {},
+          "lightning",
+          function(cmp, status, errorMsg) {
+            
+          });
+        });
+    </script>
+</apex:page>

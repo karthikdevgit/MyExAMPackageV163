@@ -1,0 +1,208 @@
+<aura:component access="public">
+    
+    <aura:handler name="promptEvent" event="c:promptEvt" action="{!c.destroyChilds}"/>
+    <aura:handler name="destroy" value="{!this}" action="{!c.handleDestroy}"/>
+    
+    <!-- get value From Distribution Builder-->
+    <aura:attribute name="emailDailyLtd" type="Map" access="public"/>
+    <aura:attribute name="actionSelections" type="Map" access="public" />
+    <aura:attribute name="selectedObjInfo" type="Map" access="public" />
+    <aura:attribute name="targetObjs" type="List" access="public"/>
+    <aura:attribute name="enabledViewers" type="Map" access="public"/>
+    <aura:attribute name="distributionRd" type="Distribution__c" access="public"/>
+    <!-- End -->
+    
+    <aura:attribute name="selc_TargetObjName"  type="String" access="public"/>
+    <aura:attribute name="hasEnabled" type="Map" access="public" default="{
+                                                                          'targetSelectionChanged' : {
+                                                                          'prompt' : false,
+                                                                          'label' : ''
+                                                                          },
+                                                                          'wthOutCriteriaUseNewGrp' : {
+                                                                          'prompt' : false,
+                                                                          }
+                                                                          }"/>
+    <aura:attribute name="promptMsg" type="Map" access="public"  default="{
+                                                                          'headerMsg' : '',
+                                                                          'msgDescription' : ''
+                                                                          }"/>
+    
+    <aura:attribute name="distributionGroupRd" type="Map" access="public"/>
+    <aura:attribute name="criteriaMetsByFldTyp" type="Map" access="public" />
+    <aura:attribute name="noOfRecords" type="Integer" access="public"/>
+    
+    <aura:attribute name="mode" type="Map" access="public" default="{
+                                                                    'edit' : false,
+                                                                    'view' : false
+                                                                    }"/>
+    
+    <!--<aura:attribute name="linkCount" type="Integer" access="public"/>-->
+    <aura:attribute name="selectionFilterCriteria" type="List" access="public" />
+    
+    <aura:attribute name="errors" type="Map" access="public" default="{criteriaMet : {
+                                                                      hasError : false,
+                                                                      errorMsg : ''
+                                                                      },
+                                                                      groupSelc : {
+                                                                      hasError : false
+                                                                      },
+                                                                      applyCriteria :{
+                                                                      hasError : false
+                                                                      }}"/>
+    
+    <aura:attribute name="contextTargetObj" type="Map" access="public" default="{
+                                                                                'fieldInfo' : [],
+                                                                                'distrGroupInfo' : []
+                                                                                }"/>
+    
+    <!--<aura:attribute name="pickValuesByFld" type="List" access="public"/>-->
+    <aura:attribute name="targetObj" type="Map" access="public" default="{
+                                                                         'fieldsInfo' : {},
+                                                                         'distrGroupsInfo' : {}
+                                                                         }" />
+    
+    
+    
+    <aura:registerEvent name="notificationEvent" type="c:notificationEvt"/>
+    
+    <aura:method name="validate" action="{!c.validateInputs}"/>
+    <aura:method name="setGroupInstance" action="{!c.setDistributionGrpInstance}"/>
+    
+    
+    
+    
+    <lightning:card title="Who">
+        <div class="slds-p-vertical_medium slds-text-align_center slds-text-heading--medium">
+            Today you can send {!v.emailDailyLtd.remaining} emails and you have already sent {!v.emailDailyLtd.max - v.emailDailyLtd.remaining}
+        </div>
+        <ui:outputText value="Are you distributing this to Contacts, Leads or Users?" class="slds-m-bottom_small slds-form-element__label slds-text-heading_small"/>
+        
+        <lightning:buttonGroup >
+            <lightning:button aura:id="objSelcYes" label="Yes" title="Send to Contacts, Leads, Users in Salesforce" onclick="{!c.targetSelection}"/>
+            <lightning:button aura:id="objSelcNo" label="No" title="Distribute through Web and Social. Generate and export links" onclick="{!c.targetSelection}"/>
+        </lightning:buttonGroup>
+        
+        <aura:if isTrue="{!v.actionSelections.distr_TargetObj}">
+            
+            <div class="slds-text-heading_small slds-m-bottom_small">
+                <a>{!v.selectedObjInfo.targetObj.objAPI ? v.selectedObjInfo.targetObj.objLabel : 'Select Contact, Lead, or User'}</a>
+                <lightning:buttonMenu variant="container" aura:id="menu" onselect="{! c.targetObjSelection }" alternativeText="Show menu">
+                    <aura:iteration items="{!v.targetObjs}" var="targetObj" indexVar="targetIndex">
+                        <lightning:menuItem value="{!targetObj.objAPI+'~'+targetIndex}" label="{!targetObj.objLabel}" checked="{!targetObj.objAPI == v.selectedObjInfo.targetObj.objAPI}"/>
+                    </aura:iteration>
+                </lightning:buttonMenu>
+            </div>
+            
+            <aura:if isTrue="{!v.selectedObjInfo.targetObj.objAPI}">                                   
+                <div class="slds-text-heading_small slds-m-bottom_small">
+                    <span aura:id="existing">
+                        <a>{!v.selectedObjInfo.distributiongroup.Id ? v.selectedObjInfo.distributiongroup.Name : 'Select a Saved Group'}</a>
+                        <lightning:buttonMenu disabled="{!v.actionSelections.newGroup}" variant="container" aura:id="menu" onselect="{! c.groupNameSelection }" alternativeText="Show menu">
+                            <aura:iteration items="{!v.contextTargetObj.distrGroupInfo}" var="distributiongroup" indexVar="index">
+                                <lightning:menuItem value="{!distributiongroup.Id+'~'+index}" label="{!distributiongroup.Name}" checked="{!distributiongroup.Id == v.selectedObjInfo.distributiongroup.Id}"/>
+                            </aura:iteration>
+                        </lightning:buttonMenu> 
+                    </span>
+                    <span class="slds-text-heading_small slds-m-around_small">Or</span>
+                    <a aura:id="newGroup" onclick="{!c.createGroup}">Create a New Group</a>
+                </div>
+                
+                <div class="{!v.actionSelections.newGroup ? 'slds-p-vertical_small slds-m-bottom_small' : 'slds-hide'}">
+                    <ui:inputText required="true" class="inputCmp" aura:id="groupNameCmp" placeholder="Enter a name for your group" value="{!v.distributionGroupRd.Name}" change="{!c.groupNameSelc}"/>
+                </div>
+                
+                <div class="{!v.actionSelections.newGroup ? 'border-bottom' : 'slds-hide'}">
+                    <a aura:id="createFliter" class="slds-p-vertical_small slds-text-heading_small" onclick="{!c.createFilter}">Create Filter</a>
+                </div>
+                
+                <div class="{!v.actionSelections.criteria ? 'slds-show' : 'slds-hide'}">
+                    
+                    <div class="{!v.errors.criteriaMet.hasError ? 'forcePageError' : 'slds-hide'}">
+                        <ul class="errorsList">
+                            <li>Review errors on this page
+                                {!v.errors.criteriaMet.errorMsg} are missing</li>
+                        </ul>
+                    </div>
+                    
+                    <aura:iteration items="{!v.selectionFilterCriteria}" var="filterCriteria" indexVar="index">
+                        <lightning:layout >
+                          <c:FilterCriteriaCmp filterCriteria="{!filterCriteria}" mode="{!v.mode}" 
+                                                 lengthOfSelcCriteria="{!v.selectionFilterCriteria.length}"
+                                                 contextObjFieldInfo="{!v.contextTargetObj.fieldInfo}"
+                                                 index="{!index}"
+                                                 criteriaMetsByFldTyp="{!v.criteriaMetsByFldTyp}"/>
+                            <lightning:layoutItem padding="around-small" size="1">
+                                <div class="slds-p-vertical_small slds-text-heading_medium slds-form-element">
+                                    <a data-index="{!index}" class="{!and(v.selectionFilterCriteria.length > 1, v.mode.edit) ? 'slds-show' : 'slds-hide'}" onclick="{!c.cancelCriteria}">
+                                        <lightning:icon iconName="utility:clear" size="small"/>
+                                    </a>
+                                </div>
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                    </aura:iteration>
+                    
+                    <div class="{!v.mode.edit ? 'slds-m-horizontal_small' : 'slds-hide'}">
+                        <a class="slds-button slds-button_neutral slds-button_save slds-m-right_small" onclick="{!c.addCriteria}">
+                            Add Filter
+                        </a>
+                        <a class="slds-button slds-button_neutral slds-button_save slds-m-right_small" onclick="{!c.getRdCountOfCriteriaMet}">
+                            Apply Filter
+                        </a>
+                        <div class="{!v.errors.applyCriteria.hasError ? 'forcePageError' : 'slds-hide'}">
+                            <ul class="errorsList">
+                                <li>
+                                    * Please validate no.of records available based on criteria before Save Distribution</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="{!v.actionSelections.showCount ? 'slds-p-vertical_medium slds-text-heading--medium' : 'slds-hide'}">This group includes {!v.noOfRecords} records
+                    <a class="{!v.selectionFilterCriteria.length ? 'slds-p-left_small' : 'slds-hide'}" onclick="{!c.changevalue}">
+                        <lightning:icon class="icn" iconName="action:edit" size="small"/>
+                    </a>
+                </div>
+                
+                <div class="{!v.selectedObjInfo.targetObj.objAPI ? 'slds-p-top_medium slds-text-heading--medium' : 'slds-hide'}">
+                    <button class="{!or(v.actionSelections.existingGroup,v.actionSelections.newGroup) ? 'slds-m-right_small slds-button slds-button--neutral slds-button--save' : 'slds-hide'}" onclick="{!c.enableSendTypeViewer}">Use this Group</button>
+                    <button class="{! or(v.actionSelections.existingGroup,v.actionSelections.newGroup) ? 'slds-m-right_small slds-button slds-button--neutral slds-button--save' : 'slds-hide'}" onclick="{!c.switchGroup}">Change Group</button>
+                    <div class="{!v.errors.groupSelc.hasError ? 'forcePageError' : 'slds-hide'}">
+                        <ul class="errorsList">
+                            <li>
+                                Either choose existing / new Group</li>
+                        </ul>
+                    </div>
+                </div>
+            </aura:if>
+            
+        </aura:if>
+        
+        <aura:if isTrue="{!v.actionSelections.distr_Link}">
+            <div>
+                <fieldset class="slds-m-vertical_small slds-text-heading_medium slds-m-bottom_small">
+                    <div>
+                        <div class="{!v.actionSelections.assessableRcd ? 'slds-p-vertical_medium slds-text-heading_medium' : 'slds-hide'}">This selection will create one public anonymous link for the web or social media. <div/>
+                            Continue to choose how to distribute this link.
+                        </div>
+                        
+                        <div class="{!v.actionSelections.assessableRcd ? 'slds-hide' : 'slds-p-vertical_medium slds-text-heading_medium'}">This selection will create unique ExAM links accessible as a csv or other data export. <div/>
+                            <!--<div>
+                                Select how many links you need and continue to choose your export method.
+                            </div>
+                            <ui:inputNumber required="true" aura:id="countLinkCmp" class="number-input slds-m-vertical_small inputCmp" placeholder="Enter a Number" value="{!v.linkCount}"/>-->
+                        </div>
+                        
+                        <div class="slds-p-top_medium slds-text-heading_medium">
+                            <button aura:id="proceedBtn" class="slds-m-right_small slds-button slds-button_neutral slds-button_save" onclick="{!c.enableSendTypeViewer}">Continue</button>
+                        </div>
+                    </div>
+                </fieldset>                                    
+            </div>
+        </aura:if>
+        
+    </lightning:card>
+    <aura:if isTrue="{!or(v.hasEnabled.targetSelectionChanged.prompt, v.hasEnabled.wthOutCriteriaUseNewGrp.prompt)}">
+        <c:PromptNotifier headerMsg="{!v.promptMsg.headerMsg}" msgDescription="{!v.promptMsg.msgDescription}"/>
+    </aura:if>
+    
+</aura:component>

@@ -1,0 +1,193 @@
+<apex:page controller="WebInterceptConfigurationController" applyBodyTag="false" docType="html-5.0">
+
+    <div xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+        <apex:stylesheet value="{!URLFOR($Resource.SLDS052, '/assets/styles/salesforce-lightning-design-system-vf.css')}"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+        <script src="{!$Resource.sanitize}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.8.2/lodash.min.js"></script>
+        <apex:includeScript value="{!URLFOR($Resource.CKEditor, '/ckeditor/ckeditor.js')}"/>
+        <script type="text/javascript">
+            var __sfdcSessionId = '{!GETSESSIONID()}';
+        </script>
+        <body >
+        <apex:pageMessages ></apex:pageMessages>
+            
+            <div class="slds slds-form-element" ng-app="WICompApp" ng-controller="WIComController">
+                <div class="slds-card">
+                    <div ng-show="ErrorMessagestatus" style="color:red;font-size: 15px;">{{ ErrorMessage }}</div>
+                    <div class="slds-card__header slds-grid">
+                        <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <h2 class="slds-text-heading--small slds-truncate">Header Section</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-card__body">
+                        <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                            <tbody>
+                                <tr class="slds-hint-parent">
+                                    <td class="slds-size--1-of-3 slds-medium-size--1-of-3 slds-large-size--3-of-12">
+                                        Header Text
+                                    </td>
+                                    <td class="slds-size--2-of-3 slds-medium-size--2-of-3 slds-large-size--6-of-12">
+                                        <textarea class="slds-input" id="editor1" ng-model="templateRec.ExAM__Web_Intercept_Header__c"/> 
+                                    </td>
+                                    <td class="slds-size--1-of-3 slds-medium-size--1-of-3 slds-large-size--3-of-12">
+                                    </td>
+                                </tr>
+                                
+                            </tbody>   
+                        </table>
+                    </div>
+                    <div class="slds-card__header slds-grid">
+                        <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <h2 class="slds-text-heading--small slds-truncate">Public Assessment Page CSS Override</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-card__body">
+                        <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                            <tbody>
+                                <tr class="slds-hint-parent">
+                                    <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-4">
+                                        Static Resource Name
+                                    </td>
+                                    <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--3-of-4">
+                                        <input id="text-input-01" class="slds-col slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--8-of-12 slds-input" type="text" placeholder="Enter Public Assessment Static Resource Name" ng-model="templateRec.ExAM__Web_Intercept_PA_Static_Resource_Name__c"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-4">
+                                    </td>
+                                    <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-4">
+                                        <div style="font-style: italic;color: blue;"><b>File Path Note :</b> /MainFolderName/FileName (OR) /MainFolderName/subFolderName/FileName</div>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent" ng-repeat="path in filePathList track by $index">
+                                    <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-4">
+                                       File Path{{$index+1}}
+                                    </td>
+                                    <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--3-of-4">
+                                       <input id="text-input-01"  class="slds-col slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--8-of-12 slds-input" type="text" placeholder="Enter Public Assessment File Path" value="{{path}}" ng-model="filePathList[$index]"/>
+                                       <span class="slds-icon__container slds-icon__container--circle slds-icon-action-delete" ng-click="remove($index);" ng-show="$index > 0" style="padding: 4px 4px 4px 4px;">
+                                           <svg aria-hidden="true" class="slds-icon slds-icon--x-small" style="height:12px;">
+                                               <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#delete')}"> </use>
+                                           </svg>
+                                       </span>
+                                        <span class="slds-icon__container slds-icon__container--circle slds-icon-action-new" ng-show="filePathList.length-1 == $index" ng-click="addNew($index);" style="padding: 4px 4px 4px 4px;">
+                                           <svg aria-hidden="true" class="slds-icon slds-icon--x-small" style="height:12px;">
+                                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#new')}"> </use>
+                                           </svg>
+                                       </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="slds-card__header slds-grid">
+                        <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <h2 class="slds-text-heading--small slds-truncate">Web Intercept Modal CSS Override</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-card__body">
+                        <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                            <tbody>
+                                <tr class="slds-hint-parent">
+                                    <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-4">
+                                         Static Resource Name
+                                    </td>
+                                    <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--3-of-4">
+                                        <input id="text-input-01" class="slds-col slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--8-of-12 slds-input" type="text" placeholder="Enter Web Intercept Modal Static Resource Name" ng-model="templateRec.ExAM__Web_Intercept_Static_Resource_Name__c"/>
+                                    </td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div> 
+                    <div class="slds-card__footer slds-grid slds-wrap">
+                        <div class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-1">
+                            <center>
+                                <input class="slds-button slds-button--brand" type="button" value="Save" ng-click="saveRecord();"/>
+                                <input class="slds-button slds-button--brand" type="button" value="Cancel" ng-click="cancelRecord();"/>
+                            </center>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </body>   
+        <script>
+            var app = angular.module('WICompApp',[]);
+            app.controller('WIComController', function($scope) {
+                
+                $scope.modalText = '';
+                $('#errorMsg').hide();
+                $('#errorMsg1').hide();
+                $('#errorMsg2').hide();
+                $scope.templateRec = {};
+                $scope.filePathList = [];
+                $scope.filePathLength;
+                $scope.ErrorMessage = '';
+                $scope.ErrorMessagestatus = false;
+                
+                if('{!JSENCODE(templateRecord)}' != null && '{!JSENCODE(templateRecord)}' != '' ) {
+                    $scope.templateRec = JSON.parse('{!JSENCODE(templateRecord)}');
+                }
+                if(!angular.isUndefined($scope.templateRec) && !angular.isUndefined($scope.templateRec.ExAM__Web_Intercept_PA_Resource_File_Path__c)) {
+                    $scope.filePathList = $scope.templateRec.ExAM__Web_Intercept_PA_Resource_File_Path__c.split("~");
+                    $scope.filePathLength = $scope.filePathList.length-1;
+                }else{
+                    $scope.filePathList.push('');
+                }
+                
+                $scope.addNew = function(index) {
+                    $scope.filePathList.push('');
+                }
+                
+                $scope.remove = function(index) {
+                    $scope.filePathList.splice(index,1);
+                }
+                
+                $scope.saveRecord = function() {
+                
+                    var fileURL = '';
+                    
+                    if(!angular.isUndefined($scope.filePathList)) {
+                        for(var i=0; i < $scope.filePathList.length; i++) {
+                            if($scope.filePathList[i] != null && $scope.filePathList[i] != '' ) {
+                                fileURL = fileURL != '' ? fileURL+'~'+$scope.filePathList[i] : $scope.filePathList[i];
+                            }
+                        }
+                        $scope.templateRec.ExAM__Web_Intercept_PA_Resource_File_Path__c = fileURL;
+                    } else {
+                        $scope.templateRec.ExAM__Web_Intercept_PA_Resource_File_Path__c = '';
+                    }
+                    
+                    delete $scope.templateRec.attributes;
+                    
+                    ExAM.WebInterceptConfigurationController.saveWIConfig(angular.toJson($scope.templateRec), function(result, event) {
+                        if(event.status && result != null && result != '') {
+                            if(result == 'success') {
+                                window.open('/'+$scope.templateRec.Id, '_self');
+                            } else {
+                                $scope.ErrorMessagestatus = true;
+                                $scope.ErrorMessage = result;
+                                console.log(':::result error:::',result);
+                                $scope.$apply();
+                            }
+                        }
+                        
+                    });
+                }
+                
+                $scope.cancelRecord = function() {
+                    window.open('/'+$scope.templateRec.Id, '_self');
+                }
+            });
+        </script>     
+    </div>
+</apex:page>

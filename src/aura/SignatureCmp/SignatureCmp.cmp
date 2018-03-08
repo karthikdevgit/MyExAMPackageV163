@@ -1,0 +1,25 @@
+<aura:component access="public">
+
+    <aura:attribute name="canvas" type="Object" access="public" />
+    <aura:attribute name="ctx" type="Object" access="public" />
+    <aura:attribute name="flag" type="Boolean" default="false" access="public" />
+    <aura:attribute name="prevX" type="Integer" default="0" access="public" />
+    <aura:attribute name="currX" type="Integer" access="public" />
+    <aura:attribute name="prevY" type="Integer" default="0" access="public" />
+    <aura:attribute name="currY" type="Integer" access="public" />
+    <aura:attribute name="dot_flag" type="Boolean" default="false" access="public" />
+    <aura:attribute name="hasRefresh" type="Boolean" default="false" access="public" />
+    <aura:attribute name="width" type="Integer" access="public" />
+    <aura:attribute name="height" default="100" type="Integer" access="public" />
+
+    <div class="slds-grid slds-grid_vertical-align-end" aura:id="container" >
+        <div class="slds-col"><canvas aura:id="can" width="{!v.width}" height="{!v.height}" style="border:1px solid #000000;"/></div>
+        <aura:if isTrue="{!v.hasRefresh}">
+            <a class="slds-col slds-m-left--small slds-button slds-button--neutral slds-button--save" onclick="{!c.clearSignature}">
+                Clear Canvas
+            </a>
+        </aura:if>
+    </div>
+
+
+</aura:component>

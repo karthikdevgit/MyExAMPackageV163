@@ -1,0 +1,4 @@
+<aura:event type="APPLICATION" description="close dropDown" access="public">
+    <aura:attribute name="index" type="Integer" access="public"/>
+    <aura:attribute name="sourceDerivenCmp" type="String" access="public"/>
+</aura:event>

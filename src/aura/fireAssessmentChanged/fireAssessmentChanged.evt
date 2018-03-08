@@ -1,0 +1,4 @@
+<aura:event type="APPLICATION" access="public">
+    <aura:attribute name="assessmentId" type="String" access="public"/>
+    <aura:attribute name="isExpand" type="Boolean" default="true" access="public"/>
+</aura:event>

@@ -1,0 +1,134 @@
+<apex:component allowDML="true" controller="ReportBuilderHeaderFooterController">
+
+
+    
+    <script src="{!$Resource.sanitize}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.8.2/lodash.min.js"></script>
+    <apex:includeScript value="{!URLFOR($Resource.CKEditor, '/ckeditor/ckeditor.js')}"/>
+    <div class="slds" ng-app="ReportBuilderHeaderApp" ng-controller="ReportBuilderHeaderCtrl" >
+            <form class="slds-form" >
+                <div class="slds-card slds-m-top--x-small slds-m-bottom--x-large">
+                    <div class="slds-card__header slds-grid">
+                        <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <h2 class="slds-text-heading--small slds-truncate">Report Builder Header &amp; Footer</h2>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="slds-notify_container" style="display:none;" id="RBHeaderFooterExcept">
+                        <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert">
+                            <button class="slds-button slds-notify__close slds-button--icon-inverse" title="Close">
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                                <span class="slds-assistive-text">Error</span>
+                                <h2 id="RBHeaderFooterExceptMsg">
+                                    
+                                </h2>
+                        </div>
+                    </div>
+                    <div class="slds-card__body slds-m-left--x-small slds-m-top--x-small slds-m-right--x-small tempHead">
+                        <table ng-show="!showCKEditor" class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                            <tbody>
+                                <tr class="slds-hint-parent">
+                                    <td class="slds-size--1-of-6">
+                                        <label class="slds-form-element__label slds-text-heading--small" for="lookup">Report Builder Header</label>
+                                    </td>
+                                    <td class="slds-size--5-of-6">
+                                        <div ng-bind-html="deliberatelyTrustDangerousSnippet(reportbuilderHeader);"></div>
+                                    </td>                                
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td class="slds-size--1-of-6">
+                                        <label class="slds-form-element__label slds-text-heading--small" for="lookup">Report Builder Footer</label>
+                                    </td>
+                                    <td class="slds-size--5-of-6">
+                                        <div ng-bind-html="deliberatelyTrustDangerousSnippet(reportbuilderFooter);"></div>
+                                        
+                                    </td>                                
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table ng-show="showCKEditor" class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                            <tbody>
+                                <tr class="slds-hint-parent">
+                                    <td class="slds-size--1-of-6">
+                                        <label class="slds-form-element__label slds-text-heading--small" for="lookup">Report Builder Header</label>
+                                    </td>
+                                    <td class="slds-size--5-of-6">
+                                        <input type="textarea" id="editor1" rows="10" cols="80"/>
+                                    </td>                                
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td class="slds-size--1-of-6">
+                                        <label class="slds-form-element__label slds-text-heading--small" for="lookup">Report Builder Footer</label>
+                                    </td>
+                                    <td class="slds-size--5-of-6">
+                                        <input type="textarea" id="editor2" rows="10" cols="80"/>    
+                                    </td>                                
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="slds-card__footer">
+                        <center><input ng-show="!showCKEditor" type="button" class="slds-button slds-button--brand" value="Edit" ng-click="toggleView(true);"/>
+                        <input ng-show="showCKEditor" type="button" class="slds-button slds-button--neutral" value="Cancel" ng-click="toggleView(false);"/>
+                        <input ng-show="showCKEditor" type="button" class="slds-button slds-button--brand" value="Submit" ng-click="getHeaderAndFooter();"/></center>                    
+                    </div>
+                </div>
+            </form>
+        </div>                 
+                                    
+                                    
+    <script>
+    
+        var reportBHeaderapp = angular.module('ReportBuilderHeaderApp', ['ngSanitize']);
+        
+        reportBHeaderapp.controller('ReportBuilderHeaderCtrl', function($scope, $sce) {
+            $scope.showCKEditor = false;
+            $scope.reportbuilderHeader = '{!JSENCODE(config.Report_Builder_Page_Header__c)}';
+            $scope.reportbuilderFooter = '{!JSENCODE(config.Report_Builder_Page_Footer__c)}';
+            $scope.deliberatelyTrustDangerousSnippet = function(htmlval) {
+               return $sce.trustAsHtml(htmlval);
+             };
+            
+            window.onload = function() { 
+                CKEDITOR.replace('editor1'); 
+                CKEDITOR.replace('editor2');
+                $scope.setHeaderAndFooter();
+                
+            }
+            $scope.setHeaderAndFooter = function () {
+                CKEDITOR.instances['editor1'].setData( $scope.reportbuilderHeader );
+                CKEDITOR.instances['editor2'].setData( $scope.reportbuilderFooter );
+            }
+            $scope.getHeaderAndFooter = function() {
+    
+                $scope.reportbuilderHeader = CKEDITOR.instances['editor1'].getData();
+                $scope.reportbuilderFooter = CKEDITOR.instances['editor2'].getData();
+                
+                ExAM.ReportBuilderHeaderFooterController.saveReportHeaderAndFooter($scope.reportbuilderHeader, $scope.reportbuilderFooter, function(result, event) {
+                    if ( result == 'Report Builder Header and Footer saved successfully' || result == 'No changes' ){
+                        $('#RBHeaderFooterExcept').css("display","none");
+                    } else {
+                        $('#RBHeaderFooterExceptMsg').text(result);
+                        $('#RBHeaderFooterExcept').css("display","");
+                    }
+                    $scope.showCKEditor = false;
+                    $scope.$apply();
+                });
+                //saveConfig(headerVal, footerVal);
+            }
+            $scope.toggleView = function(isEnableEdit) {
+                
+                if (isEnableEdit) {
+                    $scope.showCKEditor = true;
+                } else {
+                    $scope.showCKEditor = false;
+                    $('#RBHeaderFooterExcept').css("display","none");
+                }
+            }
+        });
+    
+        
+    </script>
+</apex:component>

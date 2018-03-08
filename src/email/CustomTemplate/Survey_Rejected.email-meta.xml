@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>MB_A</letterhead>
+    <name>Survey Rejected</name>
+    <style>freeForm</style>
+    <subject>Survey is rejected, Please correct and submit again</subject>
+    <type>html</type>
+</EmailTemplate>

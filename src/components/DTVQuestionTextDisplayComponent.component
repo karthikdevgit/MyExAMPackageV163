@@ -1,0 +1,127 @@
+<apex:component >
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <title>DTV Question Text Display Configuration</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS052, '/assets/styles/salesforce-lightning-design-system-vf.css')}" />
+        </head>
+        <div class="slds-form-element" ng-app="dtvQuestionTextDisplayApp" ng-controller="dtvQuestionTextDisplayCtrl">
+            <!-- Start Code to configure Question Text Display -->
+            <div class="slds-card slds-m-top--x-small">
+                <div class="slds-card__header slds-grid">
+                    <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <h2 class="slds-text-heading--small slds-truncate">  DTV Question Display Format  </h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-card__body">
+                    <div ng-show="showErrMessage_DTVFilter" style="color: {{setPgMsgColor_DTVFilter}};font-size: 15px;">{{ errMessage_DTVFilter }}</div>
+                    <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                        <tbody>
+                            <tr class="slds-hint-parent">
+                                <td class="slds-size--1-of-4"> Display Question as: </td>
+                                <td class="slds-size--1-of-4 slds-cell-wrap">
+                                    <select class="slds-select" ng-model="existingFilter" ng-options="type for type in typeArray">
+                                    </select>
+                                </td>
+                                <td class="slds-size--2-of-4">
+                                    <input class="slds-button slds-button--brand" ng-click="save()" type="button" value="Save"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- End Code to configure Question Text Display -->
+        </div>
+        <script>
+            var underscore = angular.module('underscore', []);
+            underscore.factory('_', ['$window', function($window) {
+                return $window._; // assumes underscore has already been loaded on the page
+            }]);
+            var app = angular.module('dtvQuestionTextDisplayApp', ['underscore']);
+            app.service('dtvService', function($q,_) {
+
+                this.getExamConfigAndAssessmentTemplates = function() {
+                    var defer = $q.defer();
+                    ExAM.GeneralConfigController.queryExamConfigRecordAndAllAssessmentTemplates(function(result, event) {
+                        if(event.status) {
+                            defer.resolve(result);
+                        }
+                    });
+                    return defer.promise;
+                }
+                this.saveTypeFilter = function(record) {
+                    var defer = $q.defer();
+                    ExAM.GeneralConfigController.saveSelectedQuestionTypesFilter(record, function(result, event) {
+                        if(event.status) {
+                            var respObj = JSON.parse(_.unescape(result));
+                            if(respObj["recId"] ) {
+                                defer.resolve( respObj );
+                            }
+                            else if(respObj["errType"] ) {
+                                defer.reject( respObj["errMsg"] );
+                            }
+                        }
+                    });
+                    return defer.promise;
+                }
+            });
+            app.controller('dtvQuestionTextDisplayCtrl', function($scope, dtvService,_) {
+
+                var selectedQuestionTypes = [];
+                var selectedQuestionTypesCloned = [];
+
+                $scope.errMessage_DTVFilter = '';
+                $scope.existingFilter = '';
+                $scope.setPgMsgColor_DTVFilter = 'red';
+                $scope.showErrMessage_DTVFilter = false;
+                $scope.showDMFilter = false;
+                $scope.typeArray = ['Question Template Id', 'Question Text'];
+                $scope.examConfigObj = {};
+
+                dtvService.getExamConfigAndAssessmentTemplates().then(function(data) {
+                    if (angular.isDefined(data.examConfigRecord.Id)) {
+                        $scope.examConfigObj = data.examConfigRecord;
+                        $scope.existingFilter = data.examConfigRecord.ExAM__DTV_Question_Display_Text__c;
+                    }
+                });
+                $scope.save = function() {
+                    if (!$scope.existingFilter) {
+                        $scope.setPgMsgColor_DTVFilter = 'red';
+                        $scope.showErrMessage_DTVFilter = true;
+                        $scope.errMessage_DTVFilter = 'Please enter a value';
+                    }
+                    else {
+
+                        var examConfigId = $('.hiddenExamConfigId').val();
+                        $scope.showDMFilter = false;
+                        $scope.examConfigObjToUpdate = {};
+                        if (examConfigId != undefined && examConfigId != null && examConfigId != '' ) {
+                            $scope.examConfigObjToUpdate.Id = examConfigId;
+                        }
+                        else if (angular.isDefined($scope.examConfigObj.Id) ) {
+                            $scope.examConfigObjToUpdate.Id = $scope.examConfigObj.Id;
+                        }
+                        $scope.examConfigObjToUpdate.Name = angular.isDefined($scope.examConfigObj.Name) ? $scope.examConfigObj.Name : 'Configuration';
+                        $scope.examConfigObjToUpdate.ExAM__DTV_Question_Display_Text__c = $scope.existingFilter;
+
+                        dtvService.saveTypeFilter($scope.examConfigObjToUpdate).then(function(data) {
+                            $('.hiddenExamConfigId').val(data["recId"]);
+                            $scope.showErrMessage_DTVFilter = true;
+                            $scope.errMessage_DTVFilter = data["successMsg"];
+                            $scope.setPgMsgColor_DTVFilter = 'green';
+                            $scope.existingFilter = $scope.examConfigObjToUpdate.ExAM__DTV_Question_Display_Text__c;
+                        },
+                        function(errdata) {
+                            $scope.setPgMsgColor_DTVFilter = 'red';
+                            $scope.showErrMessage_DTVFilter = true;
+                            $scope.errMessage_DTVFilter = errdata;
+                        });
+                    }
+                }
+            })
+        </script>
+    </html>
+</apex:component>

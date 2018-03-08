@@ -1,0 +1,235 @@
+<apex:component controller="ViewerConfigurationController" >
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <title>Assessment Viewer</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS052, '/assets/styles/salesforce-lightning-design-system-vf.css')}" />
+        </head>
+        <script>  
+            var app = angular.module('viewerConfigApp', []);
+                
+            app.controller('viewerConfigCtrl', function($scope) {        
+                
+                $scope.config = {};  
+                $scope.viewerConfigList = [];
+                if ('{!JSENCODE(viewerConfigJSON)}' != '' ) {
+                    $scope.viewerConfigList = JSON.parse('{!JSENCODE(viewerConfigJSON)}') ;
+                }
+                $scope.opendialog = function() {
+                    $('.generalConfig').removeClass('slds-modal__close');
+                    $('.generalConfig').addClass('slds-fade-in-open');
+                }
+                $scope.closedialog = function() {
+                    $('.generalConfig').addClass('slds-modal__close');
+                    $('.generalConfig').removeClass('slds-fade-in-open');
+                }
+                
+                $scope.saveconfig = function() {
+
+                    if (angular.isUndefined($scope.newConfigName) || $scope.newConfigName == '') {
+                        alert('Please give Viewer Custom Configuration Name');    
+                        return false;                
+                    }
+                    $scope.config.Name = $scope.newConfigName;
+                    configRec = new Object();
+                    configRec.Name = $scope.newConfigName;
+                    configRec.ExAM__Hierarchical_Object__c = angular.isDefined($scope.config.ExAM__Hierarchical_Object__c) ? $scope.config.ExAM__Hierarchical_Object__c : false;
+                    configRec.ExAM__Answer_Options__c = angular.isDefined($scope.config.ExAM__Answer_Options__c) ? $scope.config.ExAM__Answer_Options__c : false;
+                    configRec.ExAM__Data_Management__c = angular.isDefined($scope.config.ExAM__Data_Management__c) ? $scope.config.ExAM__Data_Management__c : false;
+                    configRec.ExAM__Assignment_Manager__c = angular.isDefined($scope.config.ExAM__Assignment_Manager__c) ? $scope.config.ExAM__Assignment_Manager__c : false;
+                    configRec.ExAM__Single_Question_Mode__c = angular.isDefined($scope.config.ExAM__Single_Question_Mode__c) ? $scope.config.ExAM__Single_Question_Mode__c :false;
+                    configRec.ExAM__Assignment_Manager_List__c = angular.isDefined($scope.config.ExAM__Assignment_Manager_List__c ) ? $scope.config.ExAM__Assignment_Manager_List__c : false;
+
+                    ExAM.ViewerConfigurationController.saveCustomConfigurationViewer1(configRec, function(result, event) {
+                        if (event.status) {
+                            $('.generalConfig').addClass('slds-modal__close');
+                            $('.generalConfig').removeClass('slds-fade-in-open');
+                            if (result != 'success') {
+                                alert( result );
+                            }
+                            else {
+                                alert(' configuration saved successfully');
+                                $scope.configId = $scope.config;
+                                $scope.viewerConfigList.unshift($scope.config);
+                                $scope.$apply();
+                                $scope.config = {}; 
+                                $scope.newConfigName = '';
+                            }
+                        } else {
+                            alert('error:::'+result);
+                        }
+                    });
+                }
+            });
+            
+        </script>            
+        <div ng-app="viewerConfigApp" ng-controller="viewerConfigCtrl" class="slds">
+            <div class="slds-scrollable--x slds-m-top--x-small" ng-show="viewerConfigList != null && viewerConfigList.length > 0">
+                <table class="slds-table slds-table--bordered">
+                    <thead>
+                      <tr class="slds-text-heading--label">
+                        <th scope="col">
+                          <span class="slds-truncate"><b>Name</b></span>
+                        </th>
+                        <th scope="col">
+                          <span class="slds-cell-wrap"><b>Hierarchical Object</b></span>
+                        </th>
+                        <th scope="col">
+                          <span class="slds-cell-wrap"><b>Data Management</b></span>
+                        </th>
+                        <th scope="col">
+                          <span class="slds-cell-wrap"><b>Answer Options</b></span>
+                        </th>
+                        <th scope="col">
+                          <span class="slds-cell-wrap"><b>Assignment Manager</b></span>
+                        </th>
+                        <th scope="col">
+                          <span class="slds-cell-wrap"><b>Single Question Mode</b></span>
+                        </th>
+                        <th scope="col">
+                          <span class="slds-cell-wrap"><b>Assignment Manager List</b></span>
+                        </th>
+                        
+                      </tr>  
+                    </thead>
+                    <tbody>
+                      <tr class="slds-hint-parent" ng-repeat="config in viewerConfigList">
+                        <td>
+                          <span class="slds-truncate">
+                              <label class="slds-form-element__label" for="inputSample2">{{config.Name}}</label>
+                          </span>
+                        </td>
+                        <td style="text-align:center;">
+                          <span class="slds-truncate">
+                              <label class="slds-checkbox">
+                                  <input type="checkbox" ng-model="config.ExAM__Hierarchical_Object__c" disabled="disabled"/>
+                                  <span class="slds-checkbox--faux"></span>
+                              </label>
+                          </span>
+                        </td>
+                        <td style="text-align:center;">
+                          <span class="slds-truncate">
+                              <label class="slds-checkbox">
+                                  <input type="checkbox" ng-model="config.ExAM__Data_Management__c" disabled="disabled"/>
+                                  <span class="slds-checkbox--faux"></span>
+                              </label>
+                          </span>
+                        </td>
+                        <td style="text-align:center;">
+                          <span class="slds-truncate">
+                              <label class="slds-checkbox">
+                                  <input type="checkbox" ng-model="config.ExAM__Answer_Options__c" disabled="disabled"/>
+                                  <span class="slds-checkbox--faux"></span>
+                              </label>
+                          </span>
+                        </td>
+                        <td style="text-align:center;">
+                          <span class="slds-truncate">
+                              <label class="slds-checkbox">
+                                  <input type="checkbox" ng-model="config.ExAM__Assignment_Manager__c" disabled="disabled"/>
+                                  <span class="slds-checkbox--faux"></span>
+                              </label>
+                          </span>
+                        </td>
+                        <td style="text-align:center;">
+                          <span class="slds-truncate">
+                              <label class="slds-checkbox">
+                                  <input type="checkbox" ng-model="config.ExAM__Single_Question_Mode__c" disabled="disabled"/>
+                                  <span class="slds-checkbox--faux"></span>
+                              </label>
+                          </span>
+                        </td>
+                        <td style="text-align:center;">
+                          <span class="slds-truncate">
+                              <label class="slds-checkbox">
+                                  <input type="checkbox" ng-model="config.ExAM__Assignment_Manager_List__c" disabled="disabled"/>
+                                  <span class="slds-checkbox--faux"></span>
+                              </label>
+                          </span>
+                        </td>
+                      </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="slds-scrollable--x slds-m-top--x-small" ng-hide="viewerConfigList != null && viewerConfigList.length > 0">
+                <span class="slds-form-element__static">No Viewer Configuration have been defined</span>
+            </div>
+            <div style="text-align:center;">
+                <button class="slds-button slds-button--brand slds-m-top--x-small" ng-click="opendialog();" type="button">Create New Viewer Config</button>
+            </div>
+            <div aria-hidden="false" role="dialog" class="slds-modal slds-modal__close generalConfig" style="background-color: rgba(128, 128, 128, 0.75);">
+                <div class="slds-modal__container">
+                    <div class="slds-modal__header">
+                        <h2 class="slds-text-heading--medium">Viewer Configuration</h2>
+                        <button class="slds-button slds-button--icon-inverse slds-modal__close" ng-click="closedialog();">
+                            <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                                <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                            </svg>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                    </div>
+                    <div class="slds-modal__content">
+                        <table class="slds-table" >
+                            <tr class="slds-hint-parent">
+                                <td>
+                                    <label class="slds-checkbox" for="chkHierarchicalObjectId">
+                                        <input name="checkbox" type="checkbox" id="chkHierarchicalObjectId" ng-model="config.ExAM__Hierarchical_Object__c"/>
+                                        <span class="slds-checkbox--faux"></span>
+                                        <span class="slds-form-element__label">Hierarchical Object</span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="slds-checkbox" for="chkDataManagementId">
+                                        <input name="checkbox" type="checkbox" id="chkDataManagementId" ng-model="config.ExAM__Data_Management__c"/>
+                                        <span class="slds-checkbox--faux"></span>
+                                        <span class="slds-form-element__label">Data Management</span>
+                                    </label>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td>
+                                    <label class="slds-checkbox" for="chkAnswerOptionsId">
+                                        <input name="checkbox" type="checkbox" id="chkAnswerOptionsId" ng-model="config.ExAM__Answer_Options__c" />
+                                        <span class="slds-checkbox--faux"></span>
+                                        <span class="slds-form-element__label">Answer Options</span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="slds-checkbox" for="chkAssignmentManagerId">
+                                        <input name="checkbox" type="checkbox" id="chkAssignmentManagerId" ng-model="config.ExAM__Assignment_Manager__c" />
+                                        <span class="slds-checkbox--faux"></span>
+                                        <span class="slds-form-element__label">Assignment Manager</span>
+                                    </label>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td>
+                                    <label class="slds-checkbox" for="chkSingleQuestionModeId">
+                                        <input name="checkbox" type="checkbox" id="chkSingleQuestionModeId" ng-model="config.ExAM__Single_Question_Mode__c" />
+                                        <span class="slds-checkbox--faux"></span>
+                                        <span class="slds-form-element__label">Single Question Mode</span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="slds-checkbox" for="chkAssignmentManagerListId">
+                                        <input name="checkbox" type="checkbox" id="chkAssignmentManagerListId" ng-model="config.ExAM__Assignment_Manager_List__c" />
+                                        <span class="slds-checkbox--faux"></span>
+                                        <span class="slds-form-element__label">Assignment Manager List</span>
+                                    </label>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="slds-m-bottom--medium"></div> 
+                        
+                        <input id="sample1" class="slds-input slds-size--6-of-12 slds-m-horizontal--medium" type="text" ng-model="newConfigName" placeholder="Viewer Configuration Name"/>
+                        <input class="slds-button slds-button--brand" type="button" value="Save" ng-click="saveconfig();"/>
+                    </div>
+                    <div class="slds-modal__footer">
+                        <!--<button class="slds-button slds-button--neutral" ng-click="closedialog();">Cancel</button>                 
+                        <input class="slds-button slds-button--brand" type="button" value="Save" ng-click="savedialog();"/>-->   
+                    </div>
+                </div>
+            </div>                  
+        </div>
+    </html>
+</apex:component>

@@ -1,0 +1,14 @@
+.THIS .slds-spinner_container {
+  position: fixed !important;
+}
+
+.THIS .slds-table {
+  table-layout: fixed;
+}
+
+.THIS thead a.slds-show {
+    display: inline-block
+}
+.THIS thead a.slds-hide {
+    display: none
+}

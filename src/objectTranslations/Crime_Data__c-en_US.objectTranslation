@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Crime Data</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Crime Data</value>
+    </caseValues>
+    <fields>
+        <label><!-- Account --></label>
+        <name>Account__c</name>
+        <relationshipLabel><!-- Crime Data --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- County Current Agg Assault --></label>
+        <name>County_Current_Agg_Assault__c</name>
+    </fields>
+    <fields>
+        <label><!-- County Current Burglary --></label>
+        <name>County_Current_Burglary__c</name>
+    </fields>
+    <fields>
+        <label><!-- County Current Cap Index --></label>
+        <name>County_Current_Cap_Index__c</name>
+    </fields>
+    <fields>
+        <label><!-- County Current Crimes Against Persons --></label>
+        <name>County_Current_Crimes_Against_Persons__c</name>
+    </fields>
+    <fields>
+        <label><!-- County Current Crimes Against Property --></label>
+        <name>County_Current_Crimes_Against_Property__c</name>
+    </fields>
+    <fields>
+        <help><!-- County Current Homicide --></help>
+        <label><!-- County Current Homicide --></label>
+        <name>County_Current_Homicide__c</name>
+    </fields>
+    <fields>
+        <label><!-- County Current Larceny --></label>
+        <name>County_Current_Larceny__c</name>
+    </fields>
+    <fields>
+        <label><!-- County Current Motor VehicleTheft --></label>
+        <name>County_Current_Motor_VehicleTheft__c</name>
+    </fields>
+    <fields>
+        <label><!-- County Current  Rape --></label>
+        <name>County_Current_Rape__c</name>
+    </fields>
+    <fields>
+        <help><!-- County Current 
+Robbery --></help>
+        <label><!-- County Current  Robbery --></label>
+        <name>County_Current_Robbery__c</name>
+    </fields>
+    <fields>
+        <label><!-- County Past  Agg. Assault --></label>
+        <name>County_Past_Agg_Assault__c</name>
+    </fields>
+    <fields>
+        <label><!-- County Past Burglary --></label>
+        <name>County_Past_Burglary__c</name>
+    </fields>
+    <fields>
+        <label><!-- County Past Cap Index --></label>
+        <name>County_Past_Cap_Index__c</name>
+    </fields>
+    <fields>
+        <label><!-- County Past Crimes Against Persons --></label>
+        <name>County_Past_Crimes_Against_Persons__c</name>
+    </fields>
+    <fields>
+        <label><!-- County Past Crimes Against Property --></label>
+        <name>County_Past_Crimes_Against_Property__c</name>
+    </fields>
+    <fields>
+        <label><!-- County Past Homicide --></label>
+        <name>County_Past_Homicide__c</name>
+    </fields>
+    <fields>
+        <label><!-- County Past Larceny --></label>
+        <name>County_Past_Larceny__c</name>
+    </fields>
+    <fields>
+        <label><!-- County Past Motor Veh. Theft --></label>
+        <name>County_Past_Motor_Veh_Theft__c</name>
+    </fields>
+    <fields>
+        <label><!-- County Past Rape --></label>
+        <name>County_Past_Rape__c</name>
+    </fields>
+    <fields>
+        <label><!-- County Past Robbery --></label>
+        <name>County_Past_Robbery__c</name>
+    </fields>
+    <fields>
+        <label><!-- County Projected Agg. Assault --></label>
+        <name>County_Projected_Agg_Assault__c</name>
+    </fields>
+    <fields>
+        <label><!-- County Projected Burglary --></label>
+        <name>County_Projected_Burglary__c</name>
+    </fields>
+    <fields>
+        <label><!-- County Projected Cap Index --></label>
+        <name>County_Projected_Cap_Index__c</name>
+    </fields>
+    <fields>
+        <label><!-- County Projected Crimes Against Persons --></label>
+        <name>County_Projected_Crimes_Against_Persons__c</name>
+    </fields>
+    <fields>
+        <label><!-- County Projected Crimes Against Propert --></label>
+        <name>County_Projected_Crimes_Against_Propert__c</name>
+    </fields>
+    <fields>
+        <label><!-- County Projected Homicide --></label>
+        <name>County_Projected_Homicide__c</name>
+    </fields>
+    <fields>
+        <label><!-- County Projected  Larceny --></label>
+        <name>County_Projected_Larceny__c</name>
+    </fields>
+    <fields>
+        <label><!-- County Projected  Motor Veh. Theft --></label>
+        <name>County_Projected_Motor_Veh_Theft__c</name>
+    </fields>
+    <fields>
+        <label><!-- County Projected Rape --></label>
+        <name>County_Projected_Rape__c</name>
+    </fields>
+    <fields>
+        <label><!-- County Projected Robbery --></label>
+        <name>County_Projected_Robbery__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Current Agg. Assault --></label>
+        <name>National_Current_Agg_Assault__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Current Burglary --></label>
+        <name>National_Current_Burglary__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Current Cap Index --></label>
+        <name>National_Current_Cap_Index__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Current Crimes Against Persons --></label>
+        <name>National_Current_Crimes_Against_Persons__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Current Crimes Against Property --></label>
+        <name>National_Current_Crimes_Against_Property__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Current Homicide --></label>
+        <name>National_Current_Homicide__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Current Larceny --></label>
+        <name>National_Current_Larceny__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Current  Motor Veh. Theft --></label>
+        <name>National_Current_Motor_Veh_Theft__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Current Rape --></label>
+        <name>National_Current_Rape__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Current Robbery --></label>
+        <name>National_Current_Robbery__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Past Agg. Assault --></label>
+        <name>National_Past_Agg_Assault__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Past Burglary --></label>
+        <name>National_Past_Burglary__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Past Cap Index --></label>
+        <name>National_Past_Cap_Index__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Past Crimes Against Persons --></label>
+        <name>National_Past_Crimes_Against_Persons__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Past Crimes Against Property --></label>
+        <name>National_Past_Crimes_Against_Property__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Past Homicide --></label>
+        <name>National_Past_Homicide__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Past Larceny --></label>
+        <name>National_Past_Larceny__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Past Motor Veh. Theft --></label>
+        <name>National_Past_Motor_Veh_Theft__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Past Rape --></label>
+        <name>National_Past_Rape__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Past Robbery --></label>
+        <name>National_Past_Robbery__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Projected Agg. Assault --></label>
+        <name>National_Projected_Agg_Assault__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Projected Burglary --></label>
+        <name>National_Projected_Burglary__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Projected Cap Index --></label>
+        <name>National_Projected_Cap_Index__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Projected Crimes Against Perso --></label>
+        <name>National_Projected_Crimes_Against_Perso__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Projected Crimes Against Prope --></label>
+        <name>National_Projected_Crimes_Against_Prope__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Projected Homicide --></label>
+        <name>National_Projected_Homicide__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Projected Larceny --></label>
+        <name>National_Projected_Larceny__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Projected  Motor Veh. Theft --></label>
+        <name>National_Projected_Motor_Veh_Theft__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Projected Rape --></label>
+        <name>National_Projected_Rape__c</name>
+    </fields>
+    <fields>
+        <label><!-- National Projected Robbery --></label>
+        <name>National_Projected_Robbery__c</name>
+    </fields>
+    <fields>
+        <label><!-- Radius1 --></label>
+        <name>Radius1__c</name>
+    </fields>
+    <fields>
+        <label><!-- Radius2 --></label>
+        <name>Radius2__c</name>
+    </fields>
+    <fields>
+        <help><!-- This can be used to store the appropriate scaling --></help>
+        <label><!-- ScaleIndex --></label>
+        <name>ScaleIndex__c</name>
+    </fields>
+    <fields>
+        <label><!-- State Current Agg. Assault --></label>
+        <name>State_Current_Agg_Assault__c</name>
+    </fields>
+    <fields>
+        <label><!-- State Current Burglary --></label>
+        <name>State_Current_Burglary__c</name>
+    </fields>
+    <fields>
+        <help><!-- This we are not using but may be if we have to see it in future --></help>
+        <label><!-- State Current Cap Index --></label>
+        <name>State_Current_Cap_Index__c</name>
+    </fields>
+    <fields>
+        <label><!-- State Current Crimes Against Persons --></label>
+        <name>State_Current_Crimes_Against_Persons__c</name>
+    </fields>
+    <fields>
+        <label><!-- State Current Crimes Against Property --></label>
+        <name>State_Current_Crimes_Against_Property__c</name>
+    </fields>
+    <fields>
+        <label><!-- State Current Homicide --></label>
+        <name>State_Current_Homicide__c</name>
+    </fields>
+    <fields>
+        <label><!-- State Current Larceny --></label>
+        <name>State_Current_Larceny__c</name>
+    </fields>
+    <fields>
+        <label><!-- State Current  Motor Veh. Theft --></label>
+        <name>State_Current_Motor_Veh_Theft__c</name>
+    </fields>
+    <fields>
+        <label><!-- State Current Rape --></label>
+        <name>State_Current_Rape__c</name>
+    </fields>
+    <fields>
+        <label><!-- State Current Robbery --></label>
+        <name>State_Current_Robbery__c</name>
+    </fields>
+    <fields>
+        <label><!-- State Past  Agg. Assault --></label>
+        <name>State_Past_Agg_Assault__c</name>
+    </fields>
+    <fields>
+        <label><!-- State Past Burglary --></label>
+        <name>State_Past_Burglary__c</name>
+    </fields>
+    <fields>
+        <label><!-- State Past Cap Index --></label>
+        <name>State_Past_Cap_Index__c</name>
+    </fields>
+    <fields>
+        <label><!-- State Past Crimes Against Persons --></label>
+        <name>State_Past_Crimes_Against_Persons__c</name>
+    </fields>
+    <fields>
+        <label><!-- State Past Homicide --></label>
+        <name>State_Past_Homicide__c</name>
+    </fields>
+    <fields>
+        <label><!-- State Past Larceny --></label>
+        <name>State_Past_Larceny__c</name>
+    </fields>
+    <fields>
+        <label><!-- State Past Rape --></label>
+        <name>State_Past_Rape__c</name>
+    </fields>
+    <fields>
+        <label><!-- State Past Robbery --></label>
+        <name>State_Past_Robbery__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

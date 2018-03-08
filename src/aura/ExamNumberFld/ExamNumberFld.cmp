@@ -1,0 +1,16 @@
+<aura:component access="public" extends="c:ExamFieldBase">
+
+    <aura:attribute name="newValue" type="Integer" access="public"/>
+
+    <span class="slds-m-right--small">{!v.fieldLabel}</span>
+
+    <aura:if isTrue="{!v.defaultMode == 'view'}">
+
+        <span aura:id="createOutputCmp">
+            <ui:outputNumber value="{!v.newValue}" />
+        </span>
+
+    </aura:if>
+
+
+</aura:component>

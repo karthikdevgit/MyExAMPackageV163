@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Public Assessment</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Public Assessments</value>
+    </caseValues>
+    <fields>
+        <help><!-- This is the Salesforce API name of the Assessable Object. --></help>
+        <label><!-- Assessable Object API --></label>
+        <name>Assessable_Object_API__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is the Salesforce record ID of the Assessable Object. --></help>
+        <label><!-- Assessable Object ID --></label>
+        <name>Assessible_Object_ID__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is the description of the Assessment Template. --></help>
+        <label><!-- Assessment Template Description --></label>
+        <name>Assessment_Template_Description__c</name>
+    </fields>
+    <fields>
+        <label><!-- Assessment Template Name --></label>
+        <name>Assessment_Template_Name__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is the Assessment Template ID that is being used for the Assessment. --></help>
+        <label><!-- Assessment Template --></label>
+        <name>Assessment_Template__c</name>
+        <relationshipLabel><!-- Public Assessments --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- If this Public Assessment was generated as part of a batch this is the Salesforce record Id of that batch. --></help>
+        <label><!-- Assignment Generator Batch --></label>
+        <name>Assignment_Generator_Batch__c</name>
+        <relationshipLabel><!-- Public Assessments --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- The Assignment Manager record associated with the Public Assessment. --></help>
+        <label><!-- Assignment Manager --></label>
+        <name>Assignment_Manager__c</name>
+        <relationshipLabel><!-- Public Assessments --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Distribution --></label>
+        <name>Distribution__c</name>
+        <relationshipLabel><!-- Public Assessments --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- Assessment submissions will not be accepted via this link after this date. The user will receive an error message letting them no the link has expired. --></help>
+        <label><!-- Expiration Date --></label>
+        <name>Expiration_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Account --></label>
+        <name>Facility_Name__c</name>
+        <relationshipLabel><!-- Public Assessments --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- This is a link to the Public Assessment. This is particularly useful for reports where you would like to be able to link directly to the Public 
+Assessment from a particular column. --></help>
+        <label><!-- Public Assessment Link --></label>
+        <name>Public_Assessment_Link__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is the full URL that can be used to access this Public Assessment. --></help>
+        <label><!-- Public Assessment URL --></label>
+        <name>Public_Assessment_URL__c</name>
+    </fields>
+    <fields>
+        <help><!-- If you are using our Twillio integration to support SMS interactions over Public Assessments this code is what your end user will text in order to fire start engaging with this template. --></help>
+        <label><!-- Short Code --></label>
+        <name>Short_Code__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is the text that should be used in the Public Assessment link. --></help>
+        <label><!-- Text For URL --></label>
+        <name>Text_For_URL__c</name>
+    </fields>
+    <layouts>
+        <layout>Public Assessment Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

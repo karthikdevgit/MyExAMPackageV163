@@ -1,0 +1,11 @@
+.THIS {
+
+}
+.THIS.layoutContainer {
+    /*border: 1px solid #d8dde6;*/
+    margin: 10px 0 20px 0;
+}
+.THIS .slds-card__footer{
+    display: flex;
+    justify-content: space-between;
+}

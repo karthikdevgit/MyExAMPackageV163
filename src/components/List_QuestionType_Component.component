@@ -1,0 +1,64 @@
+<apex:component >
+
+    <apex:attribute name="isPrimaryList" type="Boolean" default="false" description="Renders Primary List Question"/>
+    <apex:attribute name="isDependentList" type="Boolean" default="false" description="Renders Dependent List Question"/>
+    <apex:attribute name="isDecisionTreeList" type="Boolean" default="false" description="Renders Decision Tree List Question"/>
+
+    <apex:outputPanel rendered="{!isPrimaryList}">
+        <div ng-if="eachQuestTemplateRec.ExAM__Question_Type__c == 'List'">
+            <c:Primary_Question_Property />
+            <div class="slds-grid--reverse slds-wrap" style="padding-bottom:15px;padding-top:10px;">
+                <div class="slds-size--8-of-12 ListQType{{eachQuestTemplateRec.ExAM__Is_Mandatory__c}}" id="ListQType{{eachQuestTemplateRec.Id}}" style="background-color:#F4F6F9;">
+                    <ul class="slds-list--vertical slds-has-dividers--top-space slds-has-list-interactions">
+                        <li ng-repeat="option in splitOptions(eachQuestTemplateRec) track by $index"
+                            ng-click="ListQuestionType(option,eachQuestTemplateRec.Id,false);"
+                            ng-class="{'slds-is-selected' : response[eachQuestTemplateRec.Id] == option}"
+                            class="slds-list__item liClass" id="listQT{{eachQuestTemplateRec.Id}}">
+                                {{option}}
+                        </li>
+                    </ul>
+                </div>
+                <c:Primary_Question_Action renderClearIcon="true"/>
+            </div>
+        </div>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!isDependentList}">
+        <div ng-if="nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c == 'List'">
+            <c:Dependent_Question_Property />
+            <div class="slds-grid--reverse slds-wrap" style="padding-bottom:15px;padding-top:10px;">
+                <div class="slds-size--8-of-12 ListQType{{nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Is_Mandatory__c}} {{eachQuestTemplateRec.Id}}" id="ListQType{{nextDependentQuestion[eachQuestTemplateRec.Id].Id}}" style="background-color:#F4F6F9;">
+                    <ul class="slds-list--vertical slds-has-dividers--top-space slds-has-list-interactions">
+                        <li ng-repeat="option in splitOptions(nextDependentQuestion[eachQuestTemplateRec.Id])"
+                            ng-click="ListQuestionType(option, nextDependentQuestion[eachQuestTemplateRec.Id].Id, false);"
+                            ng-class="{'slds-is-selected' : response[nextDependentQuestion[eachQuestTemplateRec.Id].Id] == option}"
+                            class="slds-list__item liClass" id="listQT{{nextDependentQuestion[eachQuestTemplateRec.Id].Id}}">
+                                {{option}}
+                        </li>
+                    </ul>
+                </div>
+                <c:Dependent_Question_Action />
+            </div>
+        </div>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!isDecisionTreeList}">
+        <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'List'">
+            <c:DecisionTree_Question_Property />
+            <div class="slds-grid--reverse slds-wrap" style="padding-bottom:15px;padding-top:10px;">
+                <div class="slds-size--8-of-12" style="background-color:#F4F6F9;">
+                    <ul class="slds-list--vertical slds-has-dividers--top-space slds-has-list-interactions">
+                        <li ng-repeat="option in splitOptions(decisionTreeQuestion) track by $index"
+                            ng-click="ListQuestionType(option,decisionTreeQuestion.Id,true); renderNextQuestionInDecisionTreeFunCall(option, decisionTreeQuestion);"
+                            ng-class="{'slds-is-selected' : DecisionTreeresponse[decisionTreeQuestion.Id] == option}"
+                            class="slds-list__item liDTClass">
+                                {{option}}
+                        </li>
+                    </ul>
+                </div>
+                <c:DecisionTree_Question_Action />
+            </div>
+        </div>
+    </apex:outputPanel>
+
+</apex:component>

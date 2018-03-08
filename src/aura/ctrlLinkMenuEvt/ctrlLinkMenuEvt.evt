@@ -1,0 +1,9 @@
+<aura:event access="public" type="COMPONENT" description="Event template">
+    <aura:attribute name="action" type="String" access="public"/>
+    <aura:attribute name="itemIndex" type="Integer" access="public"/>
+    <aura:attribute name="value" type="String" access="public"/>
+    <aura:attribute name="label" type="String" access="public"/>
+    <aura:attribute name="type" type="String" access="public"/>
+    <aura:attribute name="name" type="String" access="public"/>
+    <aura:attribute name="uniqueName" type="String" access="public"/>
+</aura:event>

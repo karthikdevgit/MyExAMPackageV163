@@ -1,0 +1,43 @@
+<apex:component >
+
+    <apex:attribute name="isPrimaryPhone" type="Boolean" default="false" description="Renders Primary PhoneNumber Question"/>
+    <apex:attribute name="isDependentPhone" type="Boolean" default="false" description="Renders Dependent PhoneNumber Question"/>
+    <apex:attribute name="isDecisionTreePhone" type="Boolean" default="false" description="Renders Decision Tree PhoneNumber Question"/>
+
+    <apex:outputPanel rendered="{!isPrimaryPhone}">
+        <div ng-if="eachQuestTemplateRec.ExAM__Question_Type__c == 'Phone Number'">
+            <c:Primary_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <input type="text" ng-model="response[eachQuestTemplateRec.Id]"
+                       class="slds-size--8-of-12 slds-input validatePhone validate{{eachQuestTemplateRec.ExAM__Is_Mandatory__c}}"
+                       id="{{eachQuestTemplateRec.Id}}"/>
+                <c:Primary_Question_Action />
+            </div> 
+        </div>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!isDependentPhone}">
+        <div ng-if="nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c == 'Phone Number'">
+            <c:Dependent_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <input type="text" ng-model="response[nextDependentQuestion[eachQuestTemplateRec.Id].Id]"
+                       class="slds-size--8-of-12 slds-input validatePhone validate{{nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Is_Mandatory__c}}"
+                       id="{{nextDependentQuestion[eachQuestTemplateRec.Id].Id}}"/>
+                <c:Dependent_Question_Action />
+            </div> 
+        </div>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!isDecisionTreePhone}">
+        <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'Phone Number'">
+            <c:DecisionTree_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <input type="text" ng-model="DecisionTreeresponse[decisionTreeQuestion.Id]"
+                       class="slds-size--8-of-12 slds-input validateDTPhone"
+                       id="{{decisionTreeQuestion.Id}}"/>
+                <c:DecisionTree_Question_Action />
+            </div> 
+        </div>
+    </apex:outputPanel>
+
+</apex:component>

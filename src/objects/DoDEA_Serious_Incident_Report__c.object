@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>Used to support field services, inspections, and field data collection use cases around event and incident reporting.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Area__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Area</label>
+        <length>200</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Crime_Against_Persons__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Crime Against Persons</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Battery</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Assault with a Deadly Weapon</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Homicide</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Robbery/Extortion</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Sex Offenses</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>&quot;Other&quot; Crimes Against Persons</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Crimes_Against_Property__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Crimes Against Property</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Personal Property Theft(over $100 loss)</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Govt. Accountable Property Theft</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Vandalism (over $500 loss)</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Graffiti (over $500 loss)</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Arson</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Burglary</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>&quot;Other&quot; Crimes Against Property</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Date_and_Time__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Date and Time</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Describe_in_Detail_What_Occurred__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Describe in Detail What Occurred.</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
+        <fullName>District_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>District Name</label>
+        <length>150</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Drug_Alcohol_Offenses__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Drug/Alcohol Offenses</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Use of Drugs/Alcohol</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Possession of Drugs</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Possession of Alcohol</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Possession of Drug paraphernalia</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Possession of of Drugs/Alcohol for Sale</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Sale and/or Furnishing of Drugs/Alcohol</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>&quot;Other&quot; Drug/Alcohol Offenses</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Incident_Occured__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Incident Occured</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>On School Grounds</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Off school Grounds(Enroute to or from school or white ata school sponsored activity)</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Incident_Report_Participants2__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Incident Report Participants2</label>
+        <referenceTo>Incident_Report_Participants__c</referenceTo>
+        <relationshipName>DoDEA_Serious_Incident_Report1</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Incident_Report_Participants3__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Incident Report Participants3</label>
+        <referenceTo>Incident_Report_Participants__c</referenceTo>
+        <relationshipName>DoDEA_Serious_Incident_Report2</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Incident_Report_Participants4__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Incident Report Participants4</label>
+        <referenceTo>Incident_Report_Participants__c</referenceTo>
+        <relationshipName>DoDEA_Serious_Incident_Report3</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Incident_Report_Participants__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Incident Report Participants</label>
+        <referenceTo>Incident_Report_Participants__c</referenceTo>
+        <relationshipName>DoDEA_Serious_Incident_Report</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Notification__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Notification</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Police</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>District</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Area</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>HQ</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Notifications_made_coordinated_by__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Notifications made/coordinated by:</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Other_Incidents__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Other Incidents</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Destructive/Explosive Devices</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Loitering/Trespassing</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Possession of an Actual Firearm</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Possession of &quot;Other&quot; Weapon</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Police_Investigating__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Police Investigating?</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Police_Responded__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Police Responded</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>School_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>School Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Security_Threats_Help__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Force Protection issues i.e., suspected surveillance or other suspicious or actual activity constituting a threat or potential threat to students, staff, or operations. 
+Threats of Extreme Violence i.e., written,verbal,internal or external, by students o</inlineHelpText>
+        <label>Security Threats Help</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Security_Threats__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Force  Protection issues i.e., suspected surveillance or other suspicious or actual activity constituting a threat or potential threat to students, staff, or operations.
+Threats of Extreme Violence  i.e., written,verbal,internal or external, by students.</inlineHelpText>
+        <label>Security Threats</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Bomb Threat</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Force protection issues</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Threats of Extreme Violence</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>&quot;Other&quot; Security Threats</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <label>Serious Incident Report</label>
+    <nameField>
+        <label>DoDEA SERIOUS INCIDENT REPORT Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>DoDEA Serious Incident Report</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+</CustomObject>

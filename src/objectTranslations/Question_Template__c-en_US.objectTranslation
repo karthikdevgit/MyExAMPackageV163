@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Question Template</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Question Templates</value>
+    </caseValues>
+    <fields>
+        <help><!-- To calculate no of questions in each section so we can find if the answers are given than we say this section is complete. --></help>
+        <label><!-- Count Questions --></label>
+        <name>Count_Questions__c</name>
+    </fields>
+    <fields>
+        <label><!-- Count of Responses --></label>
+        <name>Count_of_Responses__c</name>
+    </fields>
+    <fields>
+        <label><!-- Decision Tree Result Page Fields Default --></label>
+        <name>Decision_Tree__c</name>
+    </fields>
+    <fields>
+        <label><!-- Default Value --></label>
+        <name>Default_Value__c</name>
+    </fields>
+    <fields>
+        <label><!-- Dependent Question --></label>
+        <name>Dependent_Question__c</name>
+    </fields>
+    <fields>
+        <label><!-- Disabled --></label>
+        <name>Disabled__c</name>
+    </fields>
+    <fields>
+        <label><!-- Do Not Create Answer --></label>
+        <name>Do_Not_Create_Answer__c</name>
+    </fields>
+    <fields>
+        <label><!-- Field Length --></label>
+        <name>Field_Length__c</name>
+    </fields>
+    <fields>
+        <help><!-- Group which will have questions from different sections --></help>
+        <label><!-- Focus category --></label>
+        <name>Focus_category__c</name>
+    </fields>
+    <fields>
+        <label><!-- Has Picture --></label>
+        <name>Has_Picture__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is the text which we want to shown on mouse hover --></help>
+        <label><!-- Help Text --></label>
+        <name>HelpText__c</name>
+    </fields>
+    <fields>
+        <label><!-- Hotspot Image Properties --></label>
+        <name>Hotspot_Image_Properties__c</name>
+    </fields>
+    <fields>
+        <label><!-- Hotspot Image Upload --></label>
+        <name>Hotspot_Image_Upload__c</name>
+    </fields>
+    <fields>
+        <label><!-- Is Dependent --></label>
+        <name>Is_Dependent__c</name>
+    </fields>
+    <fields>
+        <label><!-- Required --></label>
+        <name>Is_Mandatory__c</name>
+    </fields>
+    <fields>
+        <label><!-- Knowledge Article Link --></label>
+        <name>Knowledge_Article_Link__c</name>
+    </fields>
+    <fields>
+        <label><!-- Likert --></label>
+        <name>Likert__c</name>
+        <picklistValues>
+            <masterLabel>Agreement</masterLabel>
+            <translation><!-- Agreement --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Frequency</masterLabel>
+            <translation><!-- Frequency --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Importance</masterLabel>
+            <translation><!-- Importance --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Likelihood</masterLabel>
+            <translation><!-- Likelihood --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Next Question --></label>
+        <name>Next_Question__c</name>
+    </fields>
+    <fields>
+        <label><!-- Question External Id --></label>
+        <name>Question_External_Id__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is the question label eg. What are the standard operating hours? --></help>
+        <label><!-- Question --></label>
+        <name>Question_Label__c</name>
+    </fields>
+    <fields>
+        <label><!-- Question Order No --></label>
+        <name>Question_Order_No__c</name>
+    </fields>
+    <fields>
+        <help><!-- This has first 255 characters of main question label. Long text area cant be used in formula field --></help>
+        <label><!-- Question Restricted Length --></label>
+        <name>Question_Restricted_Length__c</name>
+    </fields>
+    <fields>
+        <label><!-- Question Short Name --></label>
+        <name>Question_Short_Name__c</name>
+    </fields>
+    <fields>
+        <help><!-- Pick from a list text, picklist etc --></help>
+        <label><!-- Question Type --></label>
+        <name>Question_Type__c</name>
+        <picklistValues>
+            <masterLabel>Assessment Completed</masterLabel>
+            <translation><!-- Assessment Completed --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Button</masterLabel>
+            <translation><!-- Button --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Case</masterLabel>
+            <translation><!-- Case --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Checkbox</masterLabel>
+            <translation><!-- Checkbox --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Date</masterLabel>
+            <translation><!-- Date --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Dropdown Picklist</masterLabel>
+            <translation><!-- Dropdown Picklist --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Email</masterLabel>
+            <translation><!-- Email --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>File Question - AM</masterLabel>
+            <translation><!-- File Question - AM --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>File Question - Answer</masterLabel>
+            <translation><!-- File Question - Answer --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>File Question - Assessable Object</masterLabel>
+            <translation><!-- File Question - Assessable Object --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Hidden</masterLabel>
+            <translation><!-- Hidden --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Horizontal Radiopicklist</masterLabel>
+            <translation><!-- Horizontal Radiopicklist --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Hotspot Image</masterLabel>
+            <translation><!-- Hotspot Image --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Image</masterLabel>
+            <translation><!-- Image --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Likert</masterLabel>
+            <translation><!-- Likert --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>List</masterLabel>
+            <translation><!-- List --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>MultiselectPicklist</masterLabel>
+            <translation><!-- MultiselectPicklist --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Number</masterLabel>
+            <translation><!-- Number --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Phone Number</masterLabel>
+            <translation><!-- Phone Number --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>RadioPicklist</masterLabel>
+            <translation><!-- RadioPicklist --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Result</masterLabel>
+            <translation><!-- Result --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Signature</masterLabel>
+            <translation><!-- Signature --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Text</masterLabel>
+            <translation><!-- Text --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Textarea</masterLabel>
+            <translation><!-- Textarea --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Result Page Configuration --></label>
+        <name>Result_Page_Configuration__c</name>
+    </fields>
+    <fields>
+        <help><!-- Master- Detail relationship- Section is Master and Detail is Question --></help>
+        <label><!-- Master Section to Detail Question --></label>
+        <name>Section_Question__c</name>
+        <relationshipLabel><!-- Question Templates --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- Lookup to next question in decision tree --></help>
+        <label><!-- Single Next Question --></label>
+        <name>Single_Next_Question__c</name>
+        <relationshipLabel><!-- Question Templates --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- The main section is already there so put the sub sections here --></help>
+        <label><!-- Sub Section label --></label>
+        <name>SubSection_label__c</name>
+    </fields>
+    <fields>
+        <help><!-- Put all values ~ separated --></help>
+        <label><!-- Answer Options --></label>
+        <name>Subquestion_Label__c</name>
+    </fields>
+    <fields>
+        <label><!-- Upload Answer Option Images --></label>
+        <name>Upload_Answer_Option_Images__c</name>
+    </fields>
+    <fields>
+        <label><!-- Upload Question Image --></label>
+        <name>Upload_Question_Image__c</name>
+    </fields>
+    <fields>
+        <label><!-- Video URL --></label>
+        <name>Video_URL__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is the question weight --></help>
+        <label><!-- Question Weight --></label>
+        <name>Weight_Of_Question__c</name>
+    </fields>
+    <fields>
+        <help><!-- Each answer weight/score is entered with tilde sign and total should be 100%.E.g. 10~50~40 for each answer option. --></help>
+        <label><!-- Answer Options Weight(%) --></label>
+        <name>Weight_of_Answer__c</name>
+    </fields>
+    <layouts>
+        <layout>Question_Template Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- Please enter a value --></errorMessage>
+        <name>Hidden_Question_Validation</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Please select a Likert option --></errorMessage>
+        <name>Likert_Should_Not_Be_Left_Empty</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Please set only one Next Question for MultiselectPicklist question type --></errorMessage>
+        <name>MultiselectPicklist_Validation</name>
+    </validationRules>
+</CustomObjectTranslation>

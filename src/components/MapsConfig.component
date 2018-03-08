@@ -1,0 +1,102 @@
+<apex:component controller="GeneralConfigController">
+
+    <style>
+        .slds-card {
+          @include box($theme: shade, $padding: 0, $borders: around);
+        
+          + .slds-card {
+            margin-top: $spacing-medium;
+          }
+        
+          .slds-card__header {
+            padding: $spacing-small $spacing-small $spacing-xx-small;
+          }
+        
+          .slds-tile {
+            margin: $spacing-x-small;
+            padding: $spacing-x-small;
+          }
+        }
+        .mapConfigSelect {
+            @include form-states;
+            height: $line-height-button;
+            width: 50% !important;
+        }
+        .slds-button--neutral {
+          @include button;
+          @include button-base;
+          background-color: $color-background-button-default;
+        }
+        .slds-spinner--small {
+            @include square(32px);
+        }
+        .errorSpan { color: #ff5454; }
+    </style>
+    <form class="slds-form">
+        <div class="slds-form-element">
+            <div class="slds-card slds-m-top--x-small">
+                <div class="slds-card__body">
+                    <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                        <tbody>
+                            <tr class="slds-hint-parent">
+                            <td class="slds-size--1-of-2" >
+                                <input id="googleMapKey" class="slds-input" type="text" placeholder="Google Map API Key" />
+                                <b><label id="googleMapKeyLabel" class="slds-form-element__label slds-text-align--center" style="display:none;" for="name">{!googleMapAPIKey}</label></b>
+                            </td>
+                            <td class="slds-size--1-of-2" >
+                                <button class="slds-button slds-button--brand savegoogleapi" type="button">Save</button>
+                                <button class="slds-button slds-button--brand cancelgoogleapi" type="button">Cancel</button>
+                                <button class="slds-button slds-button--brand editgoogleapi" style="display:none;" type="button">Edit</button>
+                            </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </form>
+    <script>
+        $(document).ready(function() {
+            if ('{!JSENCODE(googleMapAPIKey)}' != null && '{!JSENCODE(googleMapAPIKey)}' != '') {
+                $('#googleMapKeyLabel').show();
+                $('.editgoogleapi').show();
+                $('#googleMapKey').val('{!JSENCODE(googleMapAPIKey)}');
+                
+                $('#googleMapKey').hide();
+                $('.savegoogleapi').hide();  
+                $('.cancelgoogleapi').hide();  
+            }
+        });
+        $('.editgoogleapi').click(function() {
+            $('#googleMapKeyLabel').hide();
+            $('.editgoogleapi').hide();
+            $('#googleMapKey').show();
+            $('.savegoogleapi').show(); 
+            $('.cancelgoogleapi').show();
+        });
+        $('.savegoogleapi').click(function() {
+            var googleapikey = $('#googleMapKey').val();  
+            ExAM.GeneralConfigController.saveGoogleAPI(googleapikey, function(result, event) {
+                if (event.status) {
+                    $('#googleMapKeyLabel').html(googleapikey);
+                    $('#googleMapKey').hide();
+                    $('#googleMapKeyLabel').show();
+                    
+                    $('.savegoogleapi').hide();
+                    $('.cancelgoogleapi').hide();
+                    $('.editgoogleapi').show();
+                } else {
+                    alert(result);
+                }
+            });
+        });
+        $('.cancelgoogleapi').click(function() {
+            $('#googleMapKey').hide();
+            $('#googleMapKeyLabel').show();
+            
+            $('.savegoogleapi').hide();
+            $('.cancelgoogleapi').hide();
+            $('.editgoogleapi').show();
+        });
+    </script>    
+</apex:component>

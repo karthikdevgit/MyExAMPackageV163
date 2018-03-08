@@ -1,0 +1,110 @@
+<aura:component access="public" extends="c:ExamFieldBase">
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="change" value="{!v.newValue}" action="{!c.changeObjValue}"/>
+    <aura:attribute name="oldValue" type="String" access="public"/>
+    <aura:attribute name="newValue" type="String" access="public"/>  
+    <aura:attribute name="questionTextLayout" type="Boolean" default="false" access="public"/>
+    
+    <div class="{!join( ' ', v.cssClass, 'slds-size--1-of-1 slds-grid slds-wrap  slds-grid--align-spread slds-grid--vertical-align-center')}">
+        
+        <aura:if isTrue="{!v.mode == 'view'}">
+            
+            <div class="label-override">
+                <ui:outputText value="{!v.fieldLabel}" class="slds-m-right_xx-small"/>
+                <lightning:helptext class="{!v.helpText ? '' : 'slds-hide'}"  content="{!v.helpText}" iconName="utility:info"/>
+            </div>
+            <div class="" aura:id="createOutputCmp">
+                <ui:outputTextArea value="{!v.newValue}"/>
+            </div>
+            
+            <aura:set attribute="else">
+                
+                <aura:if isTrue="{!v.defaultMode == 'view'}">
+                    
+                    <aura:if isTrue="{!v.hideLabel}">
+                        
+                        <div class="slds-size-1-of-1 " aura:id="createOutputCmp">
+                            <a class="label-override" onclick="{!c.changevalue}">
+                                <ui:outputTextArea value="{!v.newValue}"/>
+                            </a>
+                        </div>
+                        
+                        <aura:set attribute="else">
+                            <div class="{!v.questionTextLayout ? 'slds-hide' : 'label-override'}"  >
+                                <a class="exam-bold slds-m-right_xx-small label-override" onclick="{!c.changevalue}">
+                                    {!v.fieldLabel}
+                                </a>
+                                <lightning:helptext class="{!v.helpText ? '' : 'slds-hide'}"  content="{!v.helpText}" iconName="utility:info"/>
+                            </div>
+                            <div class="slds-size--1-of-1 slds-grid slds-grid_align-spread" aura:id="createOutputCmp">
+                                <ui:outputTextArea value="{!v.newValue}"/>
+                                <div class="{!v.questionTextLayout ? 'slds-show' : 'slds-hide'}"  >
+                                    <div class="tooltip-container">
+                                        
+                                        <a class="slds-p-left_small" onclick="{!c.changevalue}">
+                                            <lightning:icon class="icn" iconName="action:edit" size="small"/>
+                                        </a>
+                                        <div class="slds-popover slds-popover--tooltip slds-nubbin--bottom-left" role="tooltip" id="help">
+                                            <div class="slds-popover__body">Edit Question Text
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </aura:set>
+                        
+                    </aura:if>
+                    
+                    <aura:set attribute="else">
+                        
+                        <aura:if isTrue="{!v.newField}">
+                            <!--<div class="{!v.newField ? 'slds-show' : 'slds-hide'}">-->
+                            
+                            <span class="slds-col">
+                                <ui:outputText value="{!v.fieldLabel}" class="slds-m-right_xx-small"/>
+                                <lightning:helptext class="{!v.helpText ? '' : 'slds-hide'}"  content="{!v.helpText}" iconName="utility:info"/>
+                            </span>
+                            <div class="slds-col slds-size--1-of-1">
+                                <ui:inputTextArea class="slds-textarea" rows="2" value="{!v.newValue}"/>
+                            </div>
+                            <!--</div>-->
+                            
+                            <aura:set attribute="else">
+                                
+                                <!--<div class="{!v.newField ? 'slds-hide' : 'slds-show'}">-->
+                                <div class="{!v.hideLabel ? 'slds-hide' : 'slds-show'}">
+                                    <a class="exam-bold slds-m-right_xx-small label-override" onclick="{!c.changevalue}">
+                                        {!v.fieldLabel}
+                                    </a>
+                                    <lightning:helptext class="{!v.helpText ? '' : 'slds-hide'}"  content="{!v.helpText}" iconName="utility:info"/>
+                                </div>
+                                <div class="slds-size--1-of-1 slds-grid slds-grid--align-spread slds-wrap  slds-grid--vertical-align-end label-override">
+                                    <span aura:id="createInputCmp" class="slds-col slds-size--1-of-1 slds-m-right--medium">
+                                        <ui:inputTextArea class="slds-textarea" value="{!v.oldValue}" rows="2"/>
+                                    </span>
+                                    <span class="slds-p-top_x-small">
+                                        <a class="slds-button slds-button--neutral slds-button--save slds-m-right--small" onclick="{!c.updateFieldValue}">
+                                            Save
+                                        </a>
+                                        <a class="slds-button slds-button--neutral" onclick="{!c.cancelUpdateFieldVal}">
+                                            Cancel</a>
+                                    </span>
+                                </div>                        
+                                <!--</div>-->
+                                
+                            </aura:set>
+                            
+                        </aura:if>
+                        
+                    </aura:set>
+                </aura:if>
+                
+            </aura:set>
+        </aura:if>
+    </div>
+    
+    
+    
+</aura:component>

@@ -1,0 +1,43 @@
+<apex:component >
+
+    <apex:attribute name="isPrimaryTextarea" type="Boolean" default="false" description="Renders Primary Textarea Question"/>
+    <apex:attribute name="isDependentTextarea" type="Boolean" default="false" description="Renders Dependent Textarea Question"/>
+    <apex:attribute name="isDecisionTreeTextarea" type="Boolean" default="false" description="Renders Decision Tree Textarea Question"/>
+
+    <apex:outputPanel rendered="{!isPrimaryTextarea}">
+        <div ng-if="eachQuestTemplateRec.ExAM__Question_Type__c == 'Textarea'">
+            <c:Primary_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <textarea rows="4" cols="50" ng-model="response[eachQuestTemplateRec.Id]"
+                          maxLength="{{eachQuestTemplateRec.ExAM__Field_Length__c}}"
+                          class="slds-size--8-of-12 slds-textarea validate{{eachQuestTemplateRec.ExAM__Is_Mandatory__c}}"/>
+                <c:Primary_Question_Action />
+            </div> 
+        </div>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!isDependentTextarea}">
+        <div ng-if="nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c == 'Textarea'">
+            <c:Dependent_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <textarea rows="4" cols="50" ng-model="response[nextDependentQuestion[eachQuestTemplateRec.Id].Id]"
+                          maxLength="{{nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Field_Length__c}}"
+                          class="slds-size--8-of-12 slds-textarea validateTextArea validate{{nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Is_Mandatory__c}}"/>
+                <c:Dependent_Question_Action />
+            </div> 
+        </div>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!isDecisionTreeTextarea}">
+        <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'Textarea'">
+            <c:DecisionTree_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <textarea rows="4" cols="50" ng-model="DecisionTreeresponse[decisionTreeQuestion.Id]"
+                          maxLength="{{decisionTreeQuestion.ExAM__Field_Length__c}}"
+                          class="slds-size--8-of-12 slds-textarea validateTextArea"/>
+                <c:DecisionTree_Question_Action />
+            </div> 
+        </div>
+    </apex:outputPanel>
+
+</apex:component>

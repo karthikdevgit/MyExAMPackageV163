@@ -1,0 +1,151 @@
+<apex:page standardController="SafetyInspection__c" tabstyle="account" standardStylesheets="false" sidebar="false" extensions="safetyInspectioncontroller">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> 
+            
+<script language="JavaScript" type="text/javascript">
+function CorrectiveAction1(correctaction)
+{
+
+
+}
+function CorrectiveAction(correctaction)
+{
+//alert(correctaction);
+var caction;
+if(correctaction=='Program – HAZCOM')
+{caction='Implement a Hazard Communication Program pursuant to Cal/OSHA requirements. To obtain a copy of the Districts Hazard Communication Program, contact OEHS at (213) 241-3199.';}
+else if(correctaction=='Chemical Inventory')
+{caction='Maintain school chemical inventory pursuant to Hazard Communication Program.';}
+else if(correctaction=='Plan – Chemical Hygiene & Safety')
+{caction='Maintain and implement Chemical Hygiene & Safety Plan and ensure it is readily available to all employees. The plan should identify a Chemical Safety Coordinator and be revised at least annually.';}
+else if(correctaction=='Visitor’s Pass')
+{caction='Ensure visitors entering school grounds sign in and receive a visitor’s pass.';}
+else if(correctaction=='Posting – Visitation Policy')
+{caction='Ensure school visitation policy is posted and distributed annually to parents and staff.';}
+else if(correctaction=='Communicating Emergencies')
+{caction='Ensure all classrooms are provided with a communications system that can contact the main office or call 911. New schools and building additions constructed after 2000 require a telephone system capable of calling 911.';}
+else if(correctaction=='Availability')
+{caction='Ensure that an Asbestos Management Plan is available to employees, parents and others pursuant to 40 CFR.';}
+else if(correctaction=='Current')
+{caction='Confer with Asbestos Technical Unit (ATU) to ensure that the Asbestos Management Plan is current and identifies the location of all asbestos containing material (ACM). For assistance, contact ATU at (213) 745-1450.';}
+else if(correctaction=='Asbestos Work Compliance')
+{caction='Ensure regulatory compliance with asbestos work practices, engineering controls, personal protective equipment, and clearance air monitoring requirements for all releases or abatement activities.';}
+//alert(document.getElementById("{!$Component.pagesf.incidentForm.corraction}");
+//alert(document.getElementById('corraction1'));
+document.getElementById('corraction1').value=caction;
+}
+</script> 
+   
+  <style type="text/css">
+         .inputTextBig { width: 80%; }
+         .inputTextWidthMedium { width: 20%; }
+         .inputTextWidthMediumSchool { width: 40%; }
+         .inputTextWidthHalf { width: 40%; }
+         span.thick {font-weight:bold;}
+span.thick {font-size:12px}
+span.thin {font-size:10px}
+    </style>
+     <table><tr><td width="30%"><apex:image url="{!$Resource.LASchoolLogo2}" /><div> <span class="thick">Office of Environmental Health and Safety </span> </div>
+    <div><span class="thick">  Facility Inspection Program </span></div>
+    <div><span class="thin">333 South Beaudry Avenue, 28th Floor</span> </div>
+    <div><span class="thin">Los Angeles, California 90017</span></div>
+    <div><span class="thin">Phone: (213) 241-3199</span></div>
+    </td>
+       
+ <td align="center" width="30%" style="font-style:bold;font-size:20px;padding:20px 0 20px 0px;"><b>FIELD INSPECTION WORKSHEET<br/>
+Los Angeles Unified School District
+Revised April 2011</b></td><td width="30%" valign="top"><apex:image url="{!$Resource.LASchoolLogo}" style="float:right;"/> </td></tr></table>
+    <apex:form id="incidentForm">
+        <br></br>
+         <TABLE BORDER="1" CELLPADDING="4" CELLSPACING="0" align="LEFT" BORDERCOLOR="black" WIDTH="100%">
+                
+          <TR>
+              <Td align="left" width="30%"><b><label for="labelarea" style="padding-left:0px;font-size:15px;">Inspection Date :</label> </b><apex:inputField value="{!VisRecord.Inspection_Date__c}" id="labelarea" styleClass="inputTextWidthMediumSchool"></apex:inputField></td><td align="left" width="30%">
+              <b><label for="labeldist" style="padding-left:3px;padding-right:77px;font-size:15px;">Facility : </label></b><apex:inputField value="{!VisRecord.Facility__c}" id="labeldist" styleClass="inputTextWidthMediumSchool"></apex:inputField></td><td align="left" width="30%">
+              <b><label for="labelsch" style="padding-left:3px;font-size:15px;">Facility Type: </label> </b><apex:inputField value="{!VisRecord.Facility_Type__c}" id="labelsch" styleClass="inputTextWidthMediumSchool"></apex:inputField></td>
+           </TR>
+           
+    <TR>
+              <TD><b><label for="labelarea1" style="padding-left:0px;padding-right:47px;font-size:15px;">Inspector:</label> </b><apex:inputField value="{!VisRecord.Inspector__c}" id="labelarea1" styleClass="inputTextWidthMediumSchool "></apex:inputField></td><td>
+              <b><label for="labeldist1" style="padding-left:3px;font-size:15px;">Site Administrator : </label></b><apex:inputField value="{!VisRecord.Site_Administrator__c}" id="labeldist1" styleClass="inputTextWidthMediumSchool "></apex:inputField></td><td>
+              <b><label for="labelsch1" style="padding-left:3px;font-size:15px;padding-right:43px;">E-Mail: </label> </b><apex:inputField value="{!VisRecord.Email__c}" id="labelsch1" styleClass="inputTextWidthMediumSchool "></apex:inputField></TD>
+           </TR>           
+          
+            <TR>
+              <TD><b><label for="labelarea2" style="padding-left:0px;font-size:15px;">Inspection Type:</label> </b><apex:inputField value="{!VisRecord.Inspection_Type__c}" id="labelarea2" styleClass="inputTextWidthMediumSchool "></apex:inputField></td><td>
+              <b><label for="labeldist2" style="padding-left:3px;font-size:15px;">Addressee if different from site admin(e.g. OAR): </label></b><apex:inputField value="{!VisRecord.Addressee__c}" id="labeldist2" style="padding-left:35px;"></apex:inputField></td><td>
+              Note: CAN cover letters will automatically be produced with the approved copy list. Special copy and distribution instructions should be detailed in the Document Processing Slip that will accompany your CAN throughout the distribution process</TD>
+           </TR>                
+      
+            
+             <TR>
+                <TD colspan="3" style="padding-left:5px;font-size:15px;">Include Project # if this is a construction inspection.
+             </td></tr>
+              <tr><td colspan="1">  
+                <b><label for="labelsch3" style="padding-left:0px;font-size:15px;padding-right:43px;">Project #: </label>  </b><apex:inputField value="{!VisRecord.Project_No__c}" id="labelsch3" styleClass="inputTextWidthMediumSchool"></apex:inputField></td>
+                <td colspan="2">
+           
+                 <b><label for="labelsch4" style="padding-left:3px;font-size:15px;padding-right:43px;">Complex Project Manager: </label>  </b> <apex:inputField value="{!VisRecord.Complex_Project_Manager__c}" id="labelsch4" styleClass="inputTextWidthMediumSchool"></apex:inputField></td>
+               </TR>  
+           </table><br/><br/>
+            <TABLE BORDER="1" CELLPADDING="4" CELLSPACING="0" align="LEFT" BORDERCOLOR="black" WIDTH="100%">
+             <tr><td colspan="3" style="padding-left:3px;padding-bottom:5px;padding-top:5px;">OK to leave "Priority" and "Responsible Party" fields blank if default values are desired. Please separate multiple deficiency locations with a semi-colon. *      </td></tr>               
+           <!--<tr>
+               <th style="padding-left:3px;padding-bottom:5px;padding-top:5px;font-size:15px;">Category</th>
+               
+                <th style="padding-left:3px;padding-bottom:5px;padding-top:5px;font-size:15px;">Type</th>
+                <th style="padding-left:3px;padding-bottom:5px;padding-top:5px;font-size:15px;">Subtype</th>  
+            </tr>-->        
+            <tr>
+                 <td> <b><label for="labelsch5" style="padding-left:0px;font-size:15px;padding-right:60px;">Category: </label>  </b>          
+                <apex:inputField value="{!VisRecord.Category__c}" id="labelsch5" styleClass="inputTextWidthMediumSchool"></apex:inputField></td>
+                <td>
+           <b><label for="labelsch6" style="padding-left:0px;font-size:15px;padding-right:90px;">Type: </label>  </b>
+                 <apex:inputField value="{!VisRecord.Type__c}" id="labelsch6" styleClass="inputTextWidthMediumSchool"></apex:inputField></td>
+                 
+                <td>
+           <b><label for="labelsch7" style="padding-left:0px;font-size:15px;padding-right:15px;">Subtype: </label>  </b>
+                 <apex:inputField value="{!VisRecord.Sub_Type__c}"  id="labelsch7" styleClass="inputTextWidthMediumSchool" onchange="CorrectiveAction(this.value);"></apex:inputField></td>
+            </TR>
+            
+               <!-- <tr>
+               <th style="padding-left:3px;padding-bottom:5px;padding-top:5px;font-size:15px;">Corrective Action</th>
+               
+                <th style="padding-left:3px;padding-bottom:5px;padding-top:5px;font-size:15px;">Locations</th>
+                <th style="padding-left:3px;padding-bottom:5px;padding-top:5px;font-size:15px;">Comments</th>   </tr>  -->  
+                <tr>
+                           
+                <TD valign="top" style="padding-left:0px;font-size:15px;padding-right:0px;">
+                
+           <!-- <apex:inputHidden id="test" value="{!VisRecord.Corrective_Action__c}"/>  -->  
+              <b> Corrective Action: </b><textarea rows="3" cols="40" id="corraction1">
+        <!--<input type="text" name="fname" value="{!VisRecord.Corrective_Action__c}" id="corraction1" /><apex:inputField value="{!VisRecord.Corrective_Action__c}" id="corraction" styleClass="inputTextWidthMediumSchool"></apex:inputField>-->
+        </textarea>
+                </td>
+                <td>
+             <b><label for="labelsch9" style="padding-left:0px;font-size:15px;padding-right:58px;">Locations: </label>  </b>
+                 <apex:inputField value="{!VisRecord.Locations__c}" id="labelsch9" styleClass="inputTextWidthMediumSchool"></apex:inputField></td>
+                 
+                <td>
+             <b><label for="labelsch10" style="padding-left:0px;font-size:15px;padding-right:0px;text-align:center">Comments: </label>  </b>
+                 <apex:inputField value="{!VisRecord.Comments__c}" id="labelsch10" styleClass="inputTextWidthMediumSchool"></apex:inputField></td>
+            </TR>
+            <TR>
+                <TD><b><label for="labelsch11" style="padding-left:0px;font-size:15px;padding-right:4px;">Priority: </label> </b> <apex:inputField value="{!VisRecord.Priority__c}"  id="labelsch11"></apex:inputField>
+           
+                <b><label for="labelsch12" style="padding-left:0px;font-size:15px;padding-right:4px;">Default: </label> </b> <apex:inputField value="{!VisRecord.Default__c}" id="labelsch12" ></apex:inputField></td>
+                
+                <td><b><label for="labelsch14" style="padding-left:0px;font-size:15px;padding-right:0px;">Responsible Party: </label>  </b> <apex:inputField value="{!VisRecord.Responsible_Party__c}" styleClass="inputTextWidthMediumSchool" id="labelsch14"></apex:inputField></td>
+                <td><b><label for="labelsch13" style="padding-left:0px;font-size:15px;padding-right:27px;">Default: </label> </b>  <apex:inputField value="{!VisRecord.Default_2__c}" styleClass="inputTextWidthMediumSchool" id="labelsch13"></apex:inputField></td>
+            </TR>
+
+           <TR align="center" style="font-style:bold;">
+             <td colspan="3" style="font-style:bold;font-size:16px;padding:20px 0 20px 0px;"><!-- <apex:commandButton value="Save" action="{!Save}" id="button2"/>-->
+             <apex:commandButton value="Cancel" action="{!Cancel}" id="button1"/> 
+             <apex:commandButton value="Save" action="{!Save}"/>
+             </td>      
+           </TR>
+        </TABLE> 
+ 
+    </apex:form>
+  
+</apex:page>

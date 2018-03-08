@@ -1,0 +1,129 @@
+<apex:component controller="GeneralConfigController">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+        <div class="slds-form-element" ng-app="siteURLConfigureApp" ng-controller="siteURLConfigureCtrl">
+            <div class="slds-form-element">
+                <div class="slds-card slds-m-top--x-small">
+
+                    <!-- Start Public Site Assessment URL Configuration -->
+                    <div class="slds-card__header slds-grid">
+                        <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <h2 class="slds-text-heading--small slds-truncate">Public Site Assessment URL Configuration</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-card__body">
+                        <div ng-show="showErrMessage" style="color: {{setPgMsgColor}};font-size: 15px;">{{ errMessage }}</div>
+                        <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                            <tbody>
+                                <tr class="slds-hint-parent">
+                                    <td class="slds-size--1-of-4">
+                                        Site URL
+                                    </td>
+                                    <td class="slds-size--3-of-4">
+                                        <p ng-show="!showTextBox">{{ pacObj.OldValue }}</p>
+                                        <div ng-show="showTextBox">
+                                            <input type="text" placeholder="Enter Site Url" class="slds-col slds-size--8-of-12 slds-input" ng-model="pacObj.NewValue"/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td colspan="2">
+                                        <center>
+                                            <input class="slds-button slds-button--brand" ng-show="!showTextBox" ng-click="toggleView('edit')" type="button" value="Edit Configuration"/>
+                                            <input class="slds-button slds-button--brand" ng-show="showTextBox" ng-click="validateUsrEnteredUrl()" type="button" value="Save"/>
+                                            <input class="slds-button slds-button--brand" ng-show="showTextBox" ng-click="toggleView('cancel')" type="button" value="Cancel"/>
+                                        </center>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- End Public Site Assessment URL Configuration -->
+                </div>
+            </div>
+        </div>
+    </html>
+    <script>
+        var app = angular.module('siteURLConfigureApp', []);
+        app.service('siteURLConfigureService', function($q) {
+
+            this.saveURL = function(opt) {
+
+                var defer = $q.defer();
+
+                ExAM.GeneralConfigController.doSaveSelectedSiteUrl(opt, function(result, event) {
+
+                    if (event.status) {
+
+                        defer.resolve(result);
+                    }
+                    else {
+                        defer.reject('error');
+                    }
+                });
+                return defer.promise;
+            }
+        });
+        app.controller('siteURLConfigureCtrl', function($scope, siteURLConfigureService) {
+
+            $scope.pacObj = {};
+            $scope.errMessage = '';
+            $scope.setPgMsgColor = 'red';
+            $scope.showTextBox = false;
+            $scope.showErrMessage = false;
+
+            if ('{!JSENCODE(siteurl)}' != null && '{!JSENCODE(siteurl)}' != '') {
+                $scope.pacObj.OldValue = '{!JSENCODE(siteurl)}';
+            }
+
+            $scope.toggleView = function(from) {
+
+                $scope.errMessage = '';
+                $scope.showTextBox = false;
+                $scope.showErrMessage = false;
+
+                if (angular.isDefined($scope.pacObj.OldValue)) {
+                    $scope.pacObj.NewValue = $scope.pacObj.OldValue;
+                }
+                if (from == 'edit') {
+                    $scope.showTextBox = true;
+                }
+            }
+
+            $scope.validateUsrEnteredUrl = function() {
+
+                $scope.errMessage = '';
+                $scope.setPgMsgColor = 'red';
+                $scope.showErrMessage = false;
+
+                if ($scope.pacObj.NewValue != '' && $scope.pacObj.NewValue != null) {
+
+                    if (!$scope.pacObj.NewValue.startsWith('http') && !$scope.pacObj.NewValue.startsWith('https') ) {
+                        $scope.pacObj.NewValue = 'https://'+$scope.pacObj.NewValue;
+                    }
+
+                    siteURLConfigureService.saveURL($scope.pacObj.NewValue).then(function(data) {
+
+                        $scope.pacObj.OldValue = $scope.pacObj.NewValue;
+                        $scope.errMessage = data;
+                        $scope.setPgMsgColor = 'green';
+                        $scope.showErrMessage = true;
+                        $scope.showTextBox = false;
+                    },
+                    function(errdata) {
+
+                        $scope.errMessage = errdata;
+                        $scope.showErrMessage = true;
+                    });
+                }
+                else {
+
+                    $scope.errMessage = 'Please enter a site URL';
+                    $scope.showErrMessage = true;
+                }
+            }
+        });
+    </script>
+</apex:component>

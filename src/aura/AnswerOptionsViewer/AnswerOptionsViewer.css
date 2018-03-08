@@ -1,0 +1,40 @@
+.THIS .tooltip-container{
+    cursor: pointer;
+}
+
+.THIS .tooltip-container .slds-popover.slds-popover--tooltip {
+    top: -45px;
+    left: -18px;
+    
+}
+    /*.THIS .slds-box{
+    padding:.25rem;
+    border-width: 1px;
+    }*/
+.THIS .slds-table td{
+    
+}
+.THIS .uiOutputTextArea{}
+
+.THIS .slds-dropdown-trigger .slds-dropdown ul{
+    width: 100%;
+    max-height: 150px;
+    overflow: auto;
+}
+/*.THIS .slds-table td{
+    padding-bottom: 1.5rem !important;
+}*/
+.THIS .table-truncate{
+    position: relative;
+}
+.THIS .table-truncate__body{
+    position: absolute;
+    max-width: 95%;
+    white-space: nowrap;
+    overflow: hidden;         
+    text-overflow: ellipsis;
+    padding-right: 20px;
+}
+.THIS .spanContainer{
+    display : inline-block;
+}

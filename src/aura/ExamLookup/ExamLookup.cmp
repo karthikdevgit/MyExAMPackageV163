@@ -1,0 +1,80 @@
+<aura:component access="public" controller="LookupSObjectController">
+    
+    <aura:handler name="init" value="{!this}" action="{!c.selectedRecord}" />
+    
+    <!--declare attributes--> 
+    <aura:attribute name="selectedRecord" type="sObject" default="{}" description="Use,for store SELECTED sObject Record" access="public"/>
+    <aura:attribute name="SearchKeyWord" type="string" access="public"/>
+    <aura:attribute name="matches" type="List" access="public"/>
+    <aura:attribute name="objRefName" type="string" access="public"/>
+    <aura:attribute name="IconName" type="string" default="" access="public"/>
+    <aura:attribute name="hasReferenceError" type="Boolean" default="false" access="public"/>    
+    <aura:attribute name="label" type="string" default="" access="public"/>
+    <aura:attribute name="isClose" type="Boolean" default="false" access="public"/>    
+    <aura:attribute name="Message" type="String" default="" access="public"/>
+    <aura:attribute name="labelName" type="String" access="public" />
+    <!--declare events hendlers-->  
+    
+    
+    <aura:registerEvent name="notificationEvent" type="c:notificationEvt"/>
+    
+    <aura:method name="validate" action="{!c.validate}"/>
+    <aura:method name="clearSelection" action="{!c.clear}"/>
+    
+    <!-- https://www.lightningdesignsystem.com/components/lookups/ --> 
+    <div aura:id="searchRes" class="slds-form-element slds-lookup slds-is-close" data-select="single">
+        <!--This part is for display search bar for lookup-->  
+        <div class="slds-form-element__control">
+            <div class="slds-input-has-icon slds-input-has-icon--right">
+                <lightning:icon aura:id="iconposition" class="slds-input__icon slds-show" iconName="utility:search" size="x-small" alternativeText="search"/> 
+                <!-- This markup is for when an record is selected -->
+                <div aura:id="lookup-pill" class="slds-pill-container slds-hide">
+                    <span class="slds-pill" style="width:100%">
+                        <span class="slds-pill__label slds-p-left_x-large" style="line-height: 1.575rem">
+                            {!v.selectedRecord.Name}  
+                        </span>
+                        <button class="slds-button slds-button--icon slds-pill__remove" onclick="{!c.clear}" disabled="{!v.isClose}">
+                            <lightning:icon class="slds-button__icon" iconName="utility:close" size="x-small" alternativeText="search"/>  
+                            <span class="slds-assistive-text">Remove</span>
+                        </button>
+                    </span>
+                </div>
+                <div aura:id="lookupField" class="slds-show">
+                    <span aura:id="iconleftposition" class="slds-icon_container  slds-combobox__input-entity-icon" title="record">
+                        <lightning:icon aura:id="searchiconposition" class="slds-icon slds-icon slds-icon_small slds-icon-text-default" iconName="{!v.IconName}" size="x-small" alternativeText="icon"/>
+                    </span>
+                    
+                    <ui:inputText disabled="{! !v.objRefName ? true : false}" aura:id="lookupinput" updateOn="keyup"  keyup="{!c.keyPressController}" class="slds-lookup__search-input slds-input leftPaddingClass" value="{!v.SearchKeyWord}" placeholder="search.."/>
+                    
+                </div>   
+            </div>
+        </div>
+        <!--This part is for Display typehead lookup result List-->  
+        <ul class="slds-listbox slds-listbox_vertical slds-dropdown slds-dropdown_fluid slds-lookup__menu lookupfix" role="listbox" style="overflow-x: auto;max-height: 158px;position:absolute">
+            <aura:if isTrue="{!v.matches.length}">
+                <aura:iteration items="{!v.matches}" var="match">
+                    <li class="slds-lookup__item">
+                        <a id="{!globalId + '_id_' + match.SObjectId}" role="option" onclick="{!c.select}">
+                            {!match.SObjectLabel}
+                        </a>
+                    </li>
+                </aura:iteration>
+                <aura:set attribute="else">
+                    <li class="slds-lookup__item">No record found</li>
+                </aura:set>
+            </aura:if>
+            
+        </ul>
+    </div>
+    
+    <div aura:id="spinner_container" class="slds-hide">
+        <div class="slds-spinner_container">
+            <div role="status" class="slds-spinner slds-spinner--medium slds-spinner--brand">
+                <span class="slds-assistive-text">Loading</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </div>
+    
+</aura:component>

@@ -1,0 +1,99 @@
+<apex:page standardController="SafetyInspection__c" tabstyle="account" standardStylesheets="false" sidebar="false" recordSetVar="listinspect">
+<html>
+<head>
+<style type="text/css">
+span.thick {font-weight:bold;}
+span.thick {font-size:12px}
+span.thin {font-size:10px}
+span.jlheader {font-weight:bold;}
+span.jlheader {font-size:28px}
+div.jlheader {text-align: center}
+td.jlbold {font-weight:bold;}
+span.jldesc{ font-size:14px}
+img.rightimage {float:right}
+div.farright {align:right}
+table.datatable {
+width:100%;
+CELLPADDING:4;
+ CELLSPACING:0;
+  align:LEFT;
+   BORDERCOLOR:black;
+}
+body{
+width:100%;
+}
+</style>
+
+</head>
+
+<body>
+    
+        
+<div>
+<a> <apex:image url="{!$Resource.LASchoolLogo2}" /></a>
+<a><apex:image url="{!$Resource.LASchoolLogo}" styleClass="rightimage" alt="LASchool"/></a>
+</div>
+
+    <div> <span class="thick">Office of Environmental Health and Safety </span> </div>
+    <div><span class="thick">  Facility Inspection Program </span></div>
+    <div><span class="thin">333 South Beaudry Avenue, 28th Floor</span> </div>
+    <div><span class="thin">Los Angeles, California 90017</span></div>
+    <div><span class="thin">Phone: (213) 241-3199</span></div>
+    <div class="jlheader"> <span class="jlheader">Corrective Action Notice</span></div>
+
+<table>
+    <tr>
+    <td width ="20%">
+        <table>
+            <tr> <td class="jlbold">Inspection Date:  </td> <td> 10/3/2013 </td> </tr>           
+            <tr> <td class="jlbold">Facility Type: </td>    <td> High School </td> </tr>       
+            <tr> <td class="jlbold">Enrollment: </td>       <td> 1431 </td> </tr>          
+            <tr> <td class="jlbold">District: </td>         <td> N </td></tr>    
+            <tr> <td class="jlbold">OEHS Represenative: </td> <td>Patty Filous</td></tr>         
+        </table>
+    </td>
+    
+    <td width = "12%"> </td>
+    
+    <td width ="35%">
+        <table>
+            <tr> <td>&nbsp;</td></tr>
+            <tr> <td class="jlbold">Site Administrator: </td> <td>Mr. Alfredo Tarin</td></tr>  
+            <tr> <td class="jlbold">Complex Project Manager: </td> <td>George Steward</td></tr> 
+            <tr> <td class="jlbold">Facility: </td><td>Porter Middle School</td></tr> <!--Porter Middle School -->
+            <tr> <td class="jlbold">Address: </td><td>15960 Kingbury Street</td></tr>  <!-- 15960 Kingbury Street -->
+            <tr> <td></td><td>Granada Hills, CA 91344</td></tr>            <!-- Granada Hills, CA 91344 -->
+        </table>
+    </td>
+    
+    <td width = "20%"> </td>
+    
+    <td>
+        <table>
+            <tr><td class="jlbold">Inspection ID: </td></tr>  
+            <tr> <td> 17434 </td></tr>
+            <tr> <td class="jlbold">Inspection Type:</td> </tr> 
+            <tr> <td> Routine </td></tr>
+        </table>
+    </td>
+    </tr>
+</table>
+<div><span class="jldesc">The Site Administrator, Authorize Representative, or Complex Project Manager may log on to the OEHS website at http://ww.lausd-oeds./filedoperations_listschools.asp to self-certify items which have been corrected.  OEHS will update the compliance database and review the items to determine if it warrants an increase in the scorecard rating. </span></div> 
+
+<br />
+
+<TABLE BORDER="1" CELLPADDING="4" CELLSPACING="0" align="LEFT" BORDERCOLOR="black" WIDTH="100%">
+    <tr><th>Standard</th><th>Priority</th><th>Corrective Action</th><th>Comment(s)</th><th>Location(s)</th><th>Due Date</th><th>Responsible Party</th><th>Tracking Info</th> <th>Notes</th>   </tr>
+    <apex:repeat value="{!listinspect}" var="inspect" id="theRepeat">
+
+
+    
+    <tr><td><apex:outputText value="{!inspect.Category__c}" id="theValue"/></td><td><apex:outputText value="{!inspect.Priority__c}"/></td><td><apex:outputText value="{!inspect.Corrective_Action__c}"/></td><td><apex:outputText value="{!inspect.Comments__c}"/></td><td><apex:outputText value="{!inspect.Locations__c}"/></td><td><apex:outputText value="{!inspect.Due_Date__c}"/></td><td><apex:outputText value="{!inspect.Responsible_Party__c}"/></td><td></td> <td></td>  </tr>
+   
+    </apex:repeat>
+</table>
+
+
+</body>
+</html>
+</apex:page>

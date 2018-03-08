@@ -1,0 +1,46 @@
+<apex:component >
+
+    <apex:attribute name="isPrimaryDropdown" type="Boolean" default="false" description="Renders Primary Dropdown Picklist Question"/>
+    <apex:attribute name="isDependentDropdown" type="Boolean" default="false" description="Renders Dependent Dropdown Picklist Question"/>
+    <apex:attribute name="isDecisionTreeDropdown" type="Boolean" default="false" description="Renders Decision Tree Dropdown Picklist Question"/>
+
+    <apex:outputPanel rendered="{!isPrimaryDropdown}">
+        <div ng-if="eachQuestTemplateRec.ExAM__Question_Type__c == 'Dropdown Picklist'">
+            <c:Primary_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <div class="slds-size--8-of-12"> 
+                    <select ng-model="response[eachQuestTemplateRec.Id]" ng-options="section as section for section in splitOptions(eachQuestTemplateRec)"
+                            ng-change="openDecisionTreePopUp(response[eachQuestTemplateRec.Id], eachQuestTemplateRec);returnRelatedDependentQuestion(eachQuestTemplateRec, response[eachQuestTemplateRec.Id]);"
+                            class="slds-select validatepicklist{{eachQuestTemplateRec.ExAM__Is_Mandatory__c}}" id="sectionTempId">
+                    </select>
+                </div>
+                <c:Primary_Question_Action renderClearIcon="true" />
+            </div> 
+        </div>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!isDependentDropdown}">
+        <div ng-if="nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c == 'Dropdown Picklist'">
+            <c:Dependent_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <div class="slds-size--8-of-12"> 
+                    <select ng-model="response[nextDependentQuestion[eachQuestTemplateRec.Id].Id]" ng-options="section as section for section in splitOptions(nextDependentQuestion[eachQuestTemplateRec.Id])"
+                            class="slds-select validatepicklist{{nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Is_Mandatory__c}}" id="sectionTempId">
+                    </select>
+                </div>
+                <c:Dependent_Question_Action />
+            </div> 
+        </div>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!isDecisionTreeDropdown}">
+        <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'Dropdown Picklist'">
+            <c:DecisionTree_Question_Property />
+            <select ng-model="DecisionTreeresponse[decisionTreeQuestion.Id]" ng-options="section as section for section in splitOptions(decisionTreeQuestion)"
+                    ng-change="renderNextQuestionInDecisionTreeFunCall(DecisionTreeresponse[decisionTreeQuestion.Id], decisionTreeQuestion);" ng-value="section"
+                    class="slds-select" id="sectionTempId">
+            </select>
+        </div>
+    </apex:outputPanel>
+
+</apex:component>

@@ -1,0 +1,16 @@
+.THIS .chartdiv {
+  width: 100%;
+  height: 500px;
+} 
+
+.THIS .chartdiv a{
+    display : none !important;
+}
+.THIS {
+}
+.THIS .spinnerContainer{
+    position: relative;
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+}

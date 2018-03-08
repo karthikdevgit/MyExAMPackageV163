@@ -1,0 +1,4 @@
+<aura:event access="public" type="COMPONENT" description="Event template">
+  <aura:attribute name="action" type="String" access="public"/>
+  <aura:attribute name="itemIndex" type="Integer" access="public"/>
+</aura:event>

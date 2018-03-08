@@ -1,0 +1,310 @@
+<apex:page controller="ScoreBasedPageForwardingController">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <apex:includeScript value="{!URLFOR($Resource.UnderscoreAndAngularJS,'UnderscoreAndAngularJS/angular.min.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-1.10.2.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-ui.min.js')}"/>
+            <title>Assessment Viewer</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS052, '/assets/styles/salesforce-lightning-design-system-vf.css')}" />
+        </head>
+        <div class="slds" ng-app="scoreApp" ng-controller="scoreCtrl" > 
+           <div class="slds-notify_container" id="successMsg" style="display:none;">
+              <div class="slds-notify slds-notify--alert slds-theme--success slds-theme--alert-texture" role="alert">
+                <button class="slds-button slds-button--icon-inverse slds-notify__close" ng-click="notifyClose();">
+                  <svg aria-hidden="true" class="slds-button__icon">
+                    <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                  </svg>
+                  <span class="slds-assistive-text">Close</span>
+                </button>
+                <span class="slds-assistive-text">Success</span>
+                <h2>
+                    Configured Successfully.
+                </h2>
+              </div>
+            </div>
+            <div class="slds-notify_container" style="display:none" id="errorMsg" >
+              <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert">
+                <button class="slds-button slds-button--icon-inverse slds-notify__close" ng-click="notifyClose();">
+                  <svg aria-hidden="true" class="slds-button__icon">
+                    <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                  </svg>
+                  <span class="slds-assistive-text">Close</span>
+                </button>
+                <span class="slds-assistive-text">Error</span>
+                <h2 id="ErrorText">
+                    Please configure atleast anyone of the Redirect Configuration.    
+                </h2>
+              </div>
+            </div>
+            <div class="slds-card slds-m-top--x-small slds-m-bottom--x-large">
+                <div class="slds-card__header slds-grid">
+                     <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <h2 class="slds-text-heading--small slds-truncate" style="font-weight: bold;">
+                                Default Redirect Configuration
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+                <div  class="slds-card__body slds-grid slds-wrap slds-p-around--small slds-theme--default  slds-m-left--x-small slds-m-bottom--x-small slds-m-top--x-small slds-m-right--x-small">
+                    <div class="slds-col--padded slds-size--1-of-2 slds-align-middle slds-medium-size--1-of-6 slds-large-size--4-of-12">
+                        <label> Default Assessment Completed URL </label>
+                    </div> 
+                    <div class="slds-col--padded slds-size--1-of-2 slds-align-middle slds-medium-size--1-of-6 slds-large-size--4-of-12">
+                        <input type="text" class="slds-input urlVal1 validateAss" ng-model="assCompletedURL" name="urlName"/>
+                        <div id="error-message" class="slds-form-element__help requiredMessage" style="display:none"></div>
+                    </div>  
+                    <div class="slds-col--padded slds-size--1-of-2 slds-align-middle slds-medium-size--1-of-6 slds-large-size--4-of-12"/>                               
+                </div> 
+            </div>
+            <div class="slds-card slds-m-top--x-small slds-m-bottom--x-large">
+                <div class="slds-card__header slds-grid">
+                    <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <h2 class="slds-text-heading--small slds-truncate" style="font-weight: bold;">
+                                Score Based Redirect Configuration
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+                
+                <div ng-repeat="score in scoreBaseUrls" class="slds-card__body slds-grid slds-wrap slds-p-around--small slds-theme--default  slds-m-left--x-small slds-m-bottom--x-small slds-m-top--x-small slds-m-right--x-small">
+                    <div class="slds-col--padded slds-size--1-of-2 slds-align-middle slds-medium-size--1-of-6 slds-large-size--1-of-12">
+                        <input type="text" class="slds-input fromVal numberVal validate" ng-model="score.fromScore" placeholder="From Score"/> 
+                        <div id="error-message" class="slds-form-element__help requiredMessage" style="display:none"></div>   
+                    </div> 
+                    <div style="margin-top: inherit;font-weight: bold;"> to </div>
+                    <div class="slds-col--padded slds-size--1-of-2 slds-align-middle slds-medium-size--1-of-6 slds-large-size--1-of-12">
+                        <input type="text" class="slds-input toVal numberVal validate" ng-model="score.toScore" placeholder="To Score"/>
+                        <div id="error-message" class="slds-form-element__help requiredMessage" style="display:none"></div>
+                    </div> 
+                    <div style="margin-top: inherit;font-weight: bold;"> = </div>
+                    <div class="slds-col--padded slds-size--1-of-2 slds-align-middle slds-medium-size--1-of-6 slds-large-size--1-of-12">
+                        <input type="text" class="slds-input urlVal validate" ng-model="score.urlStr" name="urlName" placeholder="URL"/>
+                        <div id="error-message" class="slds-form-element__help requiredMessage" style="display:none"></div>
+                    </div>
+                    <div class="slds-col--padded slds-size--1-of-2 slds-align-middle slds-medium-size--1-of-6 slds-large-size--1-of-12">
+                        <span class="slds-icon__container slds-icon__container--circle slds-icon-action-new" ng-click="addNewRange($index);">
+                            <svg aria-hidden="true" class="slds-icon slds-icon--x-small" style="width:12px;height:12px;">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#new')}">
+                                </use>
+                            </svg>
+                        </span>
+                        <span class="slds-icon__container slds-icon__container--circle slds-icon-action-delete" ng-click="removeRange($index);" ng-show="scoreBaseUrls.length > 1">
+                            <svg aria-hidden="true" class="slds-icon slds-icon--x-small" style="width:12px;height:12px;">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#delete')}">
+                                </use>
+                            </svg>
+                        </span>
+                    </div>                                     
+                </div> 
+                <div class="slds-card__footer">
+                    <div class="slds-grid">
+                        <div class="slds-size--1-of-1"> <p style="font-style: italic;font-size: 12px;"> Note: The redirect will first attempt to find the URL based on Score. If no match found, it will use the default redirect configuration</p></div><br/>
+                    </div>
+                </div>
+            </div>
+            <div  class="slds-grid">
+                <div class="slds-size--1-of-1" style="text-align: center;padding-right: 14%;">
+                    <input class="slds-button slds-button--brand" type="button" value="Save" ng-click="saveUrls();"/>
+                    <input class="slds-button slds-button--brand" type="button" value="Cancel" ng-click="cancelEnteredUrls();"/>
+                </div>
+            </div>
+        </div>
+    </html>
+    <script>
+        var app = angular.module('scoreApp', []);
+        app.controller('scoreCtrl', function($scope) {
+        
+            $scope.scoreBaseUrls = [];
+            $scope.tempId = '{!JSENCODE(templateId)}';
+            $scope.scorebaseUrlsLength = 0;
+            $scope.assCompletedURL = '{!JSENCODE(assCompletedURL)}';
+            $scope.assurl = angular.copy($scope.assCompletedURL);
+            var scoreUrlsArray = [  ];
+            scoreUrlsArray = angular.copy($scope.scoreBaseUrls);
+            $scope.errormsg = false;
+            $('#successMsg').hide();
+            $('#errorMsg').hide();
+            $('#ErrorCreateMsg').text('');
+            
+            if ('{!JSENCODE(scoreUrls)}' != '' && '{!JSENCODE(scoreUrls)}' != 'null') {
+                
+                $scope.scoreBaseUrls = JSON.parse('{!JSENCODE(scoreUrls)}');
+                $scope.scorebaseUrlsLength = $scope.scoreBaseUrls.length;
+            } else {
+                $scope.scoreBaseUrls.push({"fromScore":null,"toScore":null,"urlStr":null});
+            }
+                    
+            $scope.addNewRange = function(pos) {
+                var retVal = $scope.validation();
+                if(retVal == 'error'){
+                    return false;    
+                }
+                $scope.scoreBaseUrls.splice(pos+1, 0,{"fromScore":null,"toScore":null,"urlStr":null} );
+            }
+            
+            $scope.removeRange = function(pos) {
+                $scope.scoreBaseUrls.splice(pos, 1);
+            }
+            $scope.saveUrls = function () {
+                
+                $('#successMsg').hide();
+                $('#errorMsg').hide();
+                
+                //validation.
+                
+                var isError = false;
+                var count;
+                
+                if($scope.assCompletedURL != null && $scope.assCompletedURL != '') {
+                       
+                    $(".urlVal1").parent('div').removeClass('slds-has-error');
+                    $(".urlVal1").parent('div').find('.requiredMessage').css('display','none').text('');
+                    var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+                    var regex = new RegExp(expression);
+                    var t = $(".urlVal1").val();
+                    if (t.match(regex) ) {
+                        isError = false;
+                    } else {
+                        isError = true;
+                        $(".urlVal1").parent('div').addClass('slds-has-error');
+                        $(".urlVal1").parent('div').find('.requiredMessage').css('display','').text('Please give valid url');
+                    }
+                    if (isError) {
+                        return false;
+                    }
+                }
+                
+                if(($scope.assCompletedURL == null || $scope.assCompletedURL == ''||$scope.assCompletedURL != null || $scope.assCompletedURL != '') && $scope.scoreBaseUrls.length == 1) {
+                    
+                    $(".urlVal1").parent('div').removeClass('slds-has-error');
+                    $(".urlVal1").parent('div').find('.requiredMessage').css('display','none').text('');
+                    count = 0;
+                    $(".validate").each(function() {
+                        $(this).parent('div').removeClass('slds-has-error');
+                        $(this).parent('div').find('.requiredMessage').css('display','none').text('');
+                        
+                        if ($(this).val() == null || $(this).val() == '') {
+                            console.log('::::$(this).val1()::::', $(this).val());
+                            count ++;
+                        } 
+                    });
+                    if(($scope.assCompletedURL == null || $scope.assCompletedURL == '')&& count == 3){
+                        $scope.errormsg = true;
+                        $scope.countVal = 3;
+                        $('#errorMsg').show();
+                        isError = true;
+                        if (isError) {
+                            return false;
+                        }    
+                    }
+                    else if($scope.assCompletedURL != null && $scope.assCompletedURL != '' && count == 3) {
+                       
+                    }
+                    else {
+                        var retVal = $scope.validation();
+                        if(retVal == 'error'){console.log('::::hereeeeeeeee:::::');
+                            return false;
+                        }
+                    }
+                }
+               
+                if($scope.scoreBaseUrls.length > 1) {
+                    
+                    $(".urlVal1").parent('div').removeClass('slds-has-error');
+                    $(".urlVal1").parent('div').find('.requiredMessage').css('display','none').text('');
+                    var retVal = $scope.validation();
+                    if(retVal == 'error'){
+                        return false;
+                    }
+                } 
+                
+                if ($scope.tempId != null && $scope.tempId != '') {
+                   
+                    if($scope.assCompletedURL != $scope.assurl) {
+                        $scope.assTemUrl = $scope.assCompletedURL 
+                    } else {
+                        $scope.assTemUrl = 'Not changed';
+                    }        
+                    ExAM.ScoreBasedPageForwardingController.saveUrls($scope.assTemUrl,angular.toJson($scope.scoreBaseUrls), $scope.tempId,  function(result, event) {
+                        if(event.status && result != null && result != '') {
+                            if(result == 'success') {
+                                $('#successMsg').show();console.log('Hello2');
+                                window.open('/'+$scope.tempId, '_self');
+                            } else {
+                                $('#errorMsg').show();console.log('Hello3');
+                                $('#ErrorText').text(result);
+                            }
+                        } else {console.log('Hello4');
+                            $('#ErrorText').text(event.message);
+                            $('#errorMsg').show();
+                        }
+                    });
+                }    
+            }
+            $scope.cancelEnteredUrls = function () {
+                window.open('/'+$scope.tempId, '_self');
+                $scope.scoreBaseUrls.splice($scope.scorebaseUrlsLength,$scope.scoreBaseUrls.length-$scope.scorebaseUrlsLength);
+            }
+            $scope.notifyClose = function() {
+                $('#successMsg').hide();
+                $('#errorMsg').hide();
+                $scope.errorMsg = false;
+            }
+            $scope.validation = function() {
+                
+                var isError = false;
+                $(".validate").each(function() {
+                    $(this).parent('div').removeClass('slds-has-error');
+                    $(this).parent('div').find('.requiredMessage').css('display','none').text('');
+                    if ($(this).val() == null || $(this).val() == '') {
+                        $(this).parent('div').addClass('slds-has-error');
+                        $(this).parent('div').find('.requiredMessage').css('display','').text('This field is required');
+                        isError = true;
+                    }
+                });
+                if(isError) {
+                    return 'error';
+                }    
+               
+                var score = -1;
+                $(".numberVal" ).each(function() {
+                    if (isNaN($(this).val())) {
+                        $(this).parent('div').addClass('slds-has-error');
+                        $(this).parent('div').find('.requiredMessage').css('display','').text('Please Enter valid number');
+                        isError = true;
+                    } else if (Number($(this).val()) > Number(score)) {
+                        score = $(this).val();
+                    } else {
+                        $(this).parent('div').addClass('slds-has-error');
+                        if (Number(score) > -1) {
+                            $(this).parent('div').find('.requiredMessage').css('display','').text('Please give higher value than previous one');
+                        } else {
+                            $(this).parent('div').find('.requiredMessage').css('display','').text('Please give positive number');
+                        }
+                        isError = true;
+                    }
+                });
+              
+                $( ".urlVal" ).each(function() {
+                    var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+                    var regex = new RegExp(expression);
+                    var t = $(this).val();
+                    if (t.match(regex) ) {   
+                        isError = (isError == true)?true : false;
+                    } else {
+                        
+                        $(this).parent('div').addClass('slds-has-error');
+                        $(this).parent('div').find('.requiredMessage').css('display','').text('Please give valid url');
+                        isError = true;
+                    }
+                });
+                if (isError) {
+                    return 'error';
+                }
+            }
+        });    
+    </script>
+</apex:page>

@@ -1,0 +1,36 @@
+<apex:component controller="AssessableRecordDetailController">
+    <apex:pageMessages />
+    <div class="slds-grid slds-wrap">
+        <apex:variable value="{!0}" var="countx"/>
+        <apex:repeat value="{!fields}" var="f" rendered="{!fields.size>0}">
+            <div class=" slds-col--padded slds-size--1-of-2 slds-medium-size--1-of-6 slds-large-size--3-of-12  slds-text-align--right slds-m-bottom--large" style="padding-right: 1%; font-weight: bold;">
+                {!f.Label}
+            </div>
+            <div class="slds-col--padded slds-size--1-of-2 slds-medium-size--1-of-6 slds-large-size--3-of-12"> 
+                <apex:outputField value="{!assessableRec[f.fieldPath]}"/>
+            </div>
+            <apex:variable value="{!countx+1}" var="countx"/>
+        </apex:repeat>
+
+        <div class=" slds-col--padded slds-size--1-of-2 slds-medium-size--1-of-6 slds-large-size--3-of-12 slds-text-align--right slds-m-bottom--large" style="padding-right: 1%; font-weight: bold;display:{!IF(MOD((countx),2)==1,'','none')};">
+            &nbsp;
+        </div>
+        <div class=" slds-col--padded slds-size--1-of-2 slds-medium-size--1-of-6 slds-large-size--3-of-12" style="display:{!IF(MOD((countx),2)==1,'','none')};"> 
+        &nbsp;
+        </div>
+        <apex:outputPanel rendered="{!NOT(fields.size>0)}">
+            <div class="slds-notify_container">
+              <div class="slds-notify slds-notify--toast slds-theme--warning" role="alert">
+                <div class="slds-notify__content">
+                  <h2 class="slds-text-heading--small">
+                      No field set found on the Assessable Object. 
+                      Please contact your administrator. If you are an administrator, 
+                      please create a field set in the Assessable Object of this 
+                      record with Name &ldquo;ViewerFieldSet_&lt;Object API Name&gt;&rdquo; (without __c if it is a custom object)
+                  </h2>
+                </div>
+              </div>
+            </div>
+        </apex:outputPanel>
+    </div>
+</apex:component>

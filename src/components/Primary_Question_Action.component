@@ -1,0 +1,47 @@
+<apex:component id="Primary_Question_Action">
+
+    <apex:attribute name="renderClearIcon" type="Boolean" default="false" description="Determines whether to show refresh icon or not"/>
+    <apex:attribute name="renderCommentIcon" type="Boolean" default="true" description="Determines whether to show comment icon or not"/>
+    <apex:attribute name="renderPhotoIcon" type="Boolean" default="true" description="Determines whether to show Photo icon or not"/>
+    <div xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <div>
+            <div class="slds-size--8-of-12">
+                <span style="font-style: italic;font-size: 12px;"
+                      ng-if="(eachQuestTemplateRec.ExAM__Question_Type__c == 'Text' || eachQuestTemplateRec.ExAM__Question_Type__c == 'Textarea')
+                              && eachQuestTemplateRec.ExAM__Field_Length__c != null && eachQuestTemplateRec.ExAM__Field_Length__c != ''">
+                                  {{eachQuestTemplateRec.ExAM__Field_Length__c-response[eachQuestTemplateRec.Id].length}} of {{eachQuestTemplateRec.ExAM__Field_Length__c}}
+                                  characters left
+                </span>
+                <span style="font-style: italic;font-size: 12px;"
+                      ng-if="(eachQuestTemplateRec.ExAM__Question_Type__c == 'Number')
+                              && eachQuestTemplateRec.ExAM__Field_Length__c != null && eachQuestTemplateRec.ExAM__Field_Length__c != ''">
+                                  {{eachQuestTemplateRec.ExAM__Field_Length__c-response[eachQuestTemplateRec.Id].length}} of {{eachQuestTemplateRec.ExAM__Field_Length__c}}
+                                  numbers left
+                </span>
+                <span class="slds-form-element__help requiredMessage" style="color:#C23934;display:none;">This field is required</span>
+                <span class="slds-form-element__help validateEmailMessage" style="color:#C23934;display:none;">Invalid Email Address</span>
+                <span class="slds-form-element__help validatePhNumMessage" style="color:#C23934;display:none;">Invalid Phone Number</span>
+                <span class="slds-form-element__help validateCurNumMessage" style="color:#C23934;display:none;">Invalid Number</span>
+                <span class="slds-form-element__help fileUpload{{eachQuestTemplateRec.Id}} fileUpload" style="color:#C23934;display:none;">Please Upload File</span>
+                <span class="slds-form-element__help fileSizeUpload{{eachQuestTemplateRec.Id}} fileSizeUpload" id="fileSizeUpload{{eachQuestTemplateRec.Id}}" style="color:#C23934;display:none;">Please attach a file less than 750 KB</span>
+            </div>
+            <div ng-show="!eachQuestTemplateRec.ExAM__Do_Not_Create_Answer__c" class="slds-size--8-of-12" style="padding: 10px 0px 10px 0px;">
+                <div class="slds-icon__container slds-icon__container--square  slds-icon-standard-photo" ng-show="showImageUploadIcon && {!renderPhotoIcon == true}">
+                    <svg aria-hidden="true" class="slds-icon slds-icon--small" ng-click="openPhotoUpload(eachQuestTemplateRec.Id)">
+                        <use xlink:href="{!URLFOR($Resource.SLDS243, '/assets/icons/action-sprite/svg/symbols.svg#add_photo_video')}"></use>
+                    </svg>
+                </div>
+                <div class="slds-icon__container slds-icon__container--square slds-icon-standard-note" ng-show="showCommentsIcon && {!renderCommentIcon == true}">   
+                    <svg aria-hidden="true" class="slds-icon slds-icon--small" ng-click="opencomment(eachQuestTemplateRec.Id)">
+                        <use xlink:href="{!URLFOR($Resource.SLDS243, '/assets/icons/action-sprite/svg/symbols.svg#new_note')}"></use>
+                    </svg>
+                </div>
+                <div class="slds-icon__container slds-icon__container--square slds-icon-standard-custom" ng-show="showClearIcon && {!renderClearIcon == true}">
+                    <svg aria-hidden="true" class="slds-icon slds-icon--small" ng-click="resetChosenAnswerForThisQuestionTemplate(eachQuestTemplateRec.Id, '')">
+                        <use xlink:href="{!URLFOR($Resource.SLDS243, '/assets/icons/action-sprite/svg/symbols.svg#refresh')}"></use>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</apex:component>

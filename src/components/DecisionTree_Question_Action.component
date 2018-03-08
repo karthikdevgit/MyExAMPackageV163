@@ -1,0 +1,13 @@
+<apex:component >
+    <div class="slds-size--8-of-12">
+        <span style="font-style: italic;font-size: 12px;" ng-if="(decisionTreeQuestion.ExAM__Question_Type__c=='Text' || decisionTreeQuestion.ExAM__Question_Type__c=='Textarea') && decisionTreeQuestion.ExAM__Field_Length__c != null && decisionTreeQuestion.ExAM__Field_Length__c != ''"> {{decisionTreeQuestion.ExAM__Field_Length__c-DecisionTreeresponse[decisionTreeQuestion.Id].length}} of {{decisionTreeQuestion.ExAM__Field_Length__c}} characters left</span>
+        <span style="font-style: italic;font-size: 12px;" ng-if="(decisionTreeQuestion.ExAM__Question_Type__c=='Number') && decisionTreeQuestion.ExAM__Field_Length__c != null && decisionTreeQuestion.ExAM__Field_Length__c != ''"> {{decisionTreeQuestion.ExAM__Field_Length__c-DecisionTreeresponse[decisionTreeQuestion.Id].length}} of {{decisionTreeQuestion.ExAM__Field_Length__c}} numbers left</span>
+        <span class="slds-form-element__help validateDTEmailMessage" style="color:#C23934;display:none;">Invalid Email Address</span>
+        <span class="slds-form-element__help validateDTPhNumMessage" style="color:#C23934;display:none;">Invalid Phone Number</span>
+        <span class="slds-form-element__help validateDTCurNumMessage" style="color:#C23934;display:none;">Invalid Number</span>
+        <span class="slds-col slds-size--12-of-12 slds-form-element__help fileUpload{{decisionTreeQuestion.Id}} fileUpload" style="color:#C23934;display:none;">Please Upload File</span>
+        <span class="slds-col slds-size--12-of-12 slds-form-element__help fileSizeUpload{{decisionTreeQuestion.Id}} fileSizeUpload" id="fileSizeUpload{{decisionTreeQuestion.Id}}" style="color:#C23934;display:none;">Please attach a file less than 750 KB</span>
+        <span ng-if="(eachResultField.fieldType == 'PICTURE' || decisionTreeQuestion.ExAM__Question_Type__c == 'File Question - Answer')" class="slds-col slds-size--12-of-12 slds-form-element__help resultPhotoUpload{{decisionTreeQuestion.Id}} resultPhotoUpload" style="color:#C23934;display:none;">Please Upload File</span>
+        <span ng-if="(eachResultField.fieldType == 'PICTURE' || decisionTreeQuestion.ExAM__Question_Type__c == 'File Question - Answer')" class="slds-col slds-size--12-of-12 slds-form-element__help resultPhotoSizeUpload{{decisionTreeQuestion.Id}} resultPhotoSizeUpload" id="resultPhotoSizeUpload{{decisionTreeQuestion.Id}}" style="color:#C23934;display:none;">Please attach a file less than 750 KB</span>
+    </div>
+</apex:component>

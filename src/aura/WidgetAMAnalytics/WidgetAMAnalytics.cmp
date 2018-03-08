@@ -1,0 +1,28 @@
+<aura:component access="public">
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:attribute name="assessmentId" type="String" access="public"/>
+    <aura:attribute name="selectedItem" type="String" access="public" default="THIS_WEEK"/>
+    <aura:attribute name="chartType" type="String" access="public" default="serial"/>
+    <aura:attribute name="title" type="String" access="public"/>
+    <aura:attribute name="apexMethodName" type="String" access="public"/>
+    <aura:attribute name="menuItems" type="List" access="public" default="[]"/>
+    <aura:attribute name="analyticsRptParams" type="Map" access="public"/>
+    
+    <aura:registerEvent name="notificationEvent" type="c:notificationEvt"/>
+    
+    <div aura:id="widgetContainer">
+        <aura:if isTrue="{!v.menuItems.length}">
+            <c:RptAMAnalytics apexMethodName="{!v.apexMethodName}" analyticsRptParams="{!v.analyticsRptParams}" 
+                              title="{!v.title}" chartType="{!v.chartType}" menuItems="{!v.menuItems}"/>
+        </aura:if>
+    </div>
+    
+    <div aura:id="loading" class="slds-hide">
+        <div class="spinnerContainer">
+            <lightning:spinner alternativeText="Loading" variant="brand" size="medium" />
+        </div>
+    </div>
+    
+</aura:component>

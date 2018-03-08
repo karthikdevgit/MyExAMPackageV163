@@ -1,0 +1,218 @@
+<apex:component controller="CaseSurveyConfigurationCtlr">
+    <div xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <style>
+            .caseConfig[disabled] {
+                background-color: white !important;
+            }
+        </style>
+        <body>
+            <div class="slds" ng-app="CaseConfig" ng-controller="CaseConfigCtrl">
+                <form class="slds-form">
+                    
+                    <div class="slds-card slds-m-bottom--x-large">
+                        <div class="slds-card__header slds-m-bottom--small slds-grid">
+                            <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                <div class="slds-media__body">
+                                    <h2 class="slds-text-heading--small slds-truncate">Case Close Survey Configuration</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-notify_container" id="successMsg" style="display:none;">
+                          <div class="slds-notify slds-notify--alert slds-theme--success slds-theme--alert-texture" role="alert">
+                            <button class="slds-button slds-button--icon-inverse slds-notify__close" ng-click="closeMsg();">
+                              <svg aria-hidden="true" class="slds-button__icon" >
+                                <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Close</span>
+                            </button>
+                            <span class="slds-assistive-text">Success</span>
+                            <h2>
+                                Case Survey Configured Successfully.
+                            </h2>
+                          </div>
+                        </div>
+                        <div class="slds-notify_container" style="display:none" id="errorMsg" >
+                          <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert">
+                            <button class="slds-button slds-button--icon-inverse slds-notify__close" ng-click="closeMsg();">
+                              <svg aria-hidden="true" class="slds-button__icon" >
+                                <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                              </svg>
+                              <span class="slds-assistive-text">Close</span>
+                            </button>
+                            <span class="slds-assistive-text">Error</span>
+                            <h2 id="ErrorText">
+                                
+                            </h2>
+                          </div>
+                        </div>
+                        <div class="slds-card__body slds-m-right--x-small slds-m-left--x-small" style="background-color: white;">
+                            <div class="slds size--1-of-2 slds-m-bottom--small slds-m-left--small" >
+                                <label class="slds-checkbox"  for="caseConfigId">
+                                    <input ng-disabled="disableflag" type="checkbox" id="caseConfigId" ng-model="isConfigured"></input>
+                                    <span class="slds-checkbox--faux"></span>
+                                    <span class="slds-form-element__label">
+                                        Enable Case Survey Configuration
+                                    </span>
+                                </label>
+                            </div>
+                            <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover" style="border-bottom: 0px">                            
+                                <thead>
+                                    <tr class="slds-text-heading--label">
+                                        <th  style="font-weight: bold;" class="slds-is-sortable" scope="col">
+                                            <div class="slds-truncate">Field</div>
+                                        </th>
+                                        <th  style="font-weight: bold;" class="slds-is-sortable" scope="col">
+                                            <div class="slds-truncate">Field Value</div>
+                                        </th>
+                                        <th  style="font-weight: bold;" class="slds-is-sortable" scope="col">
+                                            <div class="slds-truncate">Assessment Template</div>
+                                        </th>
+                                        <th  style="font-weight: bold;" class="slds-is-sortable" scope="col">
+                                            <div class="slds-truncate">Email Template</div>
+                                        </th>
+                                        <th class="slds-is-sortable" scope="col">
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="slds-hint-parent" ng-repeat="config in configFieldList">
+                                        <td class="slds-cell-shrink" data-label="Fields">
+                                            <select ng-disabled="disableflag" class="slds-select caseConfig" ng-model="config.configFieldName" ng-options="i.fieldApiName as i.fieldName for i in (fieldDetail | orderBy:'fieldName')"/>
+                                            <div id="error-message" class="slds-form-element__help requiredMessage" style="display:none"></div>
+                                        </td>
+                                        <td class="slds-cell-shrink" data-label="Field values">
+                                            <select ng-disabled="disableflag" class="slds-select caseConfig" ng-model="config.configFieldValue" ng-options="option as option for option in (fieldDetail |filter:config.configFieldName)[0].fieldOptions | orderBy"/>
+                                            <div id="error-message" class="slds-form-element__help requiredMessage" style="display:none"></div>  
+                                        </td>
+                                        <td class="slds-cell-shrink" data-label="Temp Name">
+                                            <select ng-disabled="disableflag" class="slds-select caseConfig" ng-model="config.configTempName" ng-options="temp.assId as (temp.name != ''? temp.name+' ( '+temp.assTempName+' )':temp.assTempName ) for temp in (tempName | orderBy:'assTempName')" ></select>
+                                            <div id="error-message" class="slds-form-element__help requiredMessage" style="display:none"></div>
+                                        </td>
+                                        <td class="slds-cell-shrink" data-label="Temp Name">
+                                            <select ng-disabled="disableflag" class="slds-select caseConfig" ng-model="config.configEmailTemp"  ng-options="eTemp.emailTempId as eTemp.emailTempName for eTemp in (emailTemplate | orderBy:'emailTempName')"></select>
+                                            <div id="error-message" class="slds-form-element__help requiredMessage" style="display:none"></div>
+                                        </td>
+                                        <td class="slds-cell-shrink" data-label="Actions">
+                                            <span class="slds-icon__container slds-icon__container--circle slds-icon-action-new" ng-if="configFieldList.length-1==$index && showButton">
+                                               <svg aria-hidden="true" class="slds-icon slds-icon--x-small" ng-click="addFieldConfig()">
+                                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#new')}"> </use>
+                                               </svg>
+                                            </span>
+                                            <span class="slds-icon__container slds-icon__container--circle slds-icon-action-delete" ng-if="configFieldList.length-1>0 && showButton">
+                                               <svg aria-hidden="true" class="slds-icon slds-icon--x-small" ng-click="removeFieldConfig($index)">
+                                                   <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#delete')}"> </use>
+                                               </svg>
+                                             </span>
+                                        </td>
+                                    </tr>
+                                    <tr class="slds-hint-parent">
+                                        <td colspan="5">
+                                            <center>
+                                                <button class="slds-button slds-button--neutral" type="button" ng-show="!showButton" ng-click="editConfig()" style="background-color: #0070D2;color:white;">Edit Configuration</button>
+                                                <button class="slds-button slds-button--neutral" type="button" ng-show="showButton" ng-click="saveConfig()" style="background-color: #0070D2;color:white;">Save</button>
+                                                <button class="slds-button slds-button--neutral" type="button" ng-show="showButton" ng-click="cancelConfig()">Cancel</button>
+                                            </center>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </form>
+            </div>    
+        </body>
+        <script>
+            var app = angular.module('CaseConfig',[]);
+            app.controller('CaseConfigCtrl',function($scope,$timeout){
+            
+                $scope.fieldDetail = [];
+                $scope.tempName =[];
+                $scope.caseConfigJSON = [];
+                $('#successMsg').hide();
+                $('#errorMsg').hide();
+                $('#ErrorCreateMsg').text('');
+                $scope.disableflag = true;
+                $scope.showButton =false;
+                $scope.isConfigured ={!isConfig};
+                
+                if ('{!JSENCODE(caseConfigJSON)}' != '' && '{!JSENCODE(caseConfigJSON)}' != 'null') {
+                    $scope.configFieldList = JSON.parse('{!JSENCODE(caseConfigJSON)}');
+                    $scope.tempConfigFieldList = angular.copy($scope.configFieldList);
+                } 
+                $scope.fieldDetail = JSON.parse('{!JSENCODE(fieldDetail)}');
+                $scope.tempName = JSON.parse('{!JSENCODE(tempName)}');
+                $scope.emailTemplate = JSON.parse('{!JSENCODE(emailTemplate)}');
+                
+                $scope.saveConfig = function() {
+                    
+                    var isError = false;
+                    $(".caseConfig").each(function() {
+                        $(this).parent('td').removeClass('slds-has-error');
+                        $(this).parent('td').find('.requiredMessage').css('display','none').text('');
+                        var arr = ($(this).val()).split(":");
+                        if($(this).val() == null || $(this).val() =='' ||arr == null || arr == '' || arr[0] ==''|| arr[1] =='' || arr[1] =='---None---') {
+                            $(this).parent('td').addClass('slds-has-error');
+                            $(this).parent('td').find('.requiredMessage').css('display','').text('This field is required');
+                            isError = true;
+                        }
+                    });
+                    
+                    if (isError) {
+                        return false;
+                    }
+                    ExAM.CaseSurveyConfigurationCtlr.saveFieldConfiguration(angular.toJson($scope.configFieldList),$scope.isConfigured,function(result, event) {
+                        if(event.status && result != null && result != '') {
+                            if(result == 'success') {
+                                $('#successMsg').show();
+                                $('#errorMsg').hide();
+                                $scope.disableflag = true;
+                                $scope.showButton =false;
+                                $scope.$apply();
+                            } else {
+                                /*$timeout(function(){
+                                    $scope.fieldDetail = JSON.parse('{!JSENCODE(fieldDetail)}');
+                                    $scope.tempName = JSON.parse('{!JSENCODE(tempName)}');
+                                },0);*/
+                                $('#errorMsg').show();
+                                $('#successMsg').hide();
+                                $('#ErrorText').text(result);
+                            }
+                        } else {
+                            $('#ErrorText').text(event.message);
+                            $('#errorMsg').show();
+                            $('#successMsg').hide();
+                        }  
+                    });
+                    
+                }
+                $scope.cancelConfig = function() {
+                    $scope.configFieldList = angular.copy($scope.tempConfigFieldList);
+                    $scope.disableflag = true;
+                    $scope.showButton =false;  
+                    $scope.isConfigured ={!isConfig};
+                    $('#errorMsg').hide();
+                    $('#successMsg').hide();
+                }
+                $scope.addFieldConfig = function() {
+                    $scope.configFieldList.push({configTempName:'---None---',configFieldValue:'---None---',configFieldName:'---None---',configEmailTemp:'---None---'});
+                    $timeout(function(){
+                        $scope.$apply();
+                    },500);
+                    
+                }
+                $scope.removeFieldConfig = function(index) {
+                    $scope.configFieldList.splice(index,1);
+                }
+                $scope.editConfig = function() {
+                    $scope.disableflag = false;
+                    $scope.showButton =true;
+                    $('#successMsg').hide();
+                }
+                $scope.closeMsg = function() {
+                    $('#errorMsg').hide();
+                    $('#successMsg').hide();
+                }
+            });
+        </script>
+    </div>
+</apex:component>

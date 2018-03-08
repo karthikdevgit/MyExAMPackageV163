@@ -1,0 +1,28 @@
+<apex:component >
+
+    <div xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <div aria-hidden="false" role="dialog" class="slds-modal slds-modal__close sign" style="background-color: rgba(128, 128, 128, 0.75);">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <h2 class="slds-text-heading--medium">Signature</h2>
+                    <button class="slds-button slds-button--icon-inverse slds-modal__close" ng-click="closeSign()">
+                        <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                            <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                        </svg>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                </div>
+                <div class="slds-modal__content">
+                    <div class="slds-grid slds-grid--align-center">
+                        <canvas id="canvas{{chooseQuesId}}" style="border: 1px solid #A7C6FC; border-color:#ccc;" ng-click="canvasClickfun();"/>
+                    </div>
+                </div>
+                <div class="slds-modal__footer">
+                    <button class="slds-button slds-button--neutral" ng-click="clearSign()">Clear</button>
+                    <button class="slds-button slds-button--neutral slds-button--brand" ng-click="saveSign()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</apex:component>

@@ -1,0 +1,63 @@
+.THIS {
+    
+}
+
+.THIS .slds-dropdown-trigger .slds-dropdown ul {
+    width: 100%;
+    max-height: 150px;
+    overflow: auto;
+}
+.THIS .slds-spinner_container {
+    position: fixed !important; 
+}
+
+.THIS .hideHeader header{
+    display : none !important;
+}
+.THIS .hideHeader .slds-card{
+    border : none !important;
+}
+
+.THIS label.uiLabel {
+    padding-right: 12px;
+}
+
+.THIS .required {
+    float: left;
+    padding-right: 2px;
+    color: rgb(194, 57, 52);
+    font-weight: 700;
+}
+.THIS .forcePageError{
+    border-bottom: 1px solid rgb(221, 219, 218);
+    margin-bottom: 1rem;
+    padding-bottom: .75rem;
+}
+
+.THIS .BaseContainer .cmpWidth{
+    width : 100% !important;
+}
+
+.THIS .errorsList{
+    list-style: none;
+    color: rgb(194, 57, 52);
+    line-height: 1.5;
+    margin: 0;
+    padding: .5rem 1rem .25rem 1rem;
+}
+
+.THIS .disabled {
+    pointer-events: none;
+    cursor: pointer !important;
+    color: silver;
+}
+.THIS .activeAnchor a{
+    color : none !important
+}
+.THIS .slds-has-error {
+    border-color: rgb(194, 57, 52) !important;
+}
+.THIS .slds-button-group{
+    border-left: 1px solid rgb(217, 219, 221);
+    border-right: 1px solid rgb(217, 219, 221);
+}

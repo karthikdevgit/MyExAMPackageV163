@@ -1,0 +1,559 @@
+<apex:page sidebar="false" showHeader="true" standardController="Main_questionaire__c" extensions="QuestionnaireFields"  recordSetVar="sitem" id="thePage" standardStylesheets="false" tabStyle="IssueRequest_Life_Cycle__c"> 
+<meta name="viewport" content="width=device-width-5, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes;" />
+    
+    <apex:stylesheet value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-ui.min.css')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-1.10.2.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-ui.min.js')}"/>
+
+<script language="JavaScript" type="text/javascript">
+      
+function saveDone()
+    {
+        alert('Record Saved Successfully !!!');
+        //window.open('/apex/QuestionnaireCustom');
+        top.location.reload(true);
+    }
+
+    function viewComments (questionID, commentCount, isAdd)
+    {
+        var commentBoxID = questionID+'att';
+        var commentTextAreaID = questionID+'row1';
+        var viewLinkID = questionID+'view';
+        document.getElementById(commentBoxID).style.display='block';
+        document.getElementById(viewLinkID).innerHTML="<a onclick=\"hideComments('"+questionID+"',"+commentCount+");return false;\" href='#'>Hide Comments</a> | ";
+        document.getElementById(viewLinkID).style.display='inline';
+        if (isAdd==1)
+            document.getElementById(commentTextAreaID).focus();
+   }
+
+    function hideComments (questionID, commentCount)
+    {
+        var commentBoxID = questionID+'att';
+        var viewLinkID = questionID+'view';
+        document.getElementById(commentBoxID).style.display='none';
+        document.getElementById(viewLinkID).innerHTML="<a onclick=\"viewComments('"+questionID+"',"+commentCount+", 0);return false;\" href='#'>View/Edit Comments</a> | ";
+        if (commentCount==0)
+        document.getElementById(viewLinkID).style.display='none';
+    } 
+</script>
+<style type="text/css">
+ 
+  .mysecButton {
+        
+        -moz-box-shadow: 3px 4px 0px 0px #1564ad;
+        -webkit-box-shadow: 3px 4px 0px 0px #1564ad;
+        box-shadow: 3px 4px 0px 0px #1564ad;
+        
+        background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #79bbff), color-stop(1, #378de5));
+        background:-moz-linear-gradient(top, #79bbff 5%, #378de5 100%);
+        background:-webkit-linear-gradient(top, #79bbff 5%, #378de5 100%);
+        background:-o-linear-gradient(top, #79bbff 5%, #378de5 100%);
+        background:-ms-linear-gradient(top, #79bbff 5%, #378de5 100%);
+        background:linear-gradient(to bottom, #79bbff 5%, #378de5 100%);
+        filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#79bbff', endColorstr='#378de5',GradientType=0);
+        
+        background-color:#79bbff;
+        
+        -moz-border-radius:5px;
+        -webkit-border-radius:5px;
+        border-radius:5px;
+        
+        border:1px solid #337bc4;
+        
+        display:inline-block;
+        color:#ffffff;
+        font-family:arial;
+        font-size:17px;
+        font-weight:bold;
+        padding:12px 44px;
+        text-decoration:none;
+        
+        text-shadow:0px 1px 0px #528ecc;
+        
+    }
+    .sec{
+        
+        background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #378de5), color-stop(1, #79bbff));
+        background:-moz-linear-gradient(top, #378de5 5%, #79bbff 100%);
+        background:-webkit-linear-gradient(top, #378de5 5%, #79bbff 100%);
+        background:-o-linear-gradient(top, #378de5 5%, #79bbff 100%);
+        background:-ms-linear-gradient(top, #378de5 5%, #79bbff 100%);
+        background:linear-gradient(to bottom, #378de5 5%, #79bbff 100%);
+        filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#378de5', endColorstr='#79bbff',GradientType=0);
+        
+        background-color:#378de5;
+    }
+    .myButton:active {
+        position:relative;
+        top:1px;
+    }
+    .myButton:active {
+        position:relative;
+    }
+
+    .democlass {
+        width:98%;
+    }
+
+    .detailList {
+        width:100%;
+    }    
+
+    .editComment {
+        font-style: italic;
+        font-size: small;
+        float:right;
+    }
+
+    .commentBox {
+        background-color: white;
+        border: thin solid gray;
+        margin: 0 17px;
+        padding: 5px 25px;
+    }
+
+    .commentBoxHeader {
+        background-color: #BBBBBB;
+        border: thin solid gray;
+        margin: 0 17px;
+        padding: 5px 10px;
+    }
+
+    .commentBoxHeaderActions {
+        float:right;
+    }
+    
+    .commentBox p {
+        border-bottom: thin dotted black;
+        margin: 0;
+        padding: 2px 0;
+    }
+
+    .addCommentContainer {
+        padding: 5px 250px;
+    }
+
+    .addCommentTextArea {
+        width: 100%
+    }
+     .vfHelpText a            {position:relative;}
+     .vfHelpText a span       {display: none;}
+     .vfHelpText a:hover span {display: block;
+                                  position:relative;
+                                  top:1.25em;
+                                  padding:2px 5px;                                 
+                                  z-index:100;
+                                  border:1px solid black;
+                                  background-color:##BBBBBB;
+                                  color:black;
+                                 }
+
+</style>
+<apex:form id="templateForm" style="bgcolor:#EEEEEE;" >
+        <br></br>
+          <apex:actionFunction name="callSaveJS" action="{!save}"/>
+<script language="JavaScript" type="text/javascript">
+function function1()
+{//alert('inside');
+callSaveJS();//saveDone();
+}
+</script> 
+
+    <table width="100%">
+     <tr><td colspan='2' style="text-align:center;font-size:18px"><apex:outputText value="{!$CurrentPage.parameters.templatename}"/></td></tr>
+     <TR><TD colspan='2' style="font-size:15px"> <apex:pageBlock >
+</apex:pageBlock>  </td></tr>
+            <tr><td width="20%" valign="top"> 
+                <apex:actionFunction name="sectionStatusJS" action="{!sectionStatus}" reRender="buttonPanel"/>
+        
+       <apex:outputPanel id="buttonPanel">
+       
+      <apex:outputPanel rendered="{!NOT(myFlag)}">
+        
+        <script>
+           window.onload=function()
+           {
+             sectionStatusJS();//setmyFlag(true);
+           };
+           function showTable(chkbox,tableID)
+           {//alert(tableID);
+               var visSetting = (chkbox.checked) ?"block": "none"; 
+               document.getElementById(tableID).style.display = visSetting; 
+           }
+            function showTableEdit(chkbox,tableID)
+           {
+               //alert(tableID);
+               //var table = document.getElementById(tableID);
+               var visSetting = (chkbox.checked) ?"block": "none"; 
+               document.getElementById(tableID).style.display = visSetting; 
+           }
+           function addRow(tableID) {
+                
+            //alert(tableID);   
+            var table = document.getElementById(tableID);
+ 
+            var rowCount = table.rows.length;
+            var row = table.insertRow(rowCount-1);
+            var textinputids=tableID+'row';//alert( textinputids);
+            textinputids=textinputids+(rowCount-1);  //alert( textinputids);   
+            
+            var cell1 = row.insertCell(0);
+            cell1.innerHTML ='<INPUT type="checkbox" name="chkbox[]"/>';
+            
+            var cell3 = row.insertCell(1);            
+                
+            cell3.innerHTML ='  <TEXTAREA name='+textinputids+' id='+textinputids+' class="democlass" rows="2"/>';   
+            //alert(cell3.innerHTML);
+                
+        }
+
+        /**
+         * This method deletes the specified section of the table
+         * OR deletes the specified rows from the table.
+         */
+        
+
+            function deleteRow(tableID) {
+            try {
+            var table = document.getElementById(tableID);
+            var rowCount = table.rows.length;
+ 
+            for(var i=0; i<rowCount; i++)
+             {
+                var row = table.rows[i];
+                var chkbox = row.cells[0].childNodes[0];
+                if((rowCount <= 3) && (true == chkbox.checked))
+                {
+                        alert("Cannot delete all the rows.");
+                        break;
+                }
+                else
+                {
+                    if(null != chkbox && true == chkbox.checked)
+                     {
+                        table.deleteRow(i);
+                        rowCount--;
+                        i--;
+                     }
+                }
+ 
+ 
+            }
+            }catch(e) {
+                alert('Exception'+e);
+            }
+        }
+       function addRowAttach(tableID) {
+                
+            //alert(tableID);   
+            var table = document.getElementById(tableID);
+ 
+            var rowCount = table.rows.length;
+            var row = table.insertRow(rowCount-1);
+            var textinputids=tableID+'fileatt';//alert( textinputids);
+            textinputids=textinputids+(rowCount-1);  alert( textinputids);   
+            
+            var cell1 = row.insertCell(0);
+            cell1.innerHTML ='<INPUT type="checkbox" name="chkboxatt[]"/>';
+            
+            var cell3 = row.insertCell(1);            
+            cell3.innerHTML ='<input type="file" name='+textinputids+' id='+textinputids+' class="democlass" multiple="multiple"/>';   
+            alert(cell3.innerHTML);
+                
+        }
+        </script>
+      </apex:outputPanel>
+      <apex:outputPanel rendered="{!myFlag}">
+        
+     <apex:pageBlock id="pgBlock" >
+                 
+           <!--<apex:pageMessages ></apex:pageMessages>-->
+              <apex:variable var="snum" value="{!1}"/>   
+            <apex:pageBlockSection id="sectionBlock" title="Sections" columns="2" >
+                   
+                      <apex:repeat value="{!sectionsStatusLists}" var="section">
+                        <apex:commandButton onclick="SaveAns('{!section.Section_Template__r.id}');return false;" reRender="none"  value=" {!section.Section_Template__r.Section_label__c}" style="text-align:center;font-size:1em" > 
+                        
+                         <apex:param name="sectionId" value="{!section.Section_Template__r.id}"/>
+                         <apex:param name="doRerender" value="true" assignTo="{!doRerender}"/>
+                                                
+                        </apex:commandButton>   <apex:outputText value="[{!section.Status__c}]" style="color:{!IF(section.Status__c=='Incomplete','red','blue')};padding-left:28px;font-style:bold;text-align:center"/>                 
+                     
+                      </apex:repeat>    
+                      <!--<apex:repeat value="{!sectionsStatusLists}" var="section">
+                                          
+                          <apex:outputText value="[{!section.Status__c}]" style="color:{!IF(section.Status__c=='Incomplete','red','blue')};padding-left:28px;font-style:bold;text-align:center"/>                 
+                      
+                      </apex:repeat>-->               
+                </apex:pageBlockSection>
+
+      </apex:pageBlock> 
+   </apex:outputPanel></apex:outputPanel>
+       </td>
+             
+             <td width="80%" valign="top"> 
+            
+                  <apex:outputPanel id="questiondetail" >
+               
+          <apex:pageBlock id="block1">
+              <apex:pageBlockButtons location="bottom" id="buttons1" >  
+               <!-- <input type="button" onclick="function1();" value="Call2Functions" />-->
+               <apex:commandButton id="button2" value="Save" action="{!save}"  >
+                     <apex:param name="doRerenderSave" value="true" assignTo="{!doRerenderSave}"/>
+                     <apex:param name="saveType" value="button"/>
+                </apex:commandButton> 
+                <apex:actionFunction name="SaveAns" action="{!save}" reRender="{!$Component.thePage.templateForm.questiondetail}, pgBlock">
+                    <apex:param name="sectionId" value=""/>
+                    <apex:param name="doRerender" value="true" assignTo="{!doRerender}"/>
+                    <apex:param name="doRerenderSave1" value="true" assignTo="{!doRerenderSave}"/>
+                    <apex:param name="saveType" value="menu"/>
+                </apex:actionFunction>
+                <apex:commandButton value="Cancel" action="{!Cancel}" id="button1" title="Cancel"  /> 
+                <apex:commandButton value="Submit Complete Survey(After Save)" action="{!submitForApproval}" style="text-align:center;font-size:1.1em" />
+              </apex:pageBlockButtons> 
+     
+              <apex:variable var="qnum" value="{!1}"/>  
+             
+               
+              <apex:repeat value="{!questionsList}" var="question" > 
+              
+                   <apex:pageBlockSection columns="1" rendered="{!question.newquestFormat.Question_Type__c=='Date'}" >
+                       <script>
+                            $(function() {
+                                $( ".datepicker" ).datepicker();
+                            });
+                        </script>
+                        
+                       <apex:outputPanel rendered="{!NOT(ISNULL(question.newquestFormat.HelpText__c))}"><b>Q.{!qnum} {!question.newquestFormat.Question_Label__c}</b><span class="helpButton" id="help1_Help"><img src="/s.gif" alt=""  class="helpIcon" title="{!question.newquestFormat.HelpText__c}"/></span>
+                      </apex:outputPanel>
+                      <apex:outputPanel rendered="{!ISNULL(question.newquestFormat.HelpText__c)}"><b>Q.{!qnum} {!question.newquestFormat.Question_Label__c}</b>
+                      </apex:outputPanel>
+                       <!-- <apex:outputPanel rendered="{!question.newquestFormat.HelpText__c==null}" ><b>Q.{!qnum} {!question.newquestFormat.Question_Label__c} </b> <span class="helpButton" id="help1_Help"><img src="/s.gif" alt=""  class="helpIcon" title="{!question.newquestFormat.HelpText__c}"/></span>
+                       </apex:outputPanel>-->
+                       <apex:pageBlockSectionItem >  
+                            <!--<apex:outputField value="{!question.newquestFormat.Question_Label__c}" />-->
+                            <apex:outputField value="{!question.newquestFormat.Subquestion_Label__c}" />              
+                            <apex:inputText styleClass="datepicker" id="dateid" value="{!question.resObj.Response__c}" maxlength="255"/>
+                            <!-- <apex:selectList value="{!question.questionFlag}" rendered="{!question.newquestFormat.Question_Type__c=='RadioPicklist'}"></apex:selectList> -->
+                            <!-- <apex:outputText value="{!question.questionFlag}" rendered="{!question.newquestFormat.Question_Type__c=='RadioPicklist'}"/> -->                               
+                        </apex:pageBlockSectionItem> 
+                        <apex:panelGroup layout="inlined">
+                            <div class="commentBoxHeader">
+                                {!question.resObj.Notes.size} Comments
+                                <div class="commentBoxHeaderActions">
+                                <span id="{!question.newquestFormat.id}view"><a href="#" onclick="viewComments('{!question.newquestFormat.id}',{!question.resObj.Notes.size},0); return false;">View/Edit Comments</a> | </span>
+                                <script>
+                                    if({!question.resObj.Notes.size}==0)
+                                        document.getElementById("{!question.newquestFormat.id}view").style.display='none';
+                                </script>
+                                <span id="{!question.newquestFormat.id}add"><a href="#" onclick="viewComments('{!question.newquestFormat.id}',{!question.resObj.Notes.size},1); return false;">Add Comment</a></span>
+                                </div>
+                            </div>
+                            <div id="{!question.newquestFormat.id}att" class="commentBox" style="display:none;">
+                                <apex:repeat value="{!question.resObj.Notes}" var="note">
+                                <p><apex:outputField value="{!note.Owner.FirstName}" rendered="{!NOT(ISNULL(note.Owner.FirstName))}"/>&nbsp;<apex:outputField value=" {!note.Owner.LastName}" rendered="{!NOT(ISNULL(note.Owner.LastName))}"/>: {!note.body} <span class="editComment"><apex:outputlink value="/{!note.Id}" target="_blank">Edit</apex:outputlink></span>
+                                </p>
+                                </apex:repeat>
+                                <div class="addCommentContainer">
+                                <textarea name="{!question.newquestFormat.id}row1" id="{!question.newquestFormat.id}row1" class="addCommentTextArea" rows="2" placeholder="Add your comment"></textarea>
+                                </div>
+                             </div>
+                      </apex:panelGroup>                 
+                   </apex:pageBlockSection>    
+                   <apex:pageBlockSection columns="1" rendered="{!question.newquestFormat.Question_Type__c=='Text'}" >
+                      <apex:outputPanel rendered="{!NOT(ISNULL(question.newquestFormat.HelpText__c))}"><b>Q.{!qnum} {!question.newquestFormat.Question_Label__c}</b><span class="helpButton" id="help1_Help"><img src="/s.gif" alt=""  class="helpIcon" title="{!question.newquestFormat.HelpText__c}"/></span>
+                      </apex:outputPanel>
+                      <apex:outputPanel rendered="{!ISNULL(question.newquestFormat.HelpText__c)}"><b>Q.{!qnum} {!question.newquestFormat.Question_Label__c}</b>
+                      </apex:outputPanel>
+                       <!-- <apex:outputPanel rendered="{!question.newquestFormat.HelpText__c==null}" ><b>Q.{!qnum} {!question.newquestFormat.Question_Label__c} </b> <span class="helpButton" id="help1_Help"><img src="/s.gif" alt=""  class="helpIcon" title="{!question.newquestFormat.HelpText__c}"/></span>
+                       </apex:outputPanel>-->
+                       <apex:pageBlockSectionItem >  
+                            <!--<apex:outputField value="{!question.newquestFormat.Question_Label__c}" />-->
+                            <apex:outputField value="{!question.newquestFormat.Subquestion_Label__c}" />              
+                            <apex:inputText style="width:100%" id="textInf" value="{!question.resObj.Response__c}" maxlength="255"/>
+                            <!-- <apex:selectList value="{!question.questionFlag}" rendered="{!question.newquestFormat.Question_Type__c=='RadioPicklist'}"></apex:selectList> -->
+                            <!-- <apex:outputText value="{!question.questionFlag}" rendered="{!question.newquestFormat.Question_Type__c=='RadioPicklist'}"/> -->                               
+                        </apex:pageBlockSectionItem> 
+                        <apex:panelGroup layout="inlined">
+                            <div class="commentBoxHeader">
+                                {!question.resObj.Notes.size} Comments
+                                <div class="commentBoxHeaderActions">
+                                <span id="{!question.newquestFormat.id}view"><a href="#" onclick="viewComments('{!question.newquestFormat.id}',{!question.resObj.Notes.size},0); return false;">View/Edit Comments</a> | </span>
+                                <script>
+                                    if({!question.resObj.Notes.size}==0)
+                                        document.getElementById("{!question.newquestFormat.id}view").style.display='none';
+                                </script>
+                                <span id="{!question.newquestFormat.id}add"><a href="#" onclick="viewComments('{!question.newquestFormat.id}',{!question.resObj.Notes.size},1); return false;">Add Comment</a></span>
+                                </div>
+                            </div>
+                            <div id="{!question.newquestFormat.id}att" class="commentBox" style="display:none;">
+                                <apex:repeat value="{!question.resObj.Notes}" var="note">
+                                <p><apex:outputField value="{!note.Owner.FirstName}" rendered="{!NOT(ISNULL(note.Owner.FirstName))}"/>&nbsp;<apex:outputField value=" {!note.Owner.LastName}" rendered="{!NOT(ISNULL(note.Owner.LastName))}"/>: {!note.body} <span class="editComment"><apex:outputlink value="/{!note.Id}" target="_blank">Edit</apex:outputlink></span>
+                                </p>
+                                </apex:repeat>
+                                <div class="addCommentContainer">
+                                <textarea name="{!question.newquestFormat.id}row1" id="{!question.newquestFormat.id}row1" class="addCommentTextArea" rows="2" placeholder="Add your comment"></textarea>
+                                </div>
+                             </div>
+                      </apex:panelGroup>                 
+                   </apex:pageBlockSection>
+                 <apex:pageBlockSection columns="1" rendered="{!question.newquestFormat.Question_Type__c=='Textarea'}" >
+                       <apex:outputPanel rendered="{!NOT(ISNULL(question.newquestFormat.HelpText__c))}"><b>Q.{!qnum} {!question.newquestFormat.Question_Label__c}</b><span class="helpButton" id="help1_Help"><img src="/s.gif" alt=""  class="helpIcon" title="{!question.newquestFormat.HelpText__c}"/></span>
+                      </apex:outputPanel>
+                      <apex:outputPanel rendered="{!ISNULL(question.newquestFormat.HelpText__c)}"><b>Q.{!qnum} {!question.newquestFormat.Question_Label__c}</b>
+                      </apex:outputPanel>
+                       <!-- <apex:outputPanel rendered="{!question.newquestFormat.HelpText__c==null}" ><b>Q.{!qnum} {!question.newquestFormat.Question_Label__c} </b> <span class="helpButton" id="help1_Help"><img src="/s.gif" alt=""  class="helpIcon" title="{!question.newquestFormat.HelpText__c}"/></span>
+                       </apex:outputPanel>-->
+                       <apex:pageBlockSectionItem >  
+                            <!--<apex:outputField value="{!question.newquestFormat.Question_Label__c}" />-->
+                            <apex:outputField value="{!question.newquestFormat.Subquestion_Label__c}" />              
+                            <apex:inputTextarea style="width:100%;" rows="6"  id="textInfo" value="{!question.resObj.Response__c}"></apex:inputTextArea>
+                            <!-- <apex:selectList value="{!question.questionFlag}" rendered="{!question.newquestFormat.Question_Type__c=='RadioPicklist'}"></apex:selectList> -->
+                            <!-- <apex:outputText value="{!question.questionFlag}" rendered="{!question.newquestFormat.Question_Type__c=='RadioPicklist'}"/> -->                               
+                        </apex:pageBlockSectionItem> 
+                        <apex:panelGroup layout="inlined">
+                            <div class="commentBoxHeader">
+                                {!question.resObj.Notes.size} Comments
+                                <div class="commentBoxHeaderActions">
+                                <span id="{!question.newquestFormat.id}view"><a href="#" onclick="viewComments('{!question.newquestFormat.id}',{!question.resObj.Notes.size},0); return false;">View/Edit Comments</a> | </span>
+                                <script>
+                                    if({!question.resObj.Notes.size}==0)
+                                        document.getElementById("{!question.newquestFormat.id}view").style.display='none';
+                                </script>
+                                <span id="{!question.newquestFormat.id}add"><a href="#" onclick="viewComments('{!question.newquestFormat.id}',{!question.resObj.Notes.size},1); return false;">Add Comment</a></span>
+                                </div>
+                            </div>
+                            <div id="{!question.newquestFormat.id}att" class="commentBox" style="display:none;">
+                                <apex:repeat value="{!question.resObj.Notes}" var="note">
+                                <p><apex:outputField value="{!note.Owner.FirstName}" rendered="{!NOT(ISNULL(note.Owner.FirstName))}"/>&nbsp;<apex:outputField value=" {!note.Owner.LastName}" rendered="{!NOT(ISNULL(note.Owner.LastName))}"/>: {!note.body} <span class="editComment"><apex:outputlink value="/{!note.Id}" target="_blank">Edit</apex:outputlink></span>
+                                </p>
+                                </apex:repeat>
+                                <div class="addCommentContainer">
+                                <textarea name="{!question.newquestFormat.id}row1" id="{!question.newquestFormat.id}row1" class="addCommentTextArea" rows="2" placeholder="Add your comment"></textarea>
+                                </div>
+                             </div>
+                      </apex:panelGroup>                 
+                   </apex:pageBlockSection>
+                 <apex:pageBlockSection columns="1" rendered="{!(question.newquestFormat.Question_Type__c=='Dropdown Picklist')}">
+                       <apex:outputPanel rendered="{!NOT(ISNULL(question.newquestFormat.HelpText__c))}" style="text-align:center;font-size:1.1em" ><b>Q.{!qnum} {!question.newquestFormat.Question_Label__c}</b><span class="helpButton" id="help1_Help"><img src="/s.gif" alt=""  class="helpIcon" title="{!question.newquestFormat.HelpText__c}"/></span>
+                       </apex:outputPanel>
+                        <apex:outputPanel rendered="{!ISNULL(question.newquestFormat.HelpText__c)}" style="text-align:center;font-size:1.1em" ><b>Q.{!qnum} {!question.newquestFormat.Question_Label__c}</b>
+                      </apex:outputPanel>
+                       <apex:pageBlockSectionItem >  
+                               <!--<apex:selectRadio layout="pageDirection" id="qOptionList">-->
+                              <apex:selectList id="qOptionLista" multiselect="false" size="1" value="{!question.resObj.Response__c}" >
+                              <apex:selectOptions value="{!question.optionsList}" />
+                             </apex:selectList>                      
+                            <!-- <apex:outputText value="{!question.questionFlag}" rendered="{!question.newquestFormat.Question_Type__c=='RadioPicklist'}"/> -->                               
+                        </apex:pageBlockSectionItem> 
+                        <apex:panelGroup layout="inlined">
+                            <div class="commentBoxHeader">
+                                {!question.resObj.Notes.size} Comments
+                                <div class="commentBoxHeaderActions">
+                                <span id="{!question.newquestFormat.id}view"><a href="#" onclick="viewComments('{!question.newquestFormat.id}',{!question.resObj.Notes.size},0); return false;">View/Edit Comments</a> | </span>
+                                <script>
+                                    if({!question.resObj.Notes.size}==0)
+                                        document.getElementById("{!question.newquestFormat.id}view").style.display='none';
+                                </script>
+                                <span id="{!question.newquestFormat.id}add"><a href="#" onclick="viewComments('{!question.newquestFormat.id}',{!question.resObj.Notes.size},1); return false;">Add Comment</a></span>
+                                </div>
+                            </div>
+                            <div id="{!question.newquestFormat.id}att" class="commentBox" style="display:none;">
+                                <apex:repeat value="{!question.resObj.Notes}" var="note">
+                                <p><apex:outputField value="{!note.Owner.FirstName}" rendered="{!NOT(ISNULL(note.Owner.FirstName))}"/>&nbsp;<apex:outputField value=" {!note.Owner.LastName}" rendered="{!NOT(ISNULL(note.Owner.LastName))}"/>: {!note.body} <span class="editComment"><apex:outputlink value="/{!note.Id}" target="_blank">Edit</apex:outputlink></span>
+                                </p>
+                                </apex:repeat>
+                                <div class="addCommentContainer">
+                                <textarea name="{!question.newquestFormat.id}row1" id="{!question.newquestFormat.id}row1" class="addCommentTextArea" rows="2" placeholder="Add your comment"></textarea>
+                                </div>
+                             </div>
+                      </apex:panelGroup>                    
+                   </apex:pageBlockSection>
+                    <apex:pageBlockSection columns="1" rendered="{!(question.newquestFormat.Question_Type__c=='RadioPicklist')}">
+                       <apex:outputPanel rendered="{!NOT(ISNULL(question.newquestFormat.HelpText__c))}"><b>Q.{!qnum} {!question.newquestFormat.Question_Label__c}</b><span class="helpButton" id="help1_Help"><img src="/s.gif" alt=""  class="helpIcon" title="{!question.newquestFormat.HelpText__c}"/></span>
+                       </apex:outputPanel>
+                        <apex:outputPanel rendered="{!ISNULL(question.newquestFormat.HelpText__c)}"><b>Q.{!qnum} {!question.newquestFormat.Question_Label__c}</b>
+                      </apex:outputPanel>
+                       <apex:pageBlockSectionItem >  
+                               <!--<apex:selectRadio layout="pageDirection" id="qOptionList">-->
+                              <apex:selectRadio layout="pageDirection" id="qOptionList" value="{!question.resObj.Response__c}" >
+                              <apex:selectOptions value="{!question.optionsList}" />
+                              </apex:selectRadio>                      
+                            <!-- <apex:outputText value="{!question.questionFlag}" rendered="{!question.newquestFormat.Question_Type__c=='RadioPicklist'}"/> -->                               
+                        </apex:pageBlockSectionItem>     
+                             <apex:panelGroup layout="inlined">
+                    <div class="commentBoxHeader">
+                        {!question.resObj.Notes.size} Comments
+                        <div class="commentBoxHeaderActions">
+                        <span id="{!question.newquestFormat.id}view"><a href="#" onclick="viewComments('{!question.newquestFormat.id}',{!question.resObj.Notes.size},0); return false;">View/Edit Comments</a> | </span>
+                        <script>
+                            if({!question.resObj.Notes.size}==0)
+                                document.getElementById("{!question.newquestFormat.id}view").style.display='none';
+                        </script>
+                        <span id="{!question.newquestFormat.id}add"><a href="#" onclick="viewComments('{!question.newquestFormat.id}',{!question.resObj.Notes.size},1); return false;">Add Comment</a></span>
+                        </div>
+                    </div>
+                    <div id="{!question.newquestFormat.id}att" class="commentBox" style="display:none;">
+                        <apex:repeat value="{!question.resObj.Notes}" var="note">
+                        <p><apex:outputField value="{!note.Owner.FirstName}" rendered="{!NOT(ISNULL(note.Owner.FirstName))}"/>&nbsp;<apex:outputField value=" {!note.Owner.LastName}" rendered="{!NOT(ISNULL(note.Owner.LastName))}"/>: {!note.body} <span class="editComment"><apex:outputlink value="/{!note.Id}" target="_blank">Edit</apex:outputlink></span>
+                        </p>
+                        </apex:repeat>
+                        <div class="addCommentContainer">
+                        <textarea name="{!question.newquestFormat.id}row1" id="{!question.newquestFormat.id}row1" class="addCommentTextArea" rows="2" placeholder="Add your comment"></textarea>
+                        </div>
+                     </div>
+                     </apex:panelGroup>        
+                   </apex:pageBlockSection>
+                   <apex:pageBlockSection columns="1" rendered="{!question.newquestFormat.Question_Type__c=='MultiselectPicklist'}" >
+             
+                     <apex:outputPanel rendered="{!NOT(ISNULL(question.newquestFormat.HelpText__c))}" style="font-size:1.1em" ><b>Q.{!qnum} {!question.newquestFormat.Question_Label__c}</b><span class="helpButton" id="help1_Help"><img src="/s.gif" alt=""  class="helpIcon" title="{!question.newquestFormat.HelpText__c}"/></span>
+                       </apex:outputPanel>
+                        <apex:outputPanel rendered="{!ISNULL(question.newquestFormat.HelpText__c)}" style="font-size:1.1em" ><b>Q.{!qnum} {!question.newquestFormat.Question_Label__c}</b>
+                      </apex:outputPanel>
+                       <apex:pageBlockSectionItem >  
+                              <apex:selectCheckboxes layout="pageDirection" id="qmOptionList" value="{!question.multiselectlist}" >
+                              <!-- <apex:selectCheckboxes layout="pageDirection" id="qmOptionList">-->                              
+                                  <apex:selectOptions value="{!question.optionsList}" />
+                              </apex:selectCheckboxes>                     
+                       </apex:pageBlockSectionItem>  
+                        <apex:panelGroup layout="inlined">
+                            <div class="commentBoxHeader">
+                                {!question.resObj.Notes.size} Comments
+                                <div class="commentBoxHeaderActions">
+                                <span id="{!question.newquestFormat.id}view"><a href="#" onclick="viewComments('{!question.newquestFormat.id}',{!question.resObj.Notes.size},0); return false;">View/Edit Comments</a> | </span>
+                                <script>
+                                    if({!question.resObj.Notes.size}==0)
+                                        document.getElementById("{!question.newquestFormat.id}view").style.display='none';
+                                </script>
+                                <span id="{!question.newquestFormat.id}add"><a href="#" onclick="viewComments('{!question.newquestFormat.id}',{!question.resObj.Notes.size},1); return false;">Add Comment</a></span>
+                                </div>
+                            </div>
+                            <div id="{!question.newquestFormat.id}att" class="commentBox" style="display:none;">
+                                <apex:repeat value="{!question.resObj.Notes}" var="note">
+                                <p><apex:outputField value="{!note.Owner.FirstName}" rendered="{!NOT(ISNULL(note.Owner.FirstName))}"/>&nbsp;<apex:outputField value=" {!note.Owner.LastName}" rendered="{!NOT(ISNULL(note.Owner.LastName))}"/>: {!note.body} <span class="editComment"><apex:outputlink value="/{!note.Id}" target="_blank">Edit</apex:outputlink></span>
+                                </p>
+                                </apex:repeat>
+                                <div class="addCommentContainer">
+                                <textarea name="{!question.newquestFormat.id}row1" id="{!question.newquestFormat.id}row1" class="addCommentTextArea" rows="2" placeholder="Add your comment"></textarea>
+                                </div>
+                             </div>
+                      </apex:panelGroup>                       
+                   </apex:pageBlockSection><br></br>                  
+                <apex:variable var="qnum" value="{!qnum+1}"/> 
+              </apex:repeat>              
+         </apex:pageBlock>
+
+     </apex:outputPanel>
+                                           
+              </td></tr> 
+                  
+       </table>
+                    
+                        
+  </apex:form>
+
+
+
+
+ 
+</apex:page>

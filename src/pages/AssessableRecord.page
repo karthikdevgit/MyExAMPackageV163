@@ -1,0 +1,78 @@
+<apex:page controller="AssessableRecordController" standardStylesheets="true" showHeader="false" sidebar="false">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <html xmlns = "http://www.w3.org/2000/svg" xmlns:xlink = "http://www.w3.org/1999/xlink">
+        <head>
+            <title> Multiple Account With Contact</title>
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS052, '/assets/styles/salesforce-lightning-design-system-vf.css')}"/>
+        </head>
+        <apex:form id="frmId">
+            <apex:pageMessages ></apex:pageMessages>
+            <div class="slds">
+               <apex:outputPanel rendered="{!AND(section1,NOT(ISBLANK(fields)),fields.size>0)}" id="section1Id">
+                   <div class="slds-col--padded slds-size--1-of-1 slds-medium-size--1-of-1 slds-large-size--1-of-1 slds-m-around--x-small slds-text-align--center">
+                       <apex:commandButton styleClass="slds-button slds-button--neutral" value="Edit" action="{!editRecord}" reRender="frmId"/>
+                   </div>
+                   <div class="slds-grid slds-wrap slds-grid--pull-padded slds-m-around--medium slds-size--11-of-12">
+                        <apex:repeat value="{!fields}" var="f">
+                            <div class="slds-col--padded slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-2 slds-grid">
+                                <div class="slds-col--padded slds-size--1-of-2 slds-medium-size--1-of-6 slds-large-size--5-of-12 slds-m-around--small slds-text-align--right">
+                                    <strong>{!f.label}</strong>              
+                                </div>
+                                <div class="slds-col--padded slds-size--1-of-2 slds-medium-size--1-of-6 slds-large-size--5-of-12 slds-m-around--small">                  
+                                    <apex:outputField value="{!assessableRec[f.fieldPath]}"/>
+                                </div>
+                            </div>
+                        </apex:repeat>
+                        <div class="slds-col--padded slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-2 slds-grid">
+                            <div class="slds-col--padded slds-size--1-of-2 slds-medium-size--1-of-6 slds-large-size--5-of-12 slds-m-around--small slds-text-align--right">     
+                            </div>
+                            <div class="slds-col--padded slds-size--1-of-2 slds-medium-size--1-of-6 slds-large-size--5-of-12 slds-m-around--small">                  
+                            </div>
+                        </div>
+                     </div>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!AND(section2,NOT(ISBLANK(fields)),fields.size>0)}" id="section2Id">
+                     <div class="slds-col--padded slds-size--1-of-1 slds-medium-size--1-of-1 slds-large-size--1-of-1 slds-m-around--x-small slds-text-align--center">
+                        <apex:commandButton styleClass="slds-button slds-button--brand" value="Save" action="{!saveRecord}" />
+                        <apex:commandButton styleClass="slds-button slds-button--neutral" value="Cancel" action="{!cancelRecord}" reRender="frmId"/>
+                    </div>
+                    <div class="slds-grid slds-wrap slds-grid--pull-padded slds-m-around--medium slds-size--11-of-12">
+                        <apex:repeat value="{!fields}" var="f" rendered="{!fields.size>0}">
+                            <div class="slds-col--padded slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-2 slds-grid" style="{!IF(($ObjectType[ObjectName].fields[f.fieldPath].Updateable), '', 'display:none')}">
+                                <div class="slds-col--padded slds-size--1-of-2 slds-medium-size--1-of-6 slds-large-size--5-of-12 slds-m-around--small slds-text-align--right">
+                                    <apex:outputLabel ><strong>{!f.label}</strong> </apex:outputLabel>             
+                                </div>
+                                <div class="slds-col--padded slds-size--1-of-2 slds-medium-size--1-of-6 slds-large-size--5-of-12 slds-m-around--small">                  
+                                    <apex:inputField value="{!assessableRec[f.fieldPath]}" styleClass="slds-input" rendered="{!$ObjectType[ObjectName].fields[f.fieldPath].Updateable}"/>
+                                </div>
+                            </div>
+                        </apex:repeat>
+                        <div class="slds-col--padded slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-2 slds-grid">
+                            <div class="slds-col--padded slds-size--1-of-2 slds-medium-size--1-of-6 slds-large-size--5-of-12 slds-m-around--small slds-text-align--right">
+                            </div>
+                            <div class="slds-col--padded slds-size--1-of-2 slds-medium-size--1-of-6 slds-large-size--5-of-12 slds-m-around--small">                  
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+                        $("a").removeClass("slds-input");
+                    </script> 
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!OR(ISBLANK(fields),NOT(fields.size>0))}">
+                    <div class="slds-notify_container">
+                      <div class="slds-notify slds-notify--toast slds-theme--warning" role="alert">
+                        <div class="slds-notify__content">
+                          <h2 class="slds-text-heading--small">
+                              No field set found on the Assessable Object. 
+                              Please contact your administrator. If you are an administrator, 
+                              please create a field set in the Assessable Object of this 
+                              record with Name &ldquo;ViewerFieldSet_&lt;Object API Name&gt;&rdquo; (without __c if it is a custom object)
+                          </h2>
+                        </div>
+                      </div>
+                    </div>
+               </apex:outputPanel>
+            </div>
+        </apex:form>
+     </html>
+</apex:page>

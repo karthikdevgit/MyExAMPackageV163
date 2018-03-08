@@ -1,0 +1,33 @@
+.THIS {
+
+}
+
+.THIS .insert-between.slds-button.slds-button--neutral {
+    height: 30px;
+    text-align: center;
+    border: none;
+    background-color: #fff;
+    transition: opacity 333ms ease 750ms;
+    opacity: 0;
+    margin: 3px 0;
+    -webkit-backface-visibility: hidden;
+}
+
+
+
+.THIS .insert-between.slds-button.slds-button--neutral:hover{
+    opacity: 1;
+    height: 30px;
+    transition-delay:.5s;
+    background-color: #fff;
+    /*transition: all 150ms ease 0s;*/
+}
+
+.THIS .disable{
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.THIS .btn-container{
+  text-align: center;
+}

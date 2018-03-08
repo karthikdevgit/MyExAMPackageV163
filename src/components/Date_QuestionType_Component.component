@@ -1,0 +1,39 @@
+<apex:component >
+
+    <apex:attribute name="isPrimaryDate" type="Boolean" default="false" description="Renders Primary Date Question"/>
+    <apex:attribute name="isDependentDate" type="Boolean" default="false" description="Renders Dependent Date Question"/>
+    <apex:attribute name="isDecisionTreeDate" type="Boolean" default="false" description="Renders Decision Tree Date Question"/>
+
+    <apex:outputPanel rendered="{!isPrimaryDate}">
+        <div ng-show="eachQuestTemplateRec.ExAM__Question_Type__c == 'Date'">
+            <c:Primary_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <input type="text" ng-model="response[eachQuestTemplateRec.Id]" datepicker="datepicker"
+                       class="slds-size--4-of-12 slds-input validate{{eachQuestTemplateRec.ExAM__Is_Mandatory__c}}"/>
+                <c:Primary_Question_Action />
+            </div> 
+        </div>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!isDependentDate}">
+        <div ng-show="nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c == 'Date'">
+            <c:Dependent_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <input type="text" ng-model="response[nextDependentQuestion[eachQuestTemplateRec.Id].Id]" datepicker="datepicker"
+                       class="slds-size--4-of-12 slds-input validateDate validate{{nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Is_Mandatory__c}}"/>
+                <c:Dependent_Question_Action />
+            </div> 
+        </div>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!isDecisionTreeDate}">
+        <div ng-show="decisionTreeQuestion.ExAM__Question_Type__c == 'Date'">
+            <c:DecisionTree_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <input type="text" ng-model="DecisionTreeresponse[decisionTreeQuestion.Id]" datepicker="datepicker"
+                       class="slds-size--8-of-12 slds-input validateDate"/>
+            </div> 
+        </div>
+    </apex:outputPanel>
+
+</apex:component>

@@ -1,0 +1,21 @@
+<apex:page controller="ReportBuilderController" standardStylesheets="false" action="{!headerAction}" sidebar="false" showHeader="false">
+    <apex:form >
+    <apex:pageMessages ></apex:pageMessages>
+    <div>
+        <div style='text-align: center; font-size; 24px;'>
+            Please wait...
+        </div>
+        <div id="header" style="visibility: hidden;">
+            <apex:outputText value="{!head}" escape="false"/>
+        </div>
+        <script>
+            window.onload = function() {
+                actionMethod(document.getElementById('header').offsetHeight);
+            }
+        </script>
+    </div>
+    <apex:actionFunction action="{!pageRedirectMethod}" name="actionMethod" reRender="none">
+        <apex:param name="headerSize" value="" id="test"/>
+    </apex:actionFunction>
+    </apex:form> 
+</apex:page>

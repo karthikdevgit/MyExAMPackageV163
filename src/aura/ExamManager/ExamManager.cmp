@@ -1,0 +1,22 @@
+<aura:component implements="force:appHostable" access="global">
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:attribute name="generateChlidCmp" type="Boolean" default="false" access="public" description="show childCmp"/>
+    
+    <!-- Include Service and Main Component in App -->
+    <aura:if isTrue="{!v.generateChlidCmp}">
+        <div class="ExAMContainer">
+            <c:AnswerServiceComponent />
+            <c:AssessmentServiceComponent />
+            <c:SectionServiceComponent />
+            <c:QuestionServiceComponent />
+            <c:AttachmentServiceComponent />
+            <c:DistributionServiceComponent />
+            <c:DistributionGroupServiceComponent />
+            <c:EmailTemplateServiceComponent />
+            <c:ExamManageTemplate />
+        </div>
+    </aura:if>
+    
+</aura:component>

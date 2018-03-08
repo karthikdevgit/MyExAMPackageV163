@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Safety Inspection</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Safety Inspections</value>
+    </caseValues>
+    <fields>
+        <help><!-- Addressee if different from site admin (e.g OAR) --></help>
+        <label><!-- Addressee if different from site admin --></label>
+        <name>Addressee__c</name>
+    </fields>
+    <fields>
+        <label><!-- Category --></label>
+        <name>Category__c</name>
+        <picklistValues>
+            <masterLabel>ASBESTOS MANAGEMENT</masterLabel>
+            <translation><!-- ASBESTOS MANAGEMENT --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>CAMPUS SECURITY</masterLabel>
+            <translation><!-- CAMPUS SECURITY --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>CHEMICAL SAFETY</masterLabel>
+            <translation><!-- CHEMICAL SAFETY --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Comments --></label>
+        <name>Comments__c</name>
+    </fields>
+    <fields>
+        <label><!-- Complex Project Manager --></label>
+        <name>Complex_Project_Manager__c</name>
+    </fields>
+    <fields>
+        <help><!-- Ensure regulatory compliance with asbestos work practices, engineering controls, personal protective equipment, and clearance air monitoring requirements for all releases or abatement activities.&apos;; --></help>
+        <label><!-- Corrective Action --></label>
+        <name>Corrective_Action__c</name>
+    </fields>
+    <fields>
+        <label><!-- Default --></label>
+        <name>Default_2__c</name>
+    </fields>
+    <fields>
+        <label><!-- Default --></label>
+        <name>Default__c</name>
+    </fields>
+    <fields>
+        <label><!-- District --></label>
+        <name>District__c</name>
+    </fields>
+    <fields>
+        <label><!-- Due Date --></label>
+        <name>Due_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Email --></label>
+        <name>Email__c</name>
+    </fields>
+    <fields>
+        <label><!-- Enrollment --></label>
+        <name>Enrollment__c</name>
+    </fields>
+    <fields>
+        <label><!-- Facility Address --></label>
+        <name>Facility_Address__c</name>
+    </fields>
+    <fields>
+        <help><!-- select the facility type --></help>
+        <label><!-- Facility Type --></label>
+        <name>Facility_Type__c</name>
+        <picklistValues>
+            <masterLabel>Elementary School</masterLabel>
+            <translation><!-- Elementary School --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>High School</masterLabel>
+            <translation><!-- High School --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Middle School</masterLabel>
+            <translation><!-- Middle School --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <help><!-- This is the Facility Name --></help>
+        <label><!-- Facility --></label>
+        <name>Facility__c</name>
+        <picklistValues>
+            <masterLabel>107th Street Elementary School</masterLabel>
+            <translation><!-- 107th Street Elementary School --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>109th Street Elementary School</masterLabel>
+            <translation><!-- 109th Street Elementary School --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>10th Street Elementary School</masterLabel>
+            <translation><!-- 10th Street Elementary School --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>112th Street Elementary School</masterLabel>
+            <translation><!-- 112th Street Elementary School --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>17th Street Annex</masterLabel>
+            <translation><!-- 17th Street Annex --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Academia Avance</masterLabel>
+            <translation><!-- Academia Avance --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Inspection Date --></label>
+        <name>Inspection_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Inspection Type --></label>
+        <name>Inspection_Type__c</name>
+        <picklistValues>
+            <masterLabel>Accident</masterLabel>
+            <translation><!-- Accident --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Claims Rate</masterLabel>
+            <translation><!-- Claims Rate --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Complaint</masterLabel>
+            <translation><!-- Complaint --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Construction</masterLabel>
+            <translation><!-- Construction --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Incident Response</masterLabel>
+            <translation><!-- Incident Response --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Routine</masterLabel>
+            <translation><!-- Routine --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <help><!-- List of Inspectors --></help>
+        <label><!-- Inspector --></label>
+        <name>Inspector__c</name>
+        <picklistValues>
+            <masterLabel>Alexander Petersen</masterLabel>
+            <translation><!-- Alexander Petersen --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Bradley Smith</masterLabel>
+            <translation><!-- Bradley Smith --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Brent Evins</masterLabel>
+            <translation><!-- Brent Evins --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Carlos Torres</masterLabel>
+            <translation><!-- Carlos Torres --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Debra</masterLabel>
+            <translation><!-- Debra --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Locations --></label>
+        <name>Locations__c</name>
+    </fields>
+    <fields>
+        <label><!-- Priority --></label>
+        <name>Priority__c</name>
+        <picklistValues>
+            <masterLabel>0</masterLabel>
+            <translation><!-- 0 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>1</masterLabel>
+            <translation><!-- 1 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>2</masterLabel>
+            <translation><!-- 2 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>3</masterLabel>
+            <translation><!-- 3 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>4</masterLabel>
+            <translation><!-- 4 --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Project No. --></label>
+        <name>Project_No__c</name>
+    </fields>
+    <fields>
+        <label><!-- Responsible Party --></label>
+        <name>Responsible_Party__c</name>
+        <picklistValues>
+            <masterLabel>Facilities</masterLabel>
+            <translation><!-- Facilities --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>OEHS</masterLabel>
+            <translation><!-- OEHS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>School</masterLabel>
+            <translation><!-- School --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>food Services</masterLabel>
+            <translation><!-- food Services --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <help><!-- Site Administrator name --></help>
+        <label><!-- Site Administrator --></label>
+        <name>Site_Administrator__c</name>
+    </fields>
+    <fields>
+        <label><!-- Subtype --></label>
+        <name>Sub_Type__c</name>
+        <picklistValues>
+            <masterLabel>Asbestos Work Compliance</masterLabel>
+            <translation><!-- Asbestos Work Compliance --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Availability</masterLabel>
+            <translation><!-- Availability --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Chemical Inventory</masterLabel>
+            <translation><!-- Chemical Inventory --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Communicating Emergencies</masterLabel>
+            <translation><!-- Communicating Emergencies --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Current</masterLabel>
+            <translation><!-- Current --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Plan – Chemical Hygiene &amp; Safety</masterLabel>
+            <translation><!-- Plan – Chemical Hygiene &amp; Safety --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Posting – Visitation Policy</masterLabel>
+            <translation><!-- Posting – Visitation Policy --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Program – HAZCOM</masterLabel>
+            <translation><!-- Program – HAZCOM --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Visitor’s Pass</masterLabel>
+            <translation><!-- Visitor’s Pass --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Type --></label>
+        <name>Type__c</name>
+        <picklistValues>
+            <masterLabel>Asbestos Management Plan</masterLabel>
+            <translation><!-- Asbestos Management Plan --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Asbestos Work Compliance</masterLabel>
+            <translation><!-- Asbestos Work Compliance --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Chemical Hygiene &amp; Safety</masterLabel>
+            <translation><!-- Chemical Hygiene &amp; Safety --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Communicating Emergencies</masterLabel>
+            <translation><!-- Communicating Emergencies --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Hazard Communication</masterLabel>
+            <translation><!-- Hazard Communication --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Visitation Policy</masterLabel>
+            <translation><!-- Visitation Policy --></translation>
+        </picklistValues>
+    </fields>
+    <layouts>
+        <layout>Safety Inspection Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Safety Inspection --></label>
+            <section>Safety Inspection</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

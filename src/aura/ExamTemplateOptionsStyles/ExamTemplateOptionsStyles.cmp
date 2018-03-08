@@ -1,0 +1,83 @@
+<aura:component controller="StaticResourceURL" access="public">
+    
+    <aura:handler name="init" value="{!this}" action="{!c.downloadTemplateCss}"/>
+    
+    <aura:attribute name="attachment" type="Map" access="public"/>
+    <aura:attribute name="assessmentTemplate" type="Main_questionaire__c" access="public"/>
+    <aura:attribute name="styleOptionsLinkType" type="String" default="Advanced" access="public"/>
+    <aura:attribute name="publicAssessmentCSS" type="String" access="public"/>
+    
+    <aura:registerEvent name="notificationEvent" type="c:notificationEvt"/> 
+    
+    <article class="slds-card slds-m-around--large">
+        <div class="slds-card__header ">
+            <span class="slds-text-heading--medium">Survey Look and Feel</span>
+        </div>
+        <div class="slds-card__body">
+            <div aura:id="styleBasicOptions" class="">
+                <div class="slds-text-heading--small" aura:id="container">
+                    
+                    <c:ExamTextFld record="{!v.assessmentTemplate}" mode="edit" 
+                                      sourceDerivenCmp="{'type' : 'Survey Look and Feel' , 'currentTab' : 'Basic'}"
+                                      Id="{!v.assessmentTemplate.Id}" sObjectName="ExAM__Main_questionaire__c" fieldName="ExAM__PA_Template_Heading_Text__c" fieldLabel="Template Heading Text"/>
+                    
+                </div>
+                <div class="slds-text-heading--small">
+                    
+                    <c:ExamTextFldAndAttach record="{!v.assessmentTemplate}" mode="edit" 
+                                               sourceDerivenCmp="{'type' : 'Survey Look and Feel' , 'currentTab' : 'Basic'}"
+                                               Id="{!v.assessmentTemplate.Id}" sObjectName="ExAM__Main_questionaire__c" fieldLabel="Template Logo" attachment="{!v.attachment}"/>
+                    
+                    <!-- fieldName="PA_Template_Heading_Text__c"-->
+                    
+                </div>
+                <div class="slds-text-heading--small">
+                    
+                    <c:ExamColorPickerFld record="{!v.assessmentTemplate}"
+                                          mode="edit"
+                                          sourceDerivenCmp="{'type' : 'Survey Look and Feel' , 'currentTab' : 'Basic'}"
+                                          Id="{!v.assessmentTemplate.Id}"
+                                          sObjectName="ExAM__Main_questionaire__c"
+                                          fieldName="ExAM__PA_Header_and_Button_Background_Color__c"
+                                          fieldLabel="Header and Button Background Color"/>
+                    
+                </div>
+                <div class="slds-text-heading--small">
+                    
+                    <c:ExamColorPickerFld record="{!v.assessmentTemplate}" mode="edit" 
+                                             sourceDerivenCmp="{'type' : 'Survey Look and Feel' , 'currentTab' : 'Basic'}"
+                                             Id="{!v.assessmentTemplate.Id}" sObjectName="ExAM__Main_questionaire__c" fieldName="ExAM__PA_Header_and_Button_Text_Color__c" fieldLabel="Header and Button Text Color"/>
+                    
+                </div>
+            </div>
+            <div aura:id="styleAdvancedOptions" class="slds-hide">
+                
+                
+                <div class="slds-text-heading--small" aura:id="container">Modify the files in
+                    
+                    <a target="_blank" href="{!v.publicAssessmentCSS}" download="">this template</a>
+                    and <a href="/apexpages/setup/listStaticResource.apexp" target="_blank">upload</a> new zip file as a
+                    static resource
+                </div>
+                
+                <div class="slds-text-heading--small">
+                    <c:ExamTextWithSearchFld record="{!v.assessmentTemplate}" mode="edit" 
+                                                sourceDerivenCmp="{'type' : 'Survey Look and Feel' , 'currentTab' : 'Advanced'}"
+                                                Id="{!v.assessmentTemplate.Id}" sObjectName="ExAM__Main_questionaire__c" fieldName="ExAM__Static_Resource_Name__c" fieldLabel="Static Resource"/>
+                </div>
+                <div class="slds-m-top--large">
+                    <c:ExamStaticRrcFilePath record="{!v.assessmentTemplate}" mode="edit"
+                                                sourceDerivenCmp="{'type' : 'Survey Look and Feel' , 'currentTab' : 'Advanced'}"
+                                                Id="{!v.assessmentTemplate.Id}" sObjectName="ExAM__Main_questionaire__c" fieldName="ExAM__SRFile_Path__c" fieldLabel="CSS Override Paths"/>
+                </div>
+                
+            </div>
+            <div class="slds-m-top--large slds-text-heading--x-small">
+                <a onclick="{!c.showStyleAdvancedOptions}" class="">Show {!v.styleOptionsLinkType} Styling Options</a>
+            </div>
+            
+        </div>
+        <div class="slds-card__footer slds-grid slds-grid--align-spread"></div>
+    </article>
+    
+</aura:component>

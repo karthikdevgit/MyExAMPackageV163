@@ -1,0 +1,34 @@
+<apex:page sidebar="false" controller="getReportDashboard" tabstyle="account" showHeader="false">
+  <!-- This is the page for banner include it in all pages-->
+<apex:include pageName="BannerTemplate"/>
+
+<apex:form id="governForm">
+       
+        <apex:pageBlock title="Dashboards and Reports">
+         
+           <apex:pageMessages ></apex:pageMessages>
+              <br/><br/>
+                
+                <apex:pageBlockSection title="LIST OF DASHBOARDS" columns="2">                              
+                          <apex:repeat value="{!listDashboards}" var="dash">
+                              <a href="../{!dash.id}" target="_blank" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">{!dash.title }</a>                     
+                             <br/><br/>
+                         </apex:repeat>
+                </apex:pageBlockSection>
+                
+                <apex:pageBlockSection id="govBlock" title="LIST OF REPORTS" columns="2">                                                                                 
+                         <apex:repeat value="{!listReports}" var="rep">                         
+                             <a href="../{!rep.id}" target="_blank" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">{!rep.name}</a>
+                             <br/><br/>
+                         </apex:repeat>
+                        
+                </apex:pageBlockSection>  
+               
+                
+         </apex:pageBlock> 
+    
+         
+                
+  </apex:form>
+
+</apex:page>

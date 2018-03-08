@@ -1,0 +1,169 @@
+<apex:component controller="ExportAMController" allowDML="false" access="global">
+
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <title>Export Assignment Manager</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS052, '/assets/styles/salesforce-lightning-design-system-vf.css')}" />
+        </head>
+    
+        <div class="slds" ng-app="exportAMApp" ng-controller="exportAMCtrl" >
+            <form class="slds-form" >
+                <div class="slds-card slds-m-top--x-small slds-m-bottom--x-large">
+                    <div class="slds-card__header slds-grid">
+                        <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <h2 class="slds-text-heading--small slds-truncate">Assignment Manager Export</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-card__body slds-m-left--x-small slds-m-bottom--x-small slds-m-top--x-small slds-m-right--x-small">
+                        <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                            <tbody>
+                                <tr class="slds-hint-parent">
+                                    <td class="slds-size--1-of-4">
+                                        <label class="slds-form-element__label slds-text-heading--small" for="lookup">Assessment Template</label>
+                                    </td>
+                                    <td class="slds-size--3-of-4">
+                                        <div class="slds-lookup" data-select="multi" data-scope="single" data-typeahead="true">
+                                            <div class="slds-form-element">
+                                                
+                                                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right templatecls">
+                                                    <input id="lookup" class="slds-input slds-size--1-of-2" type="text" ng-model="searchTemplateText" ng-change="searchfocus();" ng-blur="blurtemp();" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-activedescendant="" />
+                                                    
+                                                    <div style="display:none;" class="slds-form-element__help">This field is required</div>
+                                                    <div style="display:none;" class="slds-form-element__help">Enter correct value</div>
+                                                    
+                                                </div>
+                                            </div>
+                                            <div class="slds-lookup__menu slds-size--1-of-2" role="listbox" ng-show="showAssTemp">
+                                                <ul class="slds-lookup__list" role="presentation">
+                                                    <li class="slds-lookup__item " ng-click="selectTemplate(assTemp);" ng-repeat="assTemp in assTempList  = ( assessmentTemplateList | filter:{ ExAM__Template_name__c : searchTemplateText })">
+                                                        <a role="option" > 
+                                                            {{assTemp.ExAM__Template_name__c}}
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td class="slds-size--1-of-4">
+                                        <label class="slds-form-element__label slds-text-heading--small" for="date">Scheduled date range</label>
+                                    </td>
+                                    <td class="slds-size--3-of-4">
+                                        <div class="slds-form-element">
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-input-has-icon slds-input-has-icon--right startdatecls  slds-size--1-of-3">
+                                                    <input id="date1" class="datepicker1 slds-input" ng-model="startdate" type="text" placeholder="Pick a Start Date" label="Date Picker Label"/>
+                                                    <label class="slds-label"> to </label>
+                                                    <input id="date2" class="datepicker2 slds-input" ng-model="enddate" type="text" placeholder="Pick a End Date" label="Date Picker Label"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td class="slds-size--1-of-4">
+                                        <label class="slds-form-element__label slds-text-heading--small" for="date">Created date range</label>
+                                    </td>
+                                    <td class="slds-size--3-of-4">
+                                        <div class="slds-form-element">
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-input-has-icon slds-input-has-icon--right createdDatecls  slds-size--1-of-3">
+                                                    <input id="date3" class="createdDatepicker1 slds-input" ng-model="createdDatepicker1" type="text" placeholder="Pick a Start Date" label="Date Picker Label"/>
+                                                    <label class="slds-label"> to </label>
+                                                    <input id="date4" class="createdDatepicker2 slds-input" ng-model="createdDatepicker2" type="text" placeholder="Pick a End Date" label="Date Picker Label"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td colspan="2">
+                                        <center>
+                                        
+                                            <input class="slds-button slds-button--brand" type="button" value="ExportAM" ng-click="validateData();"/>
+                                        </center>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                    </div><!--end card body-->
+                </div>
+                
+            
+            </form>       
+        </div>       
+
+    </html>
+    <script>
+            
+        $(document).ready(function() {
+            $( '.datepicker1, .datepicker2, .createdDatepicker1, .createdDatepicker2' ).datepicker();
+        });
+        
+        var exportapp = angular.module('exportAMApp', []);
+        exportapp.controller('exportAMCtrl', function($scope,$timeout) {
+            $scope.assessmentTemplateList = [];
+            $scope.showAssTemp = false;
+            $scope.searchTemplateText = '';
+            $scope.selectedTemplateRec = {};
+            $scope.startdate = '';
+            $scope.enddate = '';
+            $scope.createdDatepicker1 = '';
+            $scope.createdDatepicker2 = '';
+            
+            if ('{!JSENCODE(assessmentTemplateJSON)}' != null && '{!JSENCODE(assessmentTemplateJSON)}' != '' && '{!JSENCODE(assessmentTemplateJSON)}' != 'null') {
+                $scope.assessmentTemplateList = JSON.parse('{!JSENCODE(assessmentTemplateJSON)}');
+            }   
+            
+            
+            $scope.blurtemp = function() {
+                $timeout(function(){
+                    $scope.showAssTemp = false;
+                },300);
+                
+            }
+            
+            
+            $scope.selectTemplate = function(selectedTemp) {
+                $scope.selectedTemplateRec = selectedTemp;
+                $scope.searchTemplateText = $scope.selectedTemplateRec.ExAM__Template_name__c;
+                
+            }
+            $scope.searchfocus = function() {
+                if($scope.searchTemplateText.length > 0) { 
+                    $scope.showAssTemp = true; 
+                }
+            }
+            $scope.validateData = function() {
+
+                var isError = false;
+                if ($scope.searchTemplateText == null || $scope.searchTemplateText == '') {
+                    $( ".templatecls" ).addClass('slds-has-error');
+                    $( ".templatecls" ).find( ".slds-form-element__help" ).first().css("display","" );
+                    $( ".templatecls" ).find( ".slds-form-element__help" ).last().css("display","none" );
+                    isError = true;
+                } else if($scope.selectedTemplateRec == null || $scope.selectedTemplateRec.Id == null) {
+                    $( ".templatecls" ).addClass('slds-has-error');
+                    $( ".templatecls" ).find( ".slds-form-element__help" ).last().css("display","" );
+                    $( ".templatecls" ).find( ".slds-form-element__help" ).first().css("display","none" );
+                    isError = true;
+                } else {
+                    $( ".templatecls" ).removeClass('slds-has-error');
+                    $( ".templatecls" ).find( ".slds-form-element__help" ).css("display","none" );
+                }
+                
+                if (!isError) {
+                    window.open('/apex/ExAM__ExportAM?ATId='+$scope.selectedTemplateRec.Id+'&ATStart='+$('.datepicker1').val()+'&ATEnd='+$('.datepicker2').val()+'&AMCreatedStart='+$('.createdDatepicker1').val()+'&AMCreatedEnd='+$('.createdDatepicker2').val(),'_blank');
+                }
+                
+                
+            }
+            
+        });
+    </script>  
+</apex:component>

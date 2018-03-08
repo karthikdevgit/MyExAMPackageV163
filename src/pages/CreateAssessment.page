@@ -1,0 +1,36 @@
+<apex:page standardController="Main_questionaire__c" extensions="CreateAssessmentController" recordSetVar="ListTemplates" sidebar="false" id="createAssesswizard" >
+    <meta name="viewport" content="width=device-width-5, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes;" />
+    <!-- This is the page for banner include it in all pages
+    <apex:include pageName="BannerTemplate"/>-->
+    <style type="text/css">
+        .inputTextBig { width: 80%; }
+        .headerRow .TableTitle {font-size:100% !important;height:20px; }
+    </style>
+    <apex:form id="TemplateWizardForm">
+        <apex:pageMessages ></apex:pageMessages>
+        <apex:pageBlock >
+            <p style="font-size:16px"> <b> CREATE NEW ASSESSMENT</b></p><br/> 
+            <apex:pageBlockButtons location="bottom" id="buttons5" >  
+                <apex:commandButton id="button7" value="Go To Assessment" action="{!save}" />
+                <apex:commandButton id="button9" value="Go To Mobile Assessment" action="{!mobilesave}" >  
+                    <apex:param name="MobileVersion" value="true" assignTo="{!MobileVersion}"/>
+                </apex:commandButton> 
+                <apex:commandButton value="Cancel" action="{!Cancel}" id="button6" title="Cancel"/>
+                <!-- <apex:commandButton value="Home" action="{!Home}" id="button8" title="Home"/> --> 
+            </apex:pageBlockButtons> 
+            <br></br>
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Enter Organization/School/Facility Name</apex:outputLabel>
+                    <apex:inputText value="{!acc.Name}" styleClass="inputTextBig"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Select the template</apex:outputLabel>
+                    <apex:inputField value="{!acc.Main_Questionnaire_Template__c}"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:outputPanel id="questiondetail">
+            </apex:outputPanel>
+        </apex:pageBlock>       
+    </apex:form>
+</apex:page>

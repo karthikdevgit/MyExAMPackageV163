@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Main Report Data</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Main Report Data</value>
+    </caseValues>
+    <fields>
+        <help><!-- This is for what we are taking survey its a school or facility within a school.They have hierarchical relationship --></help>
+        <label><!-- School or Facility --></label>
+        <name>Account__c</name>
+        <relationshipLabel><!-- Main Report Data --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Question --></label>
+        <name>Question_Template__c</name>
+        <relationshipLabel><!-- Main Report Data --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Questionnaire Response --></label>
+        <name>Questionnaire_Response__c</name>
+        <relationshipLabel><!-- Main Report Data --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- To get the super section and subsection and also we can identify the groups --></help>
+        <label><!-- Section and Subsection --></label>
+        <name>Section__c</name>
+        <relationshipLabel><!-- Main Report Data --></relationshipLabel>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

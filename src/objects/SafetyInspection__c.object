@@ -1,0 +1,664 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>Used to support field services, safety, and inspection use cases of ExAM where data is collected in the field.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Addressee__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Addressee if different from site admin (e.g OAR)</inlineHelpText>
+        <label>Addressee if different from site admin</label>
+        <length>50</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Category__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Category</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>ASBESTOS MANAGEMENT</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>CAMPUS SECURITY</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>CHEMICAL SAFETY</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Comments__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Comments</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Complex_Project_Manager__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Complex Project Manager</label>
+        <length>50</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Corrective_Action__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Ensure regulatory compliance with asbestos work practices, engineering controls, personal protective equipment, and clearance air monitoring requirements for all releases or abatement activities.&apos;;</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Ensure regulatory compliance with asbestos work practices, engineering controls, personal protective equipment, and clearance air monitoring requirements for all releases or abatement activities.&apos;;</inlineHelpText>
+        <label>Corrective Action</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Default_2__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Default</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Default__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Default</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>District__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>District</label>
+        <length>20</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Due_Date__c</fullName>
+        <defaultValue>Now()+14</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Due Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Email__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Email</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Enrollment__c</fullName>
+        <defaultValue>1279</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Enrollment</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Facility_Address__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Facility Address</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Facility_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>select the facility type</inlineHelpText>
+        <label>Facility Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Elementary School</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Middle School</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>High School</fullName>
+                    <default>true</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Facility__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>This is the Facility Name</inlineHelpText>
+        <label>Facility</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>10th Street Elementary School</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>107th Street Elementary School</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>109th Street Elementary School</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>112th Street Elementary School</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>17th Street Annex</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Academia Avance</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Inspection_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Inspection Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Inspection_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Inspection Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Incident Response</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Complaint</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Routine</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Construction</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Accident</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Claims Rate</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Inspector__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>List of Inspectors</inlineHelpText>
+        <label>Inspector</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Alexander Petersen</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Bradley Smith</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Brent Evins</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Carlos Torres</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Debra</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Locations__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Locations</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Priority__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Priority</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>0</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>1</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>2</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>3</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>4</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Project_No__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Project No.</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Responsible_Party__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Responsible Party</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>School</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Facilities</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>OEHS</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>food Services</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Site_Administrator__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Site Administrator name</inlineHelpText>
+        <label>Site Administrator</label>
+        <length>50</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sub_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Subtype</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <controllingField>Type__c</controllingField>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Availability</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Current</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Asbestos Work Compliance</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Visitor’s Pass</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Posting – Visitation Policy</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Communicating Emergencies</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Program – HAZCOM</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Chemical Inventory</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Plan – Chemical Hygiene &amp; Safety</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+            <valueSettings>
+                <controllingFieldValue>Asbestos Management Plan</controllingFieldValue>
+                <valueName>Availability</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Asbestos Management Plan</controllingFieldValue>
+                <valueName>Current</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Asbestos Work Compliance</controllingFieldValue>
+                <valueName>Asbestos Work Compliance</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Visitation Policy</controllingFieldValue>
+                <valueName>Visitor’s Pass</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Visitation Policy</controllingFieldValue>
+                <valueName>Posting – Visitation Policy</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Communicating Emergencies</controllingFieldValue>
+                <valueName>Communicating Emergencies</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Hazard Communication</controllingFieldValue>
+                <valueName>Program – HAZCOM</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Hazard Communication</controllingFieldValue>
+                <valueName>Chemical Inventory</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Chemical Hygiene &amp; Safety</controllingFieldValue>
+                <valueName>Plan – Chemical Hygiene &amp; Safety</valueName>
+            </valueSettings>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Type__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <controllingField>Category__c</controllingField>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Asbestos Management Plan</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Asbestos Work Compliance</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Visitation Policy</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Communicating Emergencies</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Hazard Communication</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Chemical Hygiene &amp; Safety</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+            <valueSettings>
+                <controllingFieldValue>ASBESTOS MANAGEMENT</controllingFieldValue>
+                <valueName>Asbestos Management Plan</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>ASBESTOS MANAGEMENT</controllingFieldValue>
+                <valueName>Asbestos Work Compliance</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>CAMPUS SECURITY</controllingFieldValue>
+                <valueName>Visitation Policy</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>CAMPUS SECURITY</controllingFieldValue>
+                <valueName>Communicating Emergencies</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>CHEMICAL SAFETY</controllingFieldValue>
+                <valueName>Hazard Communication</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>CHEMICAL SAFETY</controllingFieldValue>
+                <valueName>Chemical Hygiene &amp; Safety</valueName>
+            </valueSettings>
+        </valueSet>
+    </fields>
+    <label>Safety Inspection</label>
+    <nameField>
+        <label>Safety Inspection Name</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Safety Inspections</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Facility_Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Priority__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>LAST_UPDATE</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Category__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Sub_Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Corrective_Action__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Facility__c</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>Facility_Type__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Facility__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Priority__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>LAST_UPDATE</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Facility_Type__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Facility__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Priority__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>LAST_UPDATE</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>Facility__c</searchFilterFields>
+        <searchFilterFields>Facility_Type__c</searchFilterFields>
+        <searchFilterFields>Priority__c</searchFilterFields>
+        <searchFilterFields>LAST_UPDATE</searchFilterFields>
+        <searchResultsAdditionalFields>Facility_Type__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>OBJECT_ID</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Category__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Sub_Type__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Type__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Corrective_Action__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Due_Date__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+</CustomObject>

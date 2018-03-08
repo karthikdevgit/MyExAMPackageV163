@@ -1,0 +1,50 @@
+<aura:component access="public" extensible="true">
+
+    <!-- handle Application Event in same component for dropDown-->
+    <aura:handler event="c:closeDropDownEvt" action="{!c.closeDropDown}" description="close DropDown if Already is opened"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:attribute name="attributes" type="Object[]" default="" access="public"/>
+    <aura:attribute name="showIcon" type="Boolean" default="false" access="public"/>
+    <aura:attribute name="linkChange" type="Boolean" default="true" access="public"/>
+    <aura:attribute name="hideLabel" type="Boolean" default="false" access="public"/>
+    <aura:attribute name="itemIndex" type="Integer" access="public"/>
+    <aura:attribute name="objList" type="sobject[]" access="public" />
+    <aura:attribute name="objApi" type="String" access="public" />
+    <aura:attribute name="displayField" type="Object[]"  access="global"  />
+    <aura:attribute name="objFilter" type="String" access="public"/>
+    <aura:attribute name="objOrder" type="String" access="public"/>
+    <aura:attribute name="psId" type="String" access="public"/>
+    <aura:attribute name="menuLinkText" type="String" access="public" />
+    <aura:attribute name="initialValue" type="String" access="public"/>
+	<aura:attribute name="sourceDerivenCmp" type="Map" access="public" default="{type : ''}"/>
+    
+
+
+    <aura:registerEvent name="ctrlLinkMenuEvt" type="c:ctrlLinkMenuEvt" description="which action choose information fired through this event"/>
+    <aura:registerEvent name="closeDropDown" type="c:closeDropDownEvt" description=""/>
+
+    <div aura:id="dropdown" class="slds-dropdown-trigger slds-dropdown-trigger--click">
+        <a class="menuLinkText" onclick="{!c.showAction}">
+            <aura:if isTrue="{!v.hideLabel == false}">
+                {!v.menuLinkText == '' ? v.attributes[0].optionText : v.menuLinkText}
+            </aura:if>
+            <aura:if isTrue="{!v.showIcon == true}">
+                <lightning:icon class="slds-m-left_small" iconName="utility:down" size="xx-small"/>
+            </aura:if>
+        </a>
+        <div class="slds-dropdown slds-dropdown--left">
+            
+            <ul class="slds-dropdown__list" role="menu">
+                <aura:iteration items="{!v.attributes}" var="attribute" indexVar="index">
+                    <li class="slds-dropdown__item" role="presentation">
+                        <a role="menuitem" data-unique="{!attribute.uniqueName}" data-optionValue="{!attribute.optionValue}" data-optionText="{!attribute.optionText}" onclick="{!c.selectItem}">
+                            <span class="slds-truncate">{!attribute.optionText}</span>
+                        </a>
+                    </li>
+                </aura:iteration>
+            </ul>
+        </div>
+    </div>
+
+</aura:component>

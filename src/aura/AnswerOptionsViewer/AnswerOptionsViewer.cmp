@@ -1,0 +1,218 @@
+<aura:component access="public">
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="fileUpload" event="c:fileUploadEvt" action="{!c.fileUpload}"/>
+    <aura:handler name="fireNotification" event="c:fireLookupNotificationEvt" action="{!c.resetLookupInfo}"/>
+    <aura:handler name="ctrlLinkMenuEvt" event="c:ctrlLinkMenuEvt" action="{!c.getAction}" />
+    
+    <aura:attribute name="removedIndices" type="List" access="public"/>    
+    <aura:attribute name="fileContentMap" type="Map" access="public" default="{}"/>
+    <aura:attribute name="indexPos" type="Integer" access="public"/>
+    <aura:attribute name="answerTerm" type="String" default="Answer" access="public"/>
+    <aura:attribute name="removedAnswerIds" type="List" access="public"/>
+    <aura:attribute name="removedOptionIndices" type="List" access="public" default="[]"/>
+    <aura:attribute name="isFileUpload" type="Boolean" default="false" access="public"/>
+    <aura:attribute name="disable" type="Boolean" default="false" access="public"/>
+    <aura:attribute name="showBtn" type="Boolean" default="false" access="public"/>
+    <aura:attribute name="derivedFromQuestion" type="Boolean" default="false" access="public"/>
+    <aura:attribute name="hasUpdate" type="Boolean" default="false" access="public"/>
+    <aura:attribute name="answerDetailsMap" type="Map" access="public"/>
+    <aura:attribute name="fileContent" type="Map" access="public"/>
+    <aura:attribute name="attchmentIds" type="List" access="public"/>
+    <aura:attribute name="indexWthImageMap" type="Map" access="public" default="{}"/>
+    <aura:attribute name="hasEventEnabled" type="Boolean" access="public" default="false"/>
+    <aura:attribute name="fileContentIndex" type="Integer" access="public" />
+     <aura:attribute name="selectedQuestion" type="Map" 
+                    access="public" default="{
+                                             'labelOfNextQues' : '--None--',
+                                             'labelOfDependentQues' : '--None--'
+                                             }" 
+                    description="display dependent and next question label of context answerOption"/>
+    
+    <aura:attribute name="menuItems" type="List" access="public" 
+                    description="display questions label as menu Items"/>
+    
+    <aura:attribute name="checked" type="Boolean" access="public"/>
+    <aura:attribute name="fileNames" type="List" default="[]" access="public"/>
+    <aura:attribute name="fileName" type="String" access="public"/>
+    <aura:attribute name="count" type="Integer" access="public" default="1"/>
+    <aura:attribute name="answerOption" type="Map" access="public" default="{'Name' : '',
+                                                                            'ExAM__Help_Text__c' : '',
+                                                                            'ExAM__Weight__c' : null,
+                                                                            'ExAM__Next_Question__r' : {'Name' : '', 'Id' : ''},
+                                                                            'ExAM__Dependent_Question__r' : {'Name' : '', 'Id' : ''},
+                                                                            'sobjectType' : 'Answer_Option__c'
+                                                                            } " />
+    
+    <aura:attribute name="hasDependentQuestion" type="Boolean" default="true" access="public"/>
+    <aura:attribute name="hasNextQuestion" type="Boolean" default="true" access="public"/>
+    <aura:attribute name="itemIndex" type="Integer" access="public" default="0"/>
+    <aura:attribute name="assessmentId" type="String" access="public"/>
+    <aura:attribute name="captureWindow" type="Boolean" access="public" default="false"/>
+    <aura:attribute name="QuestionTemplate" type="Question_Template__c" access="public"/>
+    <aura:attribute name="answerOptionsFrmQuestion" type="Answer_Option__c[]" access="public"/>
+    <aura:attribute name="answerOptions" type="Answer_Option__c[]" default="[]" access="public"/>
+    
+    
+    <aura:registerEvent name="additionalInfo" type="c:additionalOptionBasedEvt"/>
+    <aura:registerEvent name="notificationEvent" type="c:notificationEvt"/>
+    <aura:registerEvent name="disableViewToggle" type="c:disableViewToggleEvt"/>
+    
+    <aura:method name="enableView" action="{!c.doneEditingView}"/>
+    
+    <div class="editor-options-card">
+        <article class="slds-card slds-m-vertical--medium">
+            <div class="slds-card__header slds-grid slds-grid--align-spread">
+                <div class=" slds-text-heading--medium">{#v.answerTerm} Details</div>
+                <a class="slds-button slds-button--neutral" onclick="{!c.newAnswer}">
+                    <span class="fa fa-plus slds-m-right--x-small"/>New {!v.answerTerm}
+                </a>
+                <aura:if isTrue="{!v.disable == False}">
+                    <div>
+                        <div aura:id="showBtns" class="{!v.showBtn ? 'slds-show' : 'slds-hide'}">
+                            <button class="slds-button slds-button--neutral slds-button--save"  onclick="{!c.upsertAnswers}">Save Changes</button>
+                            <button class="slds-button slds-button_neutral slds-button_save"  onclick="{!c.revertChanges}">Cancel</button>
+                        </div>
+                    </div>
+                </aura:if>
+            </div>
+            <div class="slds-m-around--small">
+                <aura:if isTrue="{!v.captureWindow}">
+                    <div>
+                        <div aura:id="newQues" class="slds-m-vertical--small ">
+                            <article aura:id="capture" class="slds-box">
+                                <div class="slds-p-around--xx-small">
+                                    <div class="slds-grid">
+                                        <div class="slds-col">
+                                            <div class="slds-m-horizontal--xx-small">
+                                                <div class="slds-p-around--xx-small">
+                                                    <ui:inputText aura:id="optVal" label="Name" value="{!v.answerOption.Name}" class="slds-input"/>
+                                                </div>
+                                                <div class="slds-p-around--xx-small">
+                                                    <ui:inputTextArea label="Help Text" value="{!v.answerOption.ExAM__Help_Text__c}" rows="2" class="slds-input"/>
+                                                </div>
+                                                <div class="slds-p-around--xx-small">
+                                                    <ui:inputNumber label="Option Weight" value="{!v.answerOption.ExAM__Weight__c}" class="slds-input"/>
+                                                </div>
+                                                <aura:if isTrue="{!v.QuestionTemplate.ExAM__Question_Type__c == 'Image'}">
+                                                    <c:FileUploader aura:id="fileUploaded" index="{!v.itemIndex}" indexWthImageMap="{!v.indexWthImageMap}" />
+                                                </aura:if>
+                                                <div class="slds-p-around--xx-small slds-grid">
+                                                    <span class="slds-p-right_small">Next Question : </span>
+                                                    
+                                                    <span class="slds-grid slds-truncate_container_25">
+                                                        <ui:outputText class="slds-truncate" title="{!v.selectedQuestion.labelOfNextQues}" value="{!v.selectedQuestion.labelOfNextQues}"/>
+                                                    </span>
+                                                    
+                                                    
+                                                    <lightning:buttonMenu variant="container" aura:id="menu" 
+                                                                          disabled="{!and (v.hasDependentQuestion, !v.hasNextQuestion)}"
+                                                                          alternativeText="Show menu" onselect="{! c.nextQuestionSelect }">
+                                                        <lightning:menuItem aura:id="menuItems" label="--None--"
+                                                                            value="" checked="{!v.answerOption.ExAM__Next_Question__r.Id == ''}"/>
+                                                        <aura:iteration items="{!v.menuItems}" var="menuItem">
+                                                            <lightning:menuItem aura:id="menuItems" label="{! menuItem.ExAM__Question_Label__c }"
+                                                                                value="{! menuItem.Id }" title="{! menuItem.ExAM__Question_Label__c }" checked="{!v.answerOption.ExAM__Next_Question__r.Id == menuItem.Id}"/>
+                                                        </aura:iteration>
+                                                    </lightning:buttonMenu>
+                                                </div>
+                                                
+                                                <div class="slds-p-around--xx-small slds-grid">
+                                                    
+                                                    <span class="slds-p-right_small">Dependent Question : </span>
+                                                    
+                                                    <span class="slds-grid slds-truncate_container_25">
+                                                        <ui:outputText class="slds-truncate" title="{!v.selectedQuestion.labelOfDependentQues}" value="{!v.selectedQuestion.labelOfDependentQues}"/>
+                                                    </span>                          
+                                                    
+                                                    <lightning:buttonMenu variant="container" aura:id="menu" 
+                                                                          disabled="{!and(v.hasNextQuestion, !v.hasDependentQuestion)}"
+                                                                          alternativeText="Show menu" onselect="{! c.dependentQuestionSelect }">
+                                                        <lightning:menuItem aura:id="menuItems" label="--None--"
+                                                                            value="" checked="{!v.answerOption.ExAM__Dependent_Question__r.Id == ''}"/>
+                                                        <aura:iteration items="{!v.menuItems}" var="menuItem">
+                                                            <lightning:menuItem aura:id="menuItems" label="{! menuItem.ExAM__Question_Label__c }"
+                                                                                value="{! menuItem.Id }" title="{! menuItem.ExAM__Question_Label__c }" checked="{!v.answerOption.ExAM__Dependent_Question__r.Id == menuItem.Id}"/>
+                                                        </aura:iteration>
+                                                    </lightning:buttonMenu>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="slds-m-around--xx-small slds-m-top--small">
+                                        <button aura:id="newOption" class="slds-button slds-button--neutral slds-button--save slds-m-right--small" onclick="{!c.addAnswer}">Save {#v.answerTerm}</button>
+                                        <button aura:id="updateOption" class="slds-button slds-button--neutral slds-button--save slds-m-right--small" onclick="{!c.updateOption}">Update {#v.answerTerm}</button>
+                                        <lightning:button class="slds-button slds-button--neutral" label="Cancel" onclick="{!c.cancel}"/>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                </aura:if>
+                <aura:if isTrue="{!v.answerOptions.length > 0}">
+                    <table class="slds-table slds-table--bordered slds-no-row-hover slds-table--cell-buffer">
+                        <thead>
+                            <tr class="slds-text-title--caps">
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Name">Name</div>
+                                </th>
+                                
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Help">Help Text</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="weight">Option Weight</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="next">Next Question</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="dependent">Dependent Question</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Action">Actions</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody aura:id="answerDetails" >
+                            <aura:iteration items="{!v.answerOptions}" var="answer" indexVar="index">
+                                
+                                <tr class="exam-collapsed" >
+                                    
+                                    <td class="table-truncate" click="{!c.showAnswerDetails}">
+                                        <ui:outputText class="table-truncate__body" value="{!answer.Name}" title="{!answer.Name}"/>
+                                    </td>
+                                    <td class="table-truncate">
+                                        <ui:outputText class="table-truncate__body" value="{!answer.ExAM__Help_Text__c}" title="{!answer.ExAM__Help_Text__c}"/>
+                                    </td>
+                                    <td>
+                                        <ui:outputNumber value="{!answer.ExAM__Weight__c}" />
+                                    </td>
+                                    <td class="table-truncate">
+                                        <ui:outputText class="table-truncate__body" value="{!answer.ExAM__Next_Question__r.ExAM__Question_Label__c}" title="{!answer.ExAM__Next_Question__r.ExAM__Question_Label__c}"/>
+                                    </td>
+                                    <td class="table-truncate">
+                                        <ui:outputText class="table-truncate__body" value="{!answer.ExAM__Dependent_Question__r.ExAM__Question_Label__c}" title="{!answer.ExAM__Dependent_Question__r.ExAM__Question_Label__c}"/>
+                                    </td>
+                                    
+                                    <td>
+                                        <c:CtrlLinkMenu showIcon="true" hideLabel="true" itemIndex="{!index}" linkChange="false" attributes="[{optionText:'Edit', optionValue: 'showAnswerForEdit'},{optionText:'Delete', optionValue: 'removeOption'}]"/>
+                                    </td>
+                                </tr>
+                            </aura:iteration>
+                        </tbody>
+                    </table>
+                    <aura:set attribute="else">
+                        <span aura:id="addNewLink">
+                            <a onclick="{!c.newAnswer}">Add</a> an {#v.answerTerm}
+                        </span>
+                    </aura:set>
+                </aura:if>
+                
+            </div>
+            <div class="slds-card__footer slds-grid slds-grid--align-spread"></div>
+        </article>
+    </div>
+    
+</aura:component>

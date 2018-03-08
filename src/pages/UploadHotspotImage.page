@@ -1,0 +1,545 @@
+<apex:page controller="UploadHotspotImageCtlr">    
+    <div xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <title>Upload Hotspot Image</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS052, '/assets/styles/salesforce-lightning-design-system-vf.css')}" />
+            <apex:includeScript value="{!URLFOR($Resource.UnderscoreAndAngularJS,'UnderscoreAndAngularJS/angular.min.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.UnderscoreAndAngularJS,'UnderscoreAndAngularJS/underscore-min.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-1.10.2.js')}"/>
+        </head>
+        <body>
+            <div class="slds" ng-app="hotspotUploadQuesImageApp" ng-controller="hotspotUploadQuesImageCtrl">
+                <!-- Processing Image Code -->
+                <div style="display: none; background-color: rgba(0, 0, 0, 0.6); width: 100%; height: 100%; z-index: 1000; position: fixed; left: 0; top: 0; overflow: hidden; text-align: center; vertical-align: middle;padding-top:15%;" class="spinner">
+                    <img src="{!URLFOR($Resource.SLDS052, '/assets/images/spinners/slds_spinner_brand.gif')}" alt="Loading..." class="slds-spinner--small" style="z-index: 10001; width: 80px; height: 80px; text-align: left; position: relative; top: 30%;vertical-align:middle;"/>
+                </div>
+                <!--End Processing Image Code -->
+                <div class="slds-notify_container" ng-show ="failedFlag" style="display:none">
+                    <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert" >
+                        <h2 class="failedText"></h2>
+                    </div>
+                </div>
+                <form class="slds-form">
+                    <div class="slds-card slds-m-top--x-small slds-m-bottom--x-large">
+                        <div class="slds-card__header slds-grid">
+                            <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                <div class="slds-media__body">
+                                    <h2 class="slds-text-heading--small slds-truncate" style="font-size: x-large;font-weight: 300;">Upload Hotspot Image</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-card__body" style="background-color:white;">
+                            <div class="slds-grid slds-wrap slds-p-around--small" style="padding-left:30px;">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <!--input type="file" onchange="angular.element(this).scope().changefile1()" class="inputfile" data-file="imageUpload" ng-model="imageUpload" accept="image/*"/ -->
+                                            <div>
+                                                <label id="hotspotImageFile1">
+                                                    <input id="hotspotImageFile" ng-hide="true" type="file" data-file="imageUpload" ng-model="imageUpload" accept="image/*" onchange="angular.element(this).scope().changefile1(this);"/>
+                                                </label>
+                                                <input type="button" value="Choose File" ng-click="chooseFileClick();"/>
+                                                <label>{{imageUpload.name}}</label>
+                                            </div>
+                                            <div class="slds-form-element__help errorFileSelect" style="display:none;color:#c23934;font-size:12px;"> Please upload a file less than 750KB</div>
+                                            <div class="slds-form-element__help errorSelect" ng-show ="ErrorFlag" style="color:#c23934;font-size:12px;"> Please choose a valid Image File </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label style="font-size:12px;font-style:italic"> Recommended image size 240 x 320</label>
+                                        </td>
+                                    </tr>
+                                </table>
+                                
+                            </div>
+                        </div>  
+                        
+                        <div class="slds-size--1-of-1 slds-grid" ng-show="isLoadedImage" ng-init="imageUploadCheck()">
+                            
+                            <div class="slds-box slds-box--x-small slds-size--1-of-3 slds-m-around--x-small">
+                                <div class="slds-size--1-of-1" style="text-align: end;"> 
+                                    <svg class="slds-icon slds-icon--x-small slds-icon-text-default" aria-hidden="true" ng-click="removeImage(false)">
+                                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                                    </svg>
+                                </div>
+                                <!--img class="slds-text-align--center" ng-if ="imageUpload.resultbody != null" ng-src="data:image/png;base64,{{imageUpload.resultbody}}" height="200px" width="200px"/-->
+                                <canvas id="canvas1" width="{{hotspotImgProp.imageWidth}}" height="{{hotspotImgProp.imageHeight}}" onclick="angular.element(this).scope().doClick(event);" onmousedown="angular.element(this).scope().startMouseDown(event);" onmouseup="angular.element(this).scope().EndMouseUp(event);"/>
+                            </div>
+                            <div class="slds-size--2-of-3">
+                                <div class="slds-size--1-of-1 slds-grid">
+                                    <div class="slds-size--3-of-12 slds-m-around--x-small">
+                                        <strong> Shape </strong>
+                                    </div>
+                                    <div class="slds-size--3-of-12 slds-m-around--x-small">
+                                        <strong> Answer Option </strong>
+                                    </div>
+                                    <div class="slds-size--3-of-12 slds-m-around--x-small slds-wrap">
+                                        <strong> coords </strong>
+                                    </div>
+                                    
+                                    <div class="slds-size--3-of-12 slds-m-around--x-small">
+                                        <strong> Action </strong>
+                                    </div>
+                                </div>
+                                <div class="slds-size--1-of-1 slds-grid" ng-repeat="area in hotspotImgProp.area track by $index">
+                                    <div class="slds-size--3-of-12 slds-m-around--x-small">
+                                        <select ng-options="item.value as item.label for item in selectionPickList" ng-model="area.shape" ng-change="shapeChange($index);" class="slds-select shape{{$index}}" ng-disabled="$index != 0"/><br/>
+                                        <div class="slds-form-element__help" style="display:none"> Please select shape </div>
+                                    </div>
+                                    <div class="slds-size--3-of-12 slds-m-around--x-small">
+                                        <input type="text" class="slds-input hotspot{{$index}}" placeholder="Hotspot Value" ng-model="area.areaValue"/><br/>
+                                        <div class="slds-form-element__help" style="display:none"> Please give hotspot value </div>
+                                    </div>
+                                    <div class="slds-size--3-of-12 slds-m-around--x-small slds-wrap">
+                                        <label class="coords{{$index}}" > {{area.coords}}</label><br/>
+                                        <div class="slds-form-element__help" style="display:none"> Please select coords in image </div>                                                                  
+                                    </div>
+                                    
+                                    <div class="slds-col--padded slds-size--3-of-12">
+                                        <span class="slds-icon__container slds-icon__container--circle slds-icon-action-new" ng-click="newSelection($index);" ng-show="$index == 0">
+                                            <svg aria-hidden="true" class="slds-icon slds-icon--x-small" style="width:12px;height:12px;">
+                                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#new')}">
+                                                </use>
+                                            </svg>
+                                        </span>
+                                        <span class="slds-icon__container slds-icon-action-delete slds-icon__container--circle" ng-click="removeShape($index);">
+                                            <svg aria-hidden="true" class="slds-icon slds-icon--small" style="width: 12px;height: 12px;">
+                                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#delete')}">
+                                                </use>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="slds-card__footer" style="background-color:white;padding-left: 100px;">
+                            <button ng-show = "imageUpload.resultbody" class="slds-button slds-button--neutral" type="button" ng-click="uploadImage()" style="background-color: #0070D2;color:white;">Upload</button>
+                            <button class="slds-button slds-button--neutral" type="button" ng-click="uploadCancel()" style="background-color: #0070D2;color:white;">Cancel</button>
+                        </div> 
+                        <!--<div class="slds-card__footer" style="background-color:white;padding-left: 100px;">
+                            <button class="slds-button slds-button--neutral" type="button" ng-click="newSelection()" style="background-color: #0070D2;color:white;">New Selection</button>
+                        </div>-->
+                    </div>
+                    
+                </form>
+            </div>    
+        </body>
+        <script>
+            var app = angular.module('hotspotUploadQuesImageApp', []);
+            app.directive('file', function(){
+                return {
+                    scope: {
+                        file: '='
+                    },
+                    link: function(scope, el, attrs){
+                        scope.$watch('file', function(newValue, oldValue) {
+                            if(!newValue || !Object.keys(newValue).length) {
+                                el.value = '';
+                                if(el[0]) {
+                                    el[0].value = '';
+                                } 
+                            }                                 
+                        });
+                               
+                        el.bind('change', function(event){
+                            var files = event.target.files;
+                            var file = files[0];
+                            var reader = new FileReader();
+                            reader.onload = loaded;
+                            reader.onerror = errorHandler;
+                            if(file != null) { 
+                                reader.readAsDataURL(file);
+                            }
+                            function loaded(evt){
+                                if(!scope.file){
+                                    scope.file = {};
+                                }
+                                var fileContent = String(evt.target.result);
+                                fileContent = fileContent.substr(fileContent.indexOf(',') + 1);
+                                
+                                scope.file.resultbody = fileContent;
+                                scope.file.name = file ? file.name : undefined;
+                                scope.file.contenttype = file ? file.type : undefined;
+                                scope.$apply(); 
+                            }
+                            function errorHandler(evt) {
+                                if (evt.target.error.name == 'NotReadableError') {
+                                    alert('File could not be read');
+                                }
+                                else {
+                                    alert(evt.target.error);
+                                }
+                            }
+                        });
+                    }
+                };
+            });
+                
+            app.controller('hotspotUploadQuesImageCtrl',function($scope,$timeout){
+                var pid = "{!$CurrentPage.parameters.quesTempId}";
+                $scope.ErrorFlag = false;
+                $scope.failedFlag = false;
+                $scope.imageUpload = '{!JSENCODE(attStr)}' != '' ? JSON.parse('{!JSENCODE(attStr)}') : {name:'No file chosen'};
+                $scope.hotspotImgProp = JSON.parse('{!JSENCODE(hotspotPropertyStr)}');
+                if(angular.isUndefined($scope.hotspotImgProp.questionId) || $scope.hotspotImgProp.questionId == null) {
+                    $scope.hotspotImgProp.questionId = pid;
+                }
+                $scope.selectionPickList = [];
+                $scope.selectionPickList.push({label:"-- Selection Type --",value:""},{label:"Circle",value:"circle"},{label:"Polygon",value:"poly"},{label:"Rectangle",value:"rect"});
+                $scope.isLoadedImage = false;
+                $scope.currentIndex = 0;
+                $scope.disabled = [];
+                var can = document.getElementById('canvas1');
+                var ctx = can.getContext('2d');
+                var tempArray = [];
+                var img = new Image();
+                var startX, startY;
+                
+                $scope.uploadImage = function() {
+                    var isErrorPage = $scope.validatePage(0);
+                    if (!isErrorPage) {
+                        if(angular.isDefined($scope.hotspotImgProp.area)) {
+                            angular.forEach($scope.hotspotImgProp.area, function(value, key) {
+                                if(typeof value == 'object' && angular.isDefined(value["$$hashKey"])) {
+                                    delete $scope.hotspotImgProp.area[key].$$hashKey;
+                                }
+                            });
+                        }
+                        ExAM.UploadHotspotImageCtlr.saveHotspotImage($scope.imageUpload, $scope.hotspotImgProp,function(result, event) {
+                            if(event.status && result != null) {
+                                result = JSON.parse(_.unescape(result));
+                                if(result.message == 'success') {
+                                    window.location =  "{!LEFT($CurrentPage.URL,FIND('/',$CurrentPage.URL,9))}{!$CurrentPage.parameters.quesTempId}";
+                                } else if(result.message == 'failure') {
+                                    $('.failedText').text(result.messageText);
+                                    $('.slds-notify_container').css('display','');
+                                    $scope.$apply();
+                                }
+                            }
+                        });
+                    }
+                        
+                }
+                $scope.uploadCancel = function() {https://examdev-dev-ed--c.na30.visual.force.com/apex/UploadHotspotImage?quesTempId=a0J3600000CCbB5
+                    window.location =  "{!LEFT($CurrentPage.URL,FIND('/',$CurrentPage.URL,9))}{!$CurrentPage.parameters.quesTempId}";
+                }
+                $scope.validatePage = function(indexVal) {
+                    var isRequired = false;
+                    if ($scope.hotspotImgProp.area[indexVal].shape == null || $scope.hotspotImgProp.area[indexVal].shape == '' ) {
+                        $(".shape"+indexVal).next().next("div").show();
+                        $(".shape"+indexVal).parent().addClass('slds-has-error');
+                        isRequired = true;
+                    } else {
+                        $(".shape"+indexVal).next().next("div").hide();
+                        $(".shape"+indexVal).parent().removeClass('slds-has-error');
+                    }
+                    if ($scope.hotspotImgProp.area[indexVal].areaValue == null || $scope.hotspotImgProp.area[indexVal].areaValue == '' ) {
+                        $(".hotspot"+indexVal).next().next("div").show();
+                        $(".hotspot"+indexVal).parent().addClass('slds-has-error');
+                        isRequired = true;
+                    } else {
+                        $(".hotspot"+indexVal).next().next("div").hide();
+                        $(".hotspot"+indexVal).parent().removeClass('slds-has-error');
+                    }
+                    if ($scope.hotspotImgProp.area[indexVal].coords == null || $scope.hotspotImgProp.area[indexVal].coords== '' ) {
+                        $(".coords"+indexVal).next().next("div").show();
+                        $(".coords"+indexVal).parent().addClass('slds-has-error');
+                        isRequired = true;
+                    } else {
+                        $(".coords"+indexVal).next().next("div").hide();
+                        $(".coords"+indexVal).parent().removeClass('slds-has-error');
+                    }
+                    return isRequired;
+                
+                }
+                
+                $scope.newSelection = function(indexVal) {
+                    var validateResult = $scope.validatePage(indexVal); 
+                    if ( $scope.hotspotImgProp.area[indexVal].shape != null 
+                            && $scope.hotspotImgProp.area[indexVal].shape != '' 
+                            && $scope.hotspotImgProp.area[indexVal].coords != null
+                            && $scope.hotspotImgProp.area[indexVal].coords != ''
+                            && $scope.hotspotImgProp.area[indexVal].areaValue != null
+                            && $scope.hotspotImgProp.area[indexVal].areaValue != '' ) {
+                            
+                        var hotspotAreaObj = {};
+                        hotspotAreaObj.shape = '';
+                        
+                        if ($scope.hotspotImgProp.area[indexVal].shape != '') {
+                            $scope.disabled[indexVal] = true;
+                            if ($scope.hotspotImgProp.area[indexVal].shape == 'poly' && tempArray.length > 4) {
+                                ctx.lineTo(tempArray[0], tempArray[1]);                                        
+                                ctx.stroke();
+                            }
+                        }
+                        $scope.hotspotImgProp.area.unshift(hotspotAreaObj);
+                        tempArray = [];
+                    } 
+                        
+                }
+                $scope.removeShape = function(indexValue) {
+                    
+                    if (angular.isDefined($scope.hotspotImgProp) && angular.isDefined($scope.hotspotImgProp.area) && $scope.hotspotImgProp.area.length > 0 ) {
+                        $(".shape"+indexValue).next().next("div").hide();
+                        $(".shape"+indexValue).parent().removeClass('slds-has-error');
+                        $(".hotspot"+indexValue).next().next("div").hide();
+                        $(".hotspot"+indexValue).parent().removeClass('slds-has-error');
+                        $(".coords"+indexValue).next().next("div").hide();
+                        $(".coords"+indexValue).parent().removeClass('slds-has-error');
+                        $scope.hotspotImgProp.area.splice(indexValue, 1);
+                        if ($scope.hotspotImgProp.area.length == 0) {
+                            var hotspotAreaObj = {};
+                            hotspotAreaObj.shape = '';
+                            $scope.hotspotImgProp.area.push(hotspotAreaObj);
+                        }
+                        $scope.changefile();
+                    }
+                }  
+                
+                $scope.removeImage = function(isClick) {
+                    if(typeof $scope.imageUpload == 'object' && angular.isDefined($scope.imageUpload.attId) && 
+                       $scope.imageUpload.attId != null ) {
+                        
+                        if(confirm("Are you sure?")) {
+                            $('.spinner').show();
+                            if(isClick) {
+                                $('#hotspotImageFile1').click();
+                            }
+                            ExAM.UploadHotspotImageCtlr.deleteImage($scope.imageUpload, function(result, event) {
+                                if(event.status && result != null) {
+                                    result = JSON.parse(_.unescape(result));
+                                    if(angular.isDefined(result.message == 'success')) {
+                                        $scope.imageUpload = JSON.parse(result.attStr);
+                                        $scope.hotspotImgProp = JSON.parse(result.hotspotPropertyStr);
+                                        $scope.isLoadedImage = false;
+                                        $('.spinner').hide();
+                                        $scope.$apply(); 
+                                    } else {
+                                        $('.spinner').hide();
+                                        $scope.failedFlag = true;
+                                        $('.failedText').text(result.messageText);
+                                        $('.slds-notify_container').css('display','');
+                                        $scope.$apply();
+                                    }
+                                } 
+                            });
+                            
+                        }
+                    } else {
+                        $scope.imageUpload = {name:'No file chosen'};
+                        $scope.hotspotImgProp =  {questionImageId:'',questionId:pid,imageWidth:240,imageHeight:320,area:[{shape:'',coords:'',areaValue:''}]};
+                        $scope.isLoadedImage = false;
+                        if(isClick) {
+                            document.getElementById('hotspotImageFile').click();
+                        }
+                    }
+                }    
+                $scope.imageUploadCheck = function() {
+                    if((typeof $scope.imageUpload == 'object' && Object.keys($scope.imageUpload).length != 0) && $scope.imageUpload.resultbody != null ) {
+                        $timeout(function() {
+                            $scope.changefile();
+                        },50);
+                    } else {
+                        $scope.isLoadedImage = false;
+                    }
+                }  
+                $scope.chooseFileClick = function() {
+                    $scope.removeImage(true);
+                };   
+                $scope.changefile1 = function(ele) {
+                    $('.errorFileSelect').css('display','none');
+                    var files = ele.files;
+                    if(files[0].size > 750000){
+                        $scope.imageUpload = {name:'No file chosen'};
+                        $('.errorFileSelect').css('display','');
+                    } else {
+                        var l = files.length; 
+                        if(l > 0) {
+                            $timeout(function(){
+                                $scope.changefile();
+                            },100);
+                        }
+                    }
+                    
+                }        
+                $scope.changefile = function() {
+                    $scope.ErrorFlag = false;
+                    if( (angular.isDefined($scope.imageUpload) ) && ($scope.imageUpload.contenttype == 'image/jpeg' || $scope.imageUpload.contenttype == 'image/png' || $scope.imageUpload.contenttype == 'image/gif' || $scope.imageUpload.contenttype == 'image/jpg') ) {
+                        if ( angular.isDefined($scope.imageUpload.resultbody) ) {
+                            ctx.clearRect(0, 0, 240, 320);
+                            ctx.stroke();
+                            ctx.beginPath();
+                            img.onload = function() {
+                                ctx.drawImage(img, 0, 0,240,320);
+                                ctx.stroke();
+                            }
+                            img.src = 'data:image/png;base64,'+$scope.imageUpload.resultbody;
+                            if (angular.isDefined($scope.hotspotImgProp) && angular.isDefined($scope.hotspotImgProp.area) && $scope.hotspotImgProp.area.length > 0) {
+                                for (var i = 0; i < $scope.hotspotImgProp.area.length; i++) {
+                                    if ( angular.isDefined($scope.hotspotImgProp.area[i].coords) && $scope.hotspotImgProp.area[i].coords != '' ) {
+                                        if ($scope.hotspotImgProp.area[i].shape == 'rect') {
+                                            var tempCoordsArray = $scope.hotspotImgProp.area[i].coords.split(',');
+                                            if (tempCoordsArray != null && tempCoordsArray.length == 4) {
+                                                ctx.moveTo(tempCoordsArray[0],tempCoordsArray[1] );
+                                                ctx.rect(tempCoordsArray[0],tempCoordsArray[1],tempCoordsArray[2]-tempCoordsArray[0],tempCoordsArray[3]-tempCoordsArray[1]);
+                                            }
+                                            ctx.stroke();
+                                        } else if ($scope.hotspotImgProp.area[i].shape == 'circle') {
+                                            var tempCoordsArray = $scope.hotspotImgProp.area[i].coords.split(',');
+                                            if (tempCoordsArray != null && tempCoordsArray.length == 3) {
+                                                ctx.moveTo(parseFloat(tempCoordsArray[0])+parseFloat(tempCoordsArray[2]), tempCoordsArray[1]);
+                                                ctx.arc( tempCoordsArray[0],tempCoordsArray[1], tempCoordsArray[2], 0, 2 * Math.PI);
+                                            }
+                                            ctx.stroke();
+                                        } else if ($scope.hotspotImgProp.area[i].shape == 'poly') {
+                                            var tempCoordsArray = $scope.hotspotImgProp.area[i].coords.split(', ');
+                                            if (tempCoordsArray != null && tempCoordsArray.length >= 4) {
+                                                for (var j = 0; j < tempCoordsArray.length; j+=2) {
+                                                    if (j == 0) {
+                                                        ctx.moveTo(tempCoordsArray[0], tempCoordsArray[1]);
+                                                    } else {                                        
+                                                        ctx.lineTo(tempCoordsArray[j], tempCoordsArray[j+1]); 
+                                                    }
+                                                }
+                                                ctx.stroke();
+                                            }                                        
+                                        }
+                                    }
+                                }
+                                
+                            } 
+                            $scope.isLoadedImage = true;
+                            $("#canvas1").show();
+                        }
+                    } else {
+                        $scope.ErrorFlag = true;
+                        $scope.isLoadedImage = false;
+                    }
+                
+                }
+                $scope.startMouseDown = function(event) {
+                    if ($scope.isLoadedImage 
+                        && ($scope.hotspotImgProp.area[$scope.currentIndex].shape == 'circle' 
+                            ||$scope.hotspotImgProp.area[$scope.currentIndex].shape == 'rect')) {
+                            
+                        if (tempArray != null && tempArray.length >= 4) {
+                            $scope.hotspotImgProp.area[$scope.currentIndex].coords = '';
+                            $scope.changefile();
+                        }
+                        tempArray = [];
+                        var offsetX = event.offsetX;
+                        var offsetY = event.offsetY;
+                        
+                        tempArray.push(offsetX);
+                        tempArray.push(offsetY);
+                    }
+                }
+                $scope.EndMouseUp = function(event) {
+                    if ($scope.isLoadedImage 
+                        && ($scope.hotspotImgProp.area[$scope.currentIndex].shape == 'circle' 
+                            || $scope.hotspotImgProp.area[$scope.currentIndex].shape == 'rect')) {
+                        $scope.doClick(event);
+                    }
+                }
+                
+                $scope.doClick = function(event) {
+                    if ($scope.isLoadedImage) {
+                        var x = event.x;
+                        var y = event.y;
+                        var offsetX = event.offsetX;
+                        var offsetY = event.offsetY;
+                        
+                        tempArray.push(offsetX);
+                        tempArray.push(offsetY);
+                        if (tempArray.length > 0 ) {
+                            var ctx = can.getContext('2d');
+                            if ($scope.hotspotImgProp.area[$scope.currentIndex].shape == 'circle' || $scope.hotspotImgProp.area[$scope.currentIndex].shape == 'rect'|| $scope.hotspotImgProp.area[$scope.currentIndex].shape == 'poly') {
+    
+                                if(tempArray.length >= 4 && $scope.hotspotImgProp.area[$scope.currentIndex].shape == 'circle') {                                    
+                                    if (tempArray.length > 4) {
+                                        tempArray[3] = tempArray[tempArray.length-1];
+                                        tempArray[2] = tempArray[tempArray.length-2];                                        
+                                    }
+                                    
+                                    var radius = (Math.sqrt(Math.pow(tempArray[0]-tempArray[2], 2) + Math.pow(tempArray[1]-tempArray[3], 2)))/2;
+                                    ctx.moveTo(((tempArray[0]+tempArray[2]) / 2) + radius , (tempArray[1]+tempArray[3]) /2);
+                                    var coOrd = (tempArray[0]+tempArray[2]) / 2 + ',' + (tempArray[1]+tempArray[3]) /2 + ',';
+                                    coOrd += ((Math.sqrt(Math.pow(tempArray[0]-tempArray[2], 2) + Math.pow(tempArray[1]-tempArray[3], 2)))/2).toFixed(2);
+                                    var hotspotAreaObj = {};
+                                    //hotspotAreaObj.shape = $scope.selectedPickList;
+                                    $scope.hotspotImgProp.area[$scope.currentIndex].coords = coOrd;
+                                    if (tempArray.length == 4) {
+                                        ctx.arc( (tempArray[0]+tempArray[2]) / 2 , (tempArray[1]+tempArray[3]) /2,
+                                             radius, 0, 2 * Math.PI); 
+                                    } else {
+                                        $scope.changefile();
+                                    }
+                                    ctx.stroke();
+                                    $scope.$apply();
+                                    
+                                    
+                                } else if(tempArray.length >= 4 && $scope.hotspotImgProp.area[$scope.currentIndex].shape == 'rect') {
+                                    if (tempArray.length > 4) {
+                                        tempArray[3] = tempArray[tempArray.length-1];
+                                        tempArray[2] = tempArray[tempArray.length-2];                                        
+                                    }
+                                    
+                                    ctx.moveTo(tempArray[0],tempArray[1] );
+                                    var coOrd = tempArray[0] + ',' + tempArray[1] + ',' + tempArray[2] + ',' + tempArray[3];
+                                    $scope.hotspotImgProp.area[$scope.currentIndex].coords = coOrd;
+                                    if (tempArray.length == 4) {
+                                        ctx.rect(tempArray[0],tempArray[1],tempArray[2]-tempArray[0],tempArray[3]-tempArray[1]);
+                                    } else {
+                                        $scope.changefile();
+                                    }
+                                    ctx.stroke();
+                                    $scope.$apply();
+                                } else if ($scope.hotspotImgProp.area[$scope.currentIndex].shape == 'poly') {
+                                    
+                                    //ctx.moveTo(tempArray[0],tempArray[1] );
+                                    if (tempArray.length == 2) {
+                                        ctx.moveTo(offsetX, offsetY);
+                                    } else {                                        
+                                        ctx.lineTo(offsetX, offsetY);                                        
+                                        //ctx.moveTo(offsetX, offsetY);
+                                        ctx.stroke();
+                                    }
+                                    ctx.stroke();
+                                    var coOrd = '';
+                                    for (var i = 0 ; i < tempArray.length; i++) {
+                                        if (i == 0) {
+                                            coOrd += tempArray[i];
+                                        } else {
+                                            coOrd += ', ' + tempArray[i];
+                                        }
+                                    }
+                                    if (tempArray.length > 4 ) {
+                                        coOrd += ', '+tempArray[0] + ', '+tempArray[1];                                        
+                                    } 
+                                    $scope.hotspotImgProp.area[$scope.currentIndex].coords = coOrd;    
+                                    $scope.$apply();
+                                }
+                            } 
+                            
+                        }
+                    }
+                } // end of doClick method
+                
+                
+                $scope.shapeChange = function(indexVal) {
+                    if (tempArray != null && tempArray.length >= 4) {
+                        $scope.hotspotImgProp.area[indexVal].coords = '';
+                        $scope.changefile();
+                    }
+                    tempArray = [];
+                    $scope.currentIndex = indexVal;
+                }        
+            });
+       
+        </script>
+    </div>
+</apex:page>

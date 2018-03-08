@@ -1,0 +1,489 @@
+<apex:component controller="PublicAssessmentModalController">
+    <div xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <title>Public Assessment Viewer</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+        </head>
+        <style>
+            .info p {
+                color:red;
+                font-weight:bold;
+                padding: 7px;
+                background-color:white;
+            }
+        </style>
+        <body>
+            <div class="slds" ng-app="PAScriptApp" ng-controller="mainCtlr">
+                <div class="slds-form">
+                    
+                    <div class="slds-card">
+                        <div class="slds-card__header slds-m-bottom--small slds-grid">
+                            <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                <div class="slds-media__body">
+                                    <h2 class="slds-text-heading--small slds-truncate">Web Intercept Page Generation</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-notify_container" style="display:none;" id="except">
+                            <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert">
+                                <button class="slds-button slds-notify__close slds-button--icon-inverse" title="Close">
+                                    <svg aria-hidden="true" class="slds-button__icon">
+                                        <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                                    </svg>
+                                    <span class="slds-assistive-text">Close</span>
+                                </button>
+                                    <span class="slds-assistive-text">Error</span>
+                                    <h2 id="exceptMsg">
+                                        
+                                    </h2>
+                            </div>
+                        </div>
+                        <div class="slds-card__body">
+                             <div class="info" style="display:none;">
+                                <p> Select the Combination of Assessment Template, Assessable Object, Assessable Object Record or Assignment Manager. </p>
+                            </div>
+                            <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                                <tbody>
+                                    <tr class="slds-hint-parent">
+                                        <td class="slds-size--1-of-4" style="text-align-last: end;">
+                                            <label class="slds-form-element__label slds-text-heading--small">Assessment Template</label>
+                                        </td>
+                                        <td class="slds-size--1-of-3" id="tdAssessableTemplate">
+                                            <input type="text" placeholder="Select Assessment Template" class="slds-col slds-size--9-of-12 slds-input validate" ng-model="selectedAssTemp.ExAM__Template_name__c" ng-click="openSelectionDiv('AssessmentTemplate')"/>
+                                            <div style="display:none;" class="slds-form-element__help">This field is required</div>   
+                                        </td>
+                                    </tr>
+                                    <tr class="slds-hint-parent">
+                                        <td class="slds-size--1-of-4" style="text-align-last: end;">
+                                            <label class="slds-form-element__label slds-text-heading--small">Assessable Object</label>
+                                        </td>
+                                        <td class="slds-size--1-of-3" id="tdAssessableApi">
+                                            <input type="text" placeholder="Select Assessable Object" class="slds-col slds-size--9-of-12 slds-input validate" ng-model="selectedAssObj.objectLabel" ng-click="openSelectionDiv('AssessableObject')" />
+                                            <div style="display:none;" class="slds-form-element__help">This field is required</div>   
+                                        </td>
+                                    </tr>
+                                    <tr class="slds-hint-parent">
+                                        <td class="slds-size--1-of-4" style="text-align-last: end;">
+                                            <label class="slds-form-element__label slds-text-heading--small">Assessable Object Record</label>
+                                        </td>
+                                        <td class="slds-size--1-of-3" id="tdAssessableRecord">
+                                            <div class="slds-size--1-of-1">
+                                                <input type="text" placeholder="Enter Assessable Object Record" class="slds-col slds-size--8-of-12 slds-input validate" ng-model="selectedAssRec.RecordName"/>
+                                                <span ng-click="queryAssessableRecord(selectedAssRec.RecordName,selectedAssObj.objectLabel)" class="slds-icon__container slds-align-middle slds-p-right--medium">
+                                                    <svg aria-hidden="true" class="slds-icon icon__svg slds-icon-standard-marketing-actions slds-icon--small">
+                                                        <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/standard-sprite/svg/symbols.svg#marketing_actions')}"></use>
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                            <div style="display:none;" class="slds-form-element__help">This field is required</div>   
+                                        </td>
+                                    </tr>
+                                    <tr class="slds-hint-parent">
+                                        <td></td><td>(OR)</td>
+                                    </tr>
+                                    <tr class="slds-hint-parent">
+                                        <td class="slds-size--1-of-4" style="text-align-last: end;">
+                                            <label class="slds-form-element__label slds-text-heading--small">Assignment Manager</label>
+                                        </td>
+                                        <td class="slds-size--1-of-3" id="tdAM">
+                                            <input type="text" placeholder="Select Assignment Manager" class="slds-col slds-size--9-of-12 slds-input" ng-model="selectedAM.Name" ng-click="openSelectionDiv('AssignmentManager')"/>
+                                            <div style="display:none;" class="slds-form-element__help">This field is required</div>
+                                        </td>
+                                    </tr>
+                                    
+                                    <tr class="slds-hint-parent">
+                                        <td colspan="2">
+                                            <center>
+                                                <input class="slds-button slds-button--brand" type="button" value="Generate Script" ng-click="generateSccript()"/>
+                                            </center>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div ng-if="scriptText" style="margin: 10px 135px 7px 127px;">
+                                <textarea readOnly="true" rows="10" cols="20" wrap="hard" class="slds-col slds-size--12-of-12 slds-textarea" ng-model="scriptText"/>          
+                                <div style="font-style: italic;color: blue;"><b>Note :</b> Please whitelist the website URL in CORS (on the Salesforce Setup menu)</div>
+                            </div>
+                        </div><!-- end card body-->
+                    </div><!-- end card-->
+                    
+                    <!-- Start Assessment Template Selection -->
+                    <div ng-show="showAssessmentSelectionDiv" aria-hidden="false" role="dialog" class="slds-modal slds-modal__close AssessmentSelectionDiv" style="background-color: rgba(128, 128, 128, 0.75);">
+                        <div class="slds-modal__container">
+                            <div class="slds-modal__header">
+                                <button class="slds-button slds-button--icon-inverse slds-modal__close" ng-click="closeSelectionDiv('AssessmentTemplate')">
+                                    <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                                        <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                                    </svg>
+                                    <span class="slds-assistive-text">Close</span>
+                                </button>
+                                <h2 class="slds-text-heading--medium">Assessment Template</h2>
+                            </div>
+                            <div class="slds-modal__content">
+                                <table class="slds-table slds-table--bordered slds-max-medium-table--stacked" style="height:20%">
+                                    <thead>
+                                        <tr class="slds-text-heading--label">
+                                            <th scope="col"><span class="slds-truncate"><b>Name</b></span></th>
+                                            <th scope="col"><span class="slds-truncate"><b>Template Name</b></span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="assTempRecord in ( assTemp | orderBy:'ExAM__Template_name__c') track by $index">
+                                            <td style="cursor: pointer;" ng-click="setSelectedAssessmentTemplate(assTempRecord);">{{ assTempRecord.Name }}</td>
+                                            <td style="cursor: pointer;" ng-click="setSelectedAssessmentTemplate(assTempRecord);">{{ assTempRecord.ExAM__Template_name__c }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="slds-modal__footer">
+                                <button class="slds-button slds-button--neutral" ng-click="closeSelectionDiv('AssessmentTemplate')">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Assessment Template Selection -->
+                    
+                    <!-- Start Assignment Manager Selection -->
+                    <div ng-show="showAMSelectionDiv" aria-hidden="false" role="dialog" class="slds-modal slds-modal__close AMSelectionDiv" style="background-color: rgba(128, 128, 128, 0.75);">
+                        <div class="slds-modal__container" style="width:36%;">
+                            <div class="slds-modal__header">
+                                <button class="slds-button slds-button--icon-inverse slds-modal__close" ng-click="closeSelectionDiv('AssignmentManager')">
+                                    <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                                        <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                                    </svg>
+                                    <span class="slds-assistive-text">Close</span>
+                                </button>
+                                <h2 class="slds-text-heading--medium">Assignment Manager</h2>
+                            </div>
+                            <div class="slds-modal__content">
+                                <table class="slds-table slds-table--bordered slds-max-medium-table--stacked" style="height:20%">
+                                    <thead>
+                                        <tr class="slds-text-heading--label">
+                                            <th scope="col"><span class="slds-truncate"><b>Name</b></span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="assMangRecord in (assManager | orderBy:'Name') track by $index">
+                                            <td style="cursor: pointer;" ng-click="setSelectedAM(assMangRecord);">{{ assMangRecord.Name }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="slds-modal__footer">
+                                <button class="slds-button slds-button--neutral" ng-click="closeSelectionDiv('AssignmentManager')">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Assignment Manager Selection -->
+                    
+                    <!-- Start Assessable Object Selection -->
+                    <div ng-show="showAssObjSelectionDiv" aria-hidden="false" role="dialog" class="slds-modal slds-modal__close AssObjSelectionDiv" style="background-color: rgba(128, 128, 128, 0.75);">
+                        <div class="slds-modal__container">
+                            <div class="slds-modal__header">
+                                <button class="slds-button slds-button--icon-inverse slds-modal__close" ng-click="closeSelectionDiv('AssessableObject')">
+                                    <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                                        <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                                    </svg>
+                                    <span class="slds-assistive-text">Close</span>
+                                </button>
+                                <h2 class="slds-text-heading--medium">Assessable Object</h2>
+                            </div>
+                            <div class="slds-modal__content">
+                                <table class="slds-table slds-table--bordered slds-max-medium-table--stacked" style="height:20%">
+                                    <thead>
+                                        <tr class="slds-text-heading--label">
+                                            <th scope="col"><span class="slds-truncate"><b>Name</b></span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="assObjRecord in (assessableObj | orderBy:'objectLabel') track by $index ">
+                                            <td style="cursor: pointer;" ng-click="setSelectedAssObj(assObjRecord);">{{ assObjRecord.objectLabel }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="slds-modal__footer">
+                                <button class="slds-button slds-button--neutral" ng-click="closeSelectionDiv('AssessableObject')">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Assessable Object Selection -->
+                    
+                     <!-- Start Assessable Object Selection -->
+                    <div ng-show="showAssRecSelectionDiv" aria-hidden="false" role="dialog" class="slds-modal slds-modal__close AssRecSelectionDiv" style="background-color: rgba(128, 128, 128, 0.75);">
+                        <div class="slds-modal__container">
+                            <div class="slds-modal__header">
+                                <button class="slds-button slds-button--icon-inverse slds-modal__close" ng-click="closeSelectionDiv('AssessableRecord')">
+                                    <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                                        <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                                    </svg>
+                                    <span class="slds-assistive-text">Close</span>
+                                </button>
+                                <h2 class="slds-text-heading--medium">Assessable Records</h2>
+                            </div>
+                            <div class="slds-modal__content">
+                                <div class="slds-m-around--small" ng-if="!errorMsg">   
+                                    <input type="text" class="slds-input slds-size--4-of-12" ng-model="searchName"/>
+                                    <button class="slds-button slds-button--brand slds-size--2-of-12" ng-click="searchRecordfunction();"> Go! </button>
+                                    <div class="slds-size--7-of-12"/>
+                                </div>
+                                <label ng-if="!errorMsg"><strong> Search Result</strong> </label>
+                                <div ng-if="!errorMsg">
+                                    <table class="slds-table slds-table--bordered slds-max-medium-table--stacked" style="height:20%">
+                                        <thead>
+                                            <tr class="slds-text-heading--label">
+                                                <th scope="col"><span class="slds-truncate"><b>Name</b></span></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="assRec in (assessableRecordsList | orderBy:'RecordName') track by $index ">
+                                                <td style="cursor: pointer;" ng-click="setSelectedAssRec(assRec);">{{ assRec.RecordName }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div ng-if="errorMsg">
+                                    <table class="slds-table slds-max-medium-table--stacked slds-no-row-hover" style="height:20%">
+                                        <tbody>
+                                            <tr>
+                                                <td style="color:red;">{{errorMsg}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="slds-modal__footer">
+                                <button class="slds-button slds-button--neutral" ng-click="closeSelectionDiv('AssessableRecord')">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Assessable Object Selection -->
+                </div><!--end form-->
+                <!-- Processing Image Code -->
+                <div style="display: none; background-color: rgba(0, 0, 0, 0.6); width: 100%; height: 100%; z-index: 1000; position: fixed; left: 0; top: 0; overflow: hidden; text-align: center; vertical-align: middle;" class="maskDiv">
+                    <img src="{!URLFOR($Resource.SLDS052, '/assets/images/spinners/slds_spinner.gif')}" alt="Loading..." class="slds-spinner--small" style="z-index: 10001; background-color: white; width: 80px; height: 80px; padding: 15px; border-radius: 4px; text-align: left; position: relative; top: 30%;"/>
+                </div>
+                <!--End Processing Image Code -->
+            </div><!--end slds div-->
+        </body>
+        <script>
+            var app = angular.module('PAScriptApp',[]);
+            app.controller('mainCtlr',function($scope,$timeout) {
+
+                if ('{!JSENCODE(assTempJSON)}' != null && '{!JSENCODE(assTempJSON)}' != '' && '{!JSENCODE(assTempJSON)}' != 'null') {
+                    $scope.assTemp = JSON.parse('{!JSENCODE(assTempJSON)}');
+                }
+                if ('{!JSENCODE(amJSON)}' != null && '{!JSENCODE(amJSON)}' != '' && '{!JSENCODE(amJSON)}' != 'null') {
+                    $scope.assManager = JSON.parse('{!JSENCODE(amJSON)}');
+                }
+                if ('{!JSENCODE(assessableObjJSON)}' != null && '{!JSENCODE(assessableObjJSON)}' != '' && '{!JSENCODE(assessableObjJSON)}' != 'null') {
+                    $scope.assessableObj = JSON.parse('{!JSENCODE(assessableObjJSON)}');
+                }
+                if ( '{!exceptMsg}' != null && '{!exceptMsg}' != '' ) {
+                    $('#exceptMsg').text('{!exceptMsg}');
+                    $('#except').css('display','');
+                }
+                $scope.showAssessmentSelectionDiv = false;
+                $scope.showAMSelectionDiv = false;
+                $scope.showAssObjSelectionDiv = false;
+                $scope.showAssRecSelectionDiv = false;
+                $scope.selectedAssTemp ={};
+                $scope.selectedAssObj ={};
+                $scope.selectedAssRec ={};
+                $scope.selectedAM ={};
+                $scope.scriptText = '';
+                $scope.searchName = '';
+                //$scope.selectedAM ={'Id':'','Name':''};
+
+                $scope.openSelectionDiv = function(str) {
+                
+                    if(str == 'AssessmentTemplate') {
+                        $scope.showAssessmentSelectionDiv = true;
+                        $('.AssessmentSelectionDiv').removeClass('slds-modal__close');
+                        $('.AssessmentSelectionDiv').addClass('slds-fade-in-open');
+                    } else if(str == 'AssessableObject') {
+                        $scope.showAssObjSelectionDiv = true;
+                        $('.AssObjSelectionDiv').removeClass('slds-modal__close');
+                        $('.AssObjSelectionDiv').addClass('slds-fade-in-open');
+                    } else if(str == 'AssignmentManager') {
+                        $scope.showAMSelectionDiv = true;
+                        $('.AMSelectionDiv').removeClass('slds-modal__close');
+                        $('.AMSelectionDiv').addClass('slds-fade-in-open');
+                    } 
+                }
+                $scope.closeSelectionDiv = function(str) {
+                
+                    if(str == 'AssessmentTemplate') {
+                        $scope.showAssessmentSelectionDiv = false;
+                    } else if(str == 'AssessableObject') {
+                        $scope.showAssObjSelectionDiv = false;
+                    } else if(str == 'AssessableRecord') {
+                        $scope.showAssRecSelectionDiv = false;
+                    }else if(str == 'AssignmentManager') {
+                        $scope.showAMSelectionDiv = false;
+                    }
+                }
+                $scope.setSelectedAssessmentTemplate = function(assTempRec) {
+                     $scope.selectedAssTemp = assTempRec;
+                     $scope.showAssessmentSelectionDiv = false;
+                }
+                $scope.setSelectedAssObj = function(assObj) {
+                     $scope.selectedAssObj = assObj;
+                     $scope.showAssObjSelectionDiv = false;
+                }
+                $scope.setSelectedAssRec = function(assObjRec) {
+                     $scope.selectedAssRec = assObjRec
+                     $scope.showAssRecSelectionDiv = false;
+                }
+                
+                $scope.setSelectedAM = function(AMrec) {
+                     $scope.selectedAM = AMrec;
+                     $scope.showAMSelectionDiv = false;
+                }
+
+                $scope.queryAssessableRecord =  function(selectRecordName, selectedOb) {
+                    
+                    selectRecordName = angular.isDefined(selectRecordName) ? selectRecordName : '';
+                    selectedOb = angular.isDefined(selectedOb) ? selectedOb : '';
+                    $scope.searchName = selectRecordName;
+                    if (selectedOb == '') {
+                        $("#tdAssessableApi").addClass('slds-has-error');
+                        $("#tdAssessableApi").find( ".slds-form-element__help" ).first().css("display","" );  
+                        $("#tdAssessableRecord").addClass('slds-has-error');
+                        $("#tdAssessableRecord").find( ".slds-form-element__help" ).last().css("display","" ).text("Please Select the Assessable Object")
+                        $('.maskDiv').hide();
+                        
+                    } else {
+                         $("#tdAssessableApi").removeClass('slds-has-error');
+                         $("#tdAssessableApi").find( ".slds-form-element__help" ).first().css("display","none");
+                         $("#tdAssessableRecord").removeClass('slds-has-error');
+                         $("#tdAssessableRecord").find( ".slds-form-element__help" ).last().css("display","none");
+                         $('.maskDiv').show();
+                         ExAM.PublicAssessmentModalController.queryAssessableRecords($scope.searchName,$scope.selectedAssObj.objectApi,
+                             function(result,event){
+                                 if(event) {
+                                     result = JSON.parse(_.unescape(result)); //result.replace(/&#39;/g,"'");
+
+                                     if(result.assessableRecords.length > 0 && result.success == 'success') { // != 'No Records Found'
+                                         $timeout(function(){
+                                             $scope.assessableRecordsList = result.assessableRecords; 
+                                             $scope.errorMsg = '';
+                                         },0);
+                                     } else {
+                                         $timeout(function(){
+                                             $scope.assessableRecordsList = []; 
+                                             $scope.errorMsg = result.error;
+                                         },0);
+                                     }
+                                     $('.maskDiv').hide();
+                                     $scope.showAssRecSelectionDiv = true;
+                                     $('.AssRecSelectionDiv').removeClass('slds-modal__close');
+                                     $('.AssRecSelectionDiv').addClass('slds-fade-in-open');
+                                 }  
+                             },function(error){
+                                 console.log('',error);
+                             }
+                         );
+                     }
+                }
+                
+                $scope.searchRecordfunction = function () {
+                    if ($scope.searchName != null && $scope.searchName != '' && $scope.selectedAssObj != null && $scope.selectedAssObj.objectApi != null
+                            && angular.isDefined($scope.selectedAssObj.objectApi) && $scope.selectedAssObj.objectApi != '') {
+                        
+                        ExAM.PublicAssessmentModalController.queryAssessableRecords($scope.searchName, $scope.selectedAssObj.objectApi,
+                            function(result, event) {
+                                    if(event) {
+                                         result = JSON.parse(_.unescape(result));
+                                         if(result != 'No Records Found' && result.success == 'success') {
+                                             $timeout(function(){
+                                                 $scope.assessableRecordsList = result.assessableRecords; 
+                                                 $scope.errorMsg = '';
+                                             },0);
+                                         } else {
+                                             $timeout(function(){
+                                                 $scope.assessableRecordsList = []; 
+                                                 $scope.errorMsg = result.error;
+                                             },0);
+                                         }
+                                         $('.maskDiv').hide();
+                                         $scope.showAssRecSelectionDiv = true;
+                                         $('.AssRecSelectionDiv').removeClass('slds-modal__close');
+                                         $('.AssRecSelectionDiv').addClass('slds-fade-in-open');
+                                 }  
+                             },function(error){
+                                 console.log('',error);
+                             }
+                       );
+                    }
+                }
+                
+                $scope.generateSccript = function() {
+                    var isError = false;
+                    var validation = false;
+                    
+                    if($scope.selectedAM.Name) {
+                        $('.validate').each(function(){
+                            if($(this).val()) {
+                                $('.info').css('display','');
+                                isError = true;
+                            }
+                        });
+                    } else if($scope.selectedAssTemp.ExAM__Template_name__c == null || $scope.selectedAssTemp.ExAM__Template_name__c == '') {
+                        $("#tdAssessableTemplate").addClass('slds-has-error');
+                        $("#tdAssessableTemplate").find(".slds-form-element__help").first().css("display","" );    
+                        isError = true;
+                    } else if($scope.selectedAssObj.objectLabel == null || $scope.selectedAssObj.objectLabel == '') {
+                        $("#tdAssessableApi").addClass('slds-has-error');
+                        $("#tdAssessableApi").find( ".slds-form-element__help" ).first().css("display","" );    
+                        isError = true;
+                    } else if($scope.selectedAssRec.RecordName == null || $scope.selectedAssRec.RecordName == '') {
+                        $("#tdAssessableRecord").addClass('slds-has-error');
+                        $("#tdAssessableRecord").find( ".slds-form-element__help" ).first().css("display","" );    
+                        isError = true;
+                    } 
+                    if($scope.selectedAssTemp.ExAM__Template_name__c) {
+                        $("#tdAssessableTemplate").removeClass('slds-has-error');
+                        $("#tdAssessableTemplate").find(".slds-form-element__help").first().css("display","none" );    
+                    } 
+                    if($scope.selectedAssObj.objectLabel) {
+                        $("#tdAssessableApi").removeClass('slds-has-error');
+                        $("#tdAssessableApi").find( ".slds-form-element__help" ).first().css("display","none" );    
+                    }
+                    if($scope.selectedAssRec.RecordName) {
+                        $("#tdAssessableRecord").removeClass('slds-has-error');
+                        $("#tdAssessableRecord").find( ".slds-form-element__help" ).first().css("display","none" );    
+                    } 
+                    if($scope.selectedAM.Name == null || $scope.selectedAM.Name == '') {
+                        $('.info').css('display','none');     
+                    }
+                    
+                    if(!isError) {
+                        var scriptStr = '';
+                       
+                        var str = '{!HTMLENCODE($Setup.ExAM__Web_Intercept_Configuration__c.ExAM__Web_URL__c)}';
+                        scriptStr = 'function btnClick() { var xhr = new XMLHttpRequest();';
+                        scriptStr = scriptStr+'xhr.open("GET","'+str+'/services/apexrest/ExAM/RestGetIntercept?';
+                        if($scope.selectedAssTemp.ExAM__Template_name__c || $scope.selectedAssRec.RecordName) {
+                            scriptStr = scriptStr+'tempId='+$scope.selectedAssTemp.Id+'&objId='+$scope.selectedAssRec.RecordId+'",true);';
+                        } else if($scope.selectedAM.Name) {
+                            scriptStr = scriptStr+'amId='+$scope.selectedAM.Id+'",true);';
+                        }  
+                        scriptStr = scriptStr+'xhr.setRequestHeader("Access-Control-Allow-Origin","*");';
+                        scriptStr = scriptStr+'xhr.setRequestHeader("Access-Control-Allow-Headers","origin, content-type, accept, authorization");';
+                        scriptStr = scriptStr+'xhr.setRequestHeader("Access-Control-Allow-Methods", "GET");';
+                        scriptStr = scriptStr+'xhr.onreadystatechange = function() {';
+                        scriptStr = scriptStr+'if (xhr.readyState == 4 && xhr.status === 200) { var body = document.getElementsByTagName("body")[0];';
+                        scriptStr = scriptStr + 'var div = document.createElement("div");var examModal = xhr.response;div.innerHTML = examModal;body.appendChild(div);location.href="#exam-modal";} };';
+                        scriptStr = scriptStr + 'xhr.send();';  
+                        //Added script for FLS 
+                        scriptStr = scriptStr + 'var url = "currentPageURL="+window.location.href;document.cookie = url;}';
+                        
+                        //added script for self closing window
+                        scriptStr = scriptStr + 'var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";var eventer = window[eventMethod];var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";eventer(messageEvent,function(e) { var key = e.message ? "message" : "data";var data = e[key];if(data == "Success Submit") { document.getElementById("exam-modal").style.display = "none";}},false);';
+                        $scope.scriptText = scriptStr;
+                    }
+                }                    
+            });
+        </script>
+    </div><!--end main div-->
+</apex:component>

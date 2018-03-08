@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Answer Option</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Answer Options</value>
+    </caseValues>
+    <fields>
+        <label><!-- Dependent Question --></label>
+        <name>Dependent_Question__c</name>
+        <relationshipLabel><!-- Answer Options --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Help Text --></label>
+        <name>Help_Text__c</name>
+    </fields>
+    <fields>
+        <label><!-- Next Question --></label>
+        <name>Next_Question__c</name>
+        <relationshipLabel><!-- Answer Options (Next Question) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Order No --></label>
+        <name>Order_No__c</name>
+    </fields>
+    <fields>
+        <label><!-- Question Template --></label>
+        <name>Question_Template__c</name>
+        <relationshipLabel><!-- Answer Options --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Weight(%) --></label>
+        <name>Weight__c</name>
+    </fields>
+    <layouts>
+        <layout>Answer Option Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

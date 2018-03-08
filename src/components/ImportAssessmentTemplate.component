@@ -1,0 +1,1252 @@
+<apex:component controller="ImportAssessmentTemplateController" allowDML="true">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <title>XML Parsing</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+            <apex:includeScript value="{!URLFOR($Resource.xmltojson)}"/>
+        </head>
+        <body>
+            <div class="slds" ng-app="xmlparsingApp" ng-controller="xmlparsingCtrl">
+                <form class="slds-form">
+                    <div class="slds-notify_container" id="fileUploadAlert" style="display:none;">
+                        <div class="slds-notify slds-notify--alert slds-theme--alert-texture" role="alert">
+                            <button class="slds-button slds-button--icon-inverse slds-notify__close" ng-click="closeLoad();">
+                                <svg aria-hidden="true" class="slds-button__icon">
+                                    <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                                </svg>
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                            <span class="slds-assistive-text">Info</span>
+                            <h2 id="fileuploadMsg">Loading...</h2>
+                        </div>
+                    </div>
+                    <div class="slds-notify_container" id="fileUploadSuccess" style="display:none;">
+                      <div class="slds-notify slds-notify--alert slds-theme--success slds-theme--alert-texture" role="alert">
+                        <button class="slds-button slds-button--icon-inverse slds-notify__close" ng-click="closeLoad();">
+                          <svg aria-hidden="true" class="slds-button__icon">
+                            <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                          </svg>
+                          <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <span class="slds-assistive-text">Success</span>
+                        <h2>
+                            Template saved successfully
+                        </h2>
+                      </div>
+                    </div>
+                    <div class="slds-notify_container" style="display:none" id="fileuploadError" >
+                      <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert">
+                        <button class="slds-button slds-button--icon-inverse slds-notify__close" ng-click="closeLoad();">
+                          <svg aria-hidden="true" class="slds-button__icon">
+                            <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                          </svg>
+                          <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <span class="slds-assistive-text">Error</span>
+                        <h2 id="fileuploadErrorMsg">
+                            
+                        </h2>
+                      </div>
+                    </div>
+                    
+                    <div class="slds-card slds-m-top--x-small">
+                        <div class="slds-card__header slds-grid">
+                            <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                <div class="slds-media__body">
+                                    <h2 class="slds-text-heading--small slds-truncate">Assessment Template Import (XML)</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-card__body">
+                            <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                                <tbody>
+                                    <tr class="slds-hint-parent">
+                                      <td class="slds-size--1-of-2" >
+                                          <input type="file" id="fid" style="font-size: medium;" onchange="angular.element(this).scope().file_changed(this)" accept="text/xml"/>
+                                      </td>
+                                      <td class="slds-size--1-of-2" >
+                                          <button class="slds-button slds-button--brand" type="button" ng-click="uploadImage()" style="background-color: #0070D2;color:white;">Upload</button>
+                                          <button class="slds-button slds-button--neutral" type="button" ng-click="cancelUpload()">Cancel</button>
+                                      </td>
+                                    </tr>                            
+                                </tbody>
+                            </table>
+                        </div>
+                    </div><br/>
+                </form>
+                <!-- Processing Image Code -->
+                <div style="display: none; background-color: rgba(0, 0, 0, 0.6); width: 100%; height: 100%; z-index: 1000; position: fixed; left: 0; top: 0; overflow: hidden; text-align: center; vertical-align: middle;" class="fileMaskDiv">
+                    <img src="{!URLFOR($Resource.SLDS052, '/assets/images/spinners/slds_spinner.gif')}" alt="Loading..." class="slds-spinner--small" style="z-index: 10001; background-color: white; width: 80px; height: 80px; padding: 15px; border-radius: 4px; text-align: left; position: relative; top: 30%;"/>
+                </div>
+                <!--End Processing Image Code -->
+            </div>
+        </body>
+        <script>
+            
+            var xmlparsingApp = angular.module('xmlparsingApp',[]);
+            
+            
+            xmlparsingApp.controller('xmlparsingCtrl',function($scope,$timeout){
+                
+                $scope.TemplateMap = {};
+                $scope.sectionMap = {};
+                $scope.questionMap = {};
+                $scope.BATCHSIZE = 1000;
+                $scope.DecisionTreeTemplatesId = [];
+                $scope.isHasDecisionTree = false;
+                $scope.quesCnt = 0;
+                $scope.hasAnsOpt = false;
+                var xml2Json = {};   
+                 
+                $scope.uploadImage = function() {
+                    $('#fileUploadAlert').hide();
+                    $('#fileUploadSuccess').hide();
+                    $('#fileuploadError').hide();
+                    
+                    $('.fileMaskDiv').show();
+                    $('#fileUploadAlert').show();
+                    if (templateFile != null && templateFile != '') {
+                        $scope.covertxmltojson(templateFile);
+                    } else {
+                        $('.fileMaskDiv').hide();
+                        $('#fileUploadAlert').hide();
+                        $('#fileuploadError').show();
+                        $('#fileuploadErrorMsg').text('Please select XML file');
+                    }
+                }
+                
+                $scope.covertxmltojson = function(xmlString){
+                        $scope.TemplateMap = {};
+                        $scope.sectionMap = {};
+                        $scope.DecisionTreeTemplatesId = [];
+                        $scope.isHasDecisionTree = false;
+                        $scope.contextQuestionHavingAssTempId = [];
+                        $scope.isHasContextMapping = false;
+                        $scope.oldQuesNameAndSingleQuesName = {};
+                        
+                        var x2js = new X2JS();
+                        xml2Json = x2js.xml_str2json(xmlString);
+                        console.log(xml2Json.AssessmentTemplateList.error);
+                        if (angular.isDefined(xml2Json)) {
+                            if (angular.isDefined(xml2Json.AssessmentTemplateList) && angular.isDefined(xml2Json.AssessmentTemplateList.AssessmentTemplate) && angular.isUndefined(xml2Json.AssessmentTemplateList.error)) {
+                                var assTempList = [];
+                                var oldTempIdList = [];
+                                if (angular.isDefined(xml2Json.AssessmentTemplateList.AssessmentTemplate.length)) {
+                                    for (var i = 0; i < xml2Json.AssessmentTemplateList.AssessmentTemplate.length; i++) {
+                                        var template = xml2Json.AssessmentTemplateList.AssessmentTemplate[i];
+                                        $scope.templatepush(template, i, assTempList, oldTempIdList);
+                                    }
+                                } else {
+                                    var template = xml2Json.AssessmentTemplateList.AssessmentTemplate;
+                                    $scope.templatepush(template, 0, assTempList, oldTempIdList);
+                                }
+                                
+                                
+                                if (assTempList != null && assTempList != null && oldTempIdList.length > 0) {
+                                    ExAM.ImportAssessmentTemplateController.saveAssessmentTemplate(assTempList,oldTempIdList, function(result, event) {
+                                        if (event.status && result != null && result != '') {
+                                            $scope.TemplateMap = result;
+                                            
+                                            //section code started.
+                                            if ($scope.TemplateMap != null && $scope.objectCheck($scope.TemplateMap) && angular.isDefined(xml2Json.AssessmentTemplateList.AssessmentTemplate) && angular.isUndefined($scope.TemplateMap['error'])) {
+                                                var SectionTemplateList = [];
+                                                var oldSecIdList = [];
+                                                var sectionCount = 0;
+                                                if (angular.isDefined(xml2Json.AssessmentTemplateList.AssessmentTemplate.length)) {
+                                                    for (var i = 0; i < xml2Json.AssessmentTemplateList.AssessmentTemplate.length; i++) {
+                                                    
+                                                        var template = xml2Json.AssessmentTemplateList.AssessmentTemplate[i];
+                                                        
+                                                        if (angular.isDefined(template.SectionTemplateList) && angular.isDefined(template.SectionTemplateList.SectionTemplate)) {
+                                                            
+                                                            if (angular.isDefined(template.SectionTemplateList.SectionTemplate.length)) {
+                                                                for (var secCount = 0; secCount < template.SectionTemplateList.SectionTemplate.length; secCount++) {
+                                                                    
+                                                                    var secRec = template.SectionTemplateList.SectionTemplate[secCount];
+                                                                    $scope.secTemplatepush(template, secRec, SectionTemplateList,oldSecIdList,sectionCount);
+                                                                }
+                                                            } else {
+                                                                var secRec = template.SectionTemplateList.SectionTemplate;
+                                                                $scope.secTemplatepush(template, secRec, SectionTemplateList,oldSecIdList,sectionCount);
+                                                            }
+                                                        }
+                                                    }
+                                                
+                                                
+                                                } else {
+                                                    var template = xml2Json.AssessmentTemplateList.AssessmentTemplate;
+                                                    if (angular.isDefined(template.SectionTemplateList) && angular.isDefined(template.SectionTemplateList.SectionTemplate)) {
+                                                        if (angular.isDefined(template.SectionTemplateList.SectionTemplate.length)) {
+                                                            for (var secCount = 0; secCount < template.SectionTemplateList.SectionTemplate.length; secCount++) {
+                                                                
+                                                                var secRec = template.SectionTemplateList.SectionTemplate[secCount];
+                                                                $scope.secTemplatepush(template, secRec, SectionTemplateList,oldSecIdList,sectionCount);
+                                                            }
+                                                        } else {
+                                                            var secRec = template.SectionTemplateList.SectionTemplate;
+                                                            $scope.secTemplatepush(template, secRec, SectionTemplateList,oldSecIdList,sectionCount);
+                                                        }       
+                                                    }                                                        
+                                                }
+                                                if (SectionTemplateList != null && oldSecIdList != null && oldSecIdList.length > 0) {
+                                                
+                                                    ExAM.ImportAssessmentTemplateController.saveSectionTemplate(SectionTemplateList,oldSecIdList, function(result, event) {
+                                                        if (event.status && result != null && result != '') {
+                                                            $scope.sectionMap = result;
+                                                            // start question template.
+                                                            
+                                                            if ($scope.sectionMap != null && $scope.objectCheck($scope.sectionMap) && angular.isUndefined($scope.sectionMap['error'])) {
+                                                                var questionTemplateList = [];
+                                                                var oldquestionIdList = [];
+                                                                var questionCount = 0;
+                                                                //start Question template functionality
+                                                                if (angular.isDefined(xml2Json.AssessmentTemplateList.AssessmentTemplate.length)) {
+                                                                    for (var i = 0; i < xml2Json.AssessmentTemplateList.AssessmentTemplate.length; i++) {
+                                                                        
+                                                                        var template = xml2Json.AssessmentTemplateList.AssessmentTemplate[i];
+                                                                        
+                                                                        if (angular.isDefined(template.SectionTemplateList) && angular.isDefined(template.SectionTemplateList.SectionTemplate)) {
+                                                                            if (angular.isDefined(template.SectionTemplateList.SectionTemplate.length)) {
+                                                                                for (var secCount = 0; secCount < template.SectionTemplateList.SectionTemplate.length; secCount++) {
+                                                                                    
+                                                                                    var secRec = template.SectionTemplateList.SectionTemplate[secCount];
+                                                                                    
+                                                                                    if (angular.isDefined(secRec.QuestionTemplateList) && angular.isDefined(secRec.QuestionTemplateList.QuestionTemplate)) {
+                                                                                        if (angular.isDefined(secRec.QuestionTemplateList.QuestionTemplate.length)) {
+                                                                                            for (var qCount = 0; qCount < secRec.QuestionTemplateList.QuestionTemplate.length; qCount++) {
+                                                                                                
+                                                                                                var question = secRec.QuestionTemplateList.QuestionTemplate[qCount];
+                                                                                                if ( angular.isDefined(question.AnswerOptionList) && angular.isDefined(question.AnswerOptionList.AnswerOption) ){
+                                                                                                    $scope.hasAnsOpt = true;
+                                                                                                }
+                                                                                                $scope.questionTempPush(secRec,question,questionTemplateList,oldquestionIdList,$scope.oldQuesNameAndSingleQuesName,questionCount);
+                                                                                                
+                                                                                            }
+                                                                                        } else {
+                                                                                            var question = secRec.QuestionTemplateList.QuestionTemplate;
+                                                                                            if ( angular.isDefined(question.AnswerOptionList) && angular.isDefined(question.AnswerOptionList.AnswerOption) ){
+                                                                                                $scope.hasAnsOpt = true;
+                                                                                            }    
+                                                                                            $scope.questionTempPush(secRec,question,questionTemplateList,oldquestionIdList,$scope.oldQuesNameAndSingleQuesName,questionCount);
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            } else {
+                                                                                var secRec = template.SectionTemplateList.SectionTemplate;
+                                                                                    
+                                                                                if (angular.isDefined(secRec.QuestionTemplateList) && angular.isDefined(secRec.QuestionTemplateList.QuestionTemplate)) {
+                                                                                    if (angular.isDefined(secRec.QuestionTemplateList.QuestionTemplate.length)) {
+                                                                                        for (var qCount = 0; qCount < secRec.QuestionTemplateList.QuestionTemplate.length; qCount++) {
+                                                                                            
+                                                                                            var question = secRec.QuestionTemplateList.QuestionTemplate[qCount];
+                                                                                            if ( angular.isDefined(question.AnswerOptionList) && angular.isDefined(question.AnswerOptionList.AnswerOption) ){
+                                                                                                $scope.hasAnsOpt = true;
+                                                                                            }
+                                                                                            $scope.questionTempPush(secRec,question,questionTemplateList,oldquestionIdList,$scope.oldQuesNameAndSingleQuesName,questionCount);
+                                                                                            
+                                                                                        }
+                                                                                    } else {
+                                                                                        var question = secRec.QuestionTemplateList.QuestionTemplate;
+                                                                                        if ( angular.isDefined(question.AnswerOptionList) && angular.isDefined(question.AnswerOptionList.AnswerOption) ){
+                                                                                            $scope.hasAnsOpt = true;
+                                                                                        }    
+                                                                                        $scope.questionTempPush(secRec,question,questionTemplateList,oldquestionIdList,$scope.oldQuesNameAndSingleQuesName,questionCount);
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                } else {
+                                                                    var template = xml2Json.AssessmentTemplateList.AssessmentTemplate;   
+                                                                    if (angular.isDefined(template.SectionTemplateList) && angular.isDefined(template.SectionTemplateList.SectionTemplate)) {
+                                                                        if (angular.isDefined(template.SectionTemplateList.SectionTemplate.length)) {
+                                                                            for (var secCount = 0; secCount < template.SectionTemplateList.SectionTemplate.length; secCount++) {
+                                                                                
+                                                                                var secRec = template.SectionTemplateList.SectionTemplate[secCount];
+                                                                                
+                                                                                if (angular.isDefined(secRec.QuestionTemplateList) && angular.isDefined(secRec.QuestionTemplateList.QuestionTemplate)) {
+                                                                                    if (angular.isDefined(secRec.QuestionTemplateList.QuestionTemplate.length)) {
+                                                                                        for (var qCount = 0; qCount < secRec.QuestionTemplateList.QuestionTemplate.length; qCount++) {
+                                                                                            
+                                                                                            var question = secRec.QuestionTemplateList.QuestionTemplate[qCount];
+                                                                                            if ( angular.isDefined(question.AnswerOptionList) && angular.isDefined(question.AnswerOptionList.AnswerOption) ){
+                                                                                                $scope.hasAnsOpt = true;
+                                                                                            }
+                                                                                            $scope.questionTempPush(secRec,question,questionTemplateList,oldquestionIdList,$scope.oldQuesNameAndSingleQuesName,questionCount);
+                                                                                            
+                                                                                        }
+                                                                                    } else {
+                                                                                        var question = secRec.QuestionTemplateList.QuestionTemplate;
+                                                                                        if ( angular.isDefined(question.AnswerOptionList) && angular.isDefined(question.AnswerOptionList.AnswerOption) ){
+                                                                                            $scope.hasAnsOpt = true;
+                                                                                        }   
+                                                                                        $scope.questionTempPush(secRec,question,questionTemplateList,oldquestionIdList,$scope.oldQuesNameAndSingleQuesName,questionCount);
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        } else {
+                                                                            var secRec = template.SectionTemplateList.SectionTemplate; 
+                                                                            if (angular.isDefined(secRec.QuestionTemplateList) && angular.isDefined(secRec.QuestionTemplateList.QuestionTemplate)) {
+                                                                                if (angular.isDefined(secRec.QuestionTemplateList.QuestionTemplate.length)) {
+                                                                                    for (var qCount = 0; qCount < secRec.QuestionTemplateList.QuestionTemplate.length; qCount++) {
+                                                                                        
+                                                                                        var question = secRec.QuestionTemplateList.QuestionTemplate[qCount];
+                                                                                        if ( angular.isDefined(question.AnswerOptionList) && angular.isDefined(question.AnswerOptionList.AnswerOption) ){
+                                                                                            $scope.hasAnsOpt = true;
+                                                                                        }
+                                                                                        $scope.questionTempPush(secRec,question,questionTemplateList,oldquestionIdList,$scope.oldQuesNameAndSingleQuesName,questionCount);
+                                                                                        
+                                                                                    }
+                                                                                } else {
+                                                                                    var question = secRec.QuestionTemplateList.QuestionTemplate;  
+                                                                                    if ( angular.isDefined(question.AnswerOptionList) && angular.isDefined(question.AnswerOptionList.AnswerOption) ){
+                                                                                        $scope.hasAnsOpt = true;
+                                                                                    }
+                                                                                    $scope.questionTempPush(secRec,question,questionTemplateList,oldquestionIdList,$scope.oldQuesNameAndSingleQuesName,questionCount);
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                
+                                                                }
+                                                                
+                                                                //End Question template
+                                                                //Start question template save
+                                                                if (questionTemplateList != null && oldquestionIdList != null && oldquestionIdList.length > 0 && questionTemplateList.length == oldquestionIdList.length) {
+                                                                    if (oldquestionIdList.length > $scope.BATCHSIZE) {
+                                                                        var batchsize = $scope.BATCHSIZE;
+                                                                        var loopCount = Math.ceil(oldquestionIdList.length / batchsize);
+                                                                        var totalCount = oldquestionIdList.length;
+                                                                        var questionCnt = 0;
+                                                                        
+                                                                        var startPosition = questionCnt * $scope.BATCHSIZE;
+                                                                        var endPosition = ((batchsize * (questionCnt+1)) < totalCount) ? ((questionCnt+1) * $scope.BATCHSIZE) : totalCount;
+                                                                        questionCnt++;
+                                                                        $scope.saveQuestionsList(questionTemplateList,oldquestionIdList, $scope.oldQuesNameAndSingleQuesName, startPosition,endPosition);
+                                                                    } else {
+                                                                        var totalCount = oldquestionIdList.length;
+                                                                        $scope.saveQuestionsList(questionTemplateList,oldquestionIdList, $scope.oldQuesNameAndSingleQuesName, 0, totalCount);
+                                                                    }
+                                                                }
+                                                                //End Question template save.
+                                                                
+                                                            } else if (angular.isDefined($scope.sectionMap['error'])) {
+                                                                $('#fileUploadAlert').hide();
+                                                                $('#fileUploadSuccess').hide();
+                                                                $('#fileuploadError').show();
+                                                                $('.fileMaskDiv').hide();
+                                                                $('#fileuploadErrorMsg').text($scope.sectionMap['error']);
+                                                                if ($scope.TemplateMap != null && $scope.objectCheck($scope.TemplateMap)) {
+                                                                    ExAM.ImportAssessmentTemplateController.deleteTemplate($scope.TemplateMap, function(result2, event) {
+                                                                        if (event.status) {
+                                                                        } else {
+                                                                            $('#fileuploadErrorMsg').text( result2 );
+                                                                        }                             
+                                                                    },{buffer: false, timeout: 60000});
+                                                                }
+                                                            } else {
+                                                                $('#fileUploadAlert').hide();
+                                                                $('#fileUploadSuccess').hide();
+                                                                $('#fileuploadError').show();
+                                                                $('.fileMaskDiv').hide();
+                                                                $('#fileuploadErrorMsg').text('File have not uploaded successfully' );
+                                                                if ($scope.TemplateMap != null && $scope.objectCheck($scope.TemplateMap)) {
+                                                                    ExAM.ImportAssessmentTemplateController.deleteTemplate($scope.TemplateMap, function(result2, event) {
+                                                                        if (event.status) {
+                                                                        } else {
+                                                                            $('#fileuploadErrorMsg').text( event.message );
+                                                                        }                             
+                                                                    },{buffer: false, timeout: 60000});
+                                                                }
+                                                            } 
+                                                            
+                                                            // End question template.
+                                                        } else {
+                                                            $('#fileUploadAlert').hide();
+                                                            $('#fileUploadSuccess').hide();
+                                                            $('#fileuploadError').show();
+                                                            $('.fileMaskDiv').hide();
+                                                            $('#fileuploadErrorMsg').text(event.message);
+                                                            if ($scope.TemplateMap != null && $scope.objectCheck($scope.TemplateMap)) {
+                                                                ExAM.ImportAssessmentTemplateController.deleteTemplate($scope.TemplateMap, function(result2, event) {
+                                                                    if (event.status) {
+                                                                    } else {
+                                                                        $('#fileuploadErrorMsg').text( event.message );
+                                                                    }
+                                                                },{buffer: false, timeout: 60000});
+                                                            }
+                                                        }
+                                                    },{buffer: false, timeout: 60000});
+                                                }        
+                                                            
+                                            } else if (angular.isDefined($scope.TemplateMap['error'])) {
+                                                $('#fileUploadAlert').hide();
+                                                $('#fileUploadSuccess').hide();
+                                                $('#fileuploadError').show();
+                                                $('.fileMaskDiv').hide();
+                                                $('#fileuploadErrorMsg').text($scope.TemplateMap['error']);
+                                            } else {
+                                                $('#fileUploadAlert').hide();
+                                                $('#fileUploadSuccess').hide();
+                                                $('#fileuploadError').show();
+                                                $('.fileMaskDiv').hide();
+                                                $('#fileuploadErrorMsg').text('File have not uploaded successfully');
+                                            }
+                                            //end Section template    
+                                        } else { //Assessment template save else part.
+                                            $('#fileUploadAlert').hide();
+                                            $('#fileUploadSuccess').hide();
+                                            $('#fileuploadError').show();
+                                            $('.fileMaskDiv').hide();
+                                            $('#fileuploadErrorMsg').text(event.message);
+                                            if ($scope.TemplateMap != null && $scope.objectCheck($scope.TemplateMap)) {
+
+                                                ExAM.ImportAssessmentTemplateController.deleteTemplate($scope.TemplateMap, function(result2, event) {
+                                                    if (event.status) {
+                                                    } else {
+                                                        $('#fileuploadErrorMsg').text( result2 );
+                                                    }                             
+                                                },{buffer: false, timeout: 60000});
+                                            }
+                                        }
+                                    },{buffer: false, timeout: 60000});
+                                }
+                            } else {
+                                if (angular.isDefined(xml2Json.AssessmentTemplateList) && angular.isDefined(xml2Json.AssessmentTemplateList.error)) {
+                                    console.log('@@@@@error@@@@@');
+                                    $('.fileMaskDiv').hide();
+                                    $('#fileUploadAlert').hide();
+                                    $('#fileuploadError').show();
+                                    $('#fileUploadSuccess').hide();
+                                    $('#fileuploadErrorMsg').text('Please upload valid XML file');
+                                }
+                                
+                            }
+                        }
+                }       
+                
+                $scope.objectCheck = function(obj) {
+                    for(var o in obj) {
+                        return true;
+                    }
+                    return false;
+                }
+                
+                var templateFile;
+                $scope.file_changed = function(element) {
+                    var reader  = new FileReader();
+                    if(element.files[0]){
+                       if (element.files[0].type == 'text/xml') {
+                           reader.readAsText(element.files[0]);
+                           reader.onload = function(e) {
+                               templateFile = e.target.result;
+                           };
+                       } else {
+                           $('.fileMaskDiv').hide();
+                           $('#fileUploadAlert').hide();
+                           $('#fileuploadError').show();
+                           $('#fileUploadSuccess').hide();
+                           $('#fileuploadErrorMsg').text('Please upload only the XML exported from the Assessment Template Export section in Admin Config page');
+                       }
+                    } else {
+                        $('.fileMaskDiv').hide();
+                        $('#fileUploadAlert').hide();
+                        $('#fileuploadError').show();
+                        $('#fileUploadSuccess').hide();
+                        $('#fileuploadErrorMsg').text('Please select XML file');
+                    }
+                };
+                    
+                
+                $scope.templatepush = function(template, i, assTempList, oldTempIdList) {
+                    
+                    var asstemplate = new Object();
+                    asstemplate.Template_name__c = template.TemplateName;
+                    if (template.Description != null && template.Description != '') {
+                        asstemplate.Description__c = template.Description;    
+                    }
+                    if (template.PublishPlace != null && template.PublishPlace != '') {
+                        asstemplate.PublishPlace__c = template.PublishPlace;
+                    }
+                    if (template.TemplateFlag != null && template.TemplateFlag == 'true') {                                
+                        asstemplate.TemplateFlag__c = true;
+                    }
+                    if (template.ExternalTemplateId != null && template.ExternalTemplateId != '') {
+                        asstemplate.Template_External_Id__c = template.ExternalTemplateId;
+                    }
+                    if (template.AvailableinPortal != null && template.AvailableinPortal == 'true') {
+                        asstemplate.Available_in_Portal__c = true;
+                    }
+                    if (template.AssessmentCompletedURL != null && template.AssessmentCompletedURL != '') {                                
+                        asstemplate.Assessment_Completed_URL__c = template.AssessmentCompletedURL;
+                    }
+                    if (template.ScoreBySectionWeight != null && template.ScoreBySectionWeight != '') {
+                        asstemplate.Score_By_Section_Weight__c = template.ScoreBySectionWeight;
+                    }
+                    if (template.WeightTemplate != null && template.WeightTemplate != '') {
+                        asstemplate.Weight_Template__c = template.WeightTemplate;
+                    }
+                    if (template.PublicAssessmentPageFooter != null && template.PublicAssessmentPageFooter != '') {
+                        asstemplate.Public_Assessment_Page_Footer__c = template.PublicAssessmentPageFooter;
+                    }
+                    if (template.PublicAssessmentPageHeader != null && template.PublicAssessmentPageHeader != '') {
+                        asstemplate.Public_Assessment_Page_Header__c = template.PublicAssessmentPageHeader;
+                    }
+                    if (template.ShowImageUploadIcon != null && template.ShowImageUploadIcon == 'true') {
+                        asstemplate.Show_Image_Upload_Icon__c = true;
+                    }
+                    if (template.ShowNotesIcon != null && template.ShowNotesIcon == 'true') {
+                        asstemplate.Show_Notes_Icon__c = true;
+                    }
+                    if (template.ShowRefreshIcon != null && template.ShowRefreshIcon == 'true') {
+                        asstemplate.Show_Refresh_Icon__c = true;
+                    }
+                    if (template.Customcssurl != null && template.Customcssurl != '') {
+                        asstemplate.URL__c = template.Customcssurl;
+                    }
+                    if (template.ModalWindowText != null && template.ModalWindowText != '') {
+                        asstemplate.Modal_Window_Text__c = template.ModalWindowText;
+                    }
+                    if (template.DecisionTreeResultPage != null && template.DecisionTreeResultPage != '') {
+                        asstemplate.Decision_Tree__c = template.DecisionTreeResultPage;
+                    }
+                    if (template.ShowModalWindow != null && template.ShowModalWindow == 'true') {
+                        asstemplate.Show_Modal_Window__c = true;
+                    }
+                    if (template.GoogleAnalyticsScript != null && template.GoogleAnalyticsScript != '') {
+                        asstemplate.Google_Analytics_Script__c = template.Google_Analytics_Script__c;
+                    }
+                    if (template.OverrideURL != null && template.OverrideURL == 'true') {
+                        asstemplate.Override_URL__c = true;
+                    }
+                    if (template.StaticResourceName != null && template.StaticResourceName != '') {
+                        asstemplate.Static_Resource_Name__c = template.StaticResourceName;
+                    }
+                    if (template.FilePath != null && template.FilePath != '') {
+                        asstemplate.SRFile_Path__c = template.FilePath;
+                    }
+                    if (template.ShowQuestionNumber != null && template.ShowQuestionNumber == 'true') {
+                        asstemplate.Show_Question_Number__c = true;
+                    }
+                    if (template.HideSectionTitles != null && template.HideSectionTitles == 'true') {
+                        asstemplate.Hide_Section_Titles__c = true;
+                    }
+                    if (template.PublicAssessmentSingleQuestionMode != null && template.PublicAssessmentSingleQuestionMode == 'true') {
+                        asstemplate.Public_Assessment_Single_Question_Mode__c = true;
+                    }
+                    if (template.ContextQuestionsMapping != null && template.ContextQuestionsMapping != '') {
+                        asstemplate.Context_Questions_Mapping__c = template.ContextQuestionsMapping;
+                        $scope.isHasContextMapping = true;
+                        $scope.contextQuestionHavingAssTempId.push(template._Id);
+                    }
+                    if (template.EnableSurveyOverlay != null && template.EnableSurveyOverlay == 'true') {
+                        asstemplate.Enable_Survey_Overlay__c = true;
+                    }
+                    if (template.GenerateCaseOrLead != null && template.GenerateCaseOrLead != '') {
+                        asstemplate.Generate_Case_Or_Lead__c = template.GenerateCaseOrLead;
+                    }
+                    if (template.OneTimeAssessment != null && template.OneTimeAssessment == 'true') {
+                        asstemplate.One_Time_Assessment__c = true;
+                    }
+                    if (template.SurveyOverlaybuttonText != null && template.SurveyOverlaybuttonText != '') {
+                        asstemplate.Survey_Overlay_button_Text__c = template.SurveyOverlaybuttonText;
+                    }
+                    if (template.SurveyOverlayHeaderText != null && template.SurveyOverlayHeaderText != '') {
+                        asstemplate.Survey_Overlay_Header_Text__c = template.SurveyOverlayHeaderText;
+                    }
+                    if (template.SurveyOverlayText != null && template.SurveyOverlayText != '') {
+                        asstemplate.Survey_Overlay_Text__c = template.SurveyOverlayText;
+                    }
+                    if (template.WatchlistWords != null && template.WatchlistWords != '') {
+                        asstemplate.Watchlist_Of_Words__c = template.WatchlistWords;
+                    }
+                    if (template.WIHeader != null && template.WIHeader != '') {
+                        asstemplate.Web_Intercept_Header__c = template.WIHeader;
+                    }
+                    if (template.WIPAResourceFilePath != null && template.WIPAResourceFilePath != '') {
+                        asstemplate.Web_Intercept_PA_Resource_File_Path__c = template.WIPAResourceFilePath;
+                    }
+                    if (template.WIPAStaticResourceName != null && template.WIPAStaticResourceName != '') {
+                        asstemplate.Web_Intercept_PA_Static_Resource_Name__c = template.WIPAStaticResourceName;
+                    }
+                    if (template.WIStaticResourceName != null && template.WIStaticResourceName != '') {
+                        asstemplate.Web_Intercept_Static_Resource_Name__c = template.WIStaticResourceName;
+                    }
+                    if (template.WIFilePath != null && template.WIFilePath != '') {
+                        asstemplate.Web_Intercept_File_Path__c = template.WIFilePath;
+                    }
+                    if (template.RenderNextQuestionAutomatically != null && template.RenderNextQuestionAutomatically == 'true') {
+                        asstemplate.Render_Next_Question_Automatically__c = true;
+                    }
+                    if (template.ResultQuestionButtonText != null && template.ResultQuestionButtonText != '') {
+                        asstemplate.Result_Question_Button_Text__c = template.ResultQuestionButtonText;
+                    }
+                    if (template.PAHeaderButtonBackgroundColor != null && template.PAHeaderButtonBackgroundColor != '') {
+                        asstemplate.PA_Header_and_Button_Background_Color__c = template.PAHeaderButtonBackgroundColor;
+                    }
+                    if (template.PAHeaderButtonTextColor != null && template.PAHeaderButtonTextColor != '') {
+                        asstemplate.PA_Header_and_Button_Text_Color__c = template.PAHeaderButtonTextColor;
+                    }
+                    if (template.PATemplateHeadingText != null && template.PATemplateHeadingText != '') {
+                        asstemplate.PA_Template_Heading_Text__c = template.PATemplateHeadingText;
+                    }
+                    if (template.AutoSubmit != null && template.AutoSubmit == 'true') {
+                        asstemplate.Auto_Submit__c = true;
+                    }
+                    if (template.ExecuteFieldMappingOnAM != null && template.ExecuteFieldMappingOnAM == 'true') {
+                        asstemplate.Execute_Field_Mapping_On_AM__c = true;
+                    }
+                    if (template.IsArchive != null && template.IsArchive == 'true') {
+                        asstemplate.isArchive__c = true;
+                    }
+                    if (template.EnableSectionDescription != null && template.EnableSectionDescription == 'true') {
+                        asstemplate.Enable_Section_Description__c = true;
+                    }
+                    if (template.EnableSurveyIntroText != null && template.EnableSurveyIntroText == 'true') {
+                        asstemplate.Enable_Survey_Intro_Text__c = true;
+                    }
+                    if (template.PublicAssessmentViewerTabIcon != null && template.PublicAssessmentViewerTabIcon != '') {
+                        asstemplate.Public_Assessment_Viewer_Tab_Icon__c = template.PublicAssessmentViewerTabIcon;
+                    }
+                    if (template.PublicAssessmentViewerTitle != null && template.PublicAssessmentViewerTitle != '') {
+                        asstemplate.Public_Assessment_Viewer_Title__c = template.PublicAssessmentViewerTitle;
+                    }
+                    if (template.TemplateGroup != null && template.TemplateGroup != '') {
+                        asstemplate.Template_Group__c = template.TemplateGroup;
+                    }
+                    if (template.WIHeadercolor != null && template.WIHeadercolor != '') {
+                        asstemplate.Web_Intercept_Header_color__c = template.WIHeadercolor;
+                    }
+                    assTempList.push(asstemplate);
+                    oldTempIdList[i] = template._Id;
+                }
+                
+                $scope.secTemplatepush = function(template, secRec, SectionTemplateList,oldSecIdList,sectionCount) {
+                    if ($scope.TemplateMap[template._Id] != null && angular.isDefined($scope.TemplateMap[template._Id]) 
+                        &&  $scope.TemplateMap[template._Id] != '') {
+                        
+                        var sectionTemplate = new Object();
+                        sectionTemplate.Section_label__c = secRec.SectionName;
+                        
+                        if (secRec.OrderNo != null && secRec.OrderNo != '') {
+                            sectionTemplate.Order_No__c = parseInt(secRec.OrderNo);
+                        }
+                        if (secRec.SectionDescription != null && secRec.SectionDescription != '') {
+                            sectionTemplate.Section_Description__c = secRec.SectionDescription;
+                        }
+                        if (secRec.SectionWeight != null && secRec.SectionWeight != '') {
+                            sectionTemplate.Section_Weight__c = parseInt(secRec.SectionWeight);
+                        }
+                        if (secRec.MasterQuestionnaireSection != null && secRec.MasterQuestionnaireSection != '') {
+                            sectionTemplate.Questionnaire_Section__c = $scope.TemplateMap[secRec.MasterQuestionnaireSection];
+                        }
+                        if (secRec.ExternalSectionId != null && secRec.ExternalSectionId != '') {
+                            sectionTemplate.Section_External_Id__c = secRec.ExternalSectionId;
+                        }
+                        if (secRec.Subsectionlabel != null && secRec.Subsectionlabel != '') {
+                            sectionTemplate.Subsectionlabel__c = secRec.Subsectionlabel;
+                        }
+                        if (secRec.SuperSection != null && secRec.SuperSection != '') {
+                            sectionTemplate.SuperSection__c = secRec.SuperSection;
+                        }
+                        if (secRec.Status != null && secRec.Status != '') {
+                            sectionTemplate.status__c = secRec.Status;
+                        }
+                        if (secRec.IsArchive != null && secRec.IsArchive == 'true') {
+                            sectionTemplate.isArchive__c = true;
+                        }
+                        if (secRec.RandomDisplayCount != null && secRec.RandomDisplayCount != '') {
+                            sectionTemplate.Random_Display_Count__c = parseInt(secRec.RandomDisplayCount);
+                        }
+                        SectionTemplateList.push(sectionTemplate);
+                        
+                        //commented on 18-05-2017 for unwanted code, instead of 'oldSecIdList.push(secRec._Id);'
+                        /*var sectionCountTemp = oldSecIdList.length;
+                        oldSecIdList[sectionCountTemp] = secRec._Id;
+                        sectionCount++;*/
+                        
+                        oldSecIdList.push(secRec._Id);
+                    }
+                }
+
+                $scope.questionTempPush = function(secRec,question,questionTemplateList,oldquestionIdList,oldQuesNameAndSingleQuesName,questionCount) {
+                    
+                    if ($scope.sectionMap[secRec._Id] != null && angular.isDefined($scope.sectionMap[secRec._Id]) 
+                        && $scope.sectionMap[question.MasterSection] != '') {
+                        
+                        var questionTemp = new Object();
+                        
+                        questionTemp.Section_Question__c = $scope.sectionMap[question.MasterSection];
+                        if (question.QuestionLabel != null && question.QuestionLabel != '') {
+                            questionTemp.Question_Label__c = question.QuestionLabel;
+                        }
+                        if (question.QuestionType != null && question.QuestionType != '') {
+                            questionTemp.Question_Type__c = question.QuestionType;
+                        }
+                        
+                        if (question.QuestionOrderNo != null && question.QuestionOrderNo != '') {
+                            questionTemp.Question_Order_No__c = parseInt(question.QuestionOrderNo);
+                        }
+                        if (question.QuestionWeight != null && question.QuestionWeight != '') {
+                            questionTemp.Weight_Of_Question__c = parseFloat(question.QuestionWeight);
+                        }
+                        if (question.SubQuestionLabel != null && question.SubQuestionLabel != '') {
+                            questionTemp.Subquestion_Label__c = question.SubQuestionLabel;
+                        }
+                        if (question.SubSectionlabel != null && question.SubSectionlabel != '') {
+                            questionTemp.SubSection_label__c = question.SubSectionlabel;
+                        }
+                        if (question.WeightofAnswer != null && question.WeightofAnswer != '') {
+                            questionTemp.Weight_of_Answer__c = question.WeightofAnswer;        
+                        }
+                        if (question.FocusCategory != null && question.FocusCategory != '') {
+                            questionTemp.Focus_category__c = question.FocusCategory;
+                        }
+                        if (question.NextQuestion != null && question.NextQuestion != '') {
+                            questionTemp.Next_Question__c = question.NextQuestion;
+                            
+                            if (secRec.MasterQuestionnaireSection != null && angular.isDefined($scope.TemplateMap) && $scope.TemplateMap != null 
+                                && angular.isDefined($scope.TemplateMap[secRec.MasterQuestionnaireSection]) 
+                                && $scope.TemplateMap[secRec.MasterQuestionnaireSection] != null 
+                                && $scope.DecisionTreeTemplatesId.indexOf($scope.TemplateMap[secRec.MasterQuestionnaireSection]) == -1)  {
+                                
+                                $scope.isHasDecisionTree = true;
+                                $scope.DecisionTreeTemplatesId.push($scope.TemplateMap[secRec.MasterQuestionnaireSection]);
+                            }
+                        }
+                        if (question.DependentQuestion != null && question.DependentQuestion != '') {
+                            questionTemp.Dependent_Question__c = question.DependentQuestion;
+                            
+                            if (secRec.MasterQuestionnaireSection != null && angular.isDefined($scope.TemplateMap) && $scope.TemplateMap != null 
+                                && angular.isDefined($scope.TemplateMap[secRec.MasterQuestionnaireSection]) 
+                                && $scope.TemplateMap[secRec.MasterQuestionnaireSection] != null 
+                                && $scope.DecisionTreeTemplatesId.indexOf($scope.TemplateMap[secRec.MasterQuestionnaireSection]) == -1)  {
+                                
+                                $scope.isHasDecisionTree = true;
+                                $scope.DecisionTreeTemplatesId.push($scope.TemplateMap[secRec.MasterQuestionnaireSection]);
+                            }
+                        }
+                        if (question.HelpText != null && question.HelpText != '') {
+                            questionTemp.HelpText__c = question.HelpText;
+                        }
+                        if (question.ExternalQuestionId != null && question.ExternalQuestionId != '') {
+                            questionTemp.Question_External_Id__c = question.ExternalQuestionId;
+                        }
+                        if (question.DoNotCreateAnswer != null && question.DoNotCreateAnswer == 'true') {
+                            questionTemp.Do_Not_Create_Answer__c = true;
+                        }
+                        if (question.IsMandatory != null && question.IsMandatory == 'true') {
+                            questionTemp.Is_Mandatory__c = true;      
+                        }  
+                        if (question.DecisionTree != null && question.DecisionTree != '') {
+                            questionTemp.Decision_Tree__c = question.DecisionTree;
+                        }
+                        if (question.FieldLength != null) {
+                            questionTemp.Field_Length__c = question.FieldLength;
+                        }
+                        if (question.HasPicture != null && question.HasPicture == 'true') {
+                            questionTemp.Has_Picture__c = true;      
+                        } 
+                        if (question.IsDependent != null && question.IsDependent == 'true') {
+                            questionTemp.Is_Dependent__c = true;      
+                        } 
+                        if (question.KnowledgeArticleLink != null && question.KnowledgeArticleLink != '') {
+                            questionTemp.Knowledge_Article_Link__c = question.KnowledgeArticleLink;
+                        }
+                        if (question.VideoURL != null && question.VideoURL != '') {
+                            questionTemp.Video_URL__c = question.VideoURL;
+                        }
+                        if (question.DefaultValue != null && question.DefaultValue != '') {
+                            questionTemp.Default_Value__c = question.DefaultValue;
+                        }
+                        if (question.QuestionRestrictedLength != null) {
+                            questionTemp.Question_Restricted_Length__c = question.QuestionRestrictedLength;
+                        }
+                        if (question.Disabled != null && question.Disabled == 'true') {
+                            questionTemp.Disabled__c = true;      
+                        }
+                        if (question.QuestionShortName != null && question.QuestionShortName != '') {
+                            questionTemp.Question_Short_Name__c = question.QuestionShortName;
+                        }
+                        oldQuesNameAndSingleQuesName[question._Name] = '';
+                        if (question.SingleNextQuestion != null && question.SingleNextQuestion != '' && question.SingleNextQuestion.includes("Q-") ) {
+                            oldQuesNameAndSingleQuesName[question._Name] = question.SingleNextQuestion;
+                            if (secRec.MasterQuestionnaireSection != null && angular.isDefined($scope.TemplateMap) && $scope.TemplateMap != null 
+                                && angular.isDefined($scope.TemplateMap[secRec.MasterQuestionnaireSection]) 
+                                && $scope.TemplateMap[secRec.MasterQuestionnaireSection] != null 
+                                && $scope.DecisionTreeTemplatesId.indexOf($scope.TemplateMap[secRec.MasterQuestionnaireSection]) == -1)  {
+                                
+                                $scope.isHasDecisionTree = true;
+                                $scope.DecisionTreeTemplatesId.push($scope.TemplateMap[secRec.MasterQuestionnaireSection]);
+                            }
+                        }
+                        questionTemplateList.push(questionTemp);
+                        
+                        //commented on 18-05-2017 for unwanted code.
+                        //var questionCountTemp = oldquestionIdList.length;
+                        
+                        oldquestionIdList.push(question._Name);   
+                    }
+                }
+                
+                $scope.saveQuestionsList = function(questionTemplateList,oldquestionIdList, oldQuesNameAndSingleQuesName, startPosition,endPosition) {
+                    var totalCount = oldquestionIdList.length;
+                    var batchsize = $scope.BATCHSIZE;
+                    ExAM.ImportAssessmentTemplateController.saveQuestionTemplate(questionTemplateList.slice(startPosition,endPosition),oldquestionIdList.slice(startPosition,endPosition), function(result, event) {
+                        if (result != null && result != '' && event.status) {
+                            if ($scope.objectCheck(result) && angular.isUndefined(result['error'])) {
+                                $scope.questionMap = $scope.merge_options($scope.questionMap,result.newQuesNameMap);
+                                if (oldquestionIdList.length > endPosition) {
+                                    startPosition += batchsize;
+                                    if ((endPosition + batchsize) < oldquestionIdList.length) {
+                                        endPosition += batchsize;
+                                    } else {
+                                        endPosition = oldquestionIdList.length;
+                                    }
+                                    
+                                    $scope.saveQuestionsList(questionTemplateList,oldquestionIdList, $scope.oldQuesNameAndSingleQuesName, startPosition,endPosition);
+                                } else if ($scope.isHasDecisionTree == true && angular.isDefined($scope.DecisionTreeTemplatesId)) {
+                                    
+                                    ExAM.ImportAssessmentTemplateController.decisionTreeQuestionUpdate($scope.DecisionTreeTemplatesId,$scope.questionMap, $scope.oldQuesNameAndSingleQuesName, function(result, event){
+                                        if(result != '' && result == 'success') { 
+                                            if ($scope.isHasContextMapping == true && $scope.contextQuestionHavingAssTempId.length > 0) {
+                                                ExAM.ImportAssessmentTemplateController.contextQuestionMapFieldsUpdate($scope.contextQuestionHavingAssTempId,$scope.questionMap,$scope.TemplateMap, function(result, event){
+                                                    if(result != '' && result == 'success' && $scope.hasAnsOpt) { 
+                                                        $('.fileMaskDiv').hide();
+                                                        $('#fileUploadAlert').hide();
+                                                        $scope.callAnsOptSave();
+                                                    } else if( result != '' && result == 'success' ) {
+                                                        $('.fileMaskDiv').hide();
+                                                        $('#fileUploadAlert').hide();
+                                                        $('#fileUploadSuccess').show();
+                                                        $scope.hasAnsOpt = false;
+                                                        templateFile = ''; 
+                                                        document.getElementById('fid').value = '';
+                                                    } else {
+                                                        $('#fileUploadAlert').hide();
+                                                        $('#fileUploadSuccess').hide();
+                                                        $('#fileuploadError').show();
+                                                        $('.fileMaskDiv').hide();
+                                                        $('#fileuploadErrorMsg').text(result);
+                                                    }
+                                                },{buffer: false, timeout: 60000});
+                                            } else {
+                                                if ( $scope.hasAnsOpt ){
+                                                    $('.fileMaskDiv').hide();
+                                                    $('#fileUploadAlert').hide();
+                                                    $scope.callAnsOptSave();
+                                                } else {
+                                                    $('.fileMaskDiv').hide();
+                                                    $('#fileUploadAlert').hide();
+                                                    $('#fileUploadSuccess').show();
+                                                    $scope.hasAnsOpt = false;
+                                                    templateFile = ''; 
+                                                    document.getElementById('fid').value = '';
+                                                }
+                                            }
+                                        } else {
+                                            $('#fileUploadAlert').hide();
+                                            $('#fileUploadSuccess').hide();
+                                            $('#fileuploadError').show();
+                                            $('.fileMaskDiv').hide();
+                                            $('#fileuploadErrorMsg').text(result);
+                                        }
+                                    },{buffer: false, timeout: 60000});
+                                
+                                } else {
+                                    if ($scope.isHasContextMapping == true && $scope.contextQuestionHavingAssTempId.length > 0) {
+                                        ExAM.ImportAssessmentTemplateController.contextQuestionMapFieldsUpdate($scope.contextQuestionHavingAssTempId,$scope.questionMap,$scope.TemplateMap, function(result, event){
+                                            if( $scope.hasAnsOpt && result != '' && result == 'success') { 
+                                                $('.fileMaskDiv').hide();
+                                                $('#fileUploadAlert').hide();
+                                                $scope.callAnsOptSave();
+                                            } else if( result != '' && result == 'success' ) {
+                                                $('.fileMaskDiv').hide();
+                                                $('#fileUploadAlert').hide();
+                                                $('#fileUploadSuccess').show();
+                                                $scope.hasAnsOpt = false;
+                                                templateFile = ''; 
+                                                document.getElementById('fid').value = '';
+                                            } else {
+                                                $('#fileUploadAlert').hide();
+                                                $('#fileUploadSuccess').hide();
+                                                $('#fileuploadError').show();
+                                                $('.fileMaskDiv').hide();
+                                                $('#fileuploadErrorMsg').text(result);
+                                            }
+                                        },{buffer: false, timeout: 60000});
+                                    } else {
+                                        if ( $scope.hasAnsOpt ){
+                                            $('.fileMaskDiv').hide();
+                                            $('#fileUploadAlert').hide();
+                                            $scope.callAnsOptSave();
+                                        } else {
+                                            $('.fileMaskDiv').hide();
+                                            $('#fileUploadAlert').hide();
+                                            $('#fileUploadSuccess').show();
+                                            $scope.hasAnsOpt = false;
+                                            templateFile = ''; 
+                                            document.getElementById('fid').value = '';
+                                        }
+                                    }
+                                }
+                                
+                            } else if (angular.isDefined(result['error'])) {
+                                $('#fileUploadAlert').hide();
+                                $('#fileUploadSuccess').hide();
+                                $('#fileuploadError').show();
+                                $('.fileMaskDiv').hide();
+                                $('#fileuploadErrorMsg').text(result['error']['error']);
+                                ExAM.ImportAssessmentTemplateController.deleteTemplate($scope.TemplateMap, function(result2, event) {
+                                    if (event.status) {
+                                    } else {
+                                        $('#fileuploadErrorMsg').text( result2 );
+                                    }                             
+                                },{buffer: false, timeout: 60000});
+                            } else {
+                                $('#fileUploadAlert').hide();
+                                $('#fileUploadSuccess').hide();
+                                $('#fileuploadError').show();
+                                $('.fileMaskDiv').hide();
+                                $('#fileuploadErrorMsg').text('File have not uploaded successfully');
+                                ExAM.ImportAssessmentTemplateController.deleteTemplate($scope.TemplateMap, function(result2, event) {
+                                    if (event.status) {
+                                    } else {
+                                        $('#fileuploadErrorMsg').text(result2 );
+                                    }                             
+                                },{buffer: false, timeout: 60000});                            
+                            }
+                        } else {
+                            $('#fileUploadAlert').hide();
+                            $('#fileUploadSuccess').hide();
+                            $('#fileuploadError').show();
+                            $('.fileMaskDiv').hide();
+                            $('#fileuploadErrorMsg').text(event.message);
+                            ExAM.ImportAssessmentTemplateController.deleteTemplate($scope.TemplateMap, function(result2, event) {
+                                if (event.status) {
+                                } else {
+                                    $('#fileuploadErrorMsg').text( result2 );
+                                }                             
+                            },{buffer: false, timeout: 60000});
+                        }
+                    },{buffer: false, timeout: 60000});
+                }
+                
+                $scope.callAnsOptSave = function(){
+                    if ( $scope.questionMap != null && $scope.objectCheck($scope.questionMap) && angular.isUndefined($scope.questionMap['error']) ){
+                        var answerOptionList = [];
+                        var oldAnsOptionIdList = [];
+                        if (angular.isDefined(xml2Json.AssessmentTemplateList.AssessmentTemplate.length)) {
+                            for (var i = 0; i < xml2Json.AssessmentTemplateList.AssessmentTemplate.length; i++) {
+                                
+                                var template = xml2Json.AssessmentTemplateList.AssessmentTemplate[i];
+                                
+                                if (angular.isDefined(template.SectionTemplateList) && angular.isDefined(template.SectionTemplateList.SectionTemplate)) {
+                                    if (angular.isDefined(template.SectionTemplateList.SectionTemplate.length)) {
+                                        for (var secCount = 0; secCount < template.SectionTemplateList.SectionTemplate.length; secCount++) {
+                                            
+                                            var secRec = template.SectionTemplateList.SectionTemplate[secCount];
+                                            
+                                            if (angular.isDefined(secRec.QuestionTemplateList) && angular.isDefined(secRec.QuestionTemplateList.QuestionTemplate)) {
+                                                if (angular.isDefined(secRec.QuestionTemplateList.QuestionTemplate.length)) {
+                                                    for (var qCount = 0; qCount < secRec.QuestionTemplateList.QuestionTemplate.length; qCount++) {
+                                                        
+                                                        var question = secRec.QuestionTemplateList.QuestionTemplate[qCount];
+                                                        if ( angular.isDefined(question.AnswerOptionList) && angular.isDefined(question.AnswerOptionList.AnswerOption) ){
+                                                            if (angular.isDefined(question.AnswerOptionList.AnswerOption.length)) {
+                                                                var ansOptLen = question.AnswerOptionList.AnswerOption.length;
+                                                                for ( var ansOptCnt = 0; ansOptCnt < ansOptLen; ansOptCnt++ ){
+                                                                    var ansOptRec = question.AnswerOptionList.AnswerOption[ansOptCnt];
+                                                                    $scope.answerOptionPush(question,ansOptRec,answerOptionList,oldAnsOptionIdList);
+                                                                }
+                                                            } else {
+                                                                var ansOptRec = question.AnswerOptionList.AnswerOption;
+                                                                $scope.answerOptionPush(question,ansOptRec,answerOptionList,oldAnsOptionIdList);
+                                                            }
+                                                        }
+                                                    }
+                                                } else {
+                                                    var question = secRec.QuestionTemplateList.QuestionTemplate;
+                                                    if ( angular.isDefined(question.AnswerOptionList) && angular.isDefined(question.AnswerOptionList.AnswerOption) ){
+                                                        if (angular.isDefined(question.AnswerOptionList.AnswerOption.length)) {
+                                                            var ansOptLen = question.AnswerOptionList.AnswerOption.length;
+                                                            for ( var ansOptCnt = 0; ansOptCnt < ansOptLen; ansOptCnt++ ){
+                                                                var ansOptRec = question.AnswerOptionList.AnswerOption[ansOptCnt];
+                                                                $scope.answerOptionPush(question,ansOptRec,answerOptionList,oldAnsOptionIdList);
+                                                            }
+                                                        } else {
+                                                            var ansOptRec = question.AnswerOptionList.AnswerOption;
+                                                            $scope.answerOptionPush(question,ansOptRec,answerOptionList,oldAnsOptionIdList);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        var secRec = template.SectionTemplateList.SectionTemplate;
+                                            
+                                        if (angular.isDefined(secRec.QuestionTemplateList) && angular.isDefined(secRec.QuestionTemplateList.QuestionTemplate)) {
+                                            if (angular.isDefined(secRec.QuestionTemplateList.QuestionTemplate.length)) {
+                                                for (var qCount = 0; qCount < secRec.QuestionTemplateList.QuestionTemplate.length; qCount++) {
+                                                    
+                                                    var question = secRec.QuestionTemplateList.QuestionTemplate[qCount];
+                                                    if ( angular.isDefined(question.AnswerOptionList) && angular.isDefined(question.AnswerOptionList.AnswerOption) ){
+                                                        if (angular.isDefined(question.AnswerOptionList.AnswerOption.length)) {
+                                                            var ansOptLen = question.AnswerOptionList.AnswerOption.length;
+                                                            for ( var ansOptCnt = 0; ansOptCnt < ansOptLen; ansOptCnt++ ){
+                                                                var ansOptRec = question.AnswerOptionList.AnswerOption[ansOptCnt];
+                                                                $scope.answerOptionPush(question,ansOptRec,answerOptionList,oldAnsOptionIdList);
+                                                            }
+                                                        } else {
+                                                            var ansOptRec = question.AnswerOptionList.AnswerOption;
+                                                            $scope.answerOptionPush(question,ansOptRec,answerOptionList,oldAnsOptionIdList);
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                var question = secRec.QuestionTemplateList.QuestionTemplate;
+                                                if ( angular.isDefined(question.AnswerOptionList) && angular.isDefined(question.AnswerOptionList.AnswerOption) ){
+                                                    if (angular.isDefined(question.AnswerOptionList.AnswerOption.length)) {
+                                                        var ansOptLen = question.AnswerOptionList.AnswerOption.length;
+                                                        for ( var ansOptCnt = 0; ansOptCnt < ansOptLen; ansOptCnt++ ){
+                                                            var ansOptRec = question.AnswerOptionList.AnswerOption[ansOptCnt];
+                                                            $scope.answerOptionPush(question,ansOptRec,answerOptionList,oldAnsOptionIdList);
+                                                        }
+                                                    } else {
+                                                        var ansOptRec = question.AnswerOptionList.AnswerOption;
+                                                        $scope.answerOptionPush(question,ansOptRec,answerOptionList,oldAnsOptionIdList);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            var template = xml2Json.AssessmentTemplateList.AssessmentTemplate;
+                            if (angular.isDefined(template.SectionTemplateList) && angular.isDefined(template.SectionTemplateList.SectionTemplate)) {
+                                if (angular.isDefined(template.SectionTemplateList.SectionTemplate.length)) {
+                                    for (var secCount = 0; secCount < template.SectionTemplateList.SectionTemplate.length; secCount++) {
+                                        
+                                        var secRec = template.SectionTemplateList.SectionTemplate[secCount];
+                                        
+                                        if (angular.isDefined(secRec.QuestionTemplateList) && angular.isDefined(secRec.QuestionTemplateList.QuestionTemplate)) {
+                                            if (angular.isDefined(secRec.QuestionTemplateList.QuestionTemplate.length)) {
+                                                for (var qCount = 0; qCount < secRec.QuestionTemplateList.QuestionTemplate.length; qCount++) {
+                                                    
+                                                    var question = secRec.QuestionTemplateList.QuestionTemplate[qCount];
+                                                    if ( angular.isDefined(question.AnswerOptionList) && angular.isDefined(question.AnswerOptionList.AnswerOption) ){
+                                                        if (angular.isDefined(question.AnswerOptionList.AnswerOption.length)) {
+                                                            var ansOptLen = question.AnswerOptionList.AnswerOption.length;
+                                                            for ( var ansOptCnt = 0; ansOptCnt < ansOptLen; ansOptCnt++ ){
+                                                                var ansOptRec = question.AnswerOptionList.AnswerOption[ansOptCnt];
+                                                                $scope.answerOptionPush(question,ansOptRec,answerOptionList,oldAnsOptionIdList);
+                                                                
+                                                            }
+                                                        } else {
+                                                            var ansOptRec = question.AnswerOptionList.AnswerOption;
+                                                            $scope.answerOptionPush(question,ansOptRec,answerOptionList,oldAnsOptionIdList);
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                var question = secRec.QuestionTemplateList.QuestionTemplate;
+                                                if ( angular.isDefined(question.AnswerOptionList) && angular.isDefined(question.AnswerOptionList.AnswerOption) ){
+                                                    if (angular.isDefined(question.AnswerOptionList.AnswerOption.length)) {
+                                                        var ansOptLen = question.AnswerOptionList.AnswerOption.length;
+                                                        for ( var ansOptCnt = 0; ansOptCnt < ansOptLen; ansOptCnt++ ){
+                                                            var ansOptRec = question.AnswerOptionList.AnswerOption[ansOptCnt];
+                                                            $scope.answerOptionPush(question,ansOptRec,answerOptionList,oldAnsOptionIdList);
+                                                        }
+                                                    } else {
+                                                        var ansOptRec = question.AnswerOptionList.AnswerOption;
+                                                        $scope.answerOptionPush(question,ansOptRec,answerOptionList,oldAnsOptionIdList);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    var secRec = template.SectionTemplateList.SectionTemplate;
+                                    if (angular.isDefined(secRec.QuestionTemplateList) && angular.isDefined(secRec.QuestionTemplateList.QuestionTemplate)) {
+                                        if (angular.isDefined(secRec.QuestionTemplateList.QuestionTemplate.length)) {
+                                            for (var qCount = 0; qCount < secRec.QuestionTemplateList.QuestionTemplate.length; qCount++) {
+                                                
+                                                var question = secRec.QuestionTemplateList.QuestionTemplate[qCount];
+                                                if ( angular.isDefined(question.AnswerOptionList) && angular.isDefined(question.AnswerOptionList.AnswerOption) ){
+                                                    if (angular.isDefined(question.AnswerOptionList.AnswerOption.length)) {
+                                                        var ansOptLen = question.AnswerOptionList.AnswerOption.length;
+                                                        for ( var ansOptCnt = 0; ansOptCnt < ansOptLen; ansOptCnt++ ){
+                                                            var ansOptRec = question.AnswerOptionList.AnswerOption[ansOptCnt];
+                                                            $scope.answerOptionPush(question,ansOptRec,answerOptionList,oldAnsOptionIdList);
+                                                        }
+                                                    } else {
+                                                        var ansOptRec = question.AnswerOptionList.AnswerOption;
+                                                        $scope.answerOptionPush(question,ansOptRec,answerOptionList,oldAnsOptionIdList);
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            var question = secRec.QuestionTemplateList.QuestionTemplate;
+                                            if ( angular.isDefined(question.AnswerOptionList) && angular.isDefined(question.AnswerOptionList.AnswerOption) ){
+                                                if (angular.isDefined(question.AnswerOptionList.AnswerOption.length)) {
+                                                    var ansOptLen = question.AnswerOptionList.AnswerOption.length;
+                                                    for ( var ansOptCnt = 0; ansOptCnt < ansOptLen; ansOptCnt++ ){
+                                                        var ansOptRec = question.AnswerOptionList.AnswerOption[ansOptCnt];
+                                                        $scope.answerOptionPush(question,ansOptRec,answerOptionList,oldAnsOptionIdList);
+                                                    }
+                                                } else {
+                                                    var ansOptRec = question.AnswerOptionList.AnswerOption;
+                                                    $scope.answerOptionPush(question,ansOptRec,answerOptionList,oldAnsOptionIdList);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }                                    
+                        }
+                        if (answerOptionList != null && oldAnsOptionIdList != null && oldAnsOptionIdList.length > 0 && answerOptionList.length == oldAnsOptionIdList.length) {
+                            if (oldAnsOptionIdList.length > $scope.AnsOptBATCHSIZE) {
+                                var batchsize = $scope.AnsOptBATCHSIZE;
+                                var loopCount = Math.ceil(oldAnsOptionIdList.length / batchsize);
+                                var totalCount = oldAnsOptionIdList.length;
+                                var questionCnt = 0;
+                                var startPosition = questionCnt * $scope.AnsOptBATCHSIZE;
+                                var endPosition = ((batchsize * (questionCnt+1)) < totalCount) ? ((questionCnt+1) * $scope.AnsOptBATCHSIZE) : totalCount;
+                                questionCnt++;
+                                $scope.saveAnswerOptionList(answerOptionList,oldAnsOptionIdList,startPosition,endPosition);
+                            } else {
+                                var totalCount = oldAnsOptionIdList.length;
+                                $scope.saveAnswerOptionList(answerOptionList,oldAnsOptionIdList, 0, totalCount);
+                            }
+                        }
+                    }
+                };
+                
+                $scope.saveAnswerOptionList = function(answerOptionList,oldAnsOptionIdList,startPosition,endPosition){
+                    var totalCount = oldAnsOptionIdList.length;
+                    var batchsize = $scope.AnsOptBATCHSIZE;
+                    ExAM.ImportAssessmentTemplateController.saveAnswerOptions(answerOptionList.slice(startPosition,endPosition),oldAnsOptionIdList.slice(startPosition,endPosition), function(result, event) {
+                        if ( result != null && result != '' && event.status ){
+                             if ($scope.objectCheck(result) && angular.isUndefined(result['error'])) {
+                                 // amswer option map assigning.
+                             
+                             } else if (angular.isDefined(result['error'])) {
+                                $('#fileUploadAlert').hide();
+                                $('#fileUploadSuccess').hide();
+                                $('.fileMaskDiv').hide();
+                                $('#fileuploadError').show();
+                                $('#fileuploadErrorMsg').text(result['error']);
+                                ExAM.ImportAssessmentTemplateController.deleteTemplate($scope.TemplateMap, function(result2, event) {
+                                    if (event.status) {
+                                    } else {
+                                        $('#fileuploadErrorMsg').text( result2 );
+                                    }                             
+                                },{buffer: false, timeout: 60000});
+                            } else {
+                                $('#fileUploadAlert').hide();
+                                $('#fileUploadSuccess').hide();
+                                $('.fileMaskDiv').hide();
+                                $('#fileuploadError').show();
+                                $('#fileuploadErrorMsg').text('File have not uploaded successfully');
+                                ExAM.ImportAssessmentTemplateController.deleteTemplate($scope.TemplateMap, function(result2, event) {
+                                    if (event.status) {
+                                    } else {
+                                        $('#fileuploadErrorMsg').text( result2 );
+                                    }                             
+                                },{buffer: false, timeout: 60000});                            
+                             }
+                          } else {
+                            $('#fileUploadAlert').hide();
+                            $('#fileUploadSuccess').hide();
+                            $('.fileMaskDiv').hide();
+                            $('#fileuploadError').show();
+                            $('#fileuploadErrorMsg').text(event.message);
+                            ExAM.ImportAssessmentTemplateController.deleteTemplate($scope.TemplateMap, function(result2, event) {
+                                if (event.status) {
+                                } else {
+                                    $('#fileuploadErrorMsg').text( result2 );
+                                }                             
+                            },{buffer: false, timeout: 60000});
+                        }
+                    },{buffer: false, timeout: 60000});
+                    if (oldAnsOptionIdList.length > endPosition) {
+                        startPosition += batchsize;
+                        if ((endPosition + batchsize) < oldAnsOptionIdList.length) {
+                            endPosition += batchsize;
+                        } else {
+                            endPosition = oldAnsOptionIdList.length;
+                        }
+                        
+                        $scope.saveAnswerOptionList(answerOptionList,oldAnsOptionIdList, startPosition,endPosition);
+                    } else {
+                        $('.fileMaskDiv').hide();
+                        $('#fileUploadAlert').hide();
+                        $('#fileUploadSuccess').show();
+                        $scope.hasAnsOpt = false;
+                        templateFile = ''; 
+                        document.getElementById('fid').value = '';
+                    }
+                };
+                
+                $scope.answerOptionPush = function(quesRec,ansOptRec,answerOptionList,oldAnsOptionIdList) {
+                    
+                    if ($scope.questionMap[quesRec._Name] != null && angular.isDefined($scope.questionMap[quesRec._Name]) 
+                        &&  $scope.questionMap[quesRec._Name] != '') {
+                        var answerOption = new Object();
+                        answerOption.Name = ansOptRec.Option;
+                        answerOption.Question_Template__c = $scope.questionMap[ansOptRec.MasterQuestion]
+                        if ( ansOptRec.Weight != null ) {
+                            answerOption.Weight__c = parseFloat(ansOptRec.Weight);
+                        }
+                        if (ansOptRec.HelpText != null && ansOptRec.HelpText != '') {
+                            answerOption.Help_Text__c = ansOptRec.HelpText;
+                        }
+                        if (ansOptRec.NextQuestion != null && ansOptRec.NextQuestion != '') {
+                            answerOption.Next_Question__c = $scope.questionMap[ansOptRec.NextQuestion];
+                        }
+                        if (ansOptRec.DependentQuestion != null && ansOptRec.DependentQuestion != '') {
+                            answerOption.Dependent_Question__c = $scope.questionMap[ansOptRec.DependentQuestion];
+                        }
+                        if ( ansOptRec.OrderNo != null ) {
+                            answerOption.Order_No__c = parseInt(ansOptRec.OrderNo);
+                        }
+                        answerOptionList.push(answerOption);
+                        oldAnsOptionIdList.push(quesRec._Id);    
+                    }
+                }
+                
+                /**
+                 * Overwrites obj1's values with obj2's and adds obj2's if non existent in obj1
+                 * @param obj1
+                 * @param obj2
+                 * @returns obj3 a new object based on obj1 and obj2
+                 */
+                 
+                 $scope.merge_options = function(obj1,obj2) {
+                    var obj3 = {};    
+                    for (var attrname in obj1) { obj3[attrname] = obj1[attrname]; }    
+                    for (var attrname in obj2) { obj3[attrname] = obj2[attrname]; }    
+                    return obj3;
+                }
+                
+                $scope.cancelUpload = function() {
+                    document.getElementById('fid').value = '';
+                    //('#fid').val() = '';
+                    $scope.hasAnsOpt = false;
+                    templateFile = '';
+                    $('#fileUploadAlert').hide();
+                    $('#fileUploadSuccess').hide();
+                    $('#fileuploadError').hide();
+                }
+                $scope.closeLoad = function() {
+                    $('#fileUploadAlert').hide();
+                    $('#fileUploadSuccess').hide();
+                    $('#fileuploadError').hide();
+                }
+                              
+            });
+            
+        </script>
+    </html>        
+</apex:component>

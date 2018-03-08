@@ -1,0 +1,115 @@
+<apex:page standardController="DoDEA_Serious_Incident_Report__c" tabstyle="account" standardStylesheets="false" sidebar="false" extensions="DoDEAIncidentReportController" >
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> 
+    <script type="text/javascript">
+        var $j = jQuery.noConflict();
+        $j(document).ready(function() {
+            setTimeout(function() {
+                $j('select.myMultiClass').each(function(i, val) { 
+                    $j(val).width(280);
+                    $j(val).height(100);
+                })
+            },100);
+        });
+    </script>
+  <style type="text/css">
+         .inputTextBig { width: 80%; }
+         .inputTextWidthMedium { width: 25%; }
+         .inputTextWidthMediumSchool { width: 20%; }
+    </style>
+    
+    <apex:form id="incidentForm">
+        <apex:pageMessages ></apex:pageMessages>
+        <br></br>
+         <TABLE BORDER="3" CELLPADDING="4" CELLSPACING="0" align="LEFT" BORDERCOLOR="black" WIDTH="100%">
+           <TR align="center" style="font-style:bold;">
+             <td colspan="3" style="font-style:bold;font-size:20px;padding:20px 0 20px 0px;"> SERIOUS INCIDENT REPORT</td>      
+           </TR>      
+           <TR>
+              <TD colspan="3"><b><label for="labelarea" style="padding-left:0px;font-size:15px;">AREA :</label> </b><apex:inputField value="{!VisRecord.Area__c}" id="labelarea" styleClass="inputTextWidthMediumSchool "></apex:inputField>
+              <b><label for="labeldist" style="padding-left:15px;font-size:15px;">DISTRICT : </label></b><apex:inputField value="{!VisRecord.District_Name__c}" id="labeldist" styleClass="inputTextWidthMediumSchool "></apex:inputField>
+              <b><label for="labelsch" style="padding-left:15px;font-size:15px;">SCHOOL NAME : </label> </b><apex:inputField value="{!VisRecord.School_Name__c}" id="labelsch" styleClass="inputTextWidthMediumSchool "></apex:inputField></TD>
+           </TR>
+           <TR>
+              <TD colspan="3" style="font-style:bold;font-weight:bold;font-size:15px;"><!--DATE AND TIME OF INCIDENT : <apex:outputField value="{!VisRecord.Date_and_Time__c}" styleClass="inputTextWidthMedium"></apex:outputField>-->
+              <label for="labelinci" style="padding-left:0px;">INCIDENT OCCURED :  </label><apex:inputField value="{!VisRecord.Incident_Occured__c}" id="labelinci" styleClass="inputTextWidthMedium" ></apex:inputField></TD>
+               
+           </TR>
+          
+           <TR align="center" style="font-style:bold;">
+               <td colspan="3" style="font-style:bold;font-weight:bold;font-size:15px;padding:20px 0 20px 0px;border-right:NONE;border-left:NONE;border-bottom:NONE;"> TYPE OF INCIDENT<BR/></td>      
+           </TR> 
+          
+           <TR>
+                <TD colspan="1" style="border-right:NONE;font-weight:bold;font-size:15px;border-left:NONE;border-top:NONE;">DRUG/ALCOHOL OFFENSES : <apex:inputField value="{!VisRecord.Drug_Alcohol_Offenses__c}" styleClass="myMultiClass"></apex:inputField></TD>
+           
+                <TD colspan="1" style="border-right:NONE;border-left:NONE;font-size:15px;font-weight:bold;border-top:NONE;">CRIMES AGAINST PERSONS : <apex:inputField value="{!VisRecord.Crime_Against_Persons__c}" styleClass="myMultiClass"></apex:inputField></TD>
+           </TR>
+           
+            <TR>
+                <TD colspan="1" style="font-weight:bold;border-right:NONE;border-left:NONE;font-size:15px;"><b>CRIMES AGAINST PROPERTY : </b><apex:inputField value="{!VisRecord.Crimes_Against_Property__c}" styleClass="myMultiClass"></apex:inputField></TD>
+           
+                <TD colspan="1" style="padding:20px 0 0px 0px;font-size:15px;border-right:NONE;border-left:NONE;"><b>SECURITY THREATS (Affecting School,Staff, Students, or Operations) :</b><span class="helpButton" id="help1_Help"><img src="/s.gif" alt="Help for Security Threats"  class="helpIcon" title="Force Protection issues i.e., suspected surveillance or other suspicious or actual activity constituting a threat or potential threat to students, staff, or operations. 
+Threats of Extreme Violence i.e., written,verbal,internal or external, by students or Others"/></span><apex:inputField value="{!VisRecord.Security_Threats__c}" styleClass="myMultiClass"></apex:inputField></TD>
+           </TR>
+           
+           <TR align="center" style="font-style:bold;">
+               <td colspan="2" style="font-style:bold;font-weight:bold;font-size:15px;padding:20px 0 10px 0px;border-right:NONE;border-left:NONE;border-bottom:NONE;"> OTHER INCIDENTS <span class="helpButton" id="help1_Help"><img src="/s.gif" alt="Other Incidents Help"  class="helpIcon" title="Posession of Other Weapon i.e. report knife with 3 inch blade or lock-in-place blade/razor of any length,/BB//Pellet// guns or realistic replica guns, nun-chucks, clubs, and other items possessed or used to inflict bodily harm. Whenever a question arises as to whether a device is a legally classified weapon the supporting local law enforcement authority interpretation will prevail.Other- Use this area to record those incidents which do not fit comfortably within categories listed above, but which may develop into incidents of negative media attention or other issues felt by the reporting official to warrant a report for the record. "/></span></td>      
+           </TR> 
+         
+           <TR >
+                <TD colspan="2" style="border-right:NONE;border-left:NONE;border-top:NONE;align:center;"><apex:inputField value="{!VisRecord.Other_Incidents__c}" styleClass="myMultiClass"></apex:inputField></TD>          
+           </TR>
+           <TR style="font-style:bold;">
+               <td colspan="3" style="font-style:bold;font-weight:bold;font-size:15px;padding:20px 0 10px 0px;">
+                  <TABLE cols="5" align="LEFT" WIDTH="100%">
+                       <TR style="font-style:bold;">
+                           <TD style="font-style:bold;border-left:NONE;border-top:NONE;" width="40%">PARTICIPANTS(Last Name, First Name, MI) </TD><TD>GENDER </TD><TD>AGE </TD><TD>GRADE </TD><TD>STATUS </TD>
+                       </TR>
+                       <TR>
+                           <TD><apex:inputField value="{!Participants.Last_Name__c}" styleClass="inputTextWidthMedium"></apex:inputField><apex:inputField value="{!Participants.First_Name__c}" styleClass="inputTextWidthMedium"></apex:inputField><apex:inputField value="{!Participants.MI_Name__c}" styleClass="inputTextWidthMedium"></apex:inputField> </TD><TD><apex:inputField value="{!Participants.Gender__c}"></apex:inputField> </TD><TD><apex:inputField value="{!Participants.Age__c}" ></apex:inputField></TD><TD><apex:inputField value="{!Participants.Grade__c}"></apex:inputField> </TD><TD><apex:inputField value="{!Participants.Status__c}"></apex:inputField> </TD>
+                       </TR>
+                        <TR>
+                              <TD><apex:inputField value="{!Participants2.Last_Name__c}" styleClass="inputTextWidthMedium"></apex:inputField><apex:inputField value="{!Participants2.First_Name__c}" styleClass="inputTextWidthMedium"></apex:inputField><apex:inputField value="{!Participants2.MI_Name__c}" styleClass="inputTextWidthMedium"></apex:inputField> </TD><TD><apex:inputField value="{!Participants2.Gender__c}"></apex:inputField> </TD><TD><apex:inputField value="{!Participants2.Age__c}" ></apex:inputField></TD><TD><apex:inputField value="{!Participants2.Grade__c}"></apex:inputField> </TD><TD><apex:inputField value="{!Participants2.Status__c}"></apex:inputField> </TD>
+                        </TR>
+                        <TR>
+                            <TD><apex:inputField value="{!Participants3.Last_Name__c}" styleClass="inputTextWidthMedium"></apex:inputField><apex:inputField value="{!Participants3.First_Name__c}" styleClass="inputTextWidthMedium"></apex:inputField><apex:inputField value="{!Participants3.MI_Name__c}" styleClass="inputTextWidthMedium"></apex:inputField> </TD><TD><apex:inputField value="{!Participants3.Gender__c}"></apex:inputField> </TD><TD><apex:inputField value="{!Participants3.Age__c}" ></apex:inputField></TD><TD><apex:inputField value="{!Participants3.Grade__c}"></apex:inputField> </TD><TD><apex:inputField value="{!Participants3.Status__c}"></apex:inputField> </TD>
+                        </TR>
+                        <TR>
+                            <TD><apex:inputField value="{!Participants4.Last_Name__c}" styleClass="inputTextWidthMedium"></apex:inputField><apex:inputField value="{!Participants4.First_Name__c}" styleClass="inputTextWidthMedium"></apex:inputField><apex:inputField value="{!Participants4.MI_Name__c}" styleClass="inputTextWidthMedium"></apex:inputField> </TD><TD><apex:inputField value="{!Participants4.Gender__c}"></apex:inputField> </TD><TD><apex:inputField value="{!Participants4.Age__c}" ></apex:inputField></TD><TD><apex:inputField value="{!Participants4.Grade__c}"></apex:inputField> </TD><TD><apex:inputField value="{!Participants4.Status__c}"></apex:inputField> </TD>
+                       
+                        </TR>
+                        
+                  </TABLE>
+               </td>      
+           </TR>
+         
+           
+           <TR style="font-style:bold;">
+               <td style="font-style:bold;font-size:15px;font-weight:bold;padding:20px 0 10px 0px;border-right:NONE;border-left:NONE;border-bottom:NONE;"> NOTIFICATIONS : 
+               <apex:inputField value="{!VisRecord.Notification__c}" styleClass="myMultiClass"></apex:inputField></TD>          
+           </TR>
+           
+           <TR  style="font-style:bold;font-size:15px;">
+             <TD colspan="3" style="border-right:NONE;border-left:NONE;border-bottom:NONE;border-top:NONE;"><b><label for="labelpos" style="padding-left:0px;">Police Responded?</label> </b><apex:inputField value="{!VisRecord.Police_Responded__c}" id="labelpos"></apex:inputField>
+              <b><label for="labelpoi" style="padding-left:20px;">Police Investigating? </label></b><apex:inputField value="{!VisRecord.Police_Investigating__c}" id="labelpoi" ></apex:inputField>
+              <b><label for="labelcoor" style="padding-left:20px;">Notifications made/coordinated by:</label> </b><apex:inputField value="{!VisRecord.Notifications_made_coordinated_by__c}" id="labelcoor" styleClass="inputTextWidthMedium"></apex:inputField>
+             </TD>                            
+           </TR>
+           <TR  style="font-style:bold;font-size:15px;">
+             <TD colspan="3" style="border-right:NONE;font-weight:bold;border-left:NONE;border-bottom:NONE;">DESCRIBE IN DETAIL WHAT OCCURED.State WHO, WHAT, WHERE, HOW, WHEN.  Provide details of monetary losses, weapons, eyewitness accounts, etc.</td>
+           </TR>
+            <TR  style="font-style:bold;font-size:15px;">
+             <TD colspan="3" style="border-right:NONE;border-left:NONE;border-bottom:NONE;border-top:NONE;"><apex:inputField value="{!VisRecord.Describe_in_Detail_What_Occurred__c}" ></apex:inputField>
+              </TD>
+            </TR>
+             <TR align="center" style="font-style:bold;">
+             <td colspan="2" style="font-style:bold;font-size:16px;padding:20px 0 20px 0px;"><!-- <apex:commandButton value="Save" action="{!Save}" id="button2"/>-->
+             <apex:commandButton value="Cancel" action="{!Cancel}" id="button1"/> 
+             <apex:commandButton value="Save" action="{!Save}"/>
+             </td>      
+           </TR>
+        </TABLE> 
+ 
+    </apex:form>
+  
+</apex:page>

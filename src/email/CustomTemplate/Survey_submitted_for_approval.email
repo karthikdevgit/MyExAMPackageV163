@@ -1,0 +1,9 @@
+Hello {!NullValue(Receiving_User.Name, "Sir or Madam")},
+
+The survey for "{!Account.Name}" is submitted for approval.
+Please review it and take appropriate action.
+
+Thanks
+
+{!User.Name}
+{!User.Email}

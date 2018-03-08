@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Section Group Section Relation</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Section Group Section Relation</value>
+    </caseValues>
+    <fields>
+        <help><!-- Is this the default section for the group? --></help>
+        <label><!-- Default Section? --></label>
+        <name>Default_Section__c</name>
+    </fields>
+    <fields>
+        <label><!-- Junction External Id --></label>
+        <name>Junction_External_Id__c</name>
+    </fields>
+    <fields>
+        <help><!-- Is this section active? --></help>
+        <label><!-- Section Active? --></label>
+        <name>Section_Active__c</name>
+    </fields>
+    <fields>
+        <help><!-- Section Group --></help>
+        <label><!-- Section Group --></label>
+        <name>Section_Group__c</name>
+        <relationshipLabel><!-- Section Group Section Relation --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- Master is section --></help>
+        <label><!-- Section Template --></label>
+        <name>Section_Template__c</name>
+        <relationshipLabel><!-- Section Group Section Relation --></relationshipLabel>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

@@ -1,0 +1,25 @@
+<aura:component access="public" extensible="true">
+
+    <aura:attribute name="record" type="Map" access="public"/>
+    <aura:attribute name="fieldLabel" type="String" access="public"/>
+    <aura:attribute name="fieldName" type="String" access="public"/>
+    <aura:attribute name="helpText" type="String" access="public"/>
+    <aura:attribute name="Id" type="String" access="public"/>
+    <aura:attribute name="sObjectName" type="String" access="public"/>
+    <aura:attribute name="defaultMode" type="String" default="view" access="public"/>
+    <aura:attribute name="hideLabel" type="Boolean" default="false" access="public"/>
+    <aura:attribute name="cssClass" type="String" access="public"/>
+    <aura:attribute name="spreadButtons" type="Boolean" default="true" access="public"/>
+    <aura:attribute name="mode" type="String" default="view" access="public"/>
+    <aura:attribute name="newField" type="Boolean" default="false" access="public"/>
+    <aura:attribute name="inlineEditMode" type="Boolean" default="false" access="public"/>
+	<aura:attribute name="sourceDerivenCmp" type="Map" access="public"/>
+    <aura:attribute name="hasValidator" type="Boolean" access="public" default="false"/>
+    
+    <aura:registerEvent name="updateFields" type="c:updateFieldEvt"/>
+    <aura:registerEvent name="notificationEvent" type="c:notificationEvt"/>
+    <aura:registerEvent name="disableViewToggle" type="c:disableViewToggleEvt"/>
+    
+    {!v.body}
+
+</aura:component>

@@ -1,0 +1,29 @@
+<apex:component controller="KnowledgeArticleController">
+    <div class="slds-card slds-card--narrow" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <div class="slds-card__header slds-grid"></div>
+        <div class="slds-card__body" ng-show="articlesObj != null && articlesObj.length >0">
+            <div class="slds-card__body--inner">
+                <input class="slds-input slds-size--1-of-4 slds-m-left--large" placeholder="Search Q&A"  type="text" ng-model="searchArticel"/><br/><br/>
+                <div class=" slds-m-left--large">
+                    <svg aria-hidden="true" class="slds-button__icon">
+                        <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#paste')}"></use>
+                    </svg>
+                    <b>Articles</b>
+                 </div><br/>
+                <div ng-repeat="eachArticle in articlesObj | filter:searchArticel" class=" slds-m-left--large" style="border-top: 1px solid #d8dde6;">
+                    <div class="slds-tile">
+                        <p class="slds-truncate" style="color: #2891d4;" title="{{ eachArticle['Title'] }}"><b>{{ eachArticle['Title'] }}</b></p>
+                        <div class="slds-tile__detail slds-text-body--small">
+                            <p ng-show="summaryField.length > 0" class="slds-truncate" title="{{ eachArticle[summaryField] }}">{{ eachArticle[summaryField] }}</p>
+                            <p ng-show="!summaryField.length" class="slds-truncate" title="{{ eachArticle['Summary'] }}">{{ eachArticle['Summary'] }}</p>
+                        </div><!-- end class slds-tile__detail -->
+                    </div><!-- end class slds-tile -->
+                </div><!-- end ng-repeat -->
+                <div ng-show="!(articlesObj | filter:searchArticel).length">
+                    No articles found
+                </div>
+                
+            </div><!-- end class slds-card__body--inner -->
+        </div><!-- end class slds-card__body -->
+    </div><!-- end class slds-card--narrow -->
+</apex:component>

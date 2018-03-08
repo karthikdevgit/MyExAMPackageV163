@@ -1,0 +1,3 @@
+<aura:event type="APPLICATION" access="public">
+    <aura:attribute name="questionId" type="String" access="public"/>
+</aura:event>

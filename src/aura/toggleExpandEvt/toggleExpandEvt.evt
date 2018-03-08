@@ -1,0 +1,3 @@
+<aura:event access="public" type="component">
+    <aura:attribute name="index" type="Integer" access="public"/>
+</aura:event>

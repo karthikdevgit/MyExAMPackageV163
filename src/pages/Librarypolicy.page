@@ -1,0 +1,200 @@
+<apex:page showHeader="false" sidebar="false" controller="FetchDocumentId" tabstyle="account">
+  <!-- This is the page for banner include it in all pages-->
+<apex:include pageName="BannerTemplate"/>
+
+<apex:form id="governForm">
+        <br></br>
+        <p style="font-size:18px">Policy and Procedure</p>
+       
+        <apex:pageBlock >
+         
+           <apex:pageMessages ></apex:pageMessages>
+              <br/><br/>
+                        <apex:commandLink action="{!documentId}" oncomplete="window.location.href='../servlet/servlet.FileDownload?file={!docId}';" value="Army Access Control Points_Standard Definitive Design" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Army Access Control Points_Standard Definitive Design" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Best Practices for Safe Mail Handling" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Best Practices for Safe Mail Handling" assignTo="{!documentname}"/> 
+                            </apex:commandLink><br/><br/>
+                        <apex:commandLink action="{!documentId}" oncomplete="window.location.href='../servlet/servlet.FileDownload?file={!docId}';" value="Access Control Point Criteria 2004" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Access Control Point Criteria 2004" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                        <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Army Regulation 415 15 Army Construction" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Army Regulation 415 15 Army Construction" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                        <apex:commandLink action="{!documentId}" oncomplete="window.location.href='../servlet/servlet.FileDownload?file={!docId}';" value="Army Standard for Access Control Points" styleClass="download_box">      
+                                                  <apex:param name="documentname" value="Army Standard for Access Control Points" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                        <apex:commandLink action="{!documentId}" oncomplete="window.location.href='../servlet/servlet.FileDownload?file={!docId}';" value="BEEM Building Types" styleClass="download_box">      
+                                  <apex:param name="documentname" value="BEEM Building Types" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>     
+                        <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="CCTV Constant Cameras Track Violators" styleClass="download_box">      
+                                  <apex:param name="documentname" value="CCTV Constant Cameras Track Violators" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                        <apex:commandLink action="{!documentId}" oncomplete="window.location.href='../servlet/servlet.FileDownload?file={!docId}';" value="CCTV in the School Environment" styleClass="download_box">      
+                                  <apex:param name="documentname" value="CCTV in the School Environment" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                        <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Crime Prevention Through Environmental Design in Parking Facilities" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Crime Prevention Through Environmental Design in Parking Facilities" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                        <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Department of Defense Standoff Distances Unified Facilities Criteria" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Department of Defense Standoff Distances Unified Facilities Criteria" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                        <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Department of State Certified Anti-Ram Vehicle Barriers" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Department of State Certified Anti-Ram Vehicle Barriers" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                        <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Design Standards for U.S. Court Facilities Ch 9" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Design Standards for U.S. Court Facilities Ch 9" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                        <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Electronic Security Systems" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Electronic Security Systems" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                        <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Emergency Exit Routes Factsheet" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Emergency Exit Routes Factsheet" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                        <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Fed P100 Chpt 1 General Requirements" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Fed P100 Chpt 1 General Requirements" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                        <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Fire Protection and Life Safety Ch 7" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Fire Protection and Life Safety Ch 7" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                        <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Fire Service features of Buildings and Fire Protection Systems" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Fire Service features of Buildings and Fire Protection Systems" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                        <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Mail Center Security Guidelines" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Mail Center Security Guidelines" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>       
+                        <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Mass Notification Systems  Turnkey Design" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Mass Notification Systems  Turnkey Design" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                        <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Mechanical Engineering CH 5" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Mechanical Engineering CH 5" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                        <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Millimeter-Wave Radar Detection 2004" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Millimeter-Wave Radar Detection 2004" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                         <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="National CCTV Strategy" styleClass="download_box">      
+                                  <apex:param name="documentname" value="National CCTV Strategy" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                         <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="P25 Brochure" styleClass="download_box">      
+                                  <apex:param name="documentname" value="P25 Brochure" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                         <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Postal Service Form 1093" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Postal Service Form 1093" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                         <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Postal Service Form 1583" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Postal Service Form 1583" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                         <apex:commandLink action="{!documentId}" oncomplete="window.location.href='../servlet/servlet.FileDownload?file={!docId}';" value="Protecting your Employees and Securing your Mail Center" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Protecting your Employees and Securing your Mail Center" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                         <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Protective Design and Security implementation Guidelines" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Protective Design and Security implementation Guidelines" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                         <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Security Design Ch 8" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Security Design Ch 8" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                         <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Security Engineering Criteria and AT Unified Facility Criteria" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Security Engineering Criteria and AT Unified Facility Criteria" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                         <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Site Landscaping and Community Design Ch 2" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Site Landscaping and Community Design Ch 2" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                         <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Structural Engineering Ch 4" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Structural Engineering Ch 4" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                         <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Suspicious Package Response Checklist" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Suspicious Package Response Checklist" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                         <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Symbols for Traffic Control Layouts" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Symbols for Traffic Control Layouts" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                         <apex:commandLink action="{!documentId}" oncomplete="window.location.href='../servlet/servlet.FileDownload?file={!docId}';" value="Test Method for Vehicle Crash Testing of Perimeter Barriers and Gates" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Test Method for Vehicle Crash Testing of Perimeter Barriers and Gates" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                         <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="The Army Standard for Access Control Points_MEMO" styleClass="download_box">      
+                                  <apex:param name="documentname" value="The Army Standard for Access Control Points_MEMO" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                         <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Unified Facility Criteria, Selection and Application of Vehicle Barriers" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Unified Facility Criteria, Selection and Application of Vehicle Barriers" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+                         <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Walk-Through Metal Detector Standard for Law Enforcement and Corrections" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Walk-Through Metal Detector Standard for Law Enforcement and Corrections" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/><br/>
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- </apex:pageBlockSectionItem>
+               
+                </apex:pageBlockSection>-->
+      </apex:pageBlock> 
+    
+         
+                
+  </apex:form>
+
+
+
+
+ 
+</apex:page>

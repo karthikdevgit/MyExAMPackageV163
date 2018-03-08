@@ -1,0 +1,217 @@
+<apex:component controller="ExportAssessmentTemplateController" allowDML="false">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <title>Assessment Viewer</title>
+            <script src="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-1.10.2.js')}"/>
+            <script src="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-ui.min.js')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-ui.min.css')}"/>
+        </head>
+        
+        <div class="slds" ng-app="exportAssTempApp" ng-controller="exportAssTempCtrl" >
+            <form class="slds-form" >
+                <div class="slds-notify_container temp1" style="display:none;" >
+                    <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert">
+                        <span class="slds-assistive-text">Info</span>
+                        <h2>Please provide either Assessment template or Date range.</h2>
+                    </div>
+                </div>
+                <div class="slds-notify_container nameNotExist" style="display:none;" >
+                    <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert">
+                        <span class="slds-assistive-text">Info</span>
+                        <h2>The given Assessment Template Name is not exist.</h2>
+                    </div>
+                </div>
+                <div class="slds-card slds-m-top--x-small slds-m-bottom--x-large">
+                    <div class="slds-card__header slds-grid">
+                        <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <h2 class="slds-text-heading--small slds-truncate">Assessment Template Export (XML)</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-card__body slds-m-left--x-small slds-m-top--x-small slds-m-right--x-small tempHead">
+                        <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                            <tbody>
+                                <!-- for lookup assessment template selection starts-->
+                                <tr class="slds-hint-parent">
+                                    <td class="slds-size--1-of-4">
+                                        <label class="slds-form-element__label slds-text-heading--small" for="lookup1">Assessment Template</label>
+                                    </td>
+                                    <td class="slds-size--3-of-4" >
+                                        <div class="slds-lookup" data-select="multi" data-scope="single" data-typeahead="true">
+                                            <div class="slds-form-element">
+                                                
+                                                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right templateCls">
+                                                    <input id="lookup1" class="slds-input slds-size--1-of-2" type="text" ng-model="searchTemplateText" ng-change="searchfocus();" ng-blur="blurtemp();" ng-copy="copied();" ng-paste="pasted();" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-activedescendant="" autocomplete="off" />
+                                                </div>
+                                            </div>
+                                            <div class="slds-lookup__menu slds-size--1-of-2" role="listbox" ng-show="showAssTemp">
+                                                <ul class="slds-lookup__list" role="presentation">
+                                                    <li class="slds-lookup__item" ng-click="selectTemplate(assTemp);" ng-repeat="assTemp in assTempList  = ( assessmentTemplateList | filter:{ ExAM__Template_name__c : searchTemplateText })">
+                                                        <a role="option" > 
+                                                            {{assTemp.ExAM__Template_name__c}}
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- ends -->
+                                <tr class="slds-hint-parent">
+                                    <td class="slds-size--1-of-4">
+                                        <label class="slds-form-element__label slds-text-heading--small" for="date">Created date range</label>
+                                    </td>
+                                    <td class="slds-size--3-of-4">
+                                        <div class="slds-form-element">
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-input-has-icon slds-input-has-icon--right createdDatecls  slds-size--1-of-3">
+                                                    <input id="startDate" class="startDatepicker slds-input" ng-model="startDatepicker" type="text" placeholder="Pick a Start Date" label="Date Picker Label"/>
+                                                    <input id="hiddenfromDate" type="hidden"/>
+                                                    <label class="slds-label"> to </label>
+                                                    <input id="endDate" class="endDatepicker slds-input" ng-model="endDatepicker" type="text" placeholder="Pick a End Date" label="Date Picker Label"/>
+                                                    <input id="hiddentoDate" type="hidden"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td colspan="2">
+                                        <center>
+                                            <input class="slds-button slds-button--brand" type="button" value="Export Assessment Template" ng-click="validateData();"/>
+                                        </center>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div><!--end card body-->
+                </div>
+            </form>       
+        </div>       
+    <script>
+         
+        $(document).ready(function(){
+            
+            $(".startDatepicker").datepicker({
+                onSelect: function(selected) {
+                    $('[id$=hiddenfromDate]').val(selected);
+                    
+                    $(".endDatepicker").datepicker("option","minDate", selected)
+                }
+            });
+            $(".endDatepicker").datepicker({ 
+                onSelect: function(selected) {
+                    $('[id$=hiddentoDate]').val(selected);
+
+                    $(".startDatepicker").datepicker("option","maxDate", selected)
+                }
+            });
+        });
+           
+        $(function() {
+            $('.startDatepicker').datepicker();
+            $('.endDatepicker').datepicker();
+            
+        });
+        
+        var exportapp = angular.module('exportAssTempApp', []);
+        exportapp.controller('exportAssTempCtrl', function($scope,$timeout) {
+            $scope.assessmentTemplateList = [];
+            $scope.showAssTemp = false;
+            $scope.searchTemplateText = '';
+            $scope.selectedTemplateRec = {};
+            $scope.startDatepicker = '';
+            $scope.endDatepicker = '';
+            
+            if ('{!JSENCODE(assessmentTemplateJSON)}' != null && '{!JSENCODE(assessmentTemplateJSON)}' != '' && '{!JSENCODE(assessmentTemplateJSON)}' != 'null') {
+                $scope.assessmentTemplateList = JSON.parse(unescape('{!JSENCODE(assessmentTemplateJSON)}'));
+            }   
+            
+            $scope.blurtemp = function() {
+                $timeout(function(){
+                    $scope.showAssTemp = false;
+                },300);
+            }
+            
+            
+            $scope.selectTemplate = function(selectedTemp) {
+                $( ".nameNotExist" ).hide();
+                $scope.selectedTemplateRec = selectedTemp;
+                $scope.searchTemplateText = $scope.selectedTemplateRec.ExAM__Template_name__c;
+                
+            }
+            
+            $scope.searchfocus = function() {
+                if($scope.searchTemplateText.length > 0) { 
+                    $scope.selectedTemplateRec = {};
+                    $scope.showAssTemp=true; 
+                }
+            }
+            
+            $scope.copied = function(){
+            }
+            $scope.pasted = function(){
+                $scope.searchTemplateText = $scope.searchTemplateText;
+                if ( $scope.selectedTemplateRec.Id != null ){
+                    $scope.selectedTemplateRec = {};
+                }
+                
+            }
+            
+            $scope.validateData = function() {
+                
+                var isError = false;
+                $( ".temp1" ).hide();
+                $( ".nameNotExist" ).hide();
+                if(($('.startDatepicker').val() == null || $('.startDatepicker').val()== '') 
+                      && ($('.endDatepicker').val() == null || $('.endDatepicker').val() == '') 
+                      && ($scope.searchTemplateText == null || $scope.searchTemplateText == '')) {  
+                    $( ".temp1" ).show();
+                    isError = true;
+                } else if((($('.startDatepicker').val() != null && $('.startDatepicker').val() != '')  
+                             || ($('.endDatepicker').val() != null && $('.endDatepicker').val() != '' ))
+                             && $scope.searchTemplateText != null && $scope.searchTemplateText != '') { 
+                    $( ".temp1" ).show();
+                    isError = true;
+                } else {
+                    $( ".templateCls" ).removeClass('slds-has-error');
+                    $( ".templateCls" ).find(".temp1").css("display","none");
+                }
+                if ($scope.searchTemplateText == '' && angular.isUndefined($scope.selectedTemplateRec.Id) ) {
+                    $scope.selectedTemplateRec = {};
+                    isError = true;
+                }
+                if ($scope.searchTemplateText != '' && angular.isUndefined($scope.selectedTemplateRec.Id)) {
+                    var tempLen = $scope.assessmentTemplateList.length;
+                    for( var i=0; i<tempLen; i++ ){
+                        if ( $scope.assessmentTemplateList[i].ExAM__Template_name__c == $scope.searchTemplateText ){
+                            $scope.selectedTemplateRec = $scope.assessmentTemplateList[i];
+                            $(".nameNotExist").hide();
+                            isError = false;
+                            break;
+                        } else {
+                            isError = true;
+                            $( ".nameNotExist" ).show();
+                            
+                        }
+                    }             
+                }
+                if (!isError) {
+              
+                    if(angular.isDefined($scope.selectedTemplateRec.Id)) {
+                        window.open('/apex/ExAM__ExportAssessmentTemplateXML?startCreatedDate='+$('.startDatepicker').val()+'&endCreatedDate='+$('.endDatepicker').val()+'&asTempId='+$scope.selectedTemplateRec.Id,'_blank');
+                    } else {
+                        window.open('/apex/ExAM__ExportAssessmentTemplateXML?startCreatedDate='+$('.startDatepicker').val()+'&endCreatedDate='+$('.endDatepicker').val(),'_blank');
+                    }
+                    $scope.searchTemplateText = '';
+                    $scope.selectedTemplateRec = {};
+                    $scope.startDatepicker = '';
+                    $scope.endDatepicker = '';
+                }
+            }
+            
+        });
+    </script>  
+    </html>
+</apex:component>

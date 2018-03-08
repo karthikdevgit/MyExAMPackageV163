@@ -1,0 +1,6 @@
+<aura:event type="APPLICATION" access="public">
+    <aura:attribute name="action" type="String" access="public"/>
+    <aura:attribute name="message" type="String" access="public"/>
+    <aura:attribute name="type" type="String" access="public"/>
+    <aura:attribute name="time" type="Integer" access="public"/>
+</aura:event>

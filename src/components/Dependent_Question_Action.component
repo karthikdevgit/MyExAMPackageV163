@@ -1,0 +1,12 @@
+<apex:component >
+    <div class="slds-size--8-of-12">
+        <span style="font-style: italic;font-size: 12px;" ng-if="(nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c == 'Text' || nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c == 'Textarea') && nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Field_Length__c != null && nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Field_Length__c != ''"> {{nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Field_Length__c-response[nextDependentQuestion[eachQuestTemplateRec.Id].Id].length}} of {{nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Field_Length__c}} characters left</span>
+        <span style="font-style: italic;font-size: 12px;" ng-if="(nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c == 'Number') && nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Field_Length__c != null && nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Field_Length__c != ''"> {{nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Field_Length__c-response[nextDependentQuestion[eachQuestTemplateRec.Id].Id].length}} of {{nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Field_Length__c}} numbers left</span>
+        <span class="slds-form-element__help requiredMessage dependentReq{{eachQuestTemplateRec.Id}}" style="color:#C23934;display:none;">This field is required</span>
+        <span class="slds-form-element__help validateEmailMessage dependentReq{{eachQuestTemplateRec.Id}}" style="color:#C23934;display:none;">Invalid Email Address</span>
+        <span class="slds-form-element__help validatePhNumMessage dependentReq{{eachQuestTemplateRec.Id}}" style="color:#C23934;display:none;">Invalid Phone Number</span>
+        <span class="slds-form-element__help validateCurNumMessage dependentReq{{eachQuestTemplateRec.Id}}" style="color:#C23934;display:none;">Invalid Number</span>
+        <span class="slds-form-element__help fileUpload{{nextDependentQuestion[eachQuestTemplateRec.Id].Id}} fileUpload" style="color:#C23934;display:none;">Please Upload File</span>
+        <span class="slds-form-element__help fileSizeUpload{{nextDependentQuestion[eachQuestTemplateRec.Id].Id}} fileSizeUpload" id="fileSizeUpload{{nextDependentQuestion[eachQuestTemplateRec.Id].Id}}" style="color:#C23934;display:none;">Please attach a file less than 750 KB</span>
+    </div>
+</apex:component>

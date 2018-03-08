@@ -1,0 +1,54 @@
+<apex:page standardController="Visitor_Register__c" tabstyle="account" standardStylesheets="false" sidebar="false" recordSetVar="visRecords">
+  <style type="text/css">
+        .inputTextWidth { width: 350px; }
+    </style>
+    <apex:form id="visitorForm">
+        <br></br>
+        <apex:variable var="snum" value="{!1}"/> 
+         <TABLE BORDER="2" WIDTH="100%"   CELLPADDING="4" CELLSPACING="0" BORDERCOLOR="black">
+           <TR align="center" style="font-style:bold;">
+             <td colspan="7" style="font-style:bold;font-size:20px;padding:20px 0 20px 0px;"> VISITORS REGISTER</td>      
+           </TR> 
+           <TR align="center" style="font-style:bold;">
+                <TH>S.No. </TH>
+                <TH>DATE and TIME-IN </TH>
+                <TH>VISITOR NAME </TH>
+                <TH>BADGE NO. </TH>
+                <TH>REASON FOR VISIT</TH>
+                <TH>AUTHENTICATING OFFICIAL</TH>
+                <TH>DATE and TIME-OUT</TH>
+           </TR>
+             <apex:repeat value="{!visRecords}" var="a">
+           <TR>
+              <TD>{!snum}</TD>
+              <TD>{!a.Date_and_TimeIN__c}  </TD>        
+              <TD>
+              <apex:outputLink value="/{!a.Id}" target="_blank">{!a.Visitor__c} {!a.Visitor_Last_Name__c} </apex:outputLink> </TD>
+              <TD>{!a.Badge_No__c}</TD>
+              <TD>{!a.Person_Place_Visiting__c}</TD>
+              <TD>{!a.Authenticating_Official__c}</TD>
+              <TD>{!a.Date_and_Time_Out__c}</TD>
+             </TR>
+              <apex:variable var="snum" value="{!snum+1}"/>    
+             </apex:repeat>
+             <TR align="center" style="font-style:bold;">
+             <td colspan="7" style="font-style:bold;font-size:16px;padding:20px 0 20px 0px;"><!-- <apex:commandButton value="Save" action="{!Save}" id="button2"/>-->
+             <apex:commandButton value="Cancel" action="{!Cancel}" id="button1"/> 
+             
+             </td>   
+            
+           </TR>
+        </TABLE> 
+        <!--<apex:pageBlock >
+            <apex:pageBlockTable value="{!visRecords}" var="a">
+                <apex:column value="{!a.Date_and_TimeIN__c}"/>
+                <apex:column value="{!a.Visitor__c}"/>
+                <apex:column value="{!a.Badge_No__c}"/>
+                <apex:column value="{!a.Person_Place_Visiting__c}"/>
+                <apex:column value="{!a.Authenticating_Official__c}"/>
+                <apex:column value="{!a.Date_and_Time_Out__c}"/>
+            </apex:pageBlockTable>
+        </apex:pageBlock>-->
+    </apex:form>
+  
+</apex:page>

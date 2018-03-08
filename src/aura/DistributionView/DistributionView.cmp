@@ -1,0 +1,42 @@
+<aura:component access="public">
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <!-- doInit fired when wizardName changed -->
+    <aura:handler name="change" value="{!v.wizardName}" action="{!c.doInit}"/>
+    <!-- get Distribution record via event-->
+    <aura:handler name="selectedRecord" event="c:selectedRecordEvt" action="{!c.generateOptionsViewer}"/>
+    
+    <aura:attribute name="assessmentId" type="String" access="public" description="context assessment"/>
+    <aura:attribute name="wizardName" type="String" access="public" default="DistributionListView" description="context wizard name"/>
+    <aura:attribute name="distributionRd" type="Distribution__c" access="public" description="set as context record when selected from list view"/>
+    <aura:attribute name="emailDailyLtd" type="Map" access="public"/>
+    
+    <aura:registerEvent name="notificationEvent" type="c:notificationEvt"/>
+    
+    <lightning:layout >
+        <lightning:layoutItem size="12">
+            <div class="{!v.wizardName == 'DistributionListView' ? 'slds-p-vertical_medium slds-text-align_center slds-text-heading--medium' : 'slds-hide'}">
+                Today you can send {!v.emailDailyLtd.remaining} emails and you have already sent {!v.emailDailyLtd.max - v.emailDailyLtd.remaining}
+            </div>
+        </lightning:layoutItem>
+    </lightning:layout>
+    
+    <div aura:id="createCmp" class="editor-options-card">
+        
+    </div>
+    
+    <!--<div class="slds-m-around_medium">
+        <c:DistributionsToolBar wizardName="{!v.wizardName}"/>
+    </div>-->
+    
+    <div aura:id="spinner_container" class="slds-hide">
+        <div class="slds-spinner_container">
+            <div role="status" class="slds-spinner slds-spinner--medium slds-spinner--brand">
+                <span class="slds-assistive-text">Loading</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </div>
+    
+</aura:component>

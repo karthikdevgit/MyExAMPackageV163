@@ -1,0 +1,66 @@
+<apex:component >
+
+    <apex:attribute name="isPrimarySignature" type="Boolean" default="false" description="Renders Primary Signature Question"/>
+    <apex:attribute name="isDependentSignature" type="Boolean" default="false" description="Renders Dependent Signature Question"/>
+    <apex:attribute name="isDecisionTreeSignature" type="Boolean" default="false" description="Renders Decision Tree Signature Question"/>
+
+    <apex:outputPanel rendered="{!isPrimarySignature}">
+        <div ng-if="eachQuestTemplateRec.ExAM__Question_Type__c == 'Signature'">
+            <c:Primary_Question_Property />
+            <div style="padding-bottom:15px;" class="slds-grid slds-size--8-of-12 validateSignImage{{eachQuestTemplateRec.ExAM__Is_Mandatory__c}}">
+                <div class="slds-col slds-size--2-of-12">
+                    <button id="sign{{eachQuestTemplateRec.Id}}" class="slds-button slds-button--neutral validateSign" ng-click="openSignatureModal(eachQuestTemplateRec)" style="margin-top:10px;">Signature</button>
+                </div>
+                <div class="slds-col slds-size--3-of-12" style="margin-right: 20px;">
+                    <div class="slds-box slds-box--x-small slds-text-align--center slds-m-around--x-small" ng-if="signImage[eachQuestTemplateRec.Id] != null">
+                        <!--Sign Image object has Question Id -->
+                        <img class="signImage" ng-if = "signImage[eachQuestTemplateRec.Id].length < 19" ng-src="{{sourceURL}}{{signImage[eachQuestTemplateRec.Id]}}" height="200px" width="200px"/>       
+                        <!--Sign Image object has blob -->      
+                        <img class="signImage" ng-if = "signImage[eachQuestTemplateRec.Id].length > 18" ng-src="{{signImage[eachQuestTemplateRec.Id]}}" height="200px" width="200px"/>
+                    </div>
+                </div>
+                <div class="slds-col slds-size--7-of-12"/>
+            </div> 
+            <c:Primary_Question_Action />
+        </div>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!isDependentSignature}">
+        <div ng-if="nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c == 'Signature'">
+            <c:Dependent_Question_Property />
+            <div style="padding-bottom:15px;" class="slds-grid slds-size--8-of-12 validateSignImage{{nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Is_Mandatory__c}}">
+                <div class="slds-col slds-size--2-of-12">
+                    <button id="sign{{nextDependentQuestion[eachQuestTemplateRec.Id].Id}}" class="slds-button slds-button--neutral validateSign" ng-click="openSignatureModal(nextDependentQuestion[eachQuestTemplateRec.Id])" style="margin-top:10px;">Signature</button>
+                </div>
+                <div class="slds-col slds-size--3-of-12" style="margin-right: 20px;">
+                    <div class="slds-box slds-box--x-small slds-text-align--center slds-m-around--x-small" ng-if="signImage[nextDependentQuestion[eachQuestTemplateRec.Id].Id] != null">
+                        <!--Sign Image object has Question Id -->
+                        <img class="signImage" ng-if = "signImage[nextDependentQuestion[eachQuestTemplateRec.Id].Id].length < 19" ng-src="{{sourceURL}}{{signImage[nextDependentQuestion[eachQuestTemplateRec.Id].Id]}}" height="200px" width="200px"/>       
+                        <!--Sign Image object has blob -->      
+                        <img class="signImage" ng-if = "signImage[nextDependentQuestion[eachQuestTemplateRec.Id].Id].length > 18" ng-src="{{signImage[nextDependentQuestion[eachQuestTemplateRec.Id].Id]}}" height="200px" width="200px"/>
+                    </div>
+                </div>
+                <div class="slds-col slds-size--7-of-12"/>
+            </div> 
+            <c:Dependent_Question_Action />
+        </div>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!isDecisionTreeSignature}">
+        <div xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'Signature'">
+            <c:DecisionTree_Question_Property />
+            <div class="slds-modal__container" style="padding:0px;" ng-init="openDtSignatureModal(decisionTreeQuestion);">
+                <div class="slds-modal__content">
+                    <button class="slds-button slds-modal__close" style="top:-15px;right:-30px;color:black;" ng-click="clearSign()">
+                        <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                            <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#clear')}"></use>
+                        </svg>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <div class="slds-grid slds-grid--align-center">
+                        <canvas id="canvas{{decisionTreeQuestion.Id}}" style="border: 1px solid #A7C6FC; border-color:#ccc;" ng-click="canvasClickfun();"/>
+                    </div>
+                </div>                
+            </div>
+            <c:DecisionTree_Question_Action />
+        </div>
+    </apex:outputPanel>
+</apex:component>

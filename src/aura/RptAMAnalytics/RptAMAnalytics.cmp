@@ -1,0 +1,46 @@
+<aura:component implements="flexipage:availableForAllPageTypes" controller="AuraAMAnalyticsController" access="global">
+    
+    <ltng:require scripts="{!join(',', $Resource.amChart,
+                           $Resource.serial,
+                           $Resource.pie, 
+                           $Resource.lightJs)}" afterScriptsLoaded="{!c.scriptsLoaded}"/>
+    
+    
+    <aura:attribute name="amRptWthResponseByCriteria" type="Map" access="public"/>
+    <aura:attribute name="analyticsRptParams" type="Map" access="public"/>
+    <aura:attribute name="apexMethodName" type="String" access="public"/>
+    <aura:attribute name="chartType" type="String" access="public"/>
+    <aura:attribute name="title" type="String" access="public"/>
+    <aura:attribute name="menuItems" type="String" access="public"/>
+    <aura:attribute name="analyticResponses" type="String" access="public"/>
+    
+    <aura:registerEvent name="notificationEvent" type="c:notificationEvt"/>
+    
+    <lightning:card title="{#'Assignment Manager By '+v.title}">
+        
+        <aura:set attribute="actions">
+            <aura:if isTrue="{!v.title != 'Overall Status'}">
+                <lightning:buttonMenu variant="container" aura:id="menu" menuAlignment="right" alternativeText="Show menu" onselect="{! c.handleSelect }">
+                    <aura:iteration items="{!v.menuItems}" var="menuItem">
+                        <lightning:menuItem aura:id="actionMenuItems" label="{! menuItem.label }"
+                                            value="{! menuItem.value }" checked="{!v.analyticsRptParams.searchingCriteria == menuItem.value}"/>
+                    </aura:iteration>
+                </lightning:buttonMenu>
+            </aura:if>
+        </aura:set>
+        <div class="{!v.analyticResponses.length > 0 ? 'slds-hide' : 'slds-show slds-text-align--center'}">
+            No Data Yet!
+        </div>
+        <div class="slds-p-horizontal_small chartdiv" aura:id="chart">
+            
+        </div>
+        
+    </lightning:card>
+    
+    <div aura:id="loading" class="slds-hide">
+        <div class="spinnerContainer">
+            <lightning:spinner alternativeText="Loading" variant="brand" size="medium" />
+        </div>
+    </div>
+    
+</aura:component>

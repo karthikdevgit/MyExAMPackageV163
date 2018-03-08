@@ -1,0 +1,32 @@
+<apex:page sidebar="false" standardStylesheets="true" Controller="QuestionnaireFieldsReport" docType="html-5.0" tabStyle="Assessment_Development_Wizard__tab">
+    <!--<apex:include pageName="BannerTemplate"/> --> 
+    <meta name="viewport" content="width=device-width-5, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes;" />
+    <apex:pageMessages />
+    <style>
+        .maintext{text-align:center;
+        font-size:25px;}
+    </style>
+    <div class='Section1'>
+        <apex:form id="templateForm">
+            <p style="text-align:center;font-size:25px;"> 
+                <apex:outputText rendered="{!NOT(ISNULL(templateName))}" styleClass="maintext">{!templateName}</apex:outputText>
+                <apex:outputText rendered="{!NOT(ISNULL(groupName))}" style="">{!groupName}</apex:outputText>
+            </p>
+            <apex:pageBlock >
+                <apex:variable var="snum" value="{!1}"/>   
+                <apex:repeat value="{!sectionList}" var="section" > 
+                    <apex:pageBlockSection id="sectionBlock"  columns="1" title="{!snum}.  {!section.Name}" showHeader="true" >
+                        <apex:variable var="qnum" value="{!1}"/> 
+                        <apex:repeat value="{!section.questionList}" var="question" > 
+                            <b>{!qnum}. {!question.Name} </b>
+                            <apex:outputText value="{!question.subquestionname }" rendered="{!NOT(ISNULL(question.subquestionname ))}" style="color:blue;font-style:normal;padding-left:8px;"/> 
+                            <!-- <apex:outputText value="{!IF(ISNULL(question.responsename)),'No response','res'}" rendered="{!NOT(ISNULL(question.responsename))}" />-->
+                            <apex:variable var="qnum" value="{!qnum+1}"/> 
+                        </apex:repeat> 
+                        <apex:variable var="snum" value="{!snum+1}"/> 
+                    </apex:pageBlockSection>
+                </apex:repeat>
+            </apex:pageBlock> 
+        </apex:form>
+    </div>
+</apex:page>

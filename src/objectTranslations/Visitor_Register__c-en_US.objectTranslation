@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Visitor Register</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Visitor Register</value>
+    </caseValues>
+    <fields>
+        <label><!-- Assignment Manager --></label>
+        <name>Assignment_Manager__c</name>
+        <relationshipLabel><!-- Visitor Register --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Authenticating Official --></label>
+        <name>Authenticating_Official__c</name>
+    </fields>
+    <fields>
+        <label><!-- Badge No. --></label>
+        <name>Badge_No__c</name>
+    </fields>
+    <fields>
+        <label><!-- Date and Time-IN --></label>
+        <name>Date_and_TimeIN__c</name>
+    </fields>
+    <fields>
+        <label><!-- Date and Time-Out --></label>
+        <name>Date_and_Time_Out__c</name>
+    </fields>
+    <fields>
+        <label><!-- IP Address --></label>
+        <name>IP_Address__c</name>
+    </fields>
+    <fields>
+        <label><!-- Mobile Number --></label>
+        <name>Mobile_Number__c</name>
+    </fields>
+    <fields>
+        <help><!-- Administrative is Teacher Conference etc
+Commercial is Plumber, Cafeteria vendors
+Pickup kids
+Select Other for any other reasons --></help>
+        <label><!-- Reason for Visit --></label>
+        <name>Person_Place_Visiting__c</name>
+        <picklistValues>
+            <masterLabel>Administrative</masterLabel>
+            <translation><!-- Administrative --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Commercial</masterLabel>
+            <translation><!-- Commercial --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Other</masterLabel>
+            <translation><!-- Other --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Pickup</masterLabel>
+            <translation><!-- Pickup --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Volunteer</masterLabel>
+            <translation><!-- Volunteer --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Public Assessment --></label>
+        <name>Public_Assessment__c</name>
+        <relationshipLabel><!-- Visitor Register --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Question Template --></label>
+        <name>Question_Template__c</name>
+        <relationshipLabel><!-- Visitor Register --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Status --></label>
+        <name>Status__c</name>
+        <picklistValues>
+            <masterLabel>Completed</masterLabel>
+            <translation><!-- Completed --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>In Progress</masterLabel>
+            <translation><!-- In Progress --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Started</masterLabel>
+            <translation><!-- Started --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Visitor Last Name --></label>
+        <name>Visitor_Last_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Visitor First Name --></label>
+        <name>Visitor__c</name>
+    </fields>
+    <layouts>
+        <layout>Public Assessment</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Fields --></label>
+            <section>Fields</section>
+        </sections>
+        <sections>
+            <label><!-- System Information --></label>
+            <section>System Information</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Visitor Register Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <recordTypes>
+        <label><!-- Public Assessment --></label>
+        <name>Public_Assessment</name>
+    </recordTypes>
+    <recordTypes>
+        <label><!-- SMS Survey --></label>
+        <name>SMS_Survey</name>
+    </recordTypes>
+    <startsWith>Consonant</startsWith>
+    <workflowTasks>
+        <name>Visitor_Task</name>
+        <subject><!-- Visitor has registered please authenticateTask --></subject>
+    </workflowTasks>
+</CustomObjectTranslation>

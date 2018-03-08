@@ -1,0 +1,635 @@
+<apex:page controller="AssignmentGroupController" showHeader="false" sidebar="false">
+    <!--<apex:includescript value="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"/>
+    <script src="https://cdn.datatables.net/1.10.6/js/jquery.dataTables.min.js"></script>    -->
+    
+    <apex:includeScript value="{!URLFOR($Resource.dialog,'Jquery/jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.dialog,'Jquery/jquery.ui.touch-punch.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.dialog,'Jquery/jquery-ui.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.dialog,'Jquery/Modalboxjquery-ui.min.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.dialog,'Jquery/Modalboxjquery-ui.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.dialog,'Jquery/jquery-ui.css')}"/>
+    
+    
+    <script src="https://cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js" />
+    <link href="https://cdn.datatables.net/1.10.9/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+    <script src="../../soap/ajax/33.0/connection.js" type="text/javascript"></script>
+    <script src="../../soap/ajax/29.0/apex.js" type="text/javascript"></script>
+    
+    <apex:stylesheet value="{!$Resource.TabStyleSheet}"/>
+    <style>
+        .searchWaitingDivOpacity{
+            background:url("/img/loading32.gif")scroll no-repeat 46% 43% #fff;
+            top: 0;
+            height: 100%;
+            left: 0;
+            opacity: 0.8;
+            position: absolute;
+            width: 100%;
+            z-index: 1500;
+        }
+        .ui-widget-header .ui-icon {
+            background-image: url('https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/redmond/images/ui-icons_d8e7f3_256x240.png'); 
+        }
+        .bPageBlock {
+            background-color: white !important;
+        }
+        
+        
+    </style>
+    <div class="searchWaitingDivOpacity" style = "display:none;"></div>    
+    <apex:form >
+        <apex:outputPanel id="frm">
+        <apex:pageBlock id="theBlock"> 
+            <apex:pagemessages ></apex:pagemessages>
+            <div class="errorClass" style="display:none;" >
+                <h2 id="errMsg" style="color:red;"></h2>
+            </div>
+            <fieldset>
+                <legend>Create Assessment Group</legend><br/><br/>
+                    <table width="100%">
+                        <tr>
+                            <td style="font-size: 13px;border: 1px solid #A9A9A9;vertical-align: middle;" width="10%"  align="left">  <apex:outputText style="font-weight:bold;" value="Object for Group"></apex:outputText></td>
+                            <td>
+                                <apex:selectList id="selectedObjId" value="{!selectedObj}" size="1" style="background-color: #DDDDDD;font-size: 13px;height: 25px;" onchange="selectedValue(this.value);">
+                                    <apex:selectOptions value="{!ObjectGroup}"/>
+                                </apex:selectList>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding-top:10px">  <apex:inputField style="width: 200px;height: 25px;font-size: 13px;" value="{!assGroup.Name}" html-placeholder="Create Assessment Group Name"/></td>                    
+                            <td style="padding-top:10px"><apex:commandButton style="background-color: #DDDDDD;height: 30px;width: 100px;" value="Save" action="{!saveAssessmentGroup}" onclick="$('.searchWaitingDivOpacity').show();" oncomplete="$('.searchWaitingDivOpacity').hide();" reRender="frm"/></td>
+                        </tr>
+                    </table>
+                        <!--<span>
+                            <apex:outputText style="font-weight:bold;width:200px"  value="Object for Group"></apex:outputText>
+                        </span>
+                        <span>
+                            <apex:selectList id="selectedObjId" value="{!selectedObj}" size="1" onchange="selectedValue(this.value);">                            
+                                <apex:selectOptions value="{!ObjectGroup}"/>
+                            </apex:selectList>
+                        </span><br/><br/>
+                        <div>
+                            <apex:inputField value="{!assGroup.Name}" html-placeholder="Create Assessment Group Name"/>
+                        </div>
+                        <div>    
+                            <apex:commandButton value="Save" action="{!saveAssessmentGroup}" onclick="$('.searchWaitingDivOpacity').show();" oncomplete="$('.searchWaitingDivOpacity').hide();" reRender="frm"/>                        
+                        </div>-->
+                    <br/><br/>
+            </fieldset><br/>
+            <fieldset>
+                <legend>Manage Assessment Group</legend><br/><br/>
+                    <table>
+                        <tr>
+                            <td style="font-size: 13px; border: 1px solid #A9A9A9; vertical-align: middle; width: 200px;font-weight: bold;">
+                                <apex:outputText style="font-weight:bold;" value="Select Assessment Group"></apex:outputText>
+                            </td>
+                            <td>
+                                <apex:selectList id="selectedGroupId" styleClass="selectedGroupClass" style="background-color: #DDDDDD;font-size: 13px;height: 25px;" value="{!selectedGroup}" size="1" onchange="changeGroup(this.value);">                            
+                                    <apex:selectOptions value="{!groupOptions}"/>
+                                </apex:selectList>
+                            </td>
+                            <td>
+                                <apex:commandButton onclick="showCreatedRecord();" style="background-color: #DDDDDD;height: 26px;width: 100px;" value="Manage" reRender="none"/>
+                                <apex:commandButton onclick="showfileUpload();" style="background-color: #DDDDDD;height: 26px;" value="Upload Assessable Record" reRender="none"/>
+                            </td>
+                        </tr>
+                    </table><br/>
+                    <apex:outputText style="font-weight:bold;" value="Add Records to the Assessment Group"></apex:outputText><br/><br/>
+                        <table border="1" cellspacing="5" cellpadding="5">
+                            <tr>
+                                <!--<td>
+                                    <apex:outputPanel style="cursor:pointer"> 
+                                        <b>&lt;&lt;</b>                                             
+                                    </apex:outputPanel>
+                                </td>-->
+                                <td>
+                                    <apex:outputPanel onclick="methodOneInJavascript('All');" style="cursor:pointer"> 
+                                        <apex:param value="All" name="All" assignTo="{!selectrecByString}"/>  
+                                        <b>All</b>                                         
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel onclick="methodOneInJavascript('A');" style="cursor:pointer"> 
+                                        <apex:param value="A" name="A" assignTo="{!selectrecByString}"/>  
+                                        <b>A</b>                                         
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel onclick="methodOneInJavascript('B');" style="cursor:pointer"> 
+                                        <apex:param value="B" name="B" assignTo="{!selectrecByString}"/>  
+                                        <b>B</b>                                         
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel onclick="methodOneInJavascript('C')" style="cursor:pointer"> 
+                                        <apex:param value="C" name="C" assignTo="{!selectrecByString}"/>  
+                                        <b>C</b>                                         
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel onclick="methodOneInJavascript('D')" style="cursor:pointer"> 
+                                        <apex:param value="D" name="D" assignTo="{!selectrecByString}"/>  
+                                        <b>D</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel onclick="methodOneInJavascript('E')" style="cursor:pointer"> 
+                                        <apex:param value="E" name="E" assignTo="{!selectrecByString}"/>  
+                                        <b>E</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel onclick="methodOneInJavascript('F')" style="cursor:pointer"> 
+                                        <apex:param value="F" name="F" assignTo="{!selectrecByString}"/>  
+                                        <b>F</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel onclick="methodOneInJavascript('G')" style="cursor:pointer"> 
+                                        <apex:param value="G" name="G" assignTo="{!selectrecByString}"/>  
+                                        <b>G</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel onclick="methodOneInJavascript('H')" style="cursor:pointer"> 
+                                        <apex:param value="H" name="H" assignTo="{!selectrecByString}"/>  
+                                        <b>H</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel onclick="methodOneInJavascript('I')" style="cursor:pointer"> 
+                                        <apex:param value="I" name="I" assignTo="{!selectrecByString}"/>  
+                                        <b>I</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel onclick="methodOneInJavascript('J')" style="cursor:pointer"> 
+                                        <apex:param value="J" name="J" assignTo="{!selectrecByString}"/>  
+                                        <b>J</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel onclick="methodOneInJavascript('K')" style="cursor:pointer"> 
+                                        <apex:param value="K" name="K" assignTo="{!selectrecByString}"/>  
+                                        <b>K</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel onclick="methodOneInJavascript('L')" style="cursor:pointer"> 
+                                        <apex:param value="L" name="L" assignTo="{!selectrecByString}"/>  
+                                        <b>L</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel onclick="methodOneInJavascript('M')" style="cursor:pointer"> 
+                                        <apex:param value="M" name="M" assignTo="{!selectrecByString}"/>  
+                                        <b>M</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel onclick="methodOneInJavascript('N')" style="cursor:pointer"> 
+                                        <apex:param value="N" name="N" assignTo="{!selectrecByString}"/>  
+                                        <b>N</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel onclick="methodOneInJavascript('O')" style="cursor:pointer"> 
+                                        <apex:param value="O" name="O" assignTo="{!selectrecByString}"/>  
+                                        <b>O</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td>                                    
+                                    <apex:outputPanel onclick="methodOneInJavascript('P')" style="cursor:pointer"> 
+                                        <apex:param value="P" name="P" assignTo="{!selectrecByString}"/>  
+                                        <b>P</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel onclick="methodOneInJavascript('Q')" style="cursor:pointer"> 
+                                        <apex:param value="Q" name="Q" assignTo="{!selectrecByString}"/>  
+                                        <b>Q</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel onclick="methodOneInJavascript('R')" style="cursor:pointer"> 
+                                        <apex:param value="R" name="R" assignTo="{!selectrecByString}"/>  
+                                        <b>R</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel onclick="methodOneInJavascript('S')" style="cursor:pointer"> 
+                                        <apex:param value="S" name="S" assignTo="{!selectrecByString}"/>  
+                                        <b>S</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel onclick="methodOneInJavascript('T')" style="cursor:pointer"> 
+                                        <apex:param value="T" name="T" assignTo="{!selectrecByString}"/>  
+                                        <b>T</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel onclick="methodOneInJavascript('U')" style="cursor:pointer"> 
+                                        <apex:param value="U" name="U" assignTo="{!selectrecByString}"/>  
+                                        <b>U</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel onclick="methodOneInJavascript('V')" style="cursor:pointer"> 
+                                        <apex:param value="V" name="V" assignTo="{!selectrecByString}"/>  
+                                        <b>V</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel onclick="methodOneInJavascript('W')" style="cursor:pointer"> 
+                                        <apex:param value="W" name="W" assignTo="{!selectrecByString}"/>  
+                                        <b>W</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                <apex:outputPanel onclick="methodOneInJavascript('X')" style="cursor:pointer"> 
+                                        <apex:param value="X" name="X" assignTo="{!selectrecByString}"/>  
+                                        <b>X</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel onclick="methodOneInJavascript('Y')" style="cursor:pointer"> 
+                                        <apex:param value="Y" name="Y" assignTo="{!selectrecByString}"/>  
+                                        <b>Y</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel onclick="methodOneInJavascript('Z')" style="cursor:pointer"> 
+                                        <apex:param value="Z" name="Z" assignTo="{!selectrecByString}"/>  
+                                        <b>Z</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <td><apex:outputPanel onclick="methodOneInJavascript('#')" style="cursor:pointer"> 
+                                        <apex:param value="I" name="#" assignTo="{!selectrecByString}"/>  
+                                        <b>#</b>
+                                    </apex:outputPanel>
+                                </td>
+                                <!--<td>
+                                    <apex:outputPanel style="cursor:pointer"> 
+                                        <b>&gt;&gt;</b>                                       
+                                    </apex:outputPanel>
+                                </td>-->
+                            </tr>
+                        </table>
+                        <br/>
+                        
+                        <!--<table><tr><td style="height: 25px; border: 1px solid #A9A9A9;"><apex:inputCheckbox value="{!isTempGroup }" style="margin-top: 6px;"/></td><td style="font-size: 13px; border: 1px solid #A9A9A9; vertical-align: middle; font-weight: bold;"> <b>Temporary Group (Group will be deleted after 90 days)</b></td></tr></table>-->
+                        <apex:outputPanel id="resultPanelId">
+                                <span class="outputClass"/>
+                            </apex:outputPanel>
+                        <br/>
+                        <apex:commandButton style="background-color: #DDDDDD;height: 30px;width: 300px;" value="Save Selected Records to Assessment Group" action="{!saveSelectedRecords}" onclick="$('.searchWaitingDivOpacity').show();" oncomplete="$('.searchWaitingDivOpacity').hide();" reRender="frm"/>
+                    
+                <br/><br/>
+            </fieldset>
+            
+        </apex:pageBlock>
+        
+        <div id="dialog-message" style="display:none" title="Information Message">
+          <p>
+            <span class="ui-icon ui-icon-circle-check" style="float:left; margin:0 7px 50px 0;"></span>
+            <apex:outputText value="{!msgResult}"></apex:outputText><br/>
+          </p>
+        </div>
+        <apex:actionFunction name="processSelectedFunc" action="{!processSelected}" reRender="none" oncomplete="getRecords('{!selectedRecords}','{!totalRecords}');">
+            <apex:param name="idsVal" value=""/>
+            <apex:param name="totelRec" value=""/>
+        </apex:actionFunction>
+        <apex:actionFunction name="selectedValue2" action="{!changeObject}" reRender="frm" oncomplete="$('.searchWaitingDivOpacity').hide();">
+            <apex:param name="selectedObjectAPIName" value=""/>
+        </apex:actionFunction>
+        
+        </apex:outputPanel>
+        <div class="dialog" style="display:none;" id="allrecordsId">  
+            <apex:sectionHeader title="Please Select Record"/>
+                        <br/>
+            
+            <!-- Display search results -->
+                  <apex:outputpanel id="Contactlist">
+                        <div class="sobjectRecordsDiv"> </div>
+                        <br/><br/>
+                  </apex:outputpanel>
+            <!-- End of search results -->
+            <!-- Commandbutton to proceed to next screen -->
+              <div style="position:relative;left:75px;">
+                  <!--<apex:commandButton value="Selected Records" onclick="selectedId();" reRender="none"/>-->
+                  <input type = "button" value="Select Records" style="display:none" class="selectRecordbtn" onclick="selectedId();"/>
+              </div>
+            <!-- End of Commandbutton -->
+        </div>
+        <div class="showRecordsDialog" style="display:none;" id="createdRecordsList">
+            <!-- Display created record display -->
+              <apex:outputPanel id="displayAssessmentGroupRecordsId">
+                  <div class="displayAssessmentGroupRecordsDiv"> </div>
+                  <br/><br/>        
+              </apex:outputPanel>  
+            <!-- End of Created record display --->
+        </div>
+        <div class="showFileUploadDialog" style="display:none;text-align:center;" id="fileUploadId">
+            <!-- Display Assessable file upload display --><br/><br/>
+              <apex:outputPanel id="fileUploadPanelId">
+                  <input type="file" accept=".csv" id="assessableRecordId" onchange='openFile(event)'/>
+                  <input type="button" onclick="createAssessmentGroupJunction();" value="Save to Assessment Group"/>
+                  <br/><br/>      
+                  <a href="javascript:void(0);" onclick="downloadSampleCSV();" style="cursor:hand;margin-left:-360px;">Sample File</a>  
+              </apex:outputPanel>  
+            <!-- End of Assessable file upload --->
+        </div>
+        <apex:actionFunction name="uploadAssessment" action="{!saveRecordwithUploadAssessment}" reRender="frm" oncomplete="aftercompleteUpload();">
+            <apex:param name="attName" value=""/>
+            <apex:param name="attBlob" value=""/>
+        </apex:actionFunction>    
+    </apex:form>
+        
+    <script>
+        $(document).ready( function() {
+             $('.dialog').dialog({width: 650,height:400,modal:true,title: 'Select Records' });
+             $(".dialog").dialog('close');
+             
+             $('.showRecordsDialog').dialog({width: 650,height:400,modal:true,title: 'Manage Assessment Records' });
+             $(".showRecordsDialog").dialog('close');
+             $('.showFileUploadDialog').dialog({width: 650,height:200,modal:true,title: 'Assessable Record Upload' });
+             $(".showFileUploadDialog").dialog('close');
+        });
+        
+        var selectedObjVal = selectedGrpVal = '';
+        function selectedValue(selectedval) {
+            $('.searchWaitingDivOpacity').show();
+            selectedObjVal = selectedval;
+            selectedValue2(selectedObjVal);
+        }
+        function changeGroup(selectGrp) {
+            selectedGrpVal = selectGrp;
+        }
+        
+        function methodOneInJavascript(startStr){
+            $('.searchWaitingDivOpacity').show();
+            $('.sobjectRecordsDiv').html('');
+            //$(".dialog").dialog('destroy');
+            //$('.dialog').dialog({width: 650,height:400,modal:true,title: 'Select Records' });
+            $(".dialog").dialog('open');
+            $('.searchWaitingDivOpacity').show();     
+            selectedGrpVal = $('.selectedGroupClass').val(); 
+            ExAM.AssignmentGroupController.getRecords(selectedObjVal, startStr, selectedGrpVal, '{!objectNameAPIwithAMfieldNameAPIMap}', function(result, event) {
+                if (event.status) {
+                    if( typeof JSON.parse(result) == 'string'){
+                        $('.errorClass').css('display','');
+                        $('#errMsg').text(JSON.parse(result));
+                        $('.searchWaitingDivOpacity').hide();
+                        $(".dialog").dialog('close');
+                    } else {
+                        var output = $.parseJSON(result);
+                        var tableString = '';
+                        tableString += '<table cellspacing="10" border="0" class="sobjectRecords"><thead><tr class="headerRow"><th class="headerRow" width="20%">';
+                        tableString += '<input type="checkbox" onclick="checkAll(this)"></input>';
+                        tableString += '</th><th class="headerRow">Name</th></tr></thead><tbody class="dataRow">';
+                        for (i = 0; i < output.length; i++) { 
+                            var recordName = output[i].Name;
+                            if (recordName == null) {
+                                recordName = output[i].CaseNumber;
+                            }
+                            tableString += '<tr class="dataRow"><td class="dataCell"><input class="recordCheckbox" id="selectLine1" type="checkbox" value="'+output[i].Id+'"></input></td><td class="dataCell">'+recordName+'</td></tr>';
+                        }
+                        tableString += '</tbody></table>';
+                        
+                        tableNoRecord = '<table cellspacing="10" border="0" class="sobjectRecords"><thead><tr class="headerRow"><th></th><th class="headerRow">Name</th></tr></thead><tbody><tr><td></td><td>No Record Found</td></tr></tbody></table>';
+                        if (output.length > 0 ) {
+                            $('.sobjectRecordsDiv').append(tableString);
+                            $('.selectRecordbtn').css('display','');
+                            $('.selectRecordbtn').val('Select Records');
+                        } else {
+                            $('.sobjectRecordsDiv').append(tableNoRecord);
+                            $('.selectRecordbtn').css('display','');
+                            $('.selectRecordbtn').val('Close');
+                        }
+                        $('.sobjectRecords').DataTable(
+                            {    "bPaginate": false
+                            }
+                        );
+                        $('.searchWaitingDivOpacity').hide();
+                    }
+                } else {
+                    alert(event.message);
+                }
+            
+            
+                },{escape: false}
+            );
+            
+            //$('.searchWaitingDivOpacity').hide();
+
+                   
+            return false;
+        }
+        function getRecords(selectedRec, totalRec) {
+            $('.outputClass').text(' You have selected '+selectedRec+' of '+totalRec);
+            $('.searchWaitingDivOpacity').hide();
+        }
+        function checkAll(cb){
+           var inputElem = $('.recordCheckbox');
+           for(var i=0;i<inputElem.length;i++)
+             {
+                     if(inputElem[i].id.indexOf("selectLine1")!=-1)
+                           inputElem[i].checked = cb.checked;
+              }
+        }
+        function selectedId() {
+            
+            var ids = '';
+            var cBoxLen = $(".recordCheckbox:checked").length;
+            $('.searchWaitingDivOpacity').show();
+            totelRec = $(".recordCheckbox").length;
+            if(cBoxLen != 0) {
+                $('.recordCheckbox:checked').each(function(){
+                    if($(this).val() != '') {
+                        ids += $(this).val()+',';
+                    }
+                });
+                ids = ids.substring(0,ids.length-1);
+                processSelectedFunc(ids,totelRec);
+            } else { 
+                $('.searchWaitingDivOpacity').hide(); 
+            }     
+            $('.dialog').dialog('close');
+            return false;    
+        }
+        
+        function showfileUpload() {
+            $(".showFileUploadDialog").dialog('open');
+        }
+        
+        
+        var openFile = function (event) {
+        }
+        var maxFileSize = 725000;
+        var maxStringSize = 1000000;    //Maximum String size is 1,000,000 characters
+        
+        function aftercompleteUpload() {
+            $('.showFileUploadDialog').dialog('close');
+            $('.searchWaitingDivOpacity').hide();
+            document.getElementById("assessableRecordId").value = "";
+        }
+        
+        function downloadSampleCSV(){
+            var data = ['0033600000EZEbB','0033600000EZEbE'];
+            var csv = 'ID\n';
+            data.forEach(function(row) {
+                    csv += row;
+                    csv += "\n";
+            });
+            var hiddenElement = document.createElement('a');
+            hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+            hiddenElement.target = '_blank';
+            hiddenElement.download = 'Sample.csv';
+            hiddenElement.click();
+        }
+        
+        function createAssessmentGroupJunction() {
+            var file = document.getElementById('assessableRecordId').files[0];
+            $('.searchWaitingDivOpacity').show();
+            if(file != undefined) {                
+                if(file.size <= maxFileSize) {
+                    attachmentName = file.name;
+                    var fileReader = new FileReader();
+                    fileReader.onloadend = function(){
+                        attachment = window.btoa(fileReader.result);  //Base 64 encode the file before sending it
+                        positionIndex=0;
+                        fileSize = attachment.length;
+                        doneUploading = false;
+                        if(fileSize < maxStringSize) {
+                            uploadAssessment(attachmentName , attachment );                                 
+                        } else {
+                            $('.searchWaitingDivOpacity').hide();
+                            alert("file string length too larg size");
+                        }
+                    }
+                    fileReader.onerror = function(e) {
+                        $('.searchWaitingDivOpacity').hide();
+                        alert("There was an error reading the file.  Please try again.");
+                    }
+                    fileReader.onabort = function(e) {
+                        $('.searchWaitingDivOpacity').hide();
+                        alert("There was an error reading the file.  Please try again.");
+                    }
+                    fileReader.readAsBinaryString(file);  //Read the body of the file
+                } else {
+                    $('.searchWaitingDivOpacity').hide();
+                }
+            } else {
+                $('.searchWaitingDivOpacity').hide();
+                alert("You must choose a file before trying to upload it");
+                
+            }
+        }
+        
+        function showCreatedRecord() {
+            selectedGrpVal = $('.selectedGroupClass').val();
+            $('.searchWaitingDivOpacity').show();
+            $('.displayAssessmentGroupRecordsDiv').html('');
+            
+            if (selectedObjVal != null && selectedObjVal != '' && selectedGrpVal != null && selectedGrpVal != '') {
+                $(".showRecordsDialog").dialog('open');
+                ExAM.AssignmentGroupController.getCreatedRecords(selectedObjVal, selectedGrpVal,'{!objectNameAPIwithAMfieldNameAPIMap}', function(result, event) {
+                    if (event.status) {
+                        if(result.length > 0) {
+                            if(result[0].agjId == 'error' ){
+                                $('.errorClass').css('display','');
+                                $('#errMsg').text(result[0].agjName);
+                                $('.searchWaitingDivOpacity').hide();
+                                $(".showRecordsDialog").dialog('close'); 
+                            } else {
+                                var output = result;
+                                var tableString = '';
+                                tableString += '<table id="ManagedRecord" cellspacing="10" border="0" class="sobjectRecords2"><thead><tr class="headerRow">';
+                                tableString += '<th class="headerRow" width="20%">Action</th>';
+                                tableString += '<!--<th class="headerRow" width="20%">Name </th>-->';
+                                tableString += '<th class="headerRow">Assessable record</th>';
+                                tableString += '<th class="headerRow">Is converted</th></tr></thead><tbody class="dataRow">';
+                                for (i = 0; i < output.length; i++) { 
+                                    tableString += '<tr class="dataRow" id="agj'+output[i].agjId+'">';
+                                    if (output[i].Is_convered_to_Assignment_Manager) {
+                                        tableString += '<td></td>';
+                                    } else {
+                                        tableString += '<td><a href="#" style="color:#015ba7" onclick="deleteRec(\''+output[i].agjId+'\');">Del</a></td>';
+                                    }
+                                    tableString += '<!--<td class="dataCell"><a href="/'+output[i].agjId+'" target="_blank">'+output[i].agjName+'</a></td>-->';
+                                    tableString += '<td class="dataCell"><a href="/'+output[i].assessableObjectFieldIdValue+'" target="_blank">'+output[i].assessableObjectFieldNameValue+'</a></td>';
+                                    if (output[i].Is_convered_to_Assignment_Manager != null && output[i].Is_convered_to_Assignment_Manager) {
+                                        tableString += '<td class=" dataCell  booleanColumn"><img src="/img/checkbox_checked.gif" alt="Checked" width="21" height="16" class="checkImg" title="Checked"/></td>';
+                                    } else {
+                                        tableString += '<td class=" dataCell  booleanColumn"><img src="/img/checkbox_unchecked.gif" alt="Not Checked" width="21" height="16" class="checkImg" title="Not Checked"/></td>';                                
+                                    }
+                                    tableString += '</tr>';
+                                }
+                                tableString += '</tbody></table>';
+                                
+                                tableNoRecord = '<table cellspacing="10" border="0" class="sobjectRecords_2"><thead><tr class="headerRow"><th></th><th class="headerRow">Name</th></tr></thead><tbody><tr><td></td><td>No Record Found</td></tr></tbody></table>';
+                                if (output.length > 0 ) {
+                                    $('.displayAssessmentGroupRecordsDiv').append(tableString);
+                                    $('.selectRecordbtn').css('display','');
+                                    $('.selectRecordbtn').val('Select Records');
+                                } else {
+                                    $('.displayAssessmentGroupRecordsDiv').append(tableNoRecord);
+                                    $('.selectRecordbtn').css('display','');
+                                    $('.selectRecordbtn').val('Close');
+                                }
+                                $('.sobjectRecords_2').DataTable(
+                                    {  "bPaginate": false
+                                    }
+                                );
+                                $('.sobjectRecords2').DataTable(
+                                    {  "bPaginate": false,
+                                        "dom": '<"bottom"flp><"clear">'
+                                    }
+                                );
+                                $('.searchWaitingDivOpacity').hide();  
+                            }  
+                        } else {
+                            $('.searchWaitingDivOpacity').hide();
+                            $(".showRecordsDialog").dialog('close'); 
+                            alert('No records in this group');
+                        }                    
+                    } else {
+                        $('.searchWaitingDivOpacity').hide();
+                        alert(event.message);
+                    }
+                
+                
+                    },{escape: false}
+                );
+                
+            } else {
+                alert ('No records found');
+                $('.searchWaitingDivOpacity').hide();
+            }
+        }
+        function deleteRec(assessmentJunctionRecId) {
+            var temp = 'table#ManagedRecord #agj'+assessmentJunctionRecId;
+            var deleteConfirm = confirm("Are you sure?");
+            if (deleteConfirm == true) {
+                ExAM.AssignmentGroupController.deleteAssessmentJunctionRecord(assessmentJunctionRecId, function(result, event) {
+                    if (event.status) {
+                        alert('Record deleted successfully');
+                        $(temp).remove();
+                    } else {
+                        alert(event.message);
+                    }
+                });
+            } else {
+                return false;
+            }
+        }
+    </script>
+    <style>
+        #recSelectId table thead{
+            display:none;
+        }
+        
+    </style>
+
+</apex:page>

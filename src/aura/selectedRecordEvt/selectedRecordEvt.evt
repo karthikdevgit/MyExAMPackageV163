@@ -1,0 +1,3 @@
+<aura:event type="COMPONENT" access="public">
+    <aura:attribute name="distributionRd" type="Map" access="public"/>
+</aura:event>

@@ -1,0 +1,86 @@
+<apex:component >
+
+    <apex:attribute name="isPrimaryCBox" type="Boolean" default="false" description="Renders Primary Checkbox or MultiselectPicklist Question"/>
+    <apex:attribute name="isDependentCBox" type="Boolean" default="false" description="Renders Dependent Checkbox or MultiselectPicklist Question"/>
+    <apex:attribute name="isDecisionTreeCBox" type="Boolean" default="false" description="Renders Decision Tree Checkbox or MultiselectPicklist Question"/>
+
+    <apex:outputPanel rendered="{!isPrimaryCBox}">
+        <div ng-if="eachQuestTemplateRec.ExAM__Question_Type__c == 'Checkbox' || eachQuestTemplateRec.ExAM__Question_Type__c == 'MultiselectPicklist'">
+            <c:Primary_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <div class="slds-size--8-of-12">
+                    <div ng-if="eachQuestTemplateRec.ExAM__Question_Type__c == 'Checkbox'">
+                        <label class="slds-checkbox">
+                            <input type="checkbox" ng-model="response[eachQuestTemplateRec.Id]" ng-init="hasCheckboxAnswered(eachQuestTemplateRec.Id)"
+                                   class="validatecheckbox{{eachQuestTemplateRec.ExAM__Is_Mandatory__c}}"/>
+                            <span class="slds-checkbox--faux"></span>
+                            <span class="slds-form-element__label"></span>
+                        </label>
+                    </div>
+                    <div ng-if="eachQuestTemplateRec.ExAM__Question_Type__c == 'MultiselectPicklist'">
+                        <label class="slds-checkbox" ng-repeat="option in splitOptions(eachQuestTemplateRec) track by $index">
+                            <input type="checkbox" ng-model="response[eachQuestTemplateRec.Id][option]"
+                                   class="validatecheckbox{{eachQuestTemplateRec.ExAM__Is_Mandatory__c}}"/> 
+                            <span class="slds-checkbox--faux"></span>
+                            <span class="slds-form-element__label">{{option}}</span>
+                        </label>
+                    </div>
+                    <c:Primary_Question_Action />
+                </div>
+            </div>
+        </div>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!isDependentCBox}">
+        <div ng-if="nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c == 'Checkbox' || nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c == 'MultiselectPicklist'">
+            <c:Dependent_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <div class="slds-size--8-of-12">
+                    <div ng-if="nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c == 'Checkbox'">
+                        <label class="slds-checkbox">
+                            <input type="checkbox" ng-model="response[nextDependentQuestion[eachQuestTemplateRec.Id].Id]"
+                                   ng-init="response[nextDependentQuestion[eachQuestTemplateRec.Id].Id]=false"
+                                   class="validatecheckbox{{nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Is_Mandatory__c}}"/>
+                            <span class="slds-checkbox--faux"></span>
+                            <span class="slds-form-element__label"></span>
+                        </label>
+                    </div>
+                    <div ng-if="nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c == 'MultiselectPicklist'">
+                        <label class="slds-checkbox" ng-repeat="option in splitOptions(nextDependentQuestion[eachQuestTemplateRec.Id]) track by $index">
+                            <input type="checkbox" ng-model="response[nextDependentQuestion[eachQuestTemplateRec.Id].Id][option]"
+                                   class="validatecheckbox{{nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Is_Mandatory__c}}"/> 
+                            <span class="slds-checkbox--faux"></span>
+                            <span class="slds-form-element__label">{{option}}</span>
+                        </label>
+                    </div>
+                    <c:Dependent_Question_Action />
+                </div>
+            </div>
+        </div>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!isDecisionTreeCBox}">
+        <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'Checkbox' || decisionTreeQuestion.ExAM__Question_Type__c == 'MultiselectPicklist'">
+            <c:DecisionTree_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <div class="slds-size--8-of-12">
+                    <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'Checkbox'">
+                        <label class="slds-checkbox">
+                            <input type="checkbox" ng-model="DecisionTreeresponse[decisionTreeQuestion.Id]"/>
+                            <span class="slds-checkbox--faux"></span>
+                            <span class="slds-form-element__label"></span>
+                        </label>
+                    </div>
+                    <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'MultiselectPicklist'">
+                        <label class="slds-checkbox" ng-repeat="option in splitOptions(decisionTreeQuestion) track by $index">
+                            <input type="checkbox" ng-model="DecisionTreeresponse[decisionTreeQuestion.Id][option]"/> 
+                            <span class="slds-checkbox--faux"></span>
+                            <span class="slds-form-element__label">{{option}}</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </apex:outputPanel>
+
+</apex:component>

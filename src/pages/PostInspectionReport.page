@@ -1,0 +1,19 @@
+<apex:page standardController="IssueRequest_Life_Cycle__c"  standardStylesheets="false" sidebar="false"  id="thePage" docType="html-5.0" tabstyle="report"> 
+<meta name="viewport" content="width=device-width-5, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes;" />
+ <apex:form id="templateForm" style="bgcolor:#EEEEEE;border-color:#666666;" >
+   <apex:pageMessages ></apex:pageMessages>
+   <div style="margin-right:3px;margin-left:3px;text-align:center;font-size:18px;padding:10px 0 10px 0px;font-style:bold;" >
+          <apex:outputText value="Post Inspection Report"/>
+      </div>
+      <apex:pageBlock >
+      <apex:outputText value="Inspection id:" style="font-style:bold;padding-right:10px;padding-top:5px;padding-bottom:5px"/>
+      <apex:outputField value="{!IssueRequest_Life_Cycle__c.id}"/> <br/>
+      Facility Name : {!IssueRequest_Life_Cycle__c.Facility_Name__r.name}<br/>
+     
+      Assessment Form Completion : {!IssueRequest_Life_Cycle__c.Assessment_Form_Completion__c}<br/>
+      </apex:pageBlock>
+     <br/>
+      
+ </apex:form> 
+  <apex:relatedList list="Questionnaire_Response__r"/>
+</apex:page>

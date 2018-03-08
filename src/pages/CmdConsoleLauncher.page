@@ -1,0 +1,30 @@
+<apex:page standardStylesheets="false" docType="html-5.0">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <title>ExAM Command Console Splash Page</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS052, '/assets/styles/salesforce-lightning-design-system-vf.css')}" />
+        </head>
+        <body>
+            <div class="slds slds-p-around--xx-large slds-container--large slds-container--center">
+                <div class="main" role="main">
+                    <div class="slds-page-header">
+                        <p>Welcome to the ExAM Command Console! Don’t let is minimalist design fool you into 
+                thinking it is any less powerful than what you might see in the complicated Salesforce 
+                Classic view. This updated user interface provides users with a streamlined 
+                Lightning Experience through the process of creating, editing, and analyzing assessment 
+                templates. The improved UI allows the ExAM team to pack even more functionality into our 
+                new and easily navigable package.</p>
+                        <br/>
+                        <center><button class="slds-button slds-button--brand" type="button" onclick="lauchCommandConsole()">Go</button></center>
+                    </div>
+                </div>
+            </div>
+        </body>
+    </html>     
+    <script>
+        function lauchCommandConsole() {
+            window.open('/ExAM/ExamTemplateBuilder.app','_self');
+        }
+    </script>
+</apex:page>

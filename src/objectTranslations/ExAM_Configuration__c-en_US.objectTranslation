@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>ExAM Configuration</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>ExAM Configurations</value>
+    </caseValues>
+    <fields>
+        <label><!-- Add Response Score --></label>
+        <name>Add_Response_Score__c</name>
+    </fields>
+    <fields>
+        <label><!-- Assignment Manager List Status Filter --></label>
+        <name>Assignment_Manager_List_Status_Filter__c</name>
+    </fields>
+    <fields>
+        <label><!-- Case Configuration --></label>
+        <name>Case_Configuration__c</name>
+    </fields>
+    <fields>
+        <label><!-- Z-DTV Question Display Text(DEPRECATED) --></label>
+        <name>DTV_Question_Display_Text__c</name>
+    </fields>
+    <fields>
+        <label><!-- Data Management Tab Filter --></label>
+        <name>Data_Management_Tab_Filter__c</name>
+    </fields>
+    <fields>
+        <label><!-- Decision Tree Sync --></label>
+        <name>Decision_Tree_Sync__c</name>
+    </fields>
+    <fields>
+        <label><!-- Decision Tree --></label>
+        <name>Decision_Tree__c</name>
+    </fields>
+    <fields>
+        <label><!-- Enable Case Survey --></label>
+        <name>Enable_Case_Survey__c</name>
+    </fields>
+    <fields>
+        <label><!-- Feedback Template --></label>
+        <name>Feedback_Template__c</name>
+        <relationshipLabel><!-- ExAM Configurations --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Hide AM List Tab --></label>
+        <name>Hide_AM_List_Tab__c</name>
+    </fields>
+    <fields>
+        <label><!-- Hide Assessable Record Tab --></label>
+        <name>Hide_Assessable_Record_Tab__c</name>
+    </fields>
+    <fields>
+        <label><!-- Hide Data Viewer Tab --></label>
+        <name>Hide_Data_Viewer_Tab__c</name>
+    </fields>
+    <fields>
+        <label><!-- Hide Knowledge Article Tab --></label>
+        <name>Hide_Knowledge_Article_Tab__c</name>
+    </fields>
+    <fields>
+        <label><!-- Hide Related Assignment Manager1 Tab --></label>
+        <name>Hide_Related_Assignment_Manager1_Tab__c</name>
+    </fields>
+    <fields>
+        <label><!-- Hide Related Assignment Manager2 Tab --></label>
+        <name>Hide_Related_Assignment_Manager2_Tab__c</name>
+    </fields>
+    <fields>
+        <label><!-- Hide Related Assignment Manager3 Tab --></label>
+        <name>Hide_Related_Assignment_Manager3_Tab__c</name>
+    </fields>
+    <fields>
+        <label><!-- Hide Related Assignment Manager4 Tab --></label>
+        <name>Hide_Related_Assignment_Manager4_Tab__c</name>
+    </fields>
+    <fields>
+        <label><!-- Hide Save Button --></label>
+        <name>Hide_Save_Button__c</name>
+    </fields>
+    <fields>
+        <label><!-- Hours --></label>
+        <name>Hours__c</name>
+    </fields>
+    <fields>
+        <label><!-- Is Field Mapping --></label>
+        <name>Is_Field_Mapping__c</name>
+    </fields>
+    <fields>
+        <label><!-- Knowledge Article Content Field Name --></label>
+        <name>Knowledge_Article_Content_Field_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Knowledge Article Type Name --></label>
+        <name>Knowledge_Article_Type_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Mobile App Image Resolution --></label>
+        <name>Mobile_App_Image_Size__c</name>
+        <picklistValues>
+            <masterLabel>Actual</masterLabel>
+            <translation><!-- Actual --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Large</masterLabel>
+            <translation><!-- Large --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Medium</masterLabel>
+            <translation><!-- Medium --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Small</masterLabel>
+            <translation><!-- Small --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Mobile Assessable Object --></label>
+        <name>Mobile_Assessable_Object__c</name>
+    </fields>
+    <fields>
+        <label><!-- Mobile Default Assesable Object --></label>
+        <name>Mobile_Default_Assesable_Object__c</name>
+    </fields>
+    <fields>
+        <help><!-- Field to hold the Ids of the Assessment Templates that need to be synced into mobile app (in addition to the ones configured for Lens Viewer) --></help>
+        <label><!-- Mobile Sync Additional Templates --></label>
+        <name>Mobile_Sync_Additional_Templates__c</name>
+    </fields>
+    <fields>
+        <label><!-- Mobile Sync Assignment Manager Statuses --></label>
+        <name>Mobile_Sync_Assignment_Manager_Statuses__c</name>
+    </fields>
+    <fields>
+        <label><!-- Mobile Sync Future X Days --></label>
+        <name>Mobile_Sync_Future_X_Days__c</name>
+    </fields>
+    <fields>
+        <label><!-- Mobile Sync Last X Days --></label>
+        <name>Mobile_Sync_Last_X_Days__c</name>
+    </fields>
+    <fields>
+        <label><!-- Overall Status on Submit --></label>
+        <name>Overall_Status_on_Submit__c</name>
+    </fields>
+    <fields>
+        <label><!-- Primary Assessment Type Template --></label>
+        <name>Primary_Assessment_Type_Template__c</name>
+    </fields>
+    <fields>
+        <label><!-- Relate Decision Tree on Continue Button --></label>
+        <name>Relate_Decision_Tree_on_Continue_Button__c</name>
+    </fields>
+    <fields>
+        <label><!-- Related Assessment Type 1 Template --></label>
+        <name>Related_Assessment_Type_1_Template__c</name>
+    </fields>
+    <fields>
+        <label><!-- Related Assessment Type 2 Template --></label>
+        <name>Related_Assessment_Type_2_Template__c</name>
+    </fields>
+    <fields>
+        <label><!-- Related Assessment Type 3 Template --></label>
+        <name>Related_Assessment_Type_3_Template__c</name>
+    </fields>
+    <fields>
+        <label><!-- Related Assessment Type 4 Template --></label>
+        <name>Related_Assessment_Type_4_Template__c</name>
+    </fields>
+    <fields>
+        <label><!-- Report Builder Page Footer --></label>
+        <name>Report_Builder_Page_Footer__c</name>
+    </fields>
+    <fields>
+        <label><!-- Report Builder Page Header --></label>
+        <name>Report_Builder_Page_Header__c</name>
+    </fields>
+    <fields>
+        <label><!-- Skip Answer For Decision Tree Steps --></label>
+        <name>Skip_Answer_For_Decision_Tree_Steps__c</name>
+    </fields>
+    <fields>
+        <label><!-- Turn Off Save &amp; Submit --></label>
+        <name>Turn_Off_Save_Submit__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

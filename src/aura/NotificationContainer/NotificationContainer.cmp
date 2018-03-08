@@ -1,0 +1,11 @@
+<aura:component access="public">
+    
+    <aura:handler event="c:notificationEvt" action="{!c.showToast}"/>
+    
+    <div aura:id="toastContainer" class="slds-notify_container">
+        {!v.body}
+    </div>
+    
+    <aura:registerEvent name="notificationEvent" type="c:notificationEvt"/>
+    
+</aura:component>

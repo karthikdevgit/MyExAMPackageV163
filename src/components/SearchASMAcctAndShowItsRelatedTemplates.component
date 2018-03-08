@@ -1,0 +1,256 @@
+<apex:component controller="MultipleInspectionAssessmentViewCtrller">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <apex:includeScript value="{!$Resource.svgxuse}"/>
+        <div class="slds-col--padded slds-size--1-of-1 slds-medium-size--1-of-1 slds-large-size--1-of-1 slds-m-around--xx-small" ng-show="hasAnswersExistsForUnitTemplate" style="color: green;font-size: 15px;">There are existing answers for this assessment. Please check the Data Viewer for details.</div><br/>        
+        <div class="slds-col--padded slds-size--1-of-1 slds-medium-size--1-of-1 slds-large-size--1-of-1" ng-show="showPgMessage" style="color: green;font-size: 15px;">
+            Related {{thistabname}} {!$Label.Web_Assignment_Manager_Label} : <a ng-click="openAssignmentManagerRecord()" target="_blank" style="cursor: pointer">{{relatedmanagername}}</a>
+        </div>
+        <div ng-show="unitDetail">
+            <table style="width:auto;">
+                <tr>
+                    <td style="font-weight:bold;"><label class="slds-form-element__label">Assessable Record</label></td>
+                    <td>: <label class="slds-form-element__label"><a ng-href="/{{assessableRecordId}}"> {{assessableRecordName}}</a></label></td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold;"><label class="slds-form-element__label"> {!$Label.Web_Assignment_Manager_Label} </label></td>
+                    <td>: <label class="slds-form-element__label"><a ng-href="/{{relatedmanagerid}}">{{relatedmanagername}}</a></label></td>
+                </tr>
+            </table>   
+        </div>
+        
+        <br/>
+        <div ng-show="showErrMessage" class="slds-col--padded slds-size--1-of-1 slds-medium-size--1-of-1 slds-large-size--1-of-1 errMsgBox" style="color: {{setPgMsgColor}};font-size: 15px;">{{ errMessage }}</div><br/>
+        <div ng-if="showMessage" class="slds-text-align--center showMessage">
+              <div class="slds-text-align--center" ng-class="{'slds-theme--error':!hasActionSuccess,'slds-theme--success':hasActionSuccess}">
+                  <p ng-if="showMessage">{{ messageText }}</p>
+              </div>
+        </div>
+        <!--<div class="slds-notify_container" style="display:none;" id="exceptMsg">
+            <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert">
+                <button class="slds-button slds-notify__close slds-button--icon-inverse" title="Close" ng-click="closeAlert();">
+                    <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                        <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                    </svg>
+                    <span class="slds-assistive-text">Close</span>
+                </button>
+                    <span class="slds-assistive-text">Error</span>
+                    <h2 id="exceptMessage">
+                        
+                    </h2>
+            </div>
+        </div>-->
+        <div ng-show="showASMSection">   
+            <!-- end Assignment Manager Search Box and Button Code -->
+            <br/>
+            <div class="slds-card" ng-show="showASMTable">
+                <div class="slds-card__header slds-grid grid--flex-spread">
+                    <h2 class="slds-text-heading--small slds-truncate">Please choose one of the following assesments to relate to your inspection:</h2>
+                </div>
+                <div class="slds-card__body slds-p-horizontal--small">        
+                    <div ng-show="!filteredASM.length">No matching {!$Label.Web_Assignment_Manager_Label} record available for relating. Please create new one.</div>        
+                    <div ng-show="filteredASM.length">
+                        <div class="slds-scrollable--x">
+                            <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal">
+                                <thead>
+                                    <tr class="slds-text-heading--label">
+                                        <th class="slds-cell-shrink" scope="col"><div class="slds-truncate"><b>Action</b></div></th>
+                                        <th class="slds-is-sortable" scope="col"><div class="slds-truncate"><b>Name</b></div></th>
+                                        <th class="slds-is-sortable" scope="col"><div class="slds-truncate"><b>{!assessableObjectLabel} Name</b></div></th>
+                                        <th class="slds-is-sortable" scope="col"><div class="slds-truncate"><b>Assessment Template</b></div></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="slds-hint-parent" ng-repeat="eachAssignmentManager in filteredASM = (assignmentManagerObj | filter:{ Name : searchManagerText })">
+                                        <td class="slds-cell-shrink" data-label="Select Row">
+                                            <label class="slds-radio">
+                                                <input type="radio" name="options" class="asmIdBox" value="{{ eachAssignmentManager.Id }}~{{ eachAssignmentManager.Name }}"/>
+                                                <span class="slds-radio--faux"></span>
+                                                <span class="slds-assistive-text">Select Row</span>
+                                            </label>
+                                        </td>
+                                        <td class="slds-cell-shrink" scope="row" data-label="{!$Label.Web_Assignment_Manager_Label}">{{ eachAssignmentManager.Name }}</td>
+                                        <td class="slds-cell-shrink" data-label="{!assessableObjectLabel} Name">
+                                            <span ng-if="'{!assessableObjectLabel}' != 'Case'">{{ eachAssignmentManager[assessableObjectName]['Name'] }}</span>
+                                            <span ng-if="'{!assessableObjectLabel}' == 'Case'">{{ eachAssignmentManager[assessableObjectName]['CaseNumber'] }}</span>
+                                        </td>
+                                        <td class="slds-cell-shrink" data-label="Assessment Template Name">{{ eachAssignmentManager.InvestigationType__r.Name }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div><br/>
+                        <center><button class="slds-button slds-button--neutral" type="button" ng-click="linkSelectedManager();">Save</button></center><br/>
+                    </div>
+                </div>
+            </div><br/><!-- end Assignment Manager Search Result Table -->
+        </div><!-- end Assignment Manager Section -->
+    
+        <div class="slds-card slds-col--padded slds-size--1-of-1 slds-medium-size--1-of-1 slds-large-size--1-of-1" ng-show="showAccountSection">
+            <div class="slds-card__header slds-grid grid--flex-spread">
+                <h2 class="slds-text-heading--small slds-truncate">Create New {{ currentTabName }} {!$Label.Web_Assignment_Manager_Label}</h2>
+            </div>
+            <div class="slds-card__body slds-p-horizontal--small"> 
+                <div class="slds-card__body slds-p-horizontal--small">
+                    <div ng-show="!assessableObjectList.length">There are no Assessable Records</div>        
+                    <div ng-show="assessableObjectList.length">
+                        <div class="slds-scrollable--x">
+                            <select class="slds-select slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--4-of-12" id="selectedAssessableRecordId" ng-model="selectedAcctId" 
+                                ng-options="ass.recordId as ass.recordName for ass in assessableObjectList"/>
+                        </div>
+                        <div class="slds-col--padded slds-size--1-of-1 slds-medium-size--1-of-1 slds-large-size--1-of-1" style="margin-top:10px;">
+                            <center><button class="slds-button slds-button--neutral" type="button" ng-click="createNewASManager(selectedAcctId);">Create New {!$Label.Web_Assignment_Manager_Label}</button></center><br/>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- start ShowSectionQuestions div -->
+        <div ng-show="showSectionQuestions">
+            <div ng-repeat="eachSectionTemplateRec in sectionAndQuestionTemplate">
+                <div class="slds-card" ng-show="eachSectionTemplateRec.sectionTemplateRecord.Id.length > 0">
+                    <div class="slds-card__header slds-grid">
+                        <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <h2 class="slds-text-heading--small slds-truncate">{{ eachSectionTemplateRec.sectionTemplateRecord.ExAM__Section_label__c }}</h2>
+                            </div>
+                        </div>
+                    </div><!-- end class slds-card__header -->
+                    <div class="slds-card__body">
+                        <div ng-repeat="eachQuestTemplateRec in eachSectionTemplateRec.questionTemplateRecords" class="slds-table slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                            
+                            <c:Text_QuestionType_Component isPrimaryText="true"/>
+                            <c:Email_QuestionType_Component isPrimaryEmail="true"/>
+                            <c:PhoneNumber_QuestionType_Component isPrimaryPhone="true"/>
+                            <c:Date_QuestionType_Component isPrimaryDate="true"/>
+                            <c:Number_QuestionType_Component isPrimaryNumber="true"/>
+                            <c:TextArea_QuestionType_Component isPrimaryTextarea="true"/>
+                            <c:DropdownPicklist_QuestionType_Component isPrimaryDropdown="true"/>
+                            <c:Radio_QuestionType_Component isPrimaryRadioQtn="true"/>
+                            <c:Image_QuestionType_Component isPrimaryImage="true"/>
+                            <c:Button_QuestionType_Component isPrimaryButton="true"/>
+                            <c:One_Or_Many_CBox_QuestionType_Component isPrimaryCBox="true"/>
+                            <c:File_AM_Or_Object_QuestionType_Component isPrimaryFileAMOrObject="true"/>
+                            <c:FileAnswer_QuestionType_Component isPrimaryFileAnswer="true"/>
+                            <c:List_QuestionType_Component isPrimaryList="true"/>
+                            <c:Signature_QuestionType_Component isPrimarySignature="true"/>
+                            <c:HotspotImage_QuestionType_Component isPrimaryHotSpotImage="true"/>
+
+                            <!-- Start Dependent Question -->
+                            <div ng-if="nextDependentQuestion[eachQuestTemplateRec.Id]">
+                                <c:DependentQuestions_Component />
+                            </div>
+                            <!--End Dependent Question -->
+
+                        </div>    
+                        <div ng-repeat="eachQuestTemplateRec in eachSectionTemplateRec.questionTemplateRecords" class="slds-table slds-max-medium-table--stacked-horizontal slds-no-row-hover">  
+                            <c:Case_QuestionType_Component isPrimaryCase="true" />
+                        </div>
+                    </div><!-- end class slds-card__body -->
+                </div><br/><!-- end class slds-card -->
+            </div><!-- end each Section Template Iteration -->
+            <div ng-show="showSaveButton" class="slds-m-top--medium slds-size--1-of-1" style="text-align:center;">
+                <input class="slds-button slds-button--brand" type="button" value="Save" ng-click="saveUsrEnteredAnswerOptions(false);" ng-show="{!NOT(hideSaveBtn)}"/>
+                <input class="slds-button slds-button--brand" type="button" value="Save & Submit" ng-click="saveUsrEnteredAnswerOptions(true);"/>
+            </div>
+            <div ng-show="!hasSectionTemplates">
+                There are no Section Templates with Question Templates for this <a ng-click="openAssignmentManagerRecord()" target="_blank" style="cursor: pointer">{{relatedmanagername}}</a>
+            </div>
+        </div>
+        <!-- end ShowSectionQuestions div -->
+
+        <!-- comment box-->
+        <c:Comment_ModelPopUp_Component />
+        <!--End comment box-->
+        
+        <!-- file upload box-->
+        <c:File_ModelPopUp_Component />
+        <!--End file Upload box-->
+
+        <!--added on 15-09-2016-->
+        <!-- Start Signature modal -->
+        <c:Signature_ModelPopUp_Component />
+        <!-- End Signature modal -->
+
+        <!-- Start Decision Tree-->
+        <div ng-show="decisionTreeQuestion.Id">
+            <c:DecisionTreeQuestions_Component />
+        </div>
+        <!--End Decision Tree-->
+        
+        <!-- primary Assignment manager select slds-fade-in-open-->
+        <div ng-show="isRelatedAM && isLensViewerTemplate" aria-hidden="false" role="dialog" class="slds-modal  slds-fade-in-open AssignmentManagerSelectionDiv" style="background-color: rgba(128, 128, 128, 0.75);">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <h2 class="slds-text-heading--medium slds-size--1-of-1 slds-medium-size--1-of-1 slds-large-size--1-of-1">Choose Primary  {!$Label.Web_Assignment_Manager_Label}</h2>
+                </div>
+                <div class="slds-modal__content">
+                    <span ng-show="primaryAMcls" style="color:red;font-weight:bold;">Please select {!$Label.Web_Assignment_Manager_Label}</span>
+                    <span style="color:red;font-weight:bold;">{{primaryAMCreateErrMsg}}</span>
+                    <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal" ng-if="primaryAMList.length" style="height:20%">
+                        <thead>
+                            <tr class="slds-text-heading--label">
+                                <th class="slds-cell-shrink" scope="col"><span class="slds-truncate"><b></b></span></th>
+                                <th class="slds-cell-shrink" scope="col"><span class="slds-truncate"><b>Name</b></span></th>
+                                <th class="slds-cell-shrink" scope="col"><span class="slds-truncate"><b>{!assessableObjectLabel} Name</b></span></th>
+                            </tr>
+                            
+                        </thead>
+                        <tbody>
+                            <tr class="slds-hint-parent" ng-repeat="am in primaryAMList track by $index">
+                                <td class="slds-cell-shrink" data-label="Select Row" style="cursor: pointer;">
+                                    <label class="slds-radio">
+                                        <input type="radio" name="options" class="asmIdBox" ng-model="primaryAMObj.primaryAMId" ng-value="am.Id"/>
+                                        <span class="slds-radio--faux"></span>
+                                        <span class="slds-assistive-text">Select Row</span>
+                                    </label>
+                                </td>
+                                <td class="slds-cell-shrink" data-label="AM Name" style="cursor: pointer;">{{ am.Name }}</td>
+                                <td class="slds-cell-shrink" data-label="{!assessableObjectLabel} Name" style="cursor: pointer;">
+                                    <span ng-if="'{!assessableObjectLabel}' != 'Case'">{{ am[assessableObjectName]['Name'] }}</span>
+                                    <span ng-if="'{!assessableObjectLabel}' == 'Case'">{{ am[assessableObjectName]['CaseNumber'] }}</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table ng-if="!primaryAMList.length" class="slds-table slds-max-medium-table--stacked-horizontal slds-no-row-hover" style="height:20%">
+                        
+                        <tbody>
+                            <tr class="slds-hint-parent">
+                                <td class="slds-cell-shrink">No record found.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="slds-modal__footer">
+                    <div class="slds-col--padded slds-size--1-of-1 slds-medium-size--1-of-1 slds-large-size--1-of-1">
+                        <button class="slds-button slds-button--neutral slds-button--brand slds-m-around--xx-small" ng-if="primaryAMList.length" ng-click="openWithPrimaryAM(primaryAMObj.primaryAMId);">Proceed With Selected Record</button>
+                        <button class="slds-button slds-button--neutral slds-button--brand slds-m-around--xx-small createnewPrimary" ng-disabled="isDisable" ng-click="createNewPrimaryAssignmentManager(primaryTemplateId, template_type, relatedmanagerid, assessableFieldAPIName, assessableRecordId );">Create New Primary Assignment manager</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div ng-show="!isLensViewerTemplate && isLensViewerPage" aria-hidden="false" role="dialog" class="slds-modal  slds-fade-in-open" style="background-color: rgba(128, 128, 128, 0.75);">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <h2 class="slds-text-heading--medium">This template is not configured for Lens Viewer</h2>
+                </div>
+                <div class="slds-modal__content">
+                </div>
+            </div>
+        </div>
+        <div ng-show="noExamConfig" aria-hidden="false" role="dialog" class="slds-modal  slds-fade-in-open" style="background-color: rgba(128, 128, 128, 0.75);">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <h2 class="slds-text-heading--medium">Exam configuration is missing<br />
+(For eg: Please configure template via Lens Configuration sub tab in Exam Configuration)</h2>
+                </div>
+                <div class="slds-modal__content">
+                </div>
+            </div>
+        </div>
+        <!-- primary Assignment manager select -->
+    </html>
+</apex:component>

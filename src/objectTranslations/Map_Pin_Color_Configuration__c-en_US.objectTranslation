@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Map Pin Color Configuration</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Map Pin Color Configurations</value>
+    </caseValues>
+    <fields>
+        <label><!-- Assessible Object Field --></label>
+        <name>Assessible_Object_Field__c</name>
+    </fields>
+    <fields>
+        <label><!-- Assessible Object --></label>
+        <name>Assessible_Object__c</name>
+    </fields>
+    <fields>
+        <label><!-- Color Mapping --></label>
+        <name>Color_Mapping__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

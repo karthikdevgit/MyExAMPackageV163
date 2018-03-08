@@ -1,0 +1,594 @@
+<apex:page controller="DecisionTreeRepresentationController">
+    <apex:includeScript value="https://code.jquery.com/jquery-1.11.1.min.js"/>
+    <apex:includeScript value="{!$Resource.Tree}"/>
+    <apex:includeScript value="{!$Resource.D3Tooltip}"/>
+    <apex:includeScript value="{!URLFOR($Resource.UnderscoreAndAngularJS,'UnderscoreAndAngularJS/underscore-min.js')}"/>
+    <meta charset="utf-8"/>
+    <style>
+        .node, .clickable { cursor: pointer; }
+        .node circle { fill: #fff; stroke: steelblue; stroke-width: 1.5px; }
+        .node text { font: 10px sans-serif; }
+        .link { fill: none; stroke: #ccc; stroke-width: 1.5px; }
+        #errMsg, #qtnInsertResponseMsg { font-size: 12px; color: red; }
+        #outerModelDiv { background-color: rgba(0, 0, 0, 0.6); width: 100%; height: 100%; z-index: 1000; position: fixed; left: 0; top: 0; overflow: hidden; text-align: center; vertical-align: middle;}
+        #innerModelDiv { z-index: 10001; background-color: white; width: 25%; max-height: 250px; overflow-y: auto; padding: 15px; border-radius: 4px; text-align: left; position: relative; top: 40%; left: 40%}
+        .d3-tip {line-height: 1;padding: 12px;color: rgb(0, 0, 0);background-color: rgb(173, 216, 230);border-radius: 2px;}
+        .d3-tip:after {box-sizing: border-box;display: inline;font-size: 10px;width: 100%;line-height: 1;color: rgba(0, 0, 0, 0.8);content: "\25BC";position: absolute;text-align: center;}
+        .d3-tip.n:after { margin: -1px 0 0 0;top: 100%;left: 0; }
+    </style>
+    <body>
+        <div style="display: none; background-color: rgba(0, 0, 0, 0.6); width: 100%; height: 100%; z-index: 1000; position: fixed; left: 0; top: 0; overflow: hidden; text-align: center; vertical-align: middle;" class="maskDiv">
+            <img src="{!$Resource.LoadingIcon}" alt="Loading..."  class="slds-spinner--small" style="z-index: 10001; background-color: white; width: 80px; padding: 15px; border-radius: 4px; text-align: left; position: relative; top: 30%;"/>
+        </div>
+        <div id="qtnDisplayToggleDiv">
+            <span>Display Question by:&nbsp;</span>
+            <select onchange="changeQtnDisplayFormat();" id="qtnBox"><option>Question Text</option><option>Question Template Id</option></select>
+        </div>
+        <div id="errDiv"><span id="errMsg"></span></div>
+        <div id="outerModelDiv">
+            <div id="innerModelDiv">
+                <div id="innerModelDiv1"></div>
+                <center><button onclick="closeModalDiv();">Close</button></center>
+            </div>
+        </div>
+    </body>
+    <script>
+
+        $("#outerModelDiv, #innerModelDiv").hide();
+        var jsonDataVal, parsedCtrllerData, parsedData, showQtnText, nameMap, labelMap, stPaginationMapStr, qtPaginationMapStr;
+        parsedData = {};
+        nameMap = {};
+        labelMap = {};
+        stPaginationMapObj = {};
+        qtPaginationMapObj = {};
+        showQtnText = true;
+        var sectionTemplateKeyPrefix = '{!$ObjectType.ExAM__Section_Template__c.keyPrefix}';
+        var qtnTemplateKeyPrefix = '{!$ObjectType.ExAM__Question_Template__c.keyPrefix}';
+        var ansOptionKeyPrefix = '{!$ObjectType.ExAM__Answer_Option__c.keyPrefix}';
+        
+        if ( '{!JSENCODE(jsonData)}' != '' && '{!JSENCODE(jsonData)}' != null && '{!JSENCODE(jsonData)}' != undefined ) {
+            jsonDataVal = '{!JSENCODE(jsonData)}';
+            parsedCtrllerData = JSON.parse(jsonDataVal);
+            if ( '{!JSENCODE(tempSTMap)}' != '' && '{!JSENCODE(tempSTMap)}' != null && '{!JSENCODE(tempSTMap)}' != undefined ) {
+                stPaginationMapStr = '{!JSENCODE(tempSTMap)}';
+                stPaginationMapObj = JSON.parse(stPaginationMapStr);
+            }
+            if ( '{!JSENCODE(tempQTMap)}' != '' && '{!JSENCODE(tempQTMap)}' != null && '{!JSENCODE(tempQTMap)}' != undefined ) {
+                stPaginationMapStr = '{!JSENCODE(tempQTMap)}';
+                qtPaginationMapObj = JSON.parse(stPaginationMapStr);
+            }
+            if (!parsedCtrllerData["status"]) {
+                parsedData = parsedCtrllerData;
+                $("#errMsg").text('');
+                $("#errDiv").hide();
+            }
+            else {
+                $("#qtnDisplayToggleDiv").hide();
+                $("#errMsg").text( parsedCtrllerData["response"] );
+                $("#errDiv").show();
+            }
+        }
+        var margin = {top: 20, right: 120, bottom: 20, left: 120},
+            svgWidth =  $(document).width(),
+            svgHeight = $(document).height();
+
+        var i = 0,
+            duration = 750,
+            root;
+
+        var tree = d3.layout.tree()
+            .size([svgHeight, svgWidth]);
+
+        var diagonal = d3.svg.diagonal()
+            .projection(function(d) { return [d.y, d.x]; });
+
+        var tip = d3.tip()
+        .attr('class', 'd3-tip')
+        .offset([-10, 0])
+        .html(function(d) {
+            var label = '';
+            var resultTemplateConfiguredValue = '';
+            if (d.name.indexOf('@#@') != -1) {
+                var labelTxt = d.name.split('@#@')[0];
+                resultTemplateConfiguredValue = d.name.split('@#@')[1];
+                label = (showQtnText) ? labelTxt.split('@@')[1] : labelTxt.split('@@')[0];
+                label = label + '<br/><br/>' + resultTemplateConfiguredValue;
+            }
+            else {
+                label = (showQtnText) ? d.name.split('@@')[1] : d.name.split('@@')[0];
+            }
+            return "<span>" + label + "</span>";
+        })
+
+        var svg = d3.select("td#bodyCell").append("svg")
+            .attr('width', svgWidth)
+            .attr('height', svgHeight)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        svg.call(tip);
+
+        function renderData() {
+            root = parsedData;
+            root.x0 = (svgHeight / 2);
+            root.y0 = 0;
+
+            function collapse(d) {
+                if (d.children) {
+                    d._children = d.children;
+                    d._children.forEach(collapse);
+                    d.children = null;
+                }
+            }
+            root.children.forEach(collapse);
+            update(root);
+        }
+        if (!parsedCtrllerData["status"]) {
+            var nameMapStr = '{!JSENCODE(nameMapJsonStr)}';
+            var labelMapStr = '{!JSENCODE(labelMapJsonStr)}';
+            nameMap = (nameMapStr) ? JSON.parse( nameMapStr ) : {};
+            labelMap = (labelMapStr) ? JSON.parse( labelMapStr ) : {};
+            renderData();
+        }
+        d3.select(self.frameElement).style("height", "800px");
+        function update(source) {
+
+            // Compute the new tree layout.
+            var nodes = tree.nodes(root).reverse(),
+            links = tree.links(nodes);
+    
+            // Normalize for fixed-depth.
+            nodes.forEach(function(d) { d.y = d.depth * 180; });
+    
+            // Update the nodes…
+            var node = svg.selectAll("g.node")
+            .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+            // Enter any new nodes at the parents previous position.
+            var nodeEnter = node.enter().append("g")
+            .attr("class", "node")
+            .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; });
+                                    
+            var width = source.y0 + (3 * 180);
+            var height = source.x0 + (3 * 100);
+
+            if(width > svgWidth) {
+                svgWidth = width;
+                $('svg').attr('width', svgWidth);
+            }
+            if(height > svgHeight) {
+                svgHeight = height;
+                $('svg').attr('height', svgHeight);
+            }
+            
+            nodeEnter.append("circle")
+            .attr("r", 1e-6)
+            .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; })
+            .on("click", click);
+
+            nodeEnter.append("text")
+            .attr("x", function(d) { return d.children || d._children ? ((d.value < 10) ? (d.value+4)*-1 : -14) : ((d.value < 10) ? (d.value+4)*1 : 14); })
+            .attr("dy", ".35em")
+            .attr("class", 'text')
+            .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+            .attr("id", function(d) {
+                var isAnswer = recId = '';
+                isAnswer = 'true';
+                if (d.name.indexOf('@@') != -1) {
+                    isAnswer = d.name.split('@@')[3];
+                    if (isAnswer != 'true') {
+                        recId = d.name.split('@@')[2];
+                    }
+                    return (isAnswer != 'true') ? recId : new Date().getUTCMilliseconds();
+                }
+            })
+            .text(function(d) {
+                var label = '';
+                if (d.name.indexOf('@#@') != -1) {
+                    var labelTxt = d.name.split('@#@')[0];
+                    label = (showQtnText) ? labelTxt.split('@@')[1] : labelTxt.split('@@')[0];
+                }
+                else {
+                    label = (showQtnText) ? d.name.split('@@')[1] : d.name.split('@@')[0];
+                }
+                if (label != undefined && label.length > 10) {
+                    label = label.substr(0,10)+'...';
+                }
+                return label;
+            })
+            .style("fill-opacity", 1e-6)
+            .style("font-size", "15px")
+            .style("fill", function(d) { return d.color })
+            .on("click", function(d) {
+                var isAnswer = label = recId = resultTemplateConfiguredValue = '';
+                isAnswer = 'true';
+                if (d.name.indexOf('@@') != -1) {
+                    isAnswer = d.name.split('@@')[3];
+                    if (isAnswer != 'true') {
+                        recId = d.name.split('@@')[2];
+                    } else if ( isAnswer == 'true' ){
+                        recId = d.name.split('@@')[2];
+                    }
+                }
+                if (d.modalWindowText.indexOf('@#@') != -1) {
+                    label = d.modalWindowText.split('@#@')[0];
+                    resultTemplateConfiguredValue = d.modalWindowText.split('@#@')[1];
+                }
+                else {
+                    label = d.modalWindowText;
+                }
+                if (isAnswer != 'true') {
+                    var recName = d.name.split('@@')[0];
+                    var baseUrl = '{!$Api.Partner_Server_URL_260}';
+                    baseUrl = baseUrl.substr(0, baseUrl.indexOf('/services'));
+                    baseUrl = baseUrl+'/'+recId;
+                    label = '<a target="_blank" href="'+baseUrl+'" style="text-decoration: none;cursor: pointer;">'+label+'</a>';
+                    if(!d.HasNextQuestion){
+                        if(recName.indexOf('Q-') > -1){
+                            recName = d.name.split('@@')[0];
+                            var recId = d.name.split('@@')[2];
+                            resultTemplateConfiguredValue = constructNewTemplateCreationDiv(d.sectionName, d.sectionId, d.calledFromQtnId, 'QT');
+                        } else if(recName.indexOf('T-') > -1){
+                            recName = d.name.split('@@')[0];
+                            var recId = d.name.split('@@')[2];
+                            resultTemplateConfiguredValue = constructNewTemplateCreationDiv(recName, recId, recId, 'ST');
+                        } else if(recName.indexOf('Sec-') > -1){
+                            recName = d.name.split('@@')[0];
+                            var recId = d.name.split('@@')[2];
+                            resultTemplateConfiguredValue = constructNewTemplateCreationDiv(recName, recId, recId, 'QT');
+                        }
+                    }
+                } else {
+                    if ( ansOptionKeyPrefix == recId.substr(0,3) ){
+                        var baseUrl = '{!$Api.Partner_Server_URL_260}';
+                        baseUrl = baseUrl.substr(0, baseUrl.indexOf('/services'));
+                        baseUrl = baseUrl+'/'+recId;
+                        label = '<a target="_blank" href="'+baseUrl+'" style="text-decoration: none;cursor: pointer;">'+label+'</a>';
+                    }
+                    if ((isAnswer == 'true') && (!d.HasNextQuestion)) {
+                        if (d.sectionName != undefined && d.sectionId != undefined && d.calledFromQtnId != undefined) {
+                            resultTemplateConfiguredValue = constructNewTemplateCreationDiv(d.sectionName, d.sectionId, d.calledFromQtnId, 'QT');
+                        }       
+                        else {      
+                            var recName = d.name.split('@@')[0];        
+                            var recId = d.name.split('@@')[2];      
+                            resultTemplateConfiguredValue = constructNewTemplateCreationDiv(recName, recId, recId, 'ST');       
+                        }
+                    }
+                }
+                
+                $("#innerModelDiv1").html( label+'<br/><br/>'+resultTemplateConfiguredValue );
+                $("#outerModelDiv, #innerModelDiv").show();
+            })
+            .on("mouseover", tip.show)
+            .on("mouseout", tip.hide);
+
+            // Transition nodes to their new position.
+            var nodeUpdate = node.transition()
+            .duration(duration)
+            .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+    
+            nodeUpdate.select("circle")
+            .attr("r", 4.5)
+            .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+            nodeUpdate.select("text")
+            .style("fill-opacity", 1);
+    
+            // Transition exiting nodes to the parents new position.
+            var nodeExit = node.exit().transition()
+            .duration(duration)
+            .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+            .remove();
+    
+            nodeExit.select("circle")
+            .attr("r", 1e-6);
+    
+            nodeExit.select("text")
+            .style("fill-opacity", 1e-6);
+    
+            // Update the links…
+            var link = svg.selectAll("path.link")
+            .data(links, function(d) { return d.target.id; });
+    
+            // Enter any new links at the parent's previous position.
+            link.enter().insert("path", "g")
+            .attr("class", "link")
+            .attr("d", function(d) {
+                var o = {x: source.x0, y: source.y0};
+                return diagonal({source: o, target: o});
+            });
+
+            // Transition links to their new position.
+            link.transition()
+            .duration(duration)
+            .attr("d", diagonal);
+    
+            // Transition exiting nodes to the parent's new position.
+            link.exit().transition()
+            .duration(duration)
+            .attr("d", function(d) {
+                var o = {x: source.x, y: source.y};
+                return diagonal({source: o, target: o});
+            })
+            .remove();
+
+            // Stash the old positions for transition.
+            nodes.forEach(function(d) {
+                d.x0 = d.x;
+                d.y0 = d.y;
+            });
+        }
+        // Toggle children on click.
+        function click(d) {
+
+            if (d.children) {
+                d._children = d.children;
+                d.children = null;
+            } else {
+                d.children = d._children;
+                d._children = null;
+            }
+            if ((d.color != 'red')
+                && (!d.children || d.children == null || d.children.length == 0)
+                && (!d._children || d._children == null || d._children.length == 0)) {
+
+                $('.maskDiv').show();
+                var range;
+                var isAnswer = d.name.split('@@')[3];
+                var filteredSTMap = {};
+                var filteredPTMap = {};
+                var sectionIdTemplatesMap = {};
+                var sectionIdQTPaginationMap = {};
+                var mainObj = {"isAnswer": 'false', "ansposition": null, "calledFromQtnId": null, "HasNextQuestion": false, "filteredSTMap": {}, "filteredPTMap": {}, "sectionIdTemplatesMap": {}, "sectionIdQTPaginationMap": {}};
+
+                if (isAnswer == 'true') {
+
+                    mainObj["isAnswer"] = 'true';
+                    
+                    if (d.modalWindowText.startsWith('[') && d.modalWindowText.endsWith(']') ) {
+
+                        range = d.modalWindowText;
+                        mainObj["entity"] = d.entity;
+
+                        if (d.entity == 'Section Templates') {
+                            if (stPaginationMapObj[range]) {
+                                filteredSTMap[range] = stPaginationMapObj[range];
+                                mainObj["filteredSTMap"] = filteredSTMap;
+                            }
+                        }
+                        else if (d.entity == 'Question Templates') {
+                            if (qtPaginationMapObj[range]) {
+                                filteredPTMap[range] = qtPaginationMapObj[range];
+                                mainObj["filteredPTMap"] = filteredPTMap;
+                            }
+                        }
+                    }
+                    else {
+                        mainObj["ansposition"] = d.answerPosition;
+                        mainObj["calledFromQtnId"] = d.calledFromQtnId;
+                        mainObj["HasNextQuestion"] = d.HasNextQuestion;
+                    }
+                }
+                else {
+                    var recordId = d.name.split('@@')[2];
+                    var objkeyprefix = recordId.substr(0,3);
+
+                    mainObj["recordId"] = recordId;
+
+                    if (objkeyprefix == sectionTemplateKeyPrefix) {
+
+                        mainObj["entity"] = 'Section Templates';
+
+                        if ( '{!JSENCODE(sectionIdAndQTPaginationMapStr)}' != '' && '{!JSENCODE(sectionIdAndQTPaginationMapStr)}' != null && '{!JSENCODE(sectionIdAndQTPaginationMapStr)}' != undefined ) {
+                            sectionIdQTPaginationMap = JSON.parse('{!JSENCODE(sectionIdAndQTPaginationMapStr)}');
+                            if (sectionIdQTPaginationMap[recordId]) {
+                                var paginationMap = sectionIdQTPaginationMap[recordId];
+                                var filteredSectionQtnsPaginationMap = {};
+                                filteredSectionQtnsPaginationMap[recordId] = paginationMap;
+                                mainObj["sectionIdQTPaginationMap"] = filteredSectionQtnsPaginationMap;
+                            }
+                        }
+                        if ( '{!JSENCODE(sectionTemplateIdAndQuestionTemplatesMapStr)}' != '' && '{!JSENCODE(sectionTemplateIdAndQuestionTemplatesMapStr)}' != null && '{!JSENCODE(sectionTemplateIdAndQuestionTemplatesMapStr)}' != undefined ) {
+                            sectionIdTemplatesMap = JSON.parse('{!JSENCODE(sectionTemplateIdAndQuestionTemplatesMapStr)}');
+                            if (sectionIdTemplatesMap[recordId]) {
+                                var primaryQtns = sectionIdTemplatesMap[recordId];
+                                var filteredSectionQtnsMap = {};
+                                filteredSectionQtnsMap[recordId] = primaryQtns;
+                                mainObj["sectionIdTemplatesMap"] = filteredSectionQtnsMap;
+                            }
+                        }
+                    }
+                    else if (objkeyprefix == qtnTemplateKeyPrefix) {
+
+                        mainObj["entity"] = 'Question Templates';
+                    }
+                }
+
+                ExAM.DecisionTreeRepresentationController.constructNextQuestionsSet(JSON.stringify(mainObj), function(result, event) {
+
+                    $('.maskDiv').hide();
+
+                    if (event.status) {
+
+                        if ( result != '' && result != null && result != undefined ) {
+                            var childnodes = JSON.parse( _.unescape(result) );
+                            if ("parent" in d) {
+                                if ( childnodes[0] != undefined ){
+                                    var hasDuplicateExists = checkDuplicateExists(d.parent, childnodes[0].name);
+                                    if (!hasDuplicateExists) {
+                                        d.children = childnodes;
+                                    }
+                                    else {
+                                        d.color = 'red';
+                                        var name = childnodes[0].name.split('@@')[0];
+                                        var templatename = childnodes[0].name.split('@@')[1];
+                                        var msg = templatename+' \('+name+'\) '+'is repeating again';
+                                        $("#innerModelDiv1").html( msg );
+                                        $("#outerModelDiv, #innerModelDiv").show();
+                                    }
+                                }
+                            }
+                            else {
+                                d.children = childnodes;
+                            }
+                            update(d);
+                        }
+                    }
+                    else {
+                        if (event.message) {
+                            var recordId = mainObj["recordId"];
+                            var recordName = nameMap[ recordId ];
+                            var recordLabel = labelMap[ recordId ];
+                            var errMsg = event.message;
+                            if (errMsg == 'Primary Questions not exists below this section template') {
+                                var label = '<span style="color:red;">Question templates not exists below '+recordLabel+'</span>';
+                                var constructedDiv = constructNewTemplateCreationDiv(recordName, recordId, recordId, 'QT');
+                            }       
+                            else if (errMsg == 'Section templates not exists below this assessment template') {     
+                                var label = '<span style="color:red;">Section templates not exists below '+recordLabel+'</span>';       
+                                var constructedDiv = constructNewTemplateCreationDiv(recordName, recordId, recordId, 'ST');     
+                            }
+                            $("#innerModelDiv1").html( label+'<br/><br/>'+constructedDiv );
+                            $("#outerModelDiv, #innerModelDiv").show();
+                        }
+                        else {
+                            $('#errMsg').text(event.message);
+                            $('#errDiv').show();
+                        }
+                    }
+
+                });
+            }
+            else {
+                update(d);
+            }
+        }
+        function closeModalDiv() {
+            $("#outerModelDiv, #innerModelDiv").hide();
+        }
+        function redirect(url) {
+            window.open(url, '_blank');
+            $("#outerModelDiv, #innerModelDiv").hide();
+        }
+        function changeQtnDisplayFormat() {
+            var selectedTxt = $("#qtnBox").find(":selected").text();
+            showQtnText = (selectedTxt == 'Question Text') ? true : false;
+            var x = document.getElementsByTagName("text");
+            var label = '';
+            $.each(x, function() {
+                if ((showQtnText) && (labelMap[this.id])) {
+                    label = labelMap[this.id];
+                    this.innerHTML = (label.length > 10) ? label.substr(0,10)+'...' : label;
+                }
+                else if ((!showQtnText) && (nameMap[this.id])) {
+                    label = nameMap[this.id];
+                    this.innerHTML = (label.length > 10) ? label.substr(0,10)+'...' : label;
+                }
+            }); 
+        }
+        function constructNewTemplateCreationDiv(sectionName, sectionId, calledFromQtnId, type) {
+            var resultTemplateConfiguredValue = '<a id="createQtnLink" style="cursor: pointer;font-weight: bold;" onclick="toggleNewQtnCreationDiv(\'link\');">Add New Template</a>';
+            resultTemplateConfiguredValue += '<table id="newQtnCreationTable" style="display: none;">';
+            resultTemplateConfiguredValue += '<tr><th colspan="2" style="text-decoration: underline">Add New Template</th></tr>';
+            resultTemplateConfiguredValue += '<tr><td colspan="2"><div id="qtnInsertResponseDiv"><span id="qtnInsertResponseMsg"></span></div></td></tr>';
+            if (type == 'QT') {
+
+                resultTemplateConfiguredValue += '<tr><td>Question</td><td><textarea id="qtnInputBox" width="150" height="100"/></td></tr>';
+                resultTemplateConfiguredValue += '<tr><td>Question Type</td><td><select id="qtnTypeBox">';
+                    var questypes = JSON.parse('{!JSENCODE(questionTypes)}');
+                    var quesTypeLen = questypes.length;
+                    for( i = 0; i< quesTypeLen; i++ ){
+                        resultTemplateConfiguredValue += '<option>'+questypes[i]+'</option>';
+                    }
+                resultTemplateConfiguredValue += '</select></td></tr>'; 
+                resultTemplateConfiguredValue += '<tr><td>Answer Option</td><td><textarea id="ansInputBox" width="150" height="100" title="Put all values ~ separated"/></td></tr>';
+                resultTemplateConfiguredValue += '<tr><td>Section Question</td><td><input type="text" disabled="true" value="'+sectionName+'"/><input type="hidden" id="hiddenParentId" value="'+sectionId+'"/><input type="hidden" id="hiddenQtnId" value="'+calledFromQtnId+'"/></td></tr>';
+            }       
+            else {      
+                resultTemplateConfiguredValue += '<tr><td>Section Name</td><td><textarea id="qtnInputBox" width="150" height="100"/></td></tr>';        
+                resultTemplateConfiguredValue += '<tr><td>Master Questionnaire</td><td><input type="text" disabled="true" value="'+sectionName+'"/><input type="hidden" id="hiddenParentId" value="'+sectionId+'"/><input type="hidden" id="hiddenQtnId" value="'+calledFromQtnId+'"/></td></tr>';      
+            }                
+            resultTemplateConfiguredValue += '<tr><td colspan="2"><center><input type="button" value="Save" onclick="saveNextQtn(\''+type+'\');"/>&nbsp;<input type="button" value="Cancel" onclick="toggleNewQtnCreationDiv(\'cancelBtn\');"/></center></td></tr>';
+            resultTemplateConfiguredValue += '</table>';
+            resultTemplateConfiguredValue += '<br/><br/>';
+            return resultTemplateConfiguredValue;
+        }
+        function toggleNewQtnCreationDiv(calledFrom) {
+            if (calledFrom == 'link') {
+                $("#createQtnLink").hide();
+                $("#newQtnCreationTable").show();
+            }
+            else {
+                $("#newQtnCreationTable").hide();
+                $("#createQtnLink").show();
+            }
+        }
+        function saveNextQtn(type) {
+            var secId, qtnId, qnttype, qtn, ans;
+            secId = $('#hiddenParentId').val();
+            qtnId = $('#hiddenQtnId').val();
+            qnttype = (type != 'ST') ? $('#qtnTypeBox').val() : 'Result';
+            qtn = $('#qtnInputBox').val();
+            ans = $('#ansInputBox').val();
+            $("#qtnInsertResponseMsg").text('');
+            $("#qtnInsertResponseDiv").hide();
+            var errorMsg = '';
+            if (!qtn || !qtn.trim()) {
+                errorMsg = 'Please enter name';
+            }
+            else if ((type != 'ST') && (!ans || !ans.trim()) 
+                && (qnttype == 'MultiselectPicklist' || qnttype == 'RadioPicklist' || qnttype == 'Dropdown Picklist' || qnttype == 'List'
+                    || qnttype == 'Image' || qnttype == 'Button' || qnttype == 'Horizontal Radiopicklist') ) {
+                errorMsg = 'Please enter answer options as ~ separated';
+            }
+            if( errorMsg != '' ){
+                $("#qtnInsertResponseMsg").text( errorMsg );
+                $("#qtnInsertResponseDiv").show();
+            } else {
+                var newQtn = {};
+                if (type != 'ST') {
+                    newQtn["sobjectType"] = 'ExAM__Question_Template__c';
+                    newQtn["ExAM__Section_Question__c"] = secId;
+                    newQtn["ExAM__Question_Type__c"] = qnttype;
+                    newQtn["ExAM__Question_Label__c"] = qtn;
+                    newQtn["ExAM__Subquestion_Label__c"] = ans;
+                }       
+                else {      
+                    newQtn["sobjectType"] = 'ExAM__Section_Template__c';      
+                    newQtn["ExAM__Questionnaire_Section__c"] = secId;     
+                    newQtn["ExAM__Section_label__c"] = qtn;       
+                }
+
+                ExAM.DecisionTreeRepresentationController.saveNextQuestion(qtnId, newQtn, function(result, event) {
+                    if (result == 'Record Upserted Successfully' || result == 'Record Inserted Successfully') {
+                        location.reload(true);
+                    }
+                    else {
+                        $("#qtnInsertResponseMsg").text( result );
+                        $("#qtnInsertResponseDiv").show();
+                    }
+                });
+            }
+        }
+        var hasDuplicateFound = false;
+        function checkDuplicateExists(parentobj, childname) {
+            if (parentobj.name != childname) {
+                if ("parent" in parentobj) {
+                    var grand_parent = parentobj.parent;
+                    var s = checkDuplicateExists(grand_parent, childname);
+                    if (s) {
+                        return true;
+                    }
+                }
+                else {
+                    return hasDuplicateFound;
+                }
+            }
+            else {
+                hasDuplicateFound = true;
+            }
+            return hasDuplicateFound;
+        }
+    </script>
+</apex:page>

@@ -1,0 +1,33 @@
+<aura:component access="public">
+    
+    <aura:attribute name="questionResponse" type="Map" access="public"/>
+    <aura:attribute name="showLegend" type="Boolean" access="public" default="false"/>
+    
+    <lightning:card variant="narrow" class="slds-m-around_small">
+        
+        <aura:set attribute="title">
+            <ui:outputText title="{!v.questionResponse.questionLablel}" value="{!v.questionResponse.questionLablel}"/>
+        </aura:set>
+        
+        <div class="eclair-component-container">
+            
+            <div aura:id="chart">
+                <div style="position: relative;">
+                    <div id="div2" aura:id="chartdiv" class="chartSize" style="{!v.questionResponse.optionBased ? '' : 'margin-bottom :20px;'}"></div>
+                </div>
+                <aura:if isTrue="{!v.questionResponse.optionBased}">
+                    <div aura:id="legend" data-ngname="legend_chart_1">
+                        <div style="position: relative;">
+                            <div id="div1" aura:id="legendContainer"></div>
+                        </div>
+                    </div>
+                    
+                    <a onclick="{!c.showLegends}">{!v.showLegend ? 'Hide' : 'Show'} Legend</a>
+                </aura:if>
+            </div>
+            
+        </div>
+        
+    </lightning:card>
+    
+</aura:component>

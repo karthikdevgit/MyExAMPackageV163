@@ -1,0 +1,25 @@
+.THIS .spinnerFixed{
+    position : fixed;
+}
+.THIS .section-header-wrapper{
+  position: relative;
+}
+.THIS .section-header{
+  height: 30px;
+}
+
+.THIS .field-divider{
+    padding: 10px 0;
+    border-bottom: 1px solid rgb(216, 221, 230);
+}
+.THIS .label-override{
+  width: 100%;
+  /*margin-bottom: 5px;*/
+}
+.THIS .slds-box{
+  height: 100%;
+}
+
+.THIS .slds-spinner_container {
+    position: fixed !important; 
+}

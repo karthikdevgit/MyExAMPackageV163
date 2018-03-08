@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <letterhead>MB_A</letterhead>
+    <name>IncidentEmail</name>
+    <style>freeForm</style>
+    <subject>New Incident details</subject>
+    <textOnly>Team,
+
+A new Incident {!Mobile_Incident_Report_Form__c.Link} has occured, please take appropriate action.
+
+Regards</textOnly>
+    <type>html</type>
+</EmailTemplate>

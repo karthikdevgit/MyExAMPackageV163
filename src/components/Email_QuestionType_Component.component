@@ -1,0 +1,40 @@
+<apex:component >
+
+    <apex:attribute name="isPrimaryEmail" type="Boolean" default="false" description="Renders Primary Email Question"/>
+    <apex:attribute name="isDependentEmail" type="Boolean" default="false" description="Renders Dependent Email Question"/>
+    <apex:attribute name="isDecisionTreeEmail" type="Boolean" default="false" description="Renders Decision Tree Email Question"/>
+
+    <apex:outputPanel rendered="{!isPrimaryEmail}">
+        <div ng-if="eachQuestTemplateRec.ExAM__Question_Type__c == 'Email'">
+            <c:Primary_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <input type="text" ng-model="response[eachQuestTemplateRec.Id]"
+                       class="slds-size--8-of-12 slds-input validateEmail validate{{eachQuestTemplateRec.ExAM__Is_Mandatory__c}}"/>
+                <c:Primary_Question_Action />
+            </div>
+        </div>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!isDependentEmail}">
+        <div ng-if="nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c == 'Email'">
+            <c:Dependent_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <input type="text" ng-model="response[nextDependentQuestion[eachQuestTemplateRec.Id].Id]"
+                       class="slds-size--8-of-12 slds-input validateEmail validate{{nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Is_Mandatory__c}}"/>
+                <c:Dependent_Question_Action />
+            </div> 
+        </div>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!isDecisionTreeEmail}">
+        <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'Email'">
+            <c:DecisionTree_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <input type="text" ng-model="DecisionTreeresponse[decisionTreeQuestion.Id]"
+                       class="slds-size--8-of-12 slds-input validateDTEmail"/>
+                <c:DecisionTree_Question_Action />
+            </div> 
+        </div>
+    </apex:outputPanel>
+
+</apex:component>

@@ -1,0 +1,28 @@
+<apex:component >
+    
+    <div xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <label for="{{eachQuestTemplateRec.ExAM__Question_Label__c}}">
+            <b ng-show="showQuesNumIcon"><label ng-show ="!singleQuestionMode">Q.{{$index+1}}</label><label ng-show ="singleQuestionMode">Q.{{questionNumber}}</label></b> <label ng-bind-html="eachQuestTemplateRec.ExAM__Question_Label__c"></label><b style="color:#C23934;" ng-show="eachQuestTemplateRec.ExAM__Is_Mandatory__c"> *</b>
+            <img ng-src="/img/alohaSkin/help_orange.png" alt="help" class="helpIcon" ng-if="eachQuestTemplateRec.ExAM__HelpText__c" onmouseover="$(this).next().show();" onmouseout="$(this).next().hide();"/>
+            <span class="vfHelpText" id="{{eachQuestTemplateRec.Name}}">{{ eachQuestTemplateRec.ExAM__HelpText__c }}</span>
+            <span class="slds-icon__container">
+                <svg aria-hidden="true" class="slds-icon icon__svg slds-icon-text-default slds-icon--x-small" ng-if="eachQuestTemplateRec.ExAM__Knowledge_Article_Link__c" ng-click="openLink(eachQuestTemplateRec.ExAM__Knowledge_Article_Link__c)" onmouseover="$(this).next().show();" onmouseout="$(this).next().hide();">
+                    <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#knowledge_base')}"></use>
+                </svg>  
+                <span class="knowledgeArticle" style="margin-left:2px;text-decoration: none; position: relative; display: none;width: 10em;z-index: 12;background-color: #fefdb9;padding: 2px 5px;border: 1px solid orange;text-align: left;font-weight: normal;color: #000;">Knowledge Article Link</span> 
+                <svg aria-hidden="true" class="slds-icon icon__svg slds-icon-text-warning slds-icon--x-small" ng-show="eachQuestTemplateRec.isAnswered" onmouseover="$(this).next().next().show();" onmouseout="$(this).next().next().hide();">
+                    <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#warning')}"></use>
+                </svg>
+                <span ng-show="quesIdAndResponseCount[eachQuestTemplateRec.Id] > 0"><span class="slds-badge">{{quesIdAndResponseCount[eachQuestTemplateRec.Id]}}</span></span>
+                <span class="AnsweredQues" style="margin-left:2px;text-decoration: none; position: relative; display: none;width: 10em;z-index: 12;background-color: #fefdb9;padding: 2px 5px;border: 1px solid orange;text-align: left;font-weight: normal;color: #000;">Already Answered</span>
+            </span>
+        </label>
+    </div>
+    <div ng-repeat="temp in attArr =( dependentQuestionsAttObj[eachQuestTemplateRec.Id] | filter:'Question-Image')">
+        <img style="margin: 10px 10px 10px 0px;max-width: 100%;height: auto;width: auto;" ng-src="{{sourceURL}}{{temp.Id}}" />
+    </div>
+    <div ng-if="eachQuestTemplateRec.ExAM__Video_URL__c != null && eachQuestTemplateRec.ExAM__Video_URL__c != ''" ng-init="urlConverter(eachQuestTemplateRec);" >
+        <iframe ng-src="{{trustedUrl[eachQuestTemplateRec.Id]}}" style="padding-top:10px;padding-bottom:10px;border:0px;" controls="controls" width="300px" height="200px" allowfullscreen="true" />
+    </div>
+
+</apex:component>

@@ -1,0 +1,61 @@
+<aura:component access="public">
+    
+    
+    
+    <aura:attribute name="actionSelections" type="Map" access="public" />
+    <aura:attribute name="selectedObjInfo" type="Map" access="public"/>
+    <aura:attribute name="scheduledDateTime" type="DateTime" access="public"/>
+    <aura:attribute name="emailTemplates" type="List" access="public"/>
+    <aura:attribute name="distributionRd" type="Distribution__c" access="public"/>
+    <aura:attribute name="enabledViewers" type="Map" access="public"/>
+    
+    <aura:handler name="destroy" value="{!this}" action="{!c.destoryChild}"/>
+    <aura:method name="validate" action="{!c.validateInputs}"/>
+    
+    
+    
+    
+    <lightning:card title="How">    
+        
+        <aura:if isTrue="{!v.actionSelections.distr_TargetObj}">
+            <ui:outputText value="Choose a distribution method for your selected records" class="slds-m-bottom_small slds-form-element__label slds-text-heading_small"/>
+            <lightning:buttonGroup >
+                <lightning:button aura:id="emailSales" label="Email with Salesforce" title="Email using salesforce" onclick="{!c.emailWithSalesforce}"/>                
+            </lightning:buttonGroup>
+        </aura:if>
+        
+        <aura:if isTrue="{!v.actionSelections.distr_Link}">
+            <ui:outputText value="Select an available option" class="slds-m-bottom_small slds-form-element__label slds-text-heading_small"/>
+            <aura:if isTrue="{!v.actionSelections.assessableRcd == false}">
+                <lightning:buttonGroup class="slds-m-around_small">
+                    <lightning:button aura:id="csvDown" label="Anonymous Link" title="Anonymous Link" onclick="{!c.downloadCSV}"/>
+                </lightning:buttonGroup>
+            </aura:if>
+            <aura:if isTrue="{!v.actionSelections.assessableRcd}">
+                <lightning:buttonGroup class="slds-m-around_small">
+                    <lightning:button aura:id="anon_link" label="Anonymous Link" title="Anonymous Link" onclick="{!c.createLink}"/>
+                </lightning:buttonGroup>
+            </aura:if>
+        </aura:if>
+        
+        
+        <aura:if isTrue="{!v.actionSelections.email}">
+            <div class="slds-text-heading_small slds-m-bottom_small">
+                <a>{!v.selectedObjInfo.emailTemplate.Id ? v.selectedObjInfo.emailTemplate.Name : 'Select an Email Template'}</a>
+                <lightning:buttonMenu variant="container" aura:id="menu" onselect="{! c.emailTemplateSelection }" alternativeText="Show menu">
+                    <aura:iteration items="{!v.emailTemplates}" var="emailTemplate" indexVar="index">
+                        <lightning:menuItem value="{!emailTemplate.Id+'~'+index}" label="{!emailTemplate.Name}" checked="{!emailTemplate.Id == v.selectedObjInfo.emailTemplate.Id}"/>
+                    </aura:iteration>
+                </lightning:buttonMenu>
+            </div>
+            <div aura:id="scheduleDate" class="slds-m-vertical_small slds-hide">
+                <div class="slds-text-heading_small slds-p-around_small dateTimeCmp">
+                    <ui:inputDateTime required="true" format="MM/dd/yyyy" aura:id="scheduledCmp" label="Date and Time to Send" class="slds-p-around_small slds-text-heading_small" value="{!v.distributionRd.ExAM__Distribution_DateTime__c}" displayDatePicker="true" change="{!c.dateTimeUpdate}"/>
+                </div>
+                <button class="slds-m-right_small slds-button slds-button--neutral slds-button--save" onclick="{!c.enableReviewViewer}">Select Template and Review</button>
+            </div>
+        </aura:if>
+        
+    </lightning:card>
+    
+</aura:component>

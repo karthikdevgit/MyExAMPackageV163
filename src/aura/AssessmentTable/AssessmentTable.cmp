@@ -1,0 +1,158 @@
+<aura:component access="public">
+	
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="change" value="{!v.selectView}" action="{!c.doInit}"/>
+    <aura:handler name="change" value="{!v.recordPerPage}" action="{!c.showRecord}"/>
+    <aura:handler name="fireIndex" event="c:paginatorEvt" action="{!c.gotoPage}"/>
+    <aura:handler name="cancelCreateAssessmentEvt" event="c:cancelCreateQuestionEvt" action="{!c.cancelAction}"/>
+    <aura:handler name="ctrlLinkMenuEvt" event="c:ctrlLinkMenuEvt" action="{!c.getAction}" />
+	<aura:handler event="c:fireAssessmentChangedEvt" action="{!c.reloadAssesment}"/>
+    
+	<aura:attribute name="editViewOnNewAssessment" type="Boolean" access="public" default="false"/>
+	<aura:attribute name="selectView" type="String" access="public"/>
+    <aura:attribute name="recordPerPage" type="Integer" default="10" access="public" />
+    <aura:attribute name="currentPage" type="Integer" default="1" access="public" />
+    <aura:attribute name="max" type="Integer" access="public" />
+    <aura:attribute name="sorting" type="Map" default="{
+                                                       'column' : 'LastModifiedDate',
+                                                       'order' : 'desc'
+                                                       }" access="public"/>
+    <aura:attribute name="template_Name" type="String" access="public" />
+    <aura:attribute name="position" type="String" access="public" />
+    <aura:attribute name="AssessmentTemplateTerm" type="String" default="ExAM" access="public" />
+    <aura:attribute name="viewMenuAttr"
+                    type="Object[]"
+                    access="public"
+                    description="attributes for view filter menu"
+                    default="[{
+                             optionText: '10',
+                             optionValue: '10'
+                             },
+                             {
+                             optionText: '25',
+                             optionValue: '25'
+                             },
+                             {
+                             optionText: '50',
+                             optionValue: '50'
+                             }]"/>
+	<aura:attribute name="AssessmentTemplates" type="Main_questionaire__c[]" access="public" />
+    <aura:attribute name="totalAssessmentTemplates" type="Main_questionaire__c[]" access="public" />
+    
+    <aura:registerEvent name="notificationEvent" type="c:notificationEvt"/>
+    <aura:registerEvent name="navigateToExamManage" type="c:navigateToExamMngTempEvt"/>
+    
+    <!--<aura:method name="contextAssessment" action="{!c.updateLastModifiedOfContextAssessment}"/>-->
+
+    <article class="slds-card">
+        <div class="slds-card__body slds-p-around--small">
+            <div class="slds-size--2-of-2 slds-large-size--1-of-2" aura:id="addNewAssessment"/>
+            <div class="slds-grid slds-wrap slds-grid--vertical-align-center slds-grid_align-spread slds-p-bottom--small">
+                <div aura:id="addBtn" class="">
+                    <a class="slds-button slds-button--neutral" onclick="{!c.createNewAssessment}">
+                        <span class="fa fa-plus slds-m-right--x-small"/>New {!v.AssessmentTemplateTerm}
+                    </a>
+                </div>
+                <div data-aura-rendered-by="73:0">
+                    <div class="slds-no-flex slds-float--right" data-aura-rendered-by="49:0">
+                        Items per page 
+                        <c:CtrlLinkMenu linkChange="false" showIcon="true" hideLabel="false" 
+                                        sourceDerivenCmp="{'type' : 'assessmentTable'}"
+                                        attributes="{!v.viewMenuAttr}" menuLinkText="{!v.recordPerPage}"/>
+                    </div>
+                </div>
+            </div>
+            <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+                <thead>
+                    <tr class="slds-text-title--caps">
+                        <th scope="col" data-name="ExAM__Template_name__c" onclick="{!c.sortByColumn}">
+                            <div class="slds-truncate" title="Name">Name
+                                <a class="{!v.sorting.column == 'ExAM__Template_name__c' ? 'slds-show' : 'slds-hide'}">
+                                    <lightning:icon iconName="{!v.sorting.order == 'asc' ? 'utility:chevronup' : 'utility:chevrondown'}" size="x-small"/>
+                                </a>
+                            </div>
+                        </th>
+
+                        <th scope="col" data-name="CreatedDate" onclick="{!c.sortByColumn}">
+                            <div class="slds-truncate" title="Action">Created
+                                <a class="{!v.sorting.column == 'CreatedDate' ? 'slds-show' : 'slds-hide'}">
+                                    <lightning:icon iconName="{!v.sorting.order == 'asc' ? 'utility:chevronup' : 'utility:chevrondown'}" size="x-small"/>
+                                </a>
+                            </div>
+                        </th>
+                        <th scope="col" data-name="LastModifiedDate" onclick="{!c.sortByColumn}">
+                            <div class="slds-truncate" title="Action">Modified
+                                <a class="{!v.sorting.column == 'LastModifiedDate' ? 'slds-show' : 'slds-hide'}">
+                                    <lightning:icon iconName="{!v.sorting.order == 'asc' ? 'utility:chevronup' : 'utility:chevrondown'}" size="x-small"/>
+                                </a>
+                            </div>
+                        </th>
+
+                        <th scope="col">
+                            <div class="slds-truncate" title="Action">Actions</div>
+                        </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <aura:iteration items="{!v.AssessmentTemplates}" var="AssessmentTemplate" indexVar="index">
+                        <tr>
+                            <td>
+                                <ui:outputURL class="{!AssessmentTemplate.Id}" label="{!AssessmentTemplate.ExAM__Template_name__c}" aura:id="detailContURL" click="{!c.showAssessment}"/>
+                            </td>
+                            <td>
+                                <ui:outputDateTime format="MM/dd/yyyy h:mm a" value="{!AssessmentTemplate.CreatedDate}" />
+                            </td>
+                            <td>
+                                <ui:outputDateTime format="MM/dd/yyyy h:mm a" value="{!AssessmentTemplate.LastModifiedDate}" />
+                            </td>
+                            <td>
+                                <c:CtrlLinkMenu showIcon="true" hideLabel="true" 
+                                                   sourceDerivenCmp="{'type' : 'assessmentTable'}"
+                                                   itemIndex="{!index}" linkChange="false" attributes="[{optionText:'Clone', optionValue: 'cloneSobjectRecord'},{optionText:'Archive', optionValue: 'changeArchive'}]"/>
+                            </td>
+                        </tr>
+                    </aura:iteration>
+                </tbody>
+            </table>
+        </div>
+        <div class="slds-card__footer">
+
+            <c:Paginator max="{!v.max}" currentPage="{!v.currentPage}"/>
+        </div>
+    </article>
+
+
+
+    <!-- Show Modal for Clone Assessment-->
+
+    <div role="dialog" tabindex="-1" aria-labelledby="header43" aura:id="modal" class="slds-modal">
+        <div class="slds-modal__container">
+            <div class="slds-modal__header">
+
+                <h2 id="header43" class="slds-text-heading--medium">Clone Template</h2>
+            </div>
+            <div class="slds-modal__content slds-p-around--medium">
+                <ui:inputText class="slds-input" label="New Template Name" value="{!v.template_Name}" />
+            </div>
+            <div class="slds-modal__footer">
+                <button class="slds-button slds-button--neutral" onclick="{!c.closeModal}">Cancel</button>
+                <button class="slds-button slds-button--neutral slds-button--save" onclick="{!c.saveCloneObject}">Clone</button>
+            </div>
+        </div>
+    </div>
+    <div aura:id="backdrop" class="slds-backdrop"></div>
+
+    <!-- End-->
+    
+    <div aura:id="spinner_container" class="slds-hide">
+        <div class="slds-spinner_container">
+            <div role="status" class="slds-spinner slds-spinner--medium slds-spinner--brand">
+                <span class="slds-assistive-text">Loading</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </div>
+
+</aura:component>

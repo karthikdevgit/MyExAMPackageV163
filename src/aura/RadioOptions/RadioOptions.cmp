@@ -1,0 +1,13 @@
+<aura:component access="public">
+    <aura:attribute name="class" type="String" access="public" />
+    <aura:attribute name="answers" type="String" access="public" />
+    <aura:attribute name="QuesId" type="String" access="public" />
+    <div class="{!v.class}">
+        
+        <label for="{!v.answers}">
+            <input type="radio" name="{!v.QuesId}" />
+            {!v.answers}
+        </label>
+        
+    </div> 
+</aura:component>

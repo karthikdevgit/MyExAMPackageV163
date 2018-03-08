@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Static Data Object</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Static Data Object</value>
+    </caseValues>
+    <fields>
+        <help><!-- This is the url of the site. In salesforce create a Site which has a app guest user licence and add the url here. --></help>
+        <label><!-- Site URL --></label>
+        <name>Site_URL__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

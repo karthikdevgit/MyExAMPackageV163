@@ -1,0 +1,44 @@
+<apex:component >
+
+    <apex:attribute name="isPrimaryText" type="Boolean" default="false" description="Renders Primary Text Question"/>
+    <apex:attribute name="isDependentText" type="Boolean" default="false" description="Renders Dependent Text Question"/>
+    <apex:attribute name="isDecisionTreeText" type="Boolean" default="false" description="Renders Decision Tree Text Question"/>
+
+    <apex:outputPanel rendered="{!isPrimaryText}">
+        <div ng-if="eachQuestTemplateRec.ExAM__Question_Type__c == 'Text'">
+            <c:Primary_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <input type="text" ng-model="response[eachQuestTemplateRec.Id]"
+                       maxLength="{{eachQuestTemplateRec.ExAM__Field_Length__c}}"
+                       class="slds-size--8-of-12 slds-input validate{{eachQuestTemplateRec.ExAM__Is_Mandatory__c}}"/>
+                <br/>
+                <c:Primary_Question_Action />
+            </div> 
+        </div>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!isDependentText}">
+        <div ng-if="nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c == 'Text'">
+            <c:Dependent_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <input type="text" ng-model="response[nextDependentQuestion[eachQuestTemplateRec.Id].Id]"
+                       maxLength="{{nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Field_Length__c}}"
+                       class="slds-size--8-of-12 slds-input validateText validate{{nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Is_Mandatory__c}}"/>
+                <c:Dependent_Question_Action />
+            </div> 
+        </div>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!isDecisionTreeText}">
+        <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'Text'">
+            <c:DecisionTree_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <input type="text" ng-model="DecisionTreeresponse[decisionTreeQuestion.Id]"
+                       maxLength="{{decisionTreeQuestion.ExAM__Field_Length__c}}"
+                       class="slds-size--8-of-12 slds-input validateText"/>
+                <c:DecisionTree_Question_Action />
+            </div> 
+        </div>
+    </apex:outputPanel>
+
+</apex:component>

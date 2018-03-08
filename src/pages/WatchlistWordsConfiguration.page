@@ -1,0 +1,173 @@
+<apex:page standardStylesheets="false" docType="html-5.0">
+    <div xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+        <script type="text/javascript">
+            var __sfdcSessionId = '{!GETSESSIONID()}';
+        </script>
+        <script src="../../soap/ajax/35.0/connection.js" type="text/javascript"></script>
+        <script src="../../soap/ajax/35.0/apex.js" type="text/javascript"></script>
+        <head>
+            <title>WatchList Words Configuration</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS052, '/assets/styles/salesforce-lightning-design-system-vf.css')}" />
+        </head>
+        
+        <div class="slds slds-form" ng-app="ResponseWordConfigApp" ng-controller="ResponseWordConfigCtrl">    
+            
+            <div class="slds-notify_container" style="display:none" id="saveError" >
+              <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert">
+                <h2 id="errorTextId">
+                    
+                </h2>
+              </div>
+            </div>
+            <div class="slds-card slds-m-top--x-small">
+                <div class="slds-card__header slds-grid">
+                    <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <h2 class="slds-text-heading--small slds-truncate">WatchList Words Configuration</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-card__body">
+                    <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                        <tbody>
+                            <tr ng-repeat="respKeyWord in responseValues track by $index">
+                                <td>
+                                    <span ng-if="$index==0"> Watchlist Of Words </span>
+                                </td>
+                                <td>
+                                    <input type="text" class="slds-input slds-size--1-of-1 responseKeywordtxt" ng-model="responseValues[$index]"/>
+                                    <div id="error-message" class="slds-form-element__help requiredMessage" style="display:none"></div>
+                                </td>
+                                <td>    
+                                    <span class="slds-icon__container slds-icon__container--circle slds-icon-action-new" ng-if="responseValues.length-1==$index" ng-click="addFieldConfig()">
+                                       <svg aria-hidden="true" class="slds-icon slds-icon--x-small">
+                                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#new')}"> </use>
+                                       </svg>
+                                    </span>
+                                    <span class="slds-icon__container slds-icon__container--circle slds-icon-action-delete" ng-if="responseValues.length-1>0" ng-click="removeFieldConfig($index)">
+                                       <svg aria-hidden="true" class="slds-icon slds-icon--x-small">
+                                           <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#delete')}"> </use>
+                                       </svg>
+                                     </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>             
+                </div>
+                <div class="slds-card__footer" style="text-align:center;">
+                    <button type="button" class="slds-button slds-button--neutral" ng-click="cancelRecord();">Cancel</button>
+                    <button type="button" class="slds-button slds-button--brand" ng-click="saveRecord();">Save</button>
+                </div>
+            </div>
+            <div ng-show="showSuccessDiv" aria-hidden="false" role="dialog" class="slds-modal slds-modal__close showSuccessDiv" style="background-color: rgba(128, 128, 128, 0.75);">
+                <div class="slds-modal__container">
+                    <div class="slds-modal__header">
+                        <button class="slds-button slds-button--icon-inverse slds-modal__close" ng-click="closeSelection()">
+                            <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                                <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                            </svg>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-text-heading--medium">Status</h2>
+                    </div>
+                    <div class="slds-modal__content">
+                       <table class="slds-table slds-max-medium-table--stacked slds-no-row-hover" style="height:20%">
+                            <tbody>
+                                <tr>
+                                    <td>Successfully Saved WatchList Words.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="slds-modal__footer">
+                        <button class="slds-button slds-button--neutral" ng-click="closeSelectionDiv()">OK</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Processing Image Code -->
+            <div style="display: none; background-color: rgba(0, 0, 0, 0.6); width: 100%; height: 100%; z-index: 1000; position: absolute; left: 0; top: 0; overflow: hidden; text-align: center; vertical-align: middle;" class="maskDiv">
+                <img src="{!URLFOR($Resource.SLDS052, '/assets/images/spinners/slds_spinner.gif')}" alt="Loading..." class="slds-spinner--small" style="display: none; z-index: 10001; background-color: white; width: 80px; height: 80px; padding: 15px; border-radius: 4px; text-align: left; position: relative; top: 30%;"/>
+            </div>
+            <!--End Processing Image Code -->
+        
+        </div>
+        <script>
+            var app = angular.module('ResponseWordConfigApp',[]);
+            app.controller('ResponseWordConfigCtrl',function($scope) {
+            
+                var tempId = "{!JSENCODE($CurrentPage.parameters.templateId)}";
+                $scope.assessmentTemplates = [];
+                $scope.responseValues = [];
+                $scope.temp = {};
+                $scope.showSuccessDiv = false;
+                if(tempId != '') {
+                    var queryRec = sforce.connection.query("SELECT Id, Name, ExAM__Watchlist_Of_Words__c, ExAM__Template_Name__c FROM ExAM__Main_questionaire__c WHERE Id = '"+tempId+"'");
+                    $scope.assessmentTemplates = queryRec.getArray("records");
+                }
+                if (angular.isDefined($scope.assessmentTemplates) && $scope.assessmentTemplates[0].ExAM__Watchlist_Of_Words__c != null && $scope.assessmentTemplates[0].ExAM__Watchlist_Of_Words__c != '') {                    
+                    $scope.responseValues = $scope.assessmentTemplates[0].ExAM__Watchlist_Of_Words__c.split("~");
+                } else {
+                    $scope.responseValues = [];
+                    $scope.responseValues.push('');
+                }
+                
+                $scope.addFieldConfig = function() {
+                    $scope.responseValues.push('');
+                }
+                $scope.removeFieldConfig = function(index) {
+                    $scope.responseValues.splice(index,1);
+                }
+                
+                $scope.saveRecord = function() {
+                    var isError = false;
+                    $(".responseKeywordtxt").each(function() {
+                        $(this).parent('td').removeClass('slds-has-error');
+                        $(this).parent('td').find('.requiredMessage').css('display','none').text('');
+                        if($(this).val() == null || $(this).val() ==''|| $(this).val().trim() ==''|| $(this).val().trim() =='~') {
+                            $(this).parent('td').addClass('slds-has-error');
+                            $(this).parent('td').find('.requiredMessage').css('display','').text('This field is required');
+                            isError = true;
+                        }
+                    });
+                    if (!isError && $scope.responseValues != null && $scope.responseValues.length > 0) {
+                         var assTemp =[];
+                         var assTempObj = new sforce.SObject("ExAM__Main_questionaire__c");
+                         assTempObj.Id = tempId;
+                         assTempObj.ExAM__Watchlist_Of_Words__c = $scope.responseValues.join("~");
+                         assTemp.push(assTempObj);
+                         
+                         if(assTemp.length > 0 ) {
+                            var qt_result = sforce.connection.update(assTemp);
+                            if (qt_result != null && qt_result.length > 0) {
+                                 if (qt_result[0].success == 'true') {
+                                     $('.showSuccessDiv').removeClass('slds-modal__close');
+                                     $('.showSuccessDiv').addClass('slds-fade-in-open');
+                                     $scope.showSuccessDiv = true;
+                                     
+                                 } else {
+                                      $('#saveError').show();
+                                      $('#errorTextId').text(qt_result[0].errors.message);
+                                 }
+                            }   
+                        }
+                    }      
+                }
+                $scope.cancelRecord = function() {
+                    window.location = "/"+"{!JSENCODE($CurrentPage.parameters.templateId)}";
+                }
+                $scope.closeSelectionDiv = function() {
+                    $scope.showSuccessDiv = false;
+                    window.location = "/"+"{!JSENCODE($CurrentPage.parameters.templateId)}";
+                }
+                $scope.closeSelection = function() {
+                    $scope.showSuccessDiv = false;
+                }
+                
+            });
+        </script>
+        
+    </div>
+</apex:page>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReportType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <baseObject>Fact_Score_Data__c</baseObject>
+    <category>other</category>
+    <deployed>true</deployed>
+    <description>Score Data</description>
+    <label>Fact Score Data</label>
+    <sections>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>CreatedBy</field>
+            <table>Fact_Score_Data__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>CreatedDate</field>
+            <table>Fact_Score_Data__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>true</checkedByDefault>
+            <field>Name</field>
+            <table>Fact_Score_Data__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>LastModifiedDate</field>
+            <table>Fact_Score_Data__c</table>
+        </columns>
+        <masterLabel>Fact Score Data</masterLabel>
+    </sections>
+</ReportType>

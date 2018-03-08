@@ -1,0 +1,322 @@
+<apex:page showHeader="false" sidebar="false" controller="FetchDocumentId" tabstyle="account">
+  <!-- This is the page for banner include it in all pages-->
+<apex:include pageName="BannerTemplate"/>
+
+<apex:form id="governForm">
+        <br></br>
+        <p style="font-size:18px">LIBRARY </p>
+       
+        <apex:pageBlock >
+         <p>An online repository consisting of department manuals, 
+            regulations, and guidelines for BIA/BIE owned or leased facilities 
+            in Indian Country.</P>
+           <apex:pageMessages ></apex:pageMessages>
+              <br/><br/>
+                
+            <apex:pageBlockSection id="sectionBlock" title="Department Manuals" columns="1">
+                    <apex:pageBlockSection columns="1"><h3>Department of the Interior Manuals</h3>
+                      <apex:pageBlockSection columns="1">
+                        <!--DONE   window.location.href<li><a href="../servlet/servlet.FileDownload?file=015d00000013B07" target="_blank" style="font-size:12px;padding-bottom:25px;padding-bottom:25px;"> Law Enforcement and Security Part 441_Personnel Security and Suitability Requirements</a></li>
+                        <li><a href="../servlet/servlet.FileDownload?file=015d00000013AXQ" target="_blank" style="font-size:12px;padding-bottom:25px;padding-bottom:25px;">Department Manual 444 DM</a></li>
+                        <li><a href="../servlet/servlet.FileDownload?file=015d00000013B1A" target="_blank" style="font-size:12px;padding-bottom:25px;padding-bottom:25px;">Department of the Interior Manual_444_CH 2</a></li>
+                        <li><a href="../servlet/servlet.FileDownload?file=015d00000013AXQ" target="_blank" style="font-size:12px;padding-bottom:25px;padding-bottom:25px;">Department of the Interior_Manual 444_CH 1 Addendum on Security Program Guidance</a></li>
+                       -->
+                       
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Law Enforcement and Security Part 441_Personnel Security and Suitability Requirements" styleClass="download_box">
+                                  <apex:param name="documentname" value="Law Enforcement and Security Part 441_Personnel Security and Suitability Requirements" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            
+                            <apex:commandLink action="{!documentId}" oncomplete="window.location.href='../servlet/servlet.FileDownload?file={!docId}';" value="Law Enforcement and Security Part 444 Physical Protection and Building Security" styleClass="download_box">
+                                  <apex:param name="documentname" value="Law Enforecement and Security Part 444 Physical Protection and Building Security" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            
+                            <apex:commandLink action="{!documentId}" oncomplete="window.location.href='../servlet/servlet.FileDownload?file={!docId}';" value="Department Manual 444 DM" styleClass="download_box">
+                                  <apex:param name="documentname" value="Department Manual 444 DM" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            
+                            <apex:commandLink action="{!documentId}" oncomplete="window.location.href='../servlet/servlet.FileDownload?file={!docId}';" value="Department of the Interior Manual_444_CH 2" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Department of the Interior Manual_444_CH 2" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Department of the Interior_Manual 444_CH 1 Addendum on Security Program Guidance" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Department of the Interior_Manual 444_CH 1 Addendum on Security Program Guidance" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                    
+                    </apex:pageBlockSection>
+                     </apex:pageBlockSection>
+                    <apex:pageBlockSection columns="1"> <h3>Indian Affairs Manuals</h3>
+                    
+                       <!-- <li><a href="" target="_blank" style="font-size:12px;padding-bottom:25px;padding-bottom:25px;"> Indian Affairs Manual, Law Enforcement and Detention, Authority and Responsibilities_Ch 1_Part 40</a></li>
+                        <li><a href="../servlet/servlet.FileDownload?file=015d00000013B0w" target="_blank" style="font-size:12px;padding-bottom:25px;padding-bottom:25px;"> Indian Affairs Manual_Safety and Occupational Health Program_Part_25 Ch_1</a></li>
+                        <li><a href="../servlet/servlet.FileDownload?file=015d00000013B1K" target="_blank" style="font-size:12px;padding-bottom:25px;padding-bottom:25px;">Indian Affairs Manual_Safety and Occupational Health Program_Part_25 Ch_2</a></li>
+                        <li><a href="../servlet/servlet.FileDownload?file=015d00000013B1t" target="_blank" style="font-size:12px;padding-bottom:25px;padding-bottom:25px;">Indian Affairs Manual_Safety and Occupational Health Program_Part_25 Ch_4</a></li>
+                       -->
+                        <apex:pageBlockSection columns="1">
+                        <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="" styleClass="download_box">
+                                  <apex:param name="documentname" value="" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Indian Affairs Manual_Safety and Occupational Health Program_Part_25 Ch_1" styleClass="download_box">
+                                  <apex:param name="documentname" value="Indian Affairs Manual_Safety and Occupational Health Program_Part_25 Ch_1" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Indian Affairs Manual_Safety and Occupational Health Program_Part_25 Ch_2" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Indian Affairs Manual_Safety and Occupational Health Program_Part_25 Ch_2" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Indian Affairs Manual_Safety and Occupational Health Program_Part_25 Ch_4" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Indian Affairs Manual_Safety and Occupational Health Program_Part_25 Ch_4" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                     </apex:pageBlockSection>
+                    </apex:pageBlockSection>        
+             </apex:pageBlockSection>
+             
+              <apex:pageBlockSection title="Executive Orders Manual" columns="1">                   
+                    <apex:pageblocksection > 
+                        <!--<li><a href="../servlet/servlet.FileDownload?file=015d00000013B7Z" target="_blank" style="font-size:12px;padding-bottom:25px;padding-bottom:25px;"> Executive Order 12977</a></li>
+                        <li><a href="../servlet/servlet.FileDownload?file=015d00000013B7j" target="_blank" style="font-size:12px;padding-bottom:25px;padding-bottom:25px;"> Executive Order 13286</a></li>                    -->
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Executive Order 12977" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Executive Order 12977" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <br/>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.location.href='../servlet/servlet.FileDownload?file={!docId}';" value="Executive Order 13286" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Executive Order 13286" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                    </apex:pageblocksection>      
+             </apex:pageBlockSection>
+             
+             
+             <apex:pageBlockSection title="Directives" columns="1">                   
+                     <apex:pageblocksection columns="1">
+                        <!--<li><a href="../servlet/servlet.FileDownload?file=015d00000013Azh" target="_blank" style="font-size:12px;padding-bottom:25px;padding-bottom:25px;"> Homeland Security Presidential Directive 12</a></li>
+                        <li><a href="../servlet/servlet.FileDownload?file=015d00000013B7A" target="_blank" style="font-size:12px;padding-bottom:25px;padding-bottom:25px;"> Homeland Security Presidential Directives</a></li>                    
+                        <li><a href="../servlet/servlet.FileDownload?file=015d00000013B5s" target="_blank" style="font-size:12px;padding-bottom:25px;padding-bottom:25px;"> Homeland Security Presidential Directive-7</a></li>
+                        <li><a href="../servlet/servlet.FileDownload?file=015d00000013B7P" target="_blank" style="font-size:12px;padding-bottom:25px;padding-bottom:25px;"> Joint Security Directorate Antiterrorism Force Protection Guide</a></li>                      
+-->
+                            <apex:commandLink action="{!documentId}" oncomplete="window.location.href='../servlet/servlet.FileDownload?file={!docId}';" value="Homeland Security Presidential Directive 12" styleClass="download_box">
+                                  <apex:param name="documentname" value="Homeland Security Presidential Directive 12" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Homeland Security Presidential Directives" styleClass="download_box">
+                                  <apex:param name="documentname" value="Homeland Security Presidential Directives" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Homeland Security Presidential Directive 7" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Homeland Security Presidential Directive 7" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Joint Security Directorate Antiterrorism Force Protection Guide" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Joint Security Directorate Antiterrorism Force Protection Guide" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                     </apex:pageblocksection>     
+             </apex:pageBlockSection>
+             
+             
+              <apex:pageBlockSection title="Statues and Regulations" columns="1">
+                    <apex:pageBlockSection columns="1"><h3>Army Regulations</h3>
+                    
+                    <apex:pageblocksection columns="1">
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Army Regulation 190_56 Army Civilian Police and Security Guard Program" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Army Regulation 190_56 Army Civilian Police and Security Guard Program" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Army Regulation 190-51 Security of unclassified Army property" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Army Regulation 190-51 Security of unclassified Army property " assignTo="{!documentname}"/> 
+                            </apex:commandLink> 
+                             <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Army Regulation 190–16 Physical Security" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Army Regulation 190–16 Physical Security" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Army Regulation 525-26 Infrastructure Risk Management" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Army Regulation 525-26 Infrastructure Risk Management" assignTo="{!documentname}"/> 
+                            </apex:commandLink> 
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Army Regulation 190_14 Carrying of Firearms and Use of Force for Law Enforcement and Security Duties" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Army Regulation 190_14 Carrying of Firearms and Use of Force for Law Enforcement and Security Duties" assignTo="{!documentname}"/> 
+                            </apex:commandLink> 
+                             <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Army Regulation Pamphlet 190-51" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Army Regulation Pamphlet 190-51" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="The Interagency Security Committee and Security Standards for Federal Buildings" styleClass="download_box">     
+                                  <apex:param name="documentname" value="The Interagency Security Committee and Security Standards for Federal Buildings" assignTo="{!documentname}"/> 
+                            </apex:commandLink> 
+                             <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Army Regulation 20-1 Inspector General" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Army Regulation 20-1 Inspector General" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Army Regulation 190–5 Motor Vehicle Traffic Supervision" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Army Regulation 190–5 Motor Vehicle Traffic Supervision" assignTo="{!documentname}"/> 
+                            </apex:commandLink> 
+                             <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Army Regulation 190–58 Personal Security" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Army Regulation 190–58 Personal Security" assignTo="{!documentname}"/> 
+                            </apex:commandLink> 
+                             <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Army Regulation 525–13 Antiterrorism" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Army Regulation 525–13 Antiterrorism" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Critical Infrastructure Information Act of 2002" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Critical Infrastructure Information Act of 2002" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Homeland Security Act of 2002" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Homeland Security HS Act of 2002" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                    
+                    </apex:pageblocksection>
+                    
+                    </apex:pageBlockSection>
+               </apex:pageBlockSection>
+             
+              <apex:pageBlockSection title="Guidance" columns="1">
+                   <apex:pageBlockSection columns="1">
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="A Guide to Critical Infrastructure and Key Resources Protection at the State, Regional, Local, Tribal, and Territorial Level" styleClass="download_box">     
+                                  <apex:param name="documentname" value="A Guide to Critical Infrastructure and Key Resources Protection at the State, Regional, Local, Tribal, and Territorial Level" assignTo="{!documentname}"/> 
+                            </apex:commandLink> 
+                             <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="National Infrastructure Protection Plan_Annual Report_fys 2007-09" styleClass="download_box">      
+                                  <apex:param name="documentname" value="National Infrastructure Protection Plan_Annual Report_fys 2007-09" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            
+                            <apex:commandLink action="{!documentId}" oncomplete="window.location.href='../servlet/servlet.FileDownload?file={!docId}';" value="Fact Sheet New Interim ISC Standards" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Fact Sheet New Interim ISC Standards" assignTo="{!documentname}"/> 
+                            </apex:commandLink> 
+                             <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Interagency Security Committee Facility Security Level Determinations for Federal Facilities" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Interagency Security Committee Facility Security Level Determinations for Federal Facilities" assignTo="{!documentname}"/> 
+                            </apex:commandLink> 
+                             <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Interagency Security Committee Action Plan 2007-08" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Interagency Security Committee Action Plan 2007-08" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Interagency Security Committee Use of Physical Security Performance Measures" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Interagency Security Committee_Use of Physical Security Performance Measures" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Minimum Standards for Armed Contract Security Officers in Federal Facilities" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Minimum Standards for Armed Contract Security Officers in Federal Facilities" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="National Infrastructure Protection Plan" styleClass="download_box">     
+                                  <apex:param name="documentname" value="National Infrastructure Protection Plan" assignTo="{!documentname}"/> 
+                            </apex:commandLink> 
+                             <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="National Strategy for Homeland Security Security Council" styleClass="download_box">     
+                                  <apex:param name="documentname" value="National Strategy for Homeland Security Security Council" assignTo="{!documentname}"/> 
+                            </apex:commandLink> 
+                             <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="National Strategy for Physical Protection of Critical Infrastructure and Key Assets" styleClass="download_box">      
+                                  <apex:param name="documentname" value="National Strategy for Physical Protection of Critical Infrastructure and Key Assets" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Physical Security Criteria for Federal Facilities" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Physical Security Criteria for Federal Facilities" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}')" value="Interagency Security Committee_Design Basis Threat Report" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Interagency Security Committee_Design Basis Threat Report" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            
+                            
+                          </apex:pageBlockSection>  
+                            
+                            
+               </apex:pageBlockSection>
+               
+               <apex:pageBlockSection title="Facility Level I-III Security Standards" columns="1">
+                <apex:pageBlockSection columns="1">
+                           <apex:commandLink action="{!documentId}" oncomplete="window.location.href='../servlet/servlet.FileDownload?file={!docId}';" value="Interagency Security Committee Minimum Standards for Leased Space" styleClass="download_box">      
+                                  <apex:param name="documentname" value="Interagency Security Committee Minimum Standards for Leased Space" assignTo="{!documentname}"/> 
+                            </apex:commandLink>
+                            
+                            <apex:commandLink action="{!documentId}" oncomplete="window.location.href='../servlet/servlet.FileDownload?file={!docId}';" value="Level III Minimum Standards" styleClass="download_box">     
+                                  <apex:param name="documentname" value="Level III Minimum Standards" assignTo="{!documentname}"/> 
+                            </apex:commandLink> 
+               </apex:pageBlockSection>
+               </apex:pageBlockSection>
+               
+               <apex:pageBlockSection title="Policy and Procedure" columns="1">
+                    <apex:pageBlockSection columns="1">
+                    
+                         <a href="{! $Page.Librarypolicy}" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">List of Policy and Procedure documents </a>                                                                               
+           
+                           
+                            <!-- CONTINUE HERE LOT OF IT-->
+               </apex:pageBlockSection>
+               </apex:pageBlockSection>
+               
+               <apex:pageBlockSection title="Support Documents and Other Resources" columns="1">
+                <apex:pageBlockSection columns="1">
+                   <a href="{! $Page.LibrarySupportDocs}" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">List of Support Documents and Other Resources </a>                                                                               
+           
+                           <!-- CONTINUE LOT OF IT -->
+               </apex:pageBlockSection>
+               </apex:pageBlockSection>
+             <!--  <a href="{! $Page.LibraryDepartmentManuals}" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Department Manuals</a>                                                                               
+             <ul>  Homeland Security Presidential Directive 12     
+             <li>       
+                
+             
+                 <a href="../servlet/servlet.FileDownload?file=015d00000013AXQ" target="_blank" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Department of the Interior Manuals</a></li>
+                 <ul>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                 </ul>
+              <li>          <a href="../servlet/servlet.FileDownload?file=015d00000013AXV" target="_blank" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Indian Affairs Manuals</a></li>
+                       
+                   
+             </ul>           
+                <a href="{! $Page.LibraryDepartmentManuals}" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Department Manuals</a>                                                                               
+             <ul>       
+             <li>           <a href="../servlet/servlet.FileDownload?file=015d00000013AXQ" target="_blank" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Department of the Interior Manuals</a></li>
+              <li>          <a href="../servlet/servlet.FileDownload?file=015d00000013AXV" target="_blank" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Indian Affairs Manuals</a></li>
+                       
+                   
+             </ul> 
+              <a href="{! $Page.LibraryDepartmentManuals}" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Department Manuals</a>                                                                               
+             <ul>       
+             <li>           <a href="../servlet/servlet.FileDownload?file=015d00000013AXQ" target="_blank" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Department of the Interior Manuals</a></li>
+              <li>          <a href="../servlet/servlet.FileDownload?file=015d00000013AXV" target="_blank" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Indian Affairs Manuals</a></li>
+                       
+                   
+             </ul> 
+              <a href="{! $Page.LibraryDepartmentManuals}" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Department Manuals</a>                                                                               
+             <ul>       
+             <li>           <a href="../servlet/servlet.FileDownload?file=015d00000013AXQ" target="_blank" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Department of the Interior Manuals</a></li>
+              <li>          <a href="../servlet/servlet.FileDownload?file=015d00000013AXV" target="_blank" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Indian Affairs Manuals</a></li>
+                       
+                   
+             </ul> 
+              <a href="{! $Page.LibraryDepartmentManuals}" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Department Manuals</a>                                                                               
+             <ul>       
+             <li>           <a href="../servlet/servlet.FileDownload?file=015d00000013AXQ" target="_blank" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Department of the Interior Manuals</a></li>
+              <li>          <a href="../servlet/servlet.FileDownload?file=015d00000013AXV" target="_blank" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Indian Affairs Manuals</a></li>
+                       
+                   
+             </ul> 
+              <a href="{! $Page.LibraryDepartmentManuals}" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Department Manuals</a>                                                                               
+             <ul>       
+             <li>           <a href="../servlet/servlet.FileDownload?file=015d00000013AXQ" target="_blank" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Department of the Interior Manuals</a></li>
+              <li>          <a href="../servlet/servlet.FileDownload?file=015d00000013AXV" target="_blank" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Indian Affairs Manuals</a></li>
+                       
+                   
+             </ul> 
+              <a href="{! $Page.LibraryDepartmentManuals}" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Department Manuals</a>                                                                               
+             <ul>       
+             <li>           <a href="../servlet/servlet.FileDownload?file=015d00000013AXQ" target="_blank" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Department of the Interior Manuals</a></li>
+              <li>          <a href="../servlet/servlet.FileDownload?file=015d00000013AXV" target="_blank" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Indian Affairs Manuals</a></li>
+                       
+                   
+             </ul> 
+              <a href="{! $Page.LibraryDepartmentManuals}" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Department Manuals</a>                                                                               
+             <ul>       
+             <li>           <a href="../servlet/servlet.FileDownload?file=015d00000013AXQ" target="_blank" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Department of the Interior Manuals</a></li>
+              <li>          <a href="../servlet/servlet.FileDownload?file=015d00000013AXV" target="_blank" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Indian Affairs Manuals</a></li>
+                       
+                   
+             </ul>  -->
+      </apex:pageBlock> 
+     <!-- <apex:pageBlock >
+    <apex:pageBlockTable value="{!listAccounts}" var="a">
+      <apex:column value="{!a.name}"/>
+    </apex:pageBlockTable>
+  </apex:pageBlock>-->
+  </apex:form>
+
+
+
+
+ 
+</apex:page>

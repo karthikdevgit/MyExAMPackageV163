@@ -1,0 +1,24 @@
+.THIS {
+}
+.THIS .option-item:hover {
+  transition: all 0.75s ease-in-out;
+}
+.THIS .option-item:hover {
+
+}
+.THIS .slds-card .slds-card__header {
+  padding: 10px 20px;
+  border-bottom: 1px solid rgb(216, 221, 230);
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.THIS .slds-card.card-collapse .slds-card__header {
+  border-bottom: none;
+  margin: 0;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+.THIS .slds-card .slds-card__body,.THIS .slds .slds-show{
+  transition: all 3s ease-in-out;
+}

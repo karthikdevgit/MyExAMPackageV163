@@ -1,0 +1,45 @@
+<apex:component >
+
+    <div class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                <div class="slds-media__body">
+                    <h2 class="slds-text-heading--small slds-truncate">Google Map API Key</h2>
+                </div>
+            </div>
+        </div>
+        <div class="slds-card__body">
+            <c:MapsConfig />
+        </div>
+    </div>
+
+    <div class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                <div class="slds-media__body">
+                    <h2 class="slds-text-heading--small slds-truncate">Address Configuration</h2>
+                </div>
+            </div>
+        </div>
+        <div class="slds-card__body">
+            <c:MapAddressConfiguration />
+        </div>
+    </div>
+
+    <div class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                <div class="slds-media__body">
+                    <h2 class="slds-text-heading--small slds-truncate">Pin Color Configuration</h2>
+                </div>
+            </div>
+        </div>
+        <div class="slds-card__body">
+            <c:MapPinColorConfigComponent />
+        </div>
+        <div class="slds-card__footer">
+            <a class="pinColorObjViewLink" href="/{!$ObjectType.Map_Pin_Color_Configuration__c.keyPrefix}" target="_blank">View All</a>
+        </div>
+    </div>
+
+</apex:component>

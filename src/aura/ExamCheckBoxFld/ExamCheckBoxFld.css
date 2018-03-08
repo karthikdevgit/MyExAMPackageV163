@@ -1,0 +1,16 @@
+.THIS .ChkBoxHeight {
+  min-height: 30px !important;
+}
+
+.THIS .uiLabel-left {
+  display: inline;
+}
+
+.THIS .active {
+    padding: 10px;
+    border: 1px solid rgb(216, 221, 230);
+    display: inline-flex;
+}
+.THIS .active input{
+    margin: 0;
+}

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Serious Incident Report</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>DoDEA Serious Incident Report</value>
+    </caseValues>
+    <fields>
+        <label><!-- Area --></label>
+        <name>Area__c</name>
+    </fields>
+    <fields>
+        <label><!-- Crime Against Persons --></label>
+        <name>Crime_Against_Persons__c</name>
+        <picklistValues>
+            <masterLabel>&quot;Other&quot; Crimes Against Persons</masterLabel>
+            <translation><!-- &quot;Other&quot; Crimes Against Persons --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Assault with a Deadly Weapon</masterLabel>
+            <translation><!-- Assault with a Deadly Weapon --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Battery</masterLabel>
+            <translation><!-- Battery --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Homicide</masterLabel>
+            <translation><!-- Homicide --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Robbery/Extortion</masterLabel>
+            <translation><!-- Robbery/Extortion --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Sex Offenses</masterLabel>
+            <translation><!-- Sex Offenses --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Crimes Against Property --></label>
+        <name>Crimes_Against_Property__c</name>
+        <picklistValues>
+            <masterLabel>&quot;Other&quot; Crimes Against Property</masterLabel>
+            <translation><!-- &quot;Other&quot; Crimes Against Property --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Arson</masterLabel>
+            <translation><!-- Arson --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Burglary</masterLabel>
+            <translation><!-- Burglary --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Govt. Accountable Property Theft</masterLabel>
+            <translation><!-- Govt. Accountable Property Theft --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Graffiti (over $500 loss)</masterLabel>
+            <translation><!-- Graffiti (over $500 loss) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Personal Property Theft(over $100 loss)</masterLabel>
+            <translation><!-- Personal Property Theft(over $100 loss) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Vandalism (over $500 loss)</masterLabel>
+            <translation><!-- Vandalism (over $500 loss) --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Date and Time --></label>
+        <name>Date_and_Time__c</name>
+    </fields>
+    <fields>
+        <label><!-- Describe in Detail What Occurred. --></label>
+        <name>Describe_in_Detail_What_Occurred__c</name>
+    </fields>
+    <fields>
+        <label><!-- District Name --></label>
+        <name>District_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Drug/Alcohol Offenses --></label>
+        <name>Drug_Alcohol_Offenses__c</name>
+        <picklistValues>
+            <masterLabel>&quot;Other&quot; Drug/Alcohol Offenses</masterLabel>
+            <translation><!-- &quot;Other&quot; Drug/Alcohol Offenses --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Possession of Alcohol</masterLabel>
+            <translation><!-- Possession of Alcohol --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Possession of Drug paraphernalia</masterLabel>
+            <translation><!-- Possession of Drug paraphernalia --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Possession of Drugs</masterLabel>
+            <translation><!-- Possession of Drugs --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Possession of of Drugs/Alcohol for Sale</masterLabel>
+            <translation><!-- Possession of of Drugs/Alcohol for Sale --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Sale and/or Furnishing of Drugs/Alcohol</masterLabel>
+            <translation><!-- Sale and/or Furnishing of Drugs/Alcohol --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Use of Drugs/Alcohol</masterLabel>
+            <translation><!-- Use of Drugs/Alcohol --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Incident Occured --></label>
+        <name>Incident_Occured__c</name>
+        <picklistValues>
+            <masterLabel>Off school Grounds(Enroute to or from school or white ata school sponsored activity)</masterLabel>
+            <translation><!-- Off school Grounds(Enroute to or from school or white ata school sponsored activity) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>On School Grounds</masterLabel>
+            <translation><!-- On School Grounds --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Incident Report Participants2 --></label>
+        <name>Incident_Report_Participants2__c</name>
+        <relationshipLabel><!-- DoDEA Serious Incident Report (Incident Report Participants2) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Incident Report Participants3 --></label>
+        <name>Incident_Report_Participants3__c</name>
+        <relationshipLabel><!-- DoDEA Serious Incident Report (Incident Report Participants3) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Incident Report Participants4 --></label>
+        <name>Incident_Report_Participants4__c</name>
+        <relationshipLabel><!-- DoDEA Serious Incident Report (Incident Report Participants4) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Incident Report Participants --></label>
+        <name>Incident_Report_Participants__c</name>
+        <relationshipLabel><!-- DoDEA Serious Incident Report (Incident Report Participants) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Notification --></label>
+        <name>Notification__c</name>
+        <picklistValues>
+            <masterLabel>Area</masterLabel>
+            <translation><!-- Area --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>District</masterLabel>
+            <translation><!-- District --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>HQ</masterLabel>
+            <translation><!-- HQ --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Police</masterLabel>
+            <translation><!-- Police --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Notifications made/coordinated by: --></label>
+        <name>Notifications_made_coordinated_by__c</name>
+    </fields>
+    <fields>
+        <label><!-- Other Incidents --></label>
+        <name>Other_Incidents__c</name>
+        <picklistValues>
+            <masterLabel>Destructive/Explosive Devices</masterLabel>
+            <translation><!-- Destructive/Explosive Devices --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Loitering/Trespassing</masterLabel>
+            <translation><!-- Loitering/Trespassing --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Other</masterLabel>
+            <translation><!-- Other --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Possession of &quot;Other&quot; Weapon</masterLabel>
+            <translation><!-- Possession of &quot;Other&quot; Weapon --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Possession of an Actual Firearm</masterLabel>
+            <translation><!-- Possession of an Actual Firearm --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Police Investigating? --></label>
+        <name>Police_Investigating__c</name>
+    </fields>
+    <fields>
+        <label><!-- Police Responded --></label>
+        <name>Police_Responded__c</name>
+    </fields>
+    <fields>
+        <label><!-- School Name --></label>
+        <name>School_Name__c</name>
+    </fields>
+    <fields>
+        <help><!-- Force Protection issues i.e., suspected surveillance or other suspicious or actual activity constituting a threat or potential threat to students, staff, or operations. 
+Threats of Extreme Violence i.e., written,verbal,internal or external, by students o --></help>
+        <label><!-- Security Threats Help --></label>
+        <name>Security_Threats_Help__c</name>
+    </fields>
+    <fields>
+        <help><!-- Force  Protection issues i.e., suspected surveillance or other suspicious or actual activity constituting a threat or potential threat to students, staff, or operations.
+Threats of Extreme Violence  i.e., written,verbal,internal or external, by students. --></help>
+        <label><!-- Security Threats --></label>
+        <name>Security_Threats__c</name>
+        <picklistValues>
+            <masterLabel>&quot;Other&quot; Security Threats</masterLabel>
+            <translation><!-- &quot;Other&quot; Security Threats --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Bomb Threat</masterLabel>
+            <translation><!-- Bomb Threat --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Force protection issues</masterLabel>
+            <translation><!-- Force protection issues --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Threats of Extreme Violence</masterLabel>
+            <translation><!-- Threats of Extreme Violence --></translation>
+        </picklistValues>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

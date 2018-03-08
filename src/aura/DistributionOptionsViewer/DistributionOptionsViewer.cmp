@@ -1,0 +1,78 @@
+<aura:component access="public">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="destroy" value="{!this}" action="{!c.handleDestroy}"/>
+    
+    <aura:attribute name="publicAssessment" type="Map" access="public"/>
+    <aura:attribute name="fields" type="List" access="public" description="fieldSet informations"/>
+    <aura:attribute name="mode" type="String" access="public" description="provide access"/>
+    <aura:attribute name="defaultMode" type="String" access="public" description="decided rendered view"/>
+    <aura:attribute name="newField" type="String" access="public" description="create new"/>
+    <aura:attribute name="distributionRd" type="Distribution__c" access="public" />
+    <aura:attribute name="wizardName" type="String" access="public"/>
+    <aura:attribute name="validator" type="Object" access="public"/>
+    <aura:attribute name="sendMode" type="String" access="public"/>
+    
+    <aura:method name="validate" action="{!c.doValidate}" 
+                 description="validateErrors method with parameters"> 
+    </aura:method>
+    
+    <lightning:card title="DistributionOptionsViewer">
+        <aura:set attribute="actions">
+            <div class="{!v.distributionRd.Id ? 'slds-show' : 'slds-hide'}">
+                <lightning:button class="slds-button slds-button_neutral slds-button_save" onclick="{!c.clearPanel}" label="Cancel"/>
+            </div>
+        </aura:set>
+        
+        
+        <aura:if isTrue="{!v.distributionRd.Id}">
+            <div class="slds-text-heading--small option-item">
+                <c:ExamTextFld record="{!v.distributionRd}"
+                                  Id="{!v.distributionRd.Id}"
+                                  sObjectName="ExAM__Distribution__c"
+                                  fieldName="Name"
+                                  fieldLabel="Name"
+                                  defaultMode="{!v.defaultMode}"
+                                  mode="{!v.mode}"
+                                  newField="{!v.newField}"/>
+            </div>
+        </aura:if>
+		    
+        
+        <aura:iteration items="{!v.fields}" var="field">
+            
+            <aura:if isTrue="{!or(and(v.sendMode == 'Email with Salesforce', field.fieldApi != 'ExAM__Start_Date__c'), v.sendMode != 'Email with Salesforce')}">
+                <div class="slds-text-heading--small option-item">
+                    
+                    <c:ExamField aura:id="examFld"
+                                    valType="{!field.fieldDataType}"
+                                    record="{!v.distributionRd}"
+                                    Id="{!v.distributionRd.Id}"
+                                    sObjectAPI="{!field.sObjectApi}"
+                                    fieldName="{!field.fieldApi}"
+                                    fieldLabel="{!field.fieldLabel}"
+                                    options="{!field.options}"
+                                    defaultMode="{!v.defaultMode}"
+                                    mode="{!v.mode}"
+                                    validator="{!v.validator}"
+                                    hasValidator="true"
+                                    helpText="{!field.inLineHelpText}"
+                                    newField="{!v.newField}"/>
+                </div>
+            </aura:if>
+        </aura:iteration>
+        
+        <aura:if isTrue="{!v.publicAssessment}">
+            <div class="slds-text-heading--small option-item">
+                <c:ExamUrlFld record="{!v.publicAssessment}"
+                              Id="{!v.publicAssessment.Id}"
+                              sObjectName="ExAM__Public_Assessment__c"
+                              fieldName="ExAM__Public_Assessment_URL__c"
+                              fieldLabel="Public Assessment URL"
+                              defaultMode="{!v.defaultMode}"
+                              mode="view" />
+            </div>
+        </aura:if>
+        
+    </lightning:card>
+    
+</aura:component>

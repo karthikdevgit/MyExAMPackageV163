@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Section Template</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Section Templates</value>
+    </caseValues>
+    <fields>
+        <help><!-- No of Questions Per Section, This is rollup summary field , data comes from question table field count questions --></help>
+        <label><!-- No of Questions Per Section --></label>
+        <name>No_of_Questions_Section__c</name>
+    </fields>
+    <fields>
+        <help><!-- Number of responses per section per user --></help>
+        <label><!-- No of response per section per user --></label>
+        <name>No_of_response_per_section_per_user__c</name>
+    </fields>
+    <fields>
+        <label><!-- Order No --></label>
+        <name>Order_No__c</name>
+    </fields>
+    <fields>
+        <help><!-- Master Detail Relationship - Main Questionaire is master and section is detail. --></help>
+        <label><!-- Master Questionnaire to Detail Section --></label>
+        <name>Questionnaire_Section__c</name>
+        <relationshipLabel><!-- Section Templates --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Random Display Count --></label>
+        <name>Random_Display_Count__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is a secure, web-based survey conducted by the Virginia Center for School Safety. Submission of this survey partially fulfills the Virginia School Safety Audit requirement. --></help>
+        <label><!-- Section Description --></label>
+        <name>Section_Description__c</name>
+    </fields>
+    <fields>
+        <label><!-- Section External Id --></label>
+        <name>Section_External_Id__c</name>
+    </fields>
+    <fields>
+        <help><!-- 0 to 100% --></help>
+        <label><!-- Section Weight (%) --></label>
+        <name>Section_Weight__c</name>
+    </fields>
+    <fields>
+        <help><!-- Put label  in section1:section1.1 form --></help>
+        <label><!-- Section Name --></label>
+        <name>Section_label__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is subsection label NOt USING --></help>
+        <label><!-- Subsectionlabel --></label>
+        <name>Subsectionlabel__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is the parent section name which is represented by parentsection:subsection in section name NOT USING --></help>
+        <label><!-- SuperSection --></label>
+        <name>SuperSection__c</name>
+    </fields>
+    <fields>
+        <label><!-- isArchive --></label>
+        <name>isArchive__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is to set whether the section is complete or not. We can set in the apex code when the user answers all the questions of a section. --></help>
+        <label><!-- Status --></label>
+        <name>status__c</name>
+        <picklistValues>
+            <masterLabel>Completed</masterLabel>
+            <translation><!-- Completed --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Incomplete</masterLabel>
+            <translation><!-- Incomplete --></translation>
+        </picklistValues>
+    </fields>
+    <layouts>
+        <layout>Section_Template Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

@@ -1,0 +1,122 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false" standardController="Main_questionaire__c" extensions="QuestionnaireFieldsDOI"  recordSetVar="sitem" id="thePage">
+    <!-- This is the page for banner include it in all pages-->
+    <apex:include pageName="BannerTemplate"/>
+    <script language="JavaScript" type="text/javascript">
+        function saveDone()
+        {
+            alert('Record Saved Successfully !!!');
+            //window.open('/apex/QuestionnaireCustom');
+            top.location.reload(true);
+        }   
+    </script>
+    <apex:form id="templateForm">
+        <apex:pageMessages id="messageId"></apex:pageMessages>
+        <br></br>
+        <apex:actionFunction name="callSaveJS" action="{!save}"/>
+        <script language="JavaScript" type="text/javascript">
+            function function1()
+            {
+                //alert('inside');
+                callSaveJS();//saveDone();
+            }
+        </script> 
+        <table width="100%" >
+             <tr>
+                <td colspan='2' style="text-align:center;font-size:18px">Assessment</td>
+            </tr>
+            <tr>
+                <td width="20%" valign="top"> 
+                    <apex:actionFunction name="sectionStatusJS" action="{!sectionStatus}" reRender="buttonPanel,messageId"/>
+                    <apex:outputPanel id="buttonPanel">
+                        <apex:outputPanel rendered="{!NOT(myFlag)}">
+                            <script>
+                                window.onload=function()
+                                {
+                                    sectionStatusJS();setmyFlag(true);
+                                };
+                            </script>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!myFlag}">
+                            <apex:pageBlock >
+                                <apex:variable var="snum" value="{!1}"/>   
+                                <apex:pageBlockSection id="sectionBlock" title="Sections" columns="2">
+                                    <apex:repeat value="{!sectionsStatusLists}" var="section">
+                                        <apex:commandButton reRender="{!$Component.thePage.templateForm.questiondetail}"  value=" {!section.Section_Template__r.Section_label__c}" style="text-align:center;">
+                                            <apex:param name="sectionId" value="{!section.Section_Template__c}"/>
+                                            <apex:param name="doRerender" value="true" assignTo="{!doRerender}"/>
+                                        </apex:commandButton>
+                                        <apex:outputText value="[{!section.Status__c}]" style="color:{!IF(section.Status__c=='Incomplete','red','blue')};padding-left:28px;font-style:bold;text-align:center"/>
+                                    </apex:repeat>    
+                                    <!--<apex:repeat value="{!sectionsStatusLists}" var="section">
+                                        <apex:outputText value="[{!section.Status__c}]" style="color:{!IF(section.Status__c=='Incomplete','red','blue')};padding-left:28px;font-style:bold;text-align:center"/>
+                                    </apex:repeat>-->
+                                </apex:pageBlockSection>
+                            </apex:pageBlock> 
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </td>
+                <td width="80%" valign="top">
+                    <apex:outputPanel id="questiondetail" >
+                        <apex:pageBlock id="block1">
+                            <apex:pageBlockButtons location="bottom" id="buttons1" >
+                                <!-- <input type="button" onclick="function1();" value="Call2Functions" />-->
+                                <apex:commandButton id="button2" value="Save" action="{!save}" >
+                                    <apex:param name="doRerenderSave" value="true" assignTo="{!doRerenderSave}"/>
+                                </apex:commandButton>
+                                <apex:commandButton value="Cancel" action="{!Cancel}" id="button1" title="Cancel"/>
+                                <apex:commandButton value="Submit Complete Survey(After Save)" action="{!submitForApproval}" />
+                            </apex:pageBlockButtons>
+                            <apex:variable var="qnum" value="{!1}"/>
+                            <apex:repeat value="{!questionsList}" var="question" >
+                                <apex:pageBlockSection columns="1" rendered="{!question.newquestFormat.Question_Type__c=='Text'}" >
+                                    <apex:outputPanel rendered="{!NOT(ISNULL(question.newquestFormat.HelpText__c))}">
+                                        <b>Q.{!qnum} {!question.newquestFormat.Question_Label__c}</b>
+                                        <span class="helpButton" id="help1_Help"><img src="/s.gif" alt=""  class="helpIcon" title="{!question.newquestFormat.HelpText__c}"/></span>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!ISNULL(question.newquestFormat.HelpText__c)}">
+                                        <b>Q.{!qnum} {!question.newquestFormat.Question_Label__c}</b>
+                                    </apex:outputPanel>
+                                    <!-- <apex:outputPanel rendered="{!question.newquestFormat.HelpText__c==null}" ><b>Q.{!qnum} {!question.newquestFormat.Question_Label__c} </b> <span class="helpButton" id="help1_Help"><img src="/s.gif" alt=""  class="helpIcon" title="{!question.newquestFormat.HelpText__c}"/></span>
+                                    </apex:outputPanel>-->
+                                    <apex:pageBlockSectionItem >  
+                                        <!--<apex:outputField value="{!question.newquestFormat.Question_Label__c}" />-->
+                                        <apex:outputField value="{!question.newquestFormat.Subquestion_Label__c}" />              
+                                        <apex:inputTextarea style="" rows="6" cols="100" id="textInfo" value="{!question.resObj.Response__c}"></apex:inputTextArea>
+                                        <!-- <apex:selectList value="{!question.questionFlag}" rendered="{!question.newquestFormat.Question_Type__c=='RadioPicklist'}"></apex:selectList> -->
+                                        <!-- <apex:outputText value="{!question.questionFlag}" rendered="{!question.newquestFormat.Question_Type__c=='RadioPicklist'}"/> -->                               
+                                    </apex:pageBlockSectionItem>                 
+                                </apex:pageBlockSection><br></br>
+                                <apex:pageBlockSection columns="1" rendered="{!question.newquestFormat.Question_Type__c=='RadioPicklist'}" >
+                                    <apex:outputPanel rendered="{!NOT(ISNULL(question.newquestFormat.HelpText__c))}"><b>Q.{!qnum} {!question.newquestFormat.Question_Label__c}</b><span class="helpButton" id="help1_Help"><img src="/s.gif" alt=""  class="helpIcon" title="{!question.newquestFormat.HelpText__c}"/></span>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!ISNULL(question.newquestFormat.HelpText__c)}"><b>Q.{!qnum} {!question.newquestFormat.Question_Label__c}</b>
+                                    </apex:outputPanel>
+                                    <apex:pageBlockSectionItem >  
+                                        <!--<apex:selectRadio layout="pageDirection" id="qOptionList">-->
+                                        <apex:selectRadio layout="pageDirection" id="qOptionList" value="{!question.resObj.Response__c}" >
+                                            <apex:selectOptions value="{!question.optionsList}" />
+                                        </apex:selectRadio>                      
+                                        <!-- <apex:outputText value="{!question.questionFlag}" rendered="{!question.newquestFormat.Question_Type__c=='RadioPicklist'}"/> -->                               
+                                    </apex:pageBlockSectionItem>                 
+                                </apex:pageBlockSection><br></br> 
+
+                                <apex:pageBlockSection columns="1" rendered="{!question.newquestFormat.Question_Type__c=='MultiselectPicklist'}" >
+                                    <!--<apex:outputField  value="{!question.newquestFormat.Question_Label__c}" />-->
+                                    <b>Q.{!qnum} {!question.newquestFormat.Question_Label__c} </b> <apex:outputPanel rendered="{!ISNULL(question.newquestFormat.HelpText__c)}"><span class="helpButton" id="help1_Help"><img src="/s.gif" alt=""  class="helpIcon" title="{!question.newquestFormat.HelpText__c}"/></span>
+                                    </apex:outputPanel>
+                                    <apex:pageBlockSectionItem >  
+                                        <apex:selectCheckboxes layout="pageDirection" id="qmOptionList" value="{!question.multiselectlist}">
+                                        <!-- <apex:selectCheckboxes layout="pageDirection" id="qmOptionList">-->                              
+                                            <apex:selectOptions value="{!question.optionsList}"/>
+                                        </apex:selectCheckboxes>                     
+                                    </apex:pageBlockSectionItem>                 
+                                </apex:pageBlockSection><br></br>                  
+                                <apex:variable var="qnum" value="{!qnum+1}"/> 
+                            </apex:repeat>              
+                        </apex:pageBlock>
+                    </apex:outputPanel>
+                </td>
+            </tr> 
+        </table>
+    </apex:form> 
+</apex:page>

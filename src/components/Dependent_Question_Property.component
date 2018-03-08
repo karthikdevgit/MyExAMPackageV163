@@ -1,0 +1,9 @@
+<apex:component >
+
+    <label for="{{nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Label__c}}">
+        <b ng-show="showQuesNumIcon">Q.{{$index+1}}i</b> <label ng-bind-html="nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Label__c"></label><b style="color:#C23934;" ng-show="nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Is_Mandatory__c"> *</b>
+        <img ng-src="/img/alohaSkin/help_orange.png" alt="help" class="helpIcon" ng-if="nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__HelpText__c" onmouseover="$(this).next().show();" onmouseout="$(this).next().hide();"/>
+        <span class="vfHelpText" id="{{nextDependentQuestion[eachQuestTemplateRec.Id].Name}}">{{ nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__HelpText__c }}</span>
+    </label>
+
+</apex:component>

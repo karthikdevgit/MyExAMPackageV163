@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>Assessable_Record_Tab_Name</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Assessable Record Tab Name</shortDescription>
+        <value>Assessable Record</value>
+    </labels>
+    <labels>
+        <fullName>Closed_Case</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Closed Case</shortDescription>
+        <value>Public_Assessment_when_case_Closed</value>
+    </labels>
+    <labels>
+        <fullName>Mobile_Assignment_Manager_Label</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Mobile Assignment Manager Label</shortDescription>
+        <value>Assignment Manager</value>
+    </labels>
+    <labels>
+        <fullName>Mobile_File_Upload_Label</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Mobile File Upload Label</shortDescription>
+        <value>Take Photo</value>
+    </labels>
+    <labels>
+        <fullName>Primary_Assessment_Type</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Primary Assessment Type</shortDescription>
+        <value>Unit</value>
+    </labels>
+    <labels>
+        <fullName>PublicAssessmentHome_Message</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>PublicAssessmentHome_Message</shortDescription>
+        <value>You have reached the site for the Extensible Assessment Manager (ExAM). To learn more about ExAM go to http://exam4enterprise.com.</value>
+    </labels>
+    <labels>
+        <fullName>Public_Assessment_Link_Expiration_Error_Message</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Public Assessment Link Expiration Error Message</shortDescription>
+        <value>The link has expired</value>
+    </labels>
+    <labels>
+        <fullName>Public_Assessment_Not_Exists</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Public Assessment Not Exists</shortDescription>
+        <value>No Public Assessment exists below given Assessment template and Assessable object.</value>
+    </labels>
+    <labels>
+        <fullName>Related_Assessment_Type_1</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Related Assessment Type 1</shortDescription>
+        <value>Site</value>
+    </labels>
+    <labels>
+        <fullName>Related_Assessment_Type_2</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Related Assessment Type 2</shortDescription>
+        <value>Systems</value>
+    </labels>
+    <labels>
+        <fullName>Related_Assessment_Type_3</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Related Assessment Type 3</shortDescription>
+        <value>Common Areas</value>
+    </labels>
+    <labels>
+        <fullName>Related_Assessment_Type_4</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Related Assessment Type 4</shortDescription>
+        <value>Exterior</value>
+    </labels>
+    <labels>
+        <fullName>Related_Decision_Tree_Chain_Button</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Related Decision Tree Chain Button</shortDescription>
+        <value>Related Question Demo</value>
+    </labels>
+    <labels>
+        <fullName>SFLimitEndPointURL</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>SFLimitEndPointURL</shortDescription>
+        <value>services/data/v41.0/limits</value>
+    </labels>
+    <labels>
+        <fullName>Web_Assignment_Manager_Label</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Web Assignment Manager Label</shortDescription>
+        <value>Inspection Name</value>
+    </labels>
+</CustomLabels>

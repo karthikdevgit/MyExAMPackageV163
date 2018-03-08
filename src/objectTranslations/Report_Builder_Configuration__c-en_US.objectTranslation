@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Report Builder Configuration</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Report Builder Configurations</value>
+    </caseValues>
+    <fields>
+        <label><!-- Assessable Object Field Position --></label>
+        <name>Assessable_Object_Field_Position__c</name>
+    </fields>
+    <fields>
+        <label><!-- Assessment Data Config --></label>
+        <name>Assessment_Data_Config__c</name>
+    </fields>
+    <fields>
+        <label><!-- Assessment Template --></label>
+        <name>Assessment_Template__c</name>
+        <relationshipLabel><!-- Report Builder Configurations --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Assignment Manager position --></label>
+        <name>Assignment_Manager_position__c</name>
+    </fields>
+    <fields>
+        <label><!-- Choosed Assignment manager --></label>
+        <name>Choosed_Assignment_manager__c</name>
+        <relationshipLabel><!-- Report Builder Configurations --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- End Date Range --></label>
+        <name>End_Date_Range__c</name>
+    </fields>
+    <fields>
+        <label><!-- Is Temporary --></label>
+        <name>Is_Temporary__c</name>
+    </fields>
+    <fields>
+        <label><!-- Output Format --></label>
+        <name>Output_Format__c</name>
+        <picklistValues>
+            <masterLabel>HTML</masterLabel>
+            <translation><!-- HTML --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>JSON</masterLabel>
+            <translation><!-- JSON --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>PDF</masterLabel>
+            <translation><!-- PDF --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Overall Status --></label>
+        <name>Overall_Status__c</name>
+    </fields>
+    <fields>
+        <label><!-- Selected Sections --></label>
+        <name>Selected_Sections__c</name>
+    </fields>
+    <fields>
+        <label><!-- Start Date Range --></label>
+        <name>Start_Date_Range__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

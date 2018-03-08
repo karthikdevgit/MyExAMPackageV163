@@ -1,0 +1,591 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Assignment Manager</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Assignment Manager</value>
+    </caseValues>
+    <fields>
+        <label><!-- Add Signatures Link --></label>
+        <name>Add_Signatures_Link__c</name>
+    </fields>
+    <fields>
+        <label><!-- Assessment Date/Time --></label>
+        <name>Assessment_Date_Time__c</name>
+    </fields>
+    <fields>
+        <label><!-- Assessment Event --></label>
+        <name>Assessment_Event__c</name>
+        <relationshipLabel><!-- Assignment Manager --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- The for the team needs to fill for each investigation type --></help>
+        <label><!-- Assessment Form Completion --></label>
+        <name>Assessment_Form_Completion__c</name>
+        <picklistValues>
+            <masterLabel>Complete</masterLabel>
+            <translation><!-- Complete --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Incomplete</masterLabel>
+            <translation><!-- Incomplete --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Assessment Form Link --></label>
+        <name>Assessment_Form_Link__c</name>
+    </fields>
+    <fields>
+        <label><!-- Assessment Group --></label>
+        <name>Assessment_Group__c</name>
+        <relationshipLabel><!-- Assignment Manager --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- The name of the Assessment Template in use by the Assignment Manager. --></help>
+        <label><!-- Assessment Template Type --></label>
+        <name>Assessment_Template_Type__c</name>
+    </fields>
+    <fields>
+        <help><!-- The Assigned Resource is typically the Salesforce user assigned with gathering the data or ensuring the gathering of the data. --></help>
+        <label><!-- Assigned Resource --></label>
+        <name>Assessor_Resource__c</name>
+        <relationshipLabel><!-- Assignment Manager (Assigned Resource) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Assignment External Id --></label>
+        <name>Assignment_External_Id__c</name>
+    </fields>
+    <fields>
+        <help><!-- To create a hierarchy of sub issues or deficiencies --></help>
+        <label><!-- Related Assignment --></label>
+        <name>Assignment_Manager__c</name>
+        <relationshipLabel><!-- Assignment Manager List --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- The date and time the Assignment Manager was created. --></help>
+        <label><!-- Date Assigned --></label>
+        <name>Date_Assigned__c</name>
+    </fields>
+    <fields>
+        <help><!-- This field is updated with the most recent time the Assignment Manager was submitted. --></help>
+        <label><!-- Date/Time Completed --></label>
+        <name>Date_Completed__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is the name of the Account that is being assessed. Assess Anything is enabled by default against the Account object. To add other accessible objects go to ExAM Configuration. --></help>
+        <label><!-- Account Name --></label>
+        <name>Facility_Name__c</name>
+        <relationshipLabel><!-- Assignment Manager --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- This field records the time when an Assignment is submitted via an ExAM Viewer. --></help>
+        <label><!-- Actual End Time --></label>
+        <name>Field_End_Time__c</name>
+    </fields>
+    <fields>
+        <help><!-- This field records the time when an ExAM Viewer is opened and the first answer is recorded against the Assignment Manager. --></help>
+        <label><!-- Actual Start Time --></label>
+        <name>Field_Start_Time__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is to get the link of inspection --></help>
+        <label><!-- Mobile Assessment Form Link --></label>
+        <name>Form_Link__c</name>
+    </fields>
+    <fields>
+        <help><!-- The Salesforce ID for the Assessment Template. --></help>
+        <label><!-- Assessment Template ID --></label>
+        <name>InvestigationType__c</name>
+        <relationshipLabel><!-- Assignment Managers --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Assignment Type --></label>
+        <name>Investigation_Type__c</name>
+        <picklistValues>
+            <masterLabel>3rd Party Property Damage</masterLabel>
+            <translation><!-- 3rd Party Property Damage --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Emergency Procedures</masterLabel>
+            <translation><!-- Emergency Procedures --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>HAZMAT</masterLabel>
+            <translation><!-- HAZMAT --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Multi Assessment Manager</masterLabel>
+            <translation><!-- Multi Assessment Manager --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Property Damage</masterLabel>
+            <translation><!-- Property Damage --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Safety and Health</masterLabel>
+            <translation><!-- Safety and Health --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Safety and Health Inspection Checklist</masterLabel>
+            <translation><!-- Safety and Health Inspection Checklist --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>School Property and Safety Analysis</masterLabel>
+            <translation><!-- School Property and Safety Analysis --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Student Bodily Injury</masterLabel>
+            <translation><!-- Student Bodily Injury --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <help><!-- Textual description of the Assignment. Often used to communicate any specific requirements for a particular data collection activity. --></help>
+        <label><!-- Issue/request --></label>
+        <name>Issue_request__c</name>
+    </fields>
+    <fields>
+        <help><!-- Used to support interaction with complex assessments, particularly focused on inter-related assessments. --></help>
+        <label><!-- Lens Viewer Link --></label>
+        <name>Lens_Viewer_Link__c</name>
+    </fields>
+    <fields>
+        <help><!-- Use this field to support additional metadata and reporting requirements around assessed accounts. --></help>
+        <label><!-- Account Classification --></label>
+        <name>Location__c</name>
+        <picklistValues>
+            <masterLabel>Administrative</masterLabel>
+            <translation><!-- Administrative --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>All</masterLabel>
+            <translation><!-- All --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Learning Area</masterLabel>
+            <translation><!-- Learning Area --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Multiple Rooms</masterLabel>
+            <translation><!-- Multiple Rooms --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Office Area</masterLabel>
+            <translation><!-- Office Area --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Park</masterLabel>
+            <translation><!-- Park --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Parking Lot</masterLabel>
+            <translation><!-- Parking Lot --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Playground</masterLabel>
+            <translation><!-- Playground --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>School</masterLabel>
+            <translation><!-- School --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Unclassified</masterLabel>
+            <translation><!-- Unclassified --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <help><!-- The total score possible given the possible point values of the questions answered and the total points scored as determined by the Answer Option selected. Scoring is configured in the ExAM Console on a question by question basis. --></help>
+        <label><!-- Max Score --></label>
+        <name>Max_Score__c</name>
+    </fields>
+    <fields>
+        <label><!-- Mobile App Feedback Screen Name --></label>
+        <name>Mobile_App_Feedback_Screen_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Mobile Feedback Decision Tree Question --></label>
+        <name>Mobile_Feedback_Decision_Tree_Question__c</name>
+        <relationshipLabel><!-- Assignment Manager --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Multi Assessment Form Link --></label>
+        <name>Multi_Assessment_Form_Link__c</name>
+    </fields>
+    <fields>
+        <label><!-- New Form Link --></label>
+        <name>New_Form_Link__c</name>
+    </fields>
+    <fields>
+        <help><!-- This viewer is used to view and update Assessments inside of Salesforce or within Salesforce communities. You can configure the tabs and fields it displays on a per Assessment Template basis in ExAM Configuration. --></help>
+        <label><!-- Standard Viewer Link --></label>
+        <name>New_Viewer_Link__c</name>
+    </fields>
+    <fields>
+        <label><!-- No of Assignments --></label>
+        <name>No_of_Assignments__c</name>
+    </fields>
+    <fields>
+        <label><!-- Z-One Time Assessment (DO NOT USE) --></label>
+        <name>One_Time_Assessment__c</name>
+    </fields>
+    <fields>
+        <label><!-- Post Assessment Report --></label>
+        <name>Post_Inspection_Report__c</name>
+    </fields>
+    <fields>
+        <help><!-- The priority of the Assignment Manager. This field is typically customized to meet the requirements of the ExAM use case. --></help>
+        <label><!-- Priority --></label>
+        <name>Priority__c</name>
+        <picklistValues>
+            <masterLabel>Emergency</masterLabel>
+            <translation><!-- Emergency --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>High</masterLabel>
+            <translation><!-- High --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Routine</masterLabel>
+            <translation><!-- Routine --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Public Assessment URL --></label>
+        <name>Public_Assessment_URL__c</name>
+    </fields>
+    <fields>
+        <label><!-- Rapid Assessment Form Link --></label>
+        <name>Rapid_Assessment_Form_Link__c</name>
+    </fields>
+    <fields>
+        <label><!-- Related Assignment Manager 1 --></label>
+        <name>Related_Assignment_Manager1__c</name>
+        <relationshipLabel><!-- Assignment Manager (Related Assignment Manager 1) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Related Assignment Manager 2 --></label>
+        <name>Related_Assignment_Manager2__c</name>
+        <relationshipLabel><!-- Assignment Manager (Related Assignment Manager 2) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Related Assignment Manager 3 --></label>
+        <name>Related_Assignment_Manager3__c</name>
+        <relationshipLabel><!-- Assignment Manager (Related Assignment Manager 3) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Related Assignment Manager 4 --></label>
+        <name>Related_Assignment_Manager4__c</name>
+        <relationshipLabel><!-- Assignment Manager (Related Assignment Manager 4) --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- Support team user --></help>
+        <label><!-- Responder Not using --></label>
+        <name>Responder__c</name>
+        <relationshipLabel><!-- Assignment Manager (Responder Not using) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Response Date --></label>
+        <name>Response_Date_Time__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is the date and time that the Assignment is scheduled to be completed. --></help>
+        <label><!-- Scheduled End Date --></label>
+        <name>Scheduled_End_Date__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is the date and time that the Assignment is scheduled to take place. --></help>
+        <label><!-- Scheduled Start Date --></label>
+        <name>Scheduled_Start_Date__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is the percentage of the total possible points possible (Max Score) scored by the Answer Options chosen for this Assignment Manager. --></help>
+        <label><!-- Score(%) --></label>
+        <name>Score_Percent__c</name>
+    </fields>
+    <fields>
+        <label><!-- Scoring Report --></label>
+        <name>Scoring_Report__c</name>
+    </fields>
+    <fields>
+        <label><!-- Multi-Assessment Manager ID --></label>
+        <name>Section_Group__c</name>
+        <relationshipLabel><!-- Assignment Manager --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- Get the Service Area from Account object and display on issue or request --></help>
+        <label><!-- Service Area --></label>
+        <name>Service_Area__c</name>
+    </fields>
+    <fields>
+        <help><!-- The accounts for vendors, partners and other service providers that you may need in order to accomplish your assignments. --></help>
+        <label><!-- Service Organization --></label>
+        <name>Service_Organization__c</name>
+        <relationshipLabel><!-- Assignment Manager List (Service Organization) --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- Use this field to provide additional metadata around the assessment being performed. --></help>
+        <label><!-- Assessment Classification --></label>
+        <name>Services_Required__c</name>
+        <picklistValues>
+            <masterLabel>2nd re-inspection</masterLabel>
+            <translation><!-- 2nd re-inspection --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Annual/Routine</masterLabel>
+            <translation><!-- Annual/Routine --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Asbestos</masterLabel>
+            <translation><!-- Asbestos --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Call In</masterLabel>
+            <translation><!-- Call In --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Complaint Investigation</masterLabel>
+            <translation><!-- Complaint Investigation --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Compliance</masterLabel>
+            <translation><!-- Compliance --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Construction</masterLabel>
+            <translation><!-- Construction --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Emergency</masterLabel>
+            <translation><!-- Emergency --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Lead</masterLabel>
+            <translation><!-- Lead --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Mold</masterLabel>
+            <translation><!-- Mold --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>N/A</masterLabel>
+            <translation><!-- N/A --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Other</masterLabel>
+            <translation><!-- Other --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Re-inspection</masterLabel>
+            <translation><!-- Re-inspection --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Waste</masterLabel>
+            <translation><!-- Waste --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <help><!-- Checking this box enables the end user to configure the Standard Viewer for the purposes of this specific Assignment Manager. For example, adding and removing tabs. --></help>
+        <label><!-- Show Configuration Options in Viewer --></label>
+        <name>Show_Configuration_Options_in_Viewer__c</name>
+    </fields>
+    <fields>
+        <help><!-- Site Contact --></help>
+        <label><!-- Site Contact --></label>
+        <name>Site_Contact__c</name>
+        <relationshipLabel><!-- Assignment Manager --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Standard Report --></label>
+        <name>Standard_Report__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is the overall lifecycle status of the Assignment Manager. The status of this field is typically automatically updated on the submission of an Assignment Manager. --></help>
+        <label><!-- Overall Status --></label>
+        <name>Status__c</name>
+        <picklistValues>
+            <masterLabel>Cancelled</masterLabel>
+            <translation><!-- Cancelled --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Closed</masterLabel>
+            <translation><!-- Closed --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Completed</masterLabel>
+            <translation><!-- Completed --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>In Progress</masterLabel>
+            <translation><!-- In Progress --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>On Hold</masterLabel>
+            <translation><!-- On Hold --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Open</masterLabel>
+            <translation><!-- Open --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Scheduled</masterLabel>
+            <translation><!-- Scheduled --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Start Time --></label>
+        <name>Support_Start_Time__c</name>
+    </fields>
+    <fields>
+        <label><!-- Status --></label>
+        <name>Support_Status__c</name>
+        <picklistValues>
+            <masterLabel>Cancelled</masterLabel>
+            <translation><!-- Cancelled --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Completed</masterLabel>
+            <translation><!-- Completed --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>On Hold</masterLabel>
+            <translation><!-- On Hold --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Scheduled</masterLabel>
+            <translation><!-- Scheduled --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <help><!-- If scoring has been implemented for this Assessment the total score achieved in the Assignment will be recorded here. --></help>
+        <label><!-- Total Score --></label>
+        <name>Total_Score__c</name>
+    </fields>
+    <fields>
+        <help><!-- Calculates the difference between the Actual Start Time of an Assessment and the Actual End Time of an Assessment. --></help>
+        <label><!-- Total Time on Assessment --></label>
+        <name>Total_Time_on_Assessment__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is the Salesforce ID of the Visitor record associated with this Assignment Manager. This field is only populated when the data collection effort takes place outside of Salesforce for example when a public assessment link is being used. --></help>
+        <label><!-- Visitor Register --></label>
+        <name>Visitor_Register__c</name>
+        <relationshipLabel><!-- Assignment Manager --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Archived --></label>
+        <name>isArchive__c</name>
+    </fields>
+    <layouts>
+        <layout>Assessment Manager Layout</layout>
+        <sections>
+            <label><!-- Assessment Form Links --></label>
+            <section>Assessment Form Links</section>
+        </sections>
+        <sections>
+            <label><!-- Assignment Data --></label>
+            <section>Assignment Data</section>
+        </sections>
+        <sections>
+            <label><!-- Assignment Detail --></label>
+            <section>Assignment Detail</section>
+        </sections>
+        <sections>
+            <label><!-- Assignment Status --></label>
+            <section>Assignment Status</section>
+        </sections>
+        <sections>
+            <label><!-- New Site Contact --></label>
+            <section>New Site Contact</section>
+        </sections>
+        <sections>
+            <label><!-- Reports --></label>
+            <section>Reports</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Issue/Request Layout</layout>
+        <sections>
+            <label><!-- Accessible Objects --></label>
+            <section>Accessible Objects</section>
+        </sections>
+        <sections>
+            <label><!-- Assessment Viewers --></label>
+            <section>Assessment Viewers</section>
+        </sections>
+        <sections>
+            <label><!-- Assignment Data --></label>
+            <section>Assignment Data</section>
+        </sections>
+        <sections>
+            <label><!-- Assignment Detail --></label>
+            <section>Assignment Detail</section>
+        </sections>
+        <sections>
+            <label><!-- Assignment Status --></label>
+            <section>Assignment Status</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Related Assignments --></label>
+            <section>Related Assignments</section>
+        </sections>
+        <sections>
+            <label><!-- Reports --></label>
+            <section>Reports</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Post Inspection Report</layout>
+        <sections>
+            <label><!-- Assignment Status --></label>
+            <section>Assignment Status</section>
+        </sections>
+        <sections>
+            <label><!-- New Site Contact --></label>
+            <section>New Site Contact</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+    <webLinks>
+        <label><!-- Assessment_Form_Link --></label>
+        <name>Assessment_Form_Link</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Create_New_Location --></label>
+        <name>Create_New_Location</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Investigation_Report --></label>
+        <name>Investigation_Report</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- New_Site_Contact --></label>
+        <name>New_Site_Contact</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Post_Inspection_Report --></label>
+        <name>Post_Inspection_Report</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Scoring_Report --></label>
+        <name>Scoring_Report</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Standard_Report --></label>
+        <name>Standard_Report</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Work_Authorization_Form --></label>
+        <name>Work_Authorization_Form</name>
+    </webLinks>
+    <workflowTasks>
+        <name>Assignment_Event</name>
+        <subject><!-- Assignment Event --></subject>
+    </workflowTasks>
+</CustomObjectTranslation>

@@ -1,0 +1,71 @@
+<apex:page showHeader="false" sidebar="false" controller="FetchDocumentId" tabstyle="account">
+  <!-- This is the page for banner include it in all pages-->
+<apex:include pageName="BannerTemplate"/>
+
+<apex:form id="governForm">
+        <br></br>
+        <p style="font-size:18px">Governance </p>
+       
+        <apex:pageBlock >
+         <p>Governance is the authorities and responsibilities that facilitate the development 
+            of policies and procedures adopted and utilized by OHSES and BIA/BIE 
+            owned or leased facilities.Select an item below to learn more.</P>
+           <apex:pageMessages ></apex:pageMessages>
+              <br/><br/>
+                <!--<apex:commandLink style="font-size:14px;padding-bottom:25px;padding-bottom:25px;" rendered="{!acct.Create_Survey__c==true}">    
+                          <h3>{!acct.name}</h3>                         
+                          <apex:param name="accId" value="{!acct.id}"/>
+                          <br/>
+                 </apex:commandLink>-->
+            
+            
+               <!-- <apex:pageBlockSection id="govBlock" title="" columns="1">                                                                                 
+                    <apex:pageBlockSectionItem >-->
+                       <!--<a href="../servlet/servlet.FileDownload?file=015d00000013AXQ" target="_blank" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Homeland Security Act of 2002</a>
+                       <br/><br/><a href="../servlet/servlet.FileDownload?file=015d00000013AXV" target="_blank" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Homeland Security Presidential Directive   HSPD-7</a>
+                        <br/><br/><a href="../servlet/servlet.FileDownload?file=015d00000013AXu" target="_blank" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">National Strategy for Homeland Security </a>
+                        <br/><br/><a href="../servlet/servlet.FileDownload?file=015d00000013AXk" target="_blank" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">National InfrastructureProtection Plan (NIPP)</a>
+                        <br/><br/><a href="http://www.dhs.gov/sector-specific-plans" target="_blank" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Government Facilities Sector-Specific Plan</a>
+                        <br/><br/><a href="../servlet/servlet.FileDownload?file=015d00000013AfB" target="_blank" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Interagency Security Committee Facility Security Level</a>
+                        <br/><br/><a href="../servlet/servlet.FileDownload?file=015d00000013Ac7" target="_blank" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">DOI Departmental manual</a>
+                        --><apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}');" value=" Homeland Security Act of 2002" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">
+                      
+                             <apex:param name="documentname" value="Homeland_Security_Act_of_2002" assignTo="{!documentname}"/> 
+                         </apex:commandLink><br/><br/>
+                         <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}');" value=" Homeland Security Presidential Directive   HSPD-7" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">
+                      
+                              <apex:param name="documentname" value="Homeland_Security_Presidential_Directive_HSPD_7" assignTo="{!documentname}"/> 
+                         </apex:commandLink><br/><br/>
+                         <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}');" value=" National Strategy for Homeland Security" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">
+                      
+                              <apex:param name="documentname" value="National_Strategy_for_Homeland_Security" assignTo="{!documentname}"/> 
+                         </apex:commandLink><br/><br/>
+                          <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}');" value=" National InfrastructureProtection Plan (NIPP)" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">
+                      
+                             <apex:param name="documentname" value="National_InfrastructureProtection_Plan_NIPP" assignTo="{!documentname}"/> 
+                         </apex:commandLink>
+                            <br/><br/><a href="http://www.dhs.gov/sector-specific-plans" target="_blank" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">Government Facilities Sector-Specific Plan</a><br/><br/>
+                      
+                          <apex:commandLink action="{!documentId}" oncomplete="window.open('../servlet/servlet.FileDownload?file={!docId}');" value=" Interagency Security Committee Facility Security Level" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">
+                      
+                             <apex:param name="documentname" value="Interagency_Security_Committee_Facility_Security_Level" assignTo="{!documentname}"/> 
+                         </apex:commandLink>
+                         <br/><br/>
+                          <apex:commandLink action="{!documentId}" oncomplete="window.location.href='../servlet/servlet.FileDownload?file={!docId}';" value=" DOI Departmental manual" style="font-size:14px;padding-bottom:25px;padding-bottom:25px;">
+                      
+                             <apex:param name="documentname" value="DOI_Departmental_manual" assignTo="{!documentname}"/> 
+                         </apex:commandLink>
+                   <!-- </apex:pageBlockSectionItem>
+               
+                </apex:pageBlockSection>-->
+      </apex:pageBlock> 
+    
+         
+                
+  </apex:form>
+
+
+
+
+ 
+</apex:page>

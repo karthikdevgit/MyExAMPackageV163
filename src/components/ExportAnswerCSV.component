@@ -1,0 +1,302 @@
+<apex:component controller="ExportAnswerCSVController" allowDML="false">
+    <head>
+        <title>Export Answer CSV</title>
+        <apex:includeScript value="{!$Resource.sanitize}"/>
+        <apex:includeScript value="{!$Resource.ngcsv}"/>
+    </head>
+    
+    <div class="slds" ng-app="exportAnswerApp" ng-controller="exportAnswerCtrl" >
+        <form class="slds-form">
+            <div class="slds-notify_container errorMsg" style="display:none;" >
+                <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert">
+                    <span class="slds-assistive-text">Info</span>
+                    <h2 id="errorMessage"></h2>
+                </div>
+            </div>
+            <div class="slds-card slds-m-top--x-small">
+                <div class="slds-card__header slds-grid">
+                    <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <h2 class="slds-text-heading--small slds-truncate">Answer Export (CSV)</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-card__body slds-m-left--x-small slds-m-top--x-small slds-m-right--x-small tempHead">
+                    <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                        <tbody>
+                            <tr class="slds-hint-parent">
+                                <td class="slds-size--1-of-4">
+                                    <label class="slds-form-element__label slds-text-heading--small" for="lookup1">Assessment Template</label>
+                                </td>
+                                <td class="slds-size--3-of-4">
+                                    <div class="slds-lookup" data-select="multi" data-scope="single" data-typeahead="true">
+                                        <div class="slds-form-element">
+                                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right templateCls">
+                                                <input id="lookup1" class="slds-input slds-size--1-of-2" type="text" ng-model="searchTemplateText" ng-change="searchfocus();" ng-blur="blurtemp();" ng-copy="copied();" ng-paste="pasted();" aria-autocomplete="list" role="combobox" aria-expanded="true" aria-activedescendant="" autocomplete="off" />
+                                                <label class="slds-label"> (OR) </label>
+                                            </div>
+                                        </div>
+                                        <div class="slds-lookup__menu slds-size--1-of-2" role="listbox" ng-show="showAssTemp">
+                                            <ul class="slds-lookup__list" role="presentation">
+                                                <li class="slds-lookup__item" ng-click="selectTemplate(assTemp);" ng-repeat="assTemp in assTempList  = ( assessmentTemplateList | filter:{ ExAM__Template_name__c : searchTemplateText })">
+                                                    <a role="option" > 
+                                                        {{assTemp.ExAM__Template_name__c}}
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td class="slds-size--1-of-4">
+                                    <label class="slds-form-element__label slds-text-heading--small" for="date">Created Date Range</label>
+                                </td>
+                                <td class="slds-size--3-of-4">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-input-has-icon slds-input-has-icon--right createdDatecls  slds-size--1-of-3">
+                                                <input id="startDate1" class="startTempDatepicker slds-input" ng-model="startTempDatepicker" type="text" placeholder="Pick a Start Date" label="Date Picker Label"/>
+                                                <input id="TemplateFromDate1" type="hidden"/>
+                                                <label class="slds-label"> to </label>
+                                                <input id="endDate1" class="endTempDatepicker slds-input" ng-model="endTempDatepicker" type="text" placeholder="Pick a End Date" label="Date Picker Label"/>
+                                                <input id="TemplateToDate1" type="hidden"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td class="slds-size--1-of-4">
+                                    <label class="slds-form-element__label slds-text-heading--small" for="date">Assessment Completed Date Range</label>
+                                </td>
+                                <td class="slds-size--3-of-4">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-input-has-icon slds-input-has-icon--right slds-size--1-of-3">
+                                                <input id="startCompletedDate1" class="startCompletedDatepicker slds-input" ng-model="startCompletedDatepicker" type="text" placeholder="Pick a Start Date" label="Date Picker Label" autocomplete="off" />
+                                                <input id="CompletedFromDate1" type="hidden"/>
+                                                <label class="slds-label"> to </label>
+                                                <input id="endCompletedDate1" class="endCompletedDatepicker slds-input" ng-model="endCompletedDatepicker" type="text" placeholder="Pick a End Date" label="Date Picker Label" autocomplete="off" />
+                                                <input id="CompletedToDate1" type="hidden"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td colspan="2">
+                                    <center>
+                                        <input class="slds-button slds-button--brand" type="button" value="Export Answer" ng-click="validateData();"/>
+                                    </center>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div><!--end card body-->
+            </div>
+            <button class="btn btn-default csvbutton" style="visibility: hidden;" ng-csv="getArray" csv-header="getHeader()" filename="Answer Export.csv" field-separator="," decimal-separator=".">Export to CSV with header</button>
+        </form>  
+        <!-- Processing Image Code -->
+        <div style="display: none; background-color: rgba(0, 0, 0, 0.6); width: 100%; height: 100%; z-index: 1000; position: fixed; left: 0; top: 0; overflow: hidden; text-align: center; vertical-align: middle;" class="maskDiv">
+            <img src="{!URLFOR($Resource.SLDS052, '/assets/images/spinners/slds_spinner.gif')}" alt="Loading..." class="slds-spinner--small" style="display: none; z-index: 10001; background-color: white; width: 80px; height: 80px; padding: 15px; border-radius: 4px; text-align: left; position: relative; top: 30%;"/>
+        </div>
+        <!--End Processing Image Code -->   
+    </div>       
+    <script>
+         
+        $(document).ready(function(){
+            
+            $(".startTempDatepicker").datepicker({
+                onSelect: function(selected) {
+                    $('[id$=TemplateFromDate]').val(selected);
+                    $(".endTempDatepicker").datepicker("option","minDate", selected)
+                }
+            });
+            $(".endTempDatepicker").datepicker({ 
+                onSelect: function(selected) {
+                    $('[id$=TemplateToDate]').val(selected);
+                    $(".startTempDatepicker").datepicker("option","maxDate", selected)
+                }
+            });
+            $(".startCompletedDatepicker").datepicker({
+                onSelect: function(selected) {
+                    $('[id$=CompletedFromDate]').val(selected);
+                    $(".endCompletedDatepicker").datepicker("option","minDate", selected)
+                }
+            });
+            $(".endCompletedDatepicker").datepicker({ 
+                onSelect: function(selected) {
+                    $('[id$=CompletedToDate]').val(selected);
+                    $(".startCompletedDatepicker").datepicker("option","maxDate", selected)
+                }
+            });
+        });
+           
+        $(function() {
+            $('.startTempDatepicker').datepicker();
+            $('.endTempDatepicker').datepicker();    
+            $('.startCompletedDatepicker').datepicker();
+            $('.endCompletedDatepicker').datepicker();        
+        });
+        
+        var exportapp = angular.module('exportAnswerApp', ['underscore',"ngSanitize", "ngCsv"]);
+        exportapp.controller('exportAnswerCtrl', function($scope,$timeout,$filter) {
+            $scope.assessmentTemplateList = [];
+            $scope.showAssTemp = false;
+            $scope.searchTemplateText = '';
+            $scope.selectedTemplateRec = {};
+            
+            $scope.getArray = [];
+            
+            if ('{!JSENCODE(assessmentTemplateJSON)}' != null && '{!JSENCODE(assessmentTemplateJSON)}' != '' && '{!JSENCODE(assessmentTemplateJSON)}' != 'null') {
+                var assTempList = JSON.parse('{!JSENCODE(assessmentTemplateJSON)}');
+                if( assTempList.errType != null && assTempList.errType != '' && assTempList.errType == 'Error' ){
+                    $('#errorMessage').text(assTempList.errMsg);
+                    console.log('Error : ',assTempList.errMsg);
+                    //$('.errorMsg').css('display','');
+                } else {
+                    $scope.assessmentTemplateList = JSON.parse('{!JSENCODE(assessmentTemplateJSON)}');
+                }
+            }   
+            
+            $scope.blurtemp = function() {
+                $timeout(function(){
+                    $scope.showAssTemp = false;
+                },300);
+            }
+            
+            
+            $scope.selectTemplate = function(selectedTemp) {
+                $('.errorMsg').css('display','none');
+                $scope.selectedTemplateRec = selectedTemp;
+                $scope.searchTemplateText = $scope.selectedTemplateRec.ExAM__Template_name__c;               
+            }
+            
+            $scope.searchfocus = function() {
+                if($scope.searchTemplateText.length > 0) { 
+                    $scope.showAssTemp = true; 
+                }
+            }
+            
+            $scope.copied = function(){
+            }
+            $scope.pasted = function(){
+                $scope.searchTemplateText = $scope.searchTemplateText;
+                if ( $scope.selectedTemplateRec.Id != null ){
+                    $scope.selectedTemplateRec = {};
+                }
+                
+            }
+            
+            $scope.validateData = function() {
+                
+                var isError = false;
+                $scope.getArray = [];
+                var assId = '';
+                var startTempDatepicker = '';
+                var endTempDatepicker = '';
+                var startCompletedDatepicker = '';
+                var endCompletedDatepicker = '';
+                $('.errorMsg').css('display','none');
+                
+                if(angular.isUndefined($scope.selectedTemplateRec.Id) || $scope.searchTemplateText == null || $scope.searchTemplateText == '') {
+                    assId = '';
+                } else {
+                    assId = $scope.selectedTemplateRec.Id;
+                }
+                startTempDatepicker = $('.startTempDatepicker').val();
+                endTempDatepicker = $('.endTempDatepicker').val();
+                startCompletedDatepicker = $('.startCompletedDatepicker').val();
+                endCompletedDatepicker = $('.endCompletedDatepicker').val();
+                
+                if((startTempDatepicker != '' && endTempDatepicker != '' && assId != '') || 
+                    (startTempDatepicker == '' && endTempDatepicker == '' && assId == '')) { 
+                    $('#errorMessage').text('Please provide either Assessment template or Created Date range.');
+                    $('.errorMsg').css('display','');
+                    isError = true;
+                } else if((startTempDatepicker != '' || endTempDatepicker != '' ) && assId != '') { 
+                    $('#errorMessage').text('Please provide either Assessment template or Created Date range.');
+                    $('.errorMsg').css('display','');
+                    isError = true;
+                } else if((assId == '' && (startTempDatepicker != '' && endTempDatepicker == '')) 
+                          ||(assId == '' && (startTempDatepicker == '' && endTempDatepicker != ''))) {
+                    $('#errorMessage').text('Please select start date and end date.');
+                    $('.errorMsg').css('display','');
+                    isError = true;
+                } else {
+                    $('.errorMsg').css('display','none');
+                }
+                
+                if ( $scope.searchTemplateText != null && $scope.searchTemplateText != '' && assId == '' ){
+                    var tempLen = $scope.assessmentTemplateList.length;
+                    for( var i=0; i<tempLen; i++ ){
+                        if ( $scope.assessmentTemplateList[i].ExAM__Template_name__c.toUpperCase() === $scope.searchTemplateText.toUpperCase() ){
+                            $scope.selectedTemplateRec = $scope.assessmentTemplateList[i];
+                            assId = $scope.selectedTemplateRec.Id;
+                            $('.errorMsg').css('display','none');
+                            isError = false;
+                            break;
+                        } else {
+                            isError = true;
+                            $('.errorMsg').css('display','none');
+                                $('#errorMessage').text('The given Assessment Template Name is not exist.');
+                            $('.errorMsg').css('display','');
+                        }
+                    }
+                }
+                
+                if (!isError) {
+                    $('.maskDiv, .slds-spinner--small').show();
+                    ExAM.ExportAnswerCSVController.exportAnswers( startTempDatepicker, endTempDatepicker, assId, startCompletedDatepicker, endCompletedDatepicker, function(result, event) {
+                        if( event.status && result != 'No Assessment Template' && result != 'Empty Response' && result.indexOf('Exception') == -1) {
+                            var returnData = JSON.parse(_.unescape(result));
+                            if(returnData.length > 0) {
+                                for (var i = 0; i < returnData.length; i++) {
+                                    var crDate = $filter('date')(returnData[i].CreatedDate, "yyyy-MM-dd HH:mm:ss Z");
+                                    var completedDate = $filter('date')(returnData[i].ExAM__Issue_Request__r.ExAM__Date_Completed__c, "yyyy-MM-dd HH:mm:ss Z");
+                                    $scope.getArray.push({a: returnData[i].ExAM__Issue_Request__c,
+                                                         b: returnData[i].Id,
+                                                         c: returnData[i].Name, 
+                                                         d: returnData[i].ExAM__Question_Template__r.ExAM__Section_Question__r.ExAM__Questionnaire_Section__c,
+                                                         e: completedDate ,
+                                                         f: crDate ,
+                                                         g: returnData[i].ExAM__Issue_Request__r.ExAM__Status__c,
+                                                         h: returnData[i].ExAM__Question_Template__c,
+                                                         i: returnData[i].ExAM__Question_Template__r.ExAM__Question_Short_Name__c ? _.unescape(returnData[i].ExAM__Question_Template__r.ExAM__Question_Short_Name__c) : _.unescape(returnData[i].ExAM__Question_Template__r.ExAM__Question_Label__c),
+                                                         j: _.unescape(returnData[i].ExAM__Response__c),
+                                                         k: returnData[i].ExAM__Total_Score__c});                      
+                                }
+                                $scope.$apply();
+                                $('.csvbutton').click();
+                                $scope.searchTemplateText = '';
+                                $scope.selectedTemplateRec = {};
+                                $('.startTempDatepicker').val('');
+                                $('.endTempDatepicker').val('');
+                                $('.startCompletedDatepicker').val('');
+                                $('.endCompletedDatepicker').val('');
+                                $('.errorMsg').css('display','none');
+                                $('.maskDiv, .slds-spinner--small').hide();
+                            }
+                            
+                        } else if(result == 'No Assessment Template') {
+                            $('#errorMessage').text('The given date range has assessment template not created.');
+                            $('.errorMsg').css('display','');
+                            $('.maskDiv, .slds-spinner--small').hide();
+                        } else if(result == 'Empty Response'){
+                            $('#errorMessage').text('The selected assessment template has no answers.');
+                            $('.errorMsg').css('display','');
+                            $('.maskDiv, .slds-spinner--small').hide();
+                        } else {
+                            $('#errorMessage').text(result);
+                            $('.errorMsg').css('display','');
+                            $('.maskDiv, .slds-spinner--small').hide();
+                        }  
+                    });
+                }
+            }
+            $scope.getHeader = function () {return ["Assignment Manager ID", "ID","Name","Assessment Template Type","Assessment Completed Date","Created Date","Overall Status","Question Template","Question Label","Response","Total Score"]};
+            
+        });
+    </script>  
+</apex:component>

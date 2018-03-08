@@ -1,0 +1,68 @@
+.THIS .sizeOfFunnel {
+    width: 100%;
+    height: 500px;
+}
+
+.THIS .position {
+    float : right !important;
+}
+
+.THIS .chartSize a{
+    display : none !important;
+}
+
+.THIS .eclair-component-container{
+    __display: inline-block; 
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.THIS .eclair-component-chart{
+    __display: inline-block;
+    height: 100%;
+    -webkit-transition: width .6s;
+    transition: width .6s;
+}
+
+.THIS .amcharts-main-div svg g text{
+    max-width: 5%;
+    display: flex;
+}
+
+.THIS .amcharts-main-div svg g text tspan{
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.THIS .div-container{
+    width: 100%;
+    height: 123px;
+    overflow: auto;
+}
+.THIS .tooltip:hover{
+    
+}
+
+.THIS .chartSize{
+    min-width: 310px;
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+    height: 500px;
+    __margin-bottom :20px;
+}
+
+
+.THIS .eclair-component-container g text tspan{
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.THIS .highcharts-credits,.THIS .highcharts-title tspan{
+    display : none;
+}

@@ -1,0 +1,24 @@
+<apex:component >
+
+    <div class="slds-size--12-of-12 dependentQuestDivStyle">
+        <div class="dependent{{eachQuestTemplateRec.Id}}">
+            <c:Text_QuestionType_Component isDependentText="true"/>
+            <c:Email_QuestionType_Component isDependentEmail="true"/>
+            <c:PhoneNumber_QuestionType_Component isDependentPhone="true"/>
+            <c:Date_QuestionType_Component isDependentDate="true"/>
+            <c:Number_QuestionType_Component isDependentNumber="true"/>
+            <c:TextArea_QuestionType_Component isDependentTextarea="true"/>
+            <c:DropdownPicklist_QuestionType_Component isDependentDropdown="true"/>
+            <c:Radio_QuestionType_Component isDependenRadioQtn="true"/>
+            <c:Image_QuestionType_Component isDependentImage="true"/>
+            <c:Button_QuestionType_Component isDependentButton="true"/>
+            <c:One_Or_Many_CBox_QuestionType_Component isDependentCBox="true"/>
+            <c:File_AM_Or_Object_QuestionType_Component isDependentFileAMOrObject="true"/>
+            <c:FileAnswer_QuestionType_Component isDependentFileAnswer="true"/>
+            <c:List_QuestionType_Component isDependentList="true"/>
+            <c:HotspotImage_QuestionType_Component isDependentHotSpotImage="true" />
+            <c:Signature_QuestionType_Component isDependentSignature="true" />
+        </div>
+    </div>
+
+</apex:component>

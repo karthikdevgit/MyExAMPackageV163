@@ -1,0 +1,122 @@
+<apex:page showHeader="false" sidebar="false" standardController="Account" tabstyle="account" recordSetVar="listAccounts">
+  <!-- This is the page for banner include it in all pages-->
+<apex:include pageName="BannerTemplate"/>
+
+<apex:form id="accountForm">
+        <br></br>
+       <!-- <p style="font-size:18px">SELECT THE ORGANIZATION FOR THE ASSESSMENT </p>-->
+        <apex:pageBlock title="SELECT THE ORGANIZATION FOR THE ASSESSMENT">
+           <apex:pageMessages ></apex:pageMessages>
+            <apex:pageBlockSection id="sectionBlock" columns="1" >
+                        
+                        <!--<apex:repeat value="{!QuestionResponse}" var="section">
+                        <apex:pageBlockSection id="subsection" collapsible="true" columns="1" title="{!section.Question_Template__r.Section_Question__r.Section_label__c}"> 
+                              
+                                   
+                                                   <apex:outputField value="{!section.Question_Template__r.Question_Label__c}" />  
+                                           <br> </br>
+                                                <apex:outputField value="{!section.Response__c}"/>
+                    </apex:pageBlockSection>                           
+                  </apex:repeat> -->
+                  
+                 
+                  <apex:pageBlockTable width="100%" value="{!listAccounts}" var="acct" style="border-collapse: collapse;" >
+                                   <apex:column width="20%" rendered="{!(acct.Create_Survey__c==true)}" > 
+                                              <apex:outputText style="font-size:14px;padding-bottom:35px;padding-right:5px;" rendered="{!((acct.Create_Survey__c==true))}" >{!acct.name} </apex:outputText>
+                       
+                                    </apex:column>
+                                    <apex:column width="80%" rendered="{!(acct.Create_Survey__c==true )}" > 
+                                              <apex:outputLink value="/apex/QuestionnaireCustomDOI" style="font-size:12px;padding-bottom:35px;" rendered="{!(acct.Create_Survey__c==true ) }">[ Create                         
+                                              <apex:param name="accId" value="{!acct.id}"/>
+                                            
+                                            </apex:outputLink>
+                                            
+                                            <apex:outputLink value="/apex/QuestionnaireViewReportDOI" style="font-size:12px;padding-bottom:35px;padding-left:10px;" rendered="{!(acct.Create_Survey__c==true) }">/ View                        
+                                                      <apex:param name="accId" value="{!acct.id}"/>
+                                                      
+                                            </apex:outputLink> 
+                                             <apex:outputLink value="/apex/ReportPDF" style="font-size:12px;padding-bottom:35px;padding-left:10px;padding-right:10px;" rendered="{!(acct.Create_Survey__c==true ) }">/ PDF ]                       
+                                                      <apex:param name="accId" value="{!acct.id}"/>
+                                                       
+                                            </apex:outputLink>
+                                    </apex:column> 
+                  
+                    </apex:pageBlockTable>
+                 
+                 
+                 
+                  
+                <!-- <apex:repeat value="{!listAccounts}" var="acct" >
+                        <apex:pageBlockSection id="subsection" columns="2"  rendered="{!(acct.Create_Survey__c==true && ($Profile.Name=='DOI Survey Editor 2' || $Profile.Name=='System Administrator'|| $Profile.Name=='AssessmentProfileSalesforcePlat'))}" >
+                             <apex:outputText  style="font-size:14px;padding-bottom:35px;padding-right:5px;" rendered="{!(acct.Create_Survey__c==true && ($Profile.Name=='DOI Survey Editor 2' || $Profile.Name=='System Administrator'|| $Profile.Name=='AssessmentProfileSalesforcePlat'))}" >{!acct.name} </apex:outputText>
+                             <apex:pageBlockSectionItem >
+                           <apex:outputLink value="/apex/QuestionnaireCustom" style="font-size:12px;padding-bottom:35px;" rendered="{!(acct.Create_Survey__c==true && ($Profile.Name=='DOI Survey Editor 2' || $Profile.Name=='System Administrator'|| $Profile.Name=='AssessmentProfileSalesforcePlat')) }">[ Create                         
+                              <apex:param name="accId" value="{!acct.id}"/>
+                            </apex:outputLink>
+                            
+                            <apex:outputLink value="/apex/QuestionnaireViewReport" style="font-size:12px;padding-bottom:35px;padding-left:10px;" rendered="{!(acct.Create_Survey__c==true && ($Profile.Name=='DOI Survey Viewer 2'|| $Profile.Name=='System Administrator'|| $Profile.Name=='AssessmentProfileSalesforcePlat')) }">/ View  ]                      
+                                      <apex:param name="accId" value="{!acct.id}"/>
+                                           <br/>
+                            </apex:outputLink>                      
+                       </apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>                           
+                  </apex:repeat>   
+            </apex:pageBlockSection>
+      </apex:pageBlock> 
+                 
+             <apex:repeat value="{!listAccounts}" var="acct" >
+                
+                 
+                <apex:outputText  style="font-size:14px;padding-bottom:35px;padding-right:25px;" rendered="{!(acct.Create_Survey__c==true && ($Profile.Name=='DOI Survey Editor 2' || $Profile.Name=='System Administrator'|| $Profile.Name=='AssessmentProfileSalesforcePlat'))}" >{!acct.name} </apex:outputText>
+                <apex:outputLink value="/apex/QuestionnaireCustom" style="font-size:12px;padding-bottom:35px;" rendered="{!(acct.Create_Survey__c==true && ($Profile.Name=='DOI Survey Editor 2' || $Profile.Name=='System Administrator'|| $Profile.Name=='AssessmentProfileSalesforcePlat')) }">[ Create                         
+                          <apex:param name="accId" value="{!acct.id}"/>
+                         
+                </apex:outputLink>
+                
+                <apex:outputLink value="/apex/QuestionnaireViewReport" style="font-size:12px;padding-bottom:35px;padding-left:10px;" rendered="{!(acct.Create_Survey__c==true && ($Profile.Name=='DOI Survey Viewer 2'|| $Profile.Name=='System Administrator'|| $Profile.Name=='AssessmentProfileSalesforcePlat')) }">/ View  ]                      
+                          <apex:param name="accId" value="{!acct.id}"/>
+                               <br/>
+                </apex:outputLink>--> 
+                 <!--<apex:outputLink value="/apex/QuestionnaireCustomT2" style="font-size:14px;padding-bottom:35px;" rendered="{!(acct.Create_Survey__c==true && ($Profile.Name=='DOI Survey Editor 2' || $Profile.Name=='System Administrator')) }">  <h3>{!acct.name}</h3>                         
+                          <apex:param name="accId" value="{!acct.id}"/>                       
+                          <apex:param name="accId" value="{!acct.id}"/>
+                             
+                </apex:outputLink>-->
+       
+                                         
+                                          
+                    
+                <!--<apex:outputLink value="/apex/QuestionnaireCustomViewer" style="font-size:14px;padding-bottom:35px;" rendered="{!(acct.Create_Survey__c==true && $Profile.Name=='DOI Survey Viewer 2') }"> <h3>{!acct.name}test</h3>                         
+                          <apex:param name="accId" value="{!acct.id}"/>
+                             
+                </apex:outputLink>
+                <apex:outputLink value="/apex/QuestionnaireViewReport" style="font-size:14px;padding-bottom:35px;padding-left:10px;" rendered="{!(acct.Create_Survey__c==true && $Profile.Name=='DOI Survey Viewer 2') }"> <h3>{!acct.name}</h3>                         
+                          <apex:param name="accId" value="{!acct.id}"/>
+                               <br/>
+                </apex:outputLink>  
+
+
+             </apex:repeat>    -->    
+
+         </apex:pageBlockSection>  
+          <apex:pageBlockSection >
+          <apex:panelGrid columns="2" style="text-align:right;">
+      <apex:commandLink action="{!previous}">Previous</apex:commandlink>
+      <apex:commandLink action="{!next}">Next</apex:commandlink>
+    </apex:panelGrid>   
+     </apex:pageBlockSection>
+      </apex:pageBlock> 
+     <!-- <apex:pageBlock >
+    <apex:pageBlockTable value="{!listAccounts}" var="a">
+      <apex:column value="{!a.name}"/>
+    </apex:pageBlockTable>
+  </apex:pageBlock>-->
+         
+                
+  </apex:form>
+
+
+
+
+ 
+</apex:page>

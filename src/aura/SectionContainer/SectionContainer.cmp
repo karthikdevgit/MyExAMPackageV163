@@ -1,0 +1,66 @@
+<aura:component access="public">
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler name="toggleExpandEvent" event="c:toggleExpandEvt" action="{!c.toggleExpanded}"/>
+    <aura:handler name="cancelCreateSectionEvt" event="c:cancelCreateQuestionEvt" action="{!c.cancelAction}"/>
+    <aura:handler name="editViewOn" event="c:editViewOnEvt" action="{!c.editStateOn}"/>
+    <aura:handler name="doneEditingView" event="c:doneEditingViewEvt" action="{!c.viewStateOn}"/>
+    <aura:handler event="c:fireAssessmentChanged" action="{!c.changeAssessmentTemplate}"/>
+    
+    
+    
+    <aura:attribute name="showBtns" type="Boolean" access="public" default="true" description="if editViewOn btns are hide"/>
+    <aura:attribute name="orderNo" type="Integer" access="public" description="find position of newSection Template builder"/>
+    <aura:attribute name="position" type="Integer" access="public" default="0"/>
+    <aura:attribute name="whichBtn" type="String" access="public" />
+    <aura:attribute name="SectionTerm" type="String" default="Section" access="public"/>
+    <aura:attribute name="lastSec_OrderNo" type="Integer" access="public"/>
+    <aura:attribute name="assessmentId" type="String" access="public"/>
+    <aura:attribute name="showSection" type="Boolean" access="public" default="false"/>
+    
+    <aura:attribute name="SectionTemplates" type="Section_Template__c[]" access="public"/>
+    <aura:attribute name="newSectionTemplate"
+                    type="Section_Template__c"
+                    default="{
+                             'sobjectType' : 'Section_Template__c',
+                             'ExAM__Section_label__c' : '',
+                             'ExAM__Order_No__c' : ''}"
+                    access="public"/>    
+    
+    <aura:registerEvent name="notificationEvent" type="c:notificationEvt"/>
+    <aura:registerEvent name="editViewOn" type="c:editViewOnEvt" />
+    <aura:registerEvent name="doneEditingView" type="c:doneEditingViewEvt" />
+    
+    <div>
+        <aura:iteration items="{!v.SectionTemplates}" var="SecTemp" indexVar="index">
+            <div aura:id="addBtn" class="{!v.showBtns ? 'btn-container' : 'slds-hide'}">
+                <a class="insert-between slds-align--absolute-center slds-button slds-button--neutral" 
+                   aura:id="item" data-item="{!SecTemp.ExAM__Order_No__c ? SecTemp.ExAM__Order_No__c - 1 : index}" 
+                   data-index="{!index}" onclick="{!c.addNewSection}">
+                    <span class="fa fa-plus slds-m-right--x-small"/>
+                    Insert {#v.SectionTerm}
+                </a>
+            </div>
+            <div aura:id="newSection"></div>
+            <c:SectionViewer aura:id="sectionEditor" showQuestion="{!v.showSection}" SectionTemplate="{!SecTemp}" index="{!index}" lengthOfSecTemp="{!v.SectionTemplates.length}"/>
+        </aura:iteration>
+        <div aura:id="addBtnlast" class="{!v.showBtns ? 'btn-container' : 'slds-hide'}">
+            <button class="slds-button slds-button--neutral" 
+                    aura:id="dataIndex" data-index="0" data-item="{!v.lastSec_OrderNo}" 
+                    onclick="{!c.addNewSectionLast}">
+                <span class="fa fa-plus slds-m-right--x-small"/>
+                Add {#v.SectionTerm}
+            </button>
+        </div>
+        <div aura:id="newSectionLast"></div>
+    </div>
+    <div aura:id="spinner_container" class="slds-hide">
+        <div class="slds-spinner_container spinnerFixed">
+            <div role="status" class="slds-spinner slds-spinner--medium slds-spinner--brand">
+                <span class="slds-assistive-text">Loading</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </div>
+</aura:component>

@@ -1,0 +1,488 @@
+<apex:component controller="MapPinColorConfigCtrller">
+
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <div class="slds-form-element" ng-app="mapPinColorConfigureApp" ng-controller="mapPinColorConfigureCtrler">
+            <!-- Start Map Pin Color Configuration -->
+            <div class="slds-card__body">
+                <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                    <tbody>
+                        <tr class="slds-hint-parent">
+                            <td colspan="3" ng-show="errMsg.length" style="color: {{setPgMsgColor}};font-size: 15px;">
+                                {{ errMsg }}
+                            </td>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td class="slds-size--1-of-4">Assessible Object</td>
+                            <td class="slds-size--2-of-4">
+                                <select class="slds-select slds-size--3-of-4 mapConfigSelect" id="objDD" ng-disabled="hideAssessibleObj" ng-options="item.assessibleObjApiName as item.assessibleObjLabel for item in (AssessibleObjects | orderBy:'assessibleObjLabel')" ng-model="selectedMapPinColorConfig.ExAM__Assessible_Object__c" ng-change="loadFieldsForSelectedAssessibleObject(false)">
+                                </select>
+                            </td>
+                            <td class="slds-size--1-of-4"></td>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td class="slds-size--1-of-4">Assessible Field</td>
+                            <td class="slds-size--2-of-4">
+                                <select class="slds-select mapConfigSelect" ng-options="eachField.assessibleFieldApiName as eachField.assessibleFieldLabel for eachField in (AssessibleFields | orderBy:'assessibleFieldLabel')" ng-model="selectedMapPinColorConfig.ExAM__Assessible_Object_Field__c" ng-change="loadOptionsForSelectedAssessibleField()">
+                                </select>
+                            </td>
+                            <td class="slds-size--1-of-4"></td>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td class="slds-size--1-of-4">Field Value-Color Mapping</td>
+                            <td class="slds-size--2-of-4" id="colormappingtd">
+                                <div ng-repeat="eachVal in optionColorObjArr">
+                                    <select class="slds-select mapConfigSelect" ng-options="eachOpt as eachOpt for eachOpt in (AssessibleFieldOptions | orderBy)" ng-model="eachVal.selectedOpt"></select>
+                                    <select class="slds-select mapConfigSelect" ng-options="eachColor as eachColor for eachColor in (colorOptions | orderBy)" ng-model="eachVal.selectedColor"></select>
+                                    <span ng-click="constructNewOptionDiv();" style="cursor: pointer;" title="Add">
+                                        <svg aria-hidden="true" class="slds-icon icon-utility-new slds-icon--small" style="fill: blue;">
+                                            <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#add')}"></use>
+                                        </svg>
+                                    </span>
+                                    <span ng-click="removeSelectedOptionDiv($index);" ng-if="optionColorObjArr.length>1" style="cursor: pointer;" title="Remove">
+                                        <svg aria-hidden="true" class="slds-icon icon-utility-new slds-icon--small" style="fill: blue;">
+                                            <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#dash')}"></use>
+                                        </svg>
+                                    </span>
+                                    <br/><br/>
+                                </div>
+                            </td>
+                            <td class="slds-size--1-of-4"></td>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td class="slds-size--1-of-4">Mapping Name</td>
+                            <td class="slds-size--2-of-4" colspan="2">
+                                <input type="text" placeholder="Enter Mapping Name" class="slds-col slds-size--2-of-4 slds-input" ng-model="selectedMapPinColorConfig.Name"/>&nbsp;&nbsp;
+                                <input class="slds-button slds-button--brand" type="button" value="Save" ng-click="validateData();"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- End Map Pin Color Configuration -->
+    
+            <!-- Start Code to show existing Map Pin Color Configuration -->
+            <div class="slds-card__body">
+                <div ng-show="!AssessibleObjDtl.mapPinColorConfigRecords.length">There are no existing Map Pin Color Configuration records</div>
+                <div ng-show="AssessibleObjDtl.mapPinColorConfigRecords.length">
+                    <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                        <thead>
+                            <tr class="slds-text-heading--label">
+                                <th scope="col"><span class="slds-truncate"><b>Action</b></span></th>
+                                <th scope="col"><span class="slds-truncate"><b>Assessable Object</b></span></th>
+                                <th scope="col"><span class="slds-truncate"><b>Mapping Name</b></span></th>
+                                <th scope="col"><span class="slds-truncate"><b>Assessable Field</b></span></th>
+                                <th scope="col"><span class="slds-truncate"><b>Color Mapping</b></span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="eachMapPinConfigRecord in existingMapConfigurationRecords | limitTo:10">
+                                <td class="slds-cell-wrap" data-label="Action">
+                                    <a style="cursor: pointer;" ng-click="editThisMapConfig($index);">Edit</a>|
+                                    <a style="cursor: pointer;" ng-click="removeThisMapConfig($index);">Del</a>
+                                </td>                
+                                <td class="slds-cell-wrap" data-label="Assessable Object">
+                                    <span>{{ eachMapPinConfigRecord.ExAM__Assessible_Object__c }}</span>
+                                </td>                
+                                <td class="slds-cell-wrap" data-label="Mapping Name">
+                                    <span>{{ eachMapPinConfigRecord.Name }}</span>
+                                </td>                
+                                <td class="slds-cell-wrap" data-label="Assessable Field">
+                                    <span class="slds-truncate"> {{ eachMapPinConfigRecord.ExAM__Assessible_Object_Field__c }} </span>
+                                </td>
+                                <td class="slds-cell-wrap" data-label="Color Mapping">
+                                    <span ng-click="constructColorMappingMsg($index);" style="cursor: pointer;color: #0070d2;">View</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- End Code to show existing Map Pin Color Configuration -->
+    
+            <!--Model Div Start-->
+            <div class="slds-modal slds-fade-in-open slds-modal-backdrop" aria-hidden="false" role="dialog" ng-show="showMsg">
+                <div class="slds-modal__container">
+                    <div class="slds-modal__header">
+                        <button class="slds-button slds-button--icon-inverse slds-modal__close" ng-click="closeModelPopup()">
+                            <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                                <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                            </svg>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-text-heading--medium">Color Mapping</h2>
+                    </div>
+                    <div class="slds-modal__content slds-p-around--medium">
+                        <div style="white-space:pre-wrap;">{{color}}</div>
+                    </div>
+                </div>
+            </div>
+            <!--Model Div End-->
+
+            <!-- Processing Image Code -->
+            <div ng-show="showSpinnerWheel" style="background-color: rgba(0, 0, 0, 0.6); width: 100%; height: 100%; z-index: 1000; position: absolute; left: 0; top: 0; overflow: hidden; text-align: center; vertical-align: middle;" class="maskDiv">
+                <img ng-show="showSpinnerWheel" src="{!URLFOR($Resource.SLDS052, '/assets/images/spinners/slds_spinner.gif')}" alt="Loading..." class="slds-spinner--small" style="z-index: 10001; background-color: white; width: 80px; height: 80px; padding: 15px; border-radius: 4px; text-align: left; position: relative; top: 30%;"/>
+            </div>
+            <!--End Processing Image Code -->
+        </div><!-- end slds-form-element -->
+    </html>
+    <script>
+
+        var app = angular.module('mapPinColorConfigureApp', []);
+        app.service('mapPinColorConfigService', function($q) {
+
+            this.queryReqdInput = function() {
+
+                var defer = $q.defer();
+
+                ExAM.MapPinColorConfigCtrller.queryAllAccessibleObjsFromASM(function(result, event) {
+    
+                    if (event.status) {
+                        defer.resolve(result);
+                    }
+                });
+                return defer.promise;
+                
+            }
+
+            this.saveMapPinConfigJS = function(obj) {
+
+                var defer = $q.defer();
+
+                ExAM.MapPinColorConfigCtrller.saveMapPinColorConfiguration(obj, function(result, event) {
+                    defer.resolve(result);
+                });
+                return defer.promise;
+            }
+
+            this.callDeleteMapPinConfigJS = function(obj) {
+
+                var defer = $q.defer();
+                //var deleteResponse = '';
+
+                ExAM.MapPinColorConfigCtrller.deleteMapPinColorConfiguration(obj, function(result, event) {
+        
+                    if (event.status && result.length > 0) {
+                        if( result.indexOf('Exception-') == -1) {
+                             defer.resolve(result);
+                        }else {
+                            result = result.replace('Exception-', '');
+                            defer.reject(result);
+                        }
+                    }
+                });
+                return defer.promise;
+            }
+        });
+        app.controller('mapPinColorConfigureCtrler', function($scope, mapPinColorConfigService) {
+
+            $scope.AssessibleObjDtl = {};
+            $scope.selectedMapPinColorConfig = {};
+            $scope.objMap = {};
+            $scope.fieldMap = {};
+            $scope.AssessibleObjects = [];
+            $scope.AssessibleFields = [];
+            $scope.AssessibleFieldOptions = [];
+            $scope.existingMapConfigurationRecords = [];
+            $scope.selectedAssessibleFields = [];
+            $scope.existingRecordIds = [];
+            $scope.optionColorObjArr = [];
+            $scope.pklstOptionArr = [];
+            $scope.colorOptions = ['--None--', 'Red', 'Green', 'Yellow'];
+            $scope.optionColorCombo = '';
+            $scope.errMsg = '';
+            $scope.color = '';
+            $scope.setPgMsgColor = 'red';
+            $scope.showSpinnerWheel = false;
+            $scope.hideAssessibleObj = false;
+            $scope.showMsg = false;
+
+            $scope.toggleViewAllLinkVisibility = function() {
+
+                $('.pinColorObjViewLink').hide();
+
+                if ($scope.existingMapConfigurationRecords != null && $scope.existingMapConfigurationRecords.length > 10) {
+                    $('.pinColorObjViewLink').show();
+                }
+            }
+
+            mapPinColorConfigService.queryReqdInput().then(function(data) {
+                $scope.AssessibleObjDtl = data;
+                if($scope.AssessibleObjDtl.errormsg){
+                    $scope.errMsg = _.unescape($scope.AssessibleObjDtl.errormsg);
+                }else{
+                    $scope.AssessibleObjects = $scope.AssessibleObjDtl.assessibleObjDtls;
+                    $scope.existingMapConfigurationRecords = $scope.AssessibleObjDtl.mapPinColorConfigRecords;
+                    $scope.objMap = $scope.AssessibleObjDtl.assessibleObjApiNameLabelMap;
+                    $scope.fieldMap = $scope.AssessibleObjDtl.assessibleObjFieldApiNameLabelMap;
+    
+                    $scope.toggleViewAllLinkVisibility();
+                    $scope.constructNewOptionDiv();
+                }
+            });
+
+            $scope.constructNewOptionDiv = function() {
+
+                $scope.optionColorObjArr.push( {"selectedOpt": '--None--', "selectedColor": '--None--'} );
+            }
+
+            $scope.removeSelectedOptionDiv = function(thisElementIndex) {
+
+                $scope.optionColorObjArr.splice(thisElementIndex, 1);
+            }
+
+            $scope.constructColorMappingMsg = function(rowIndex) {
+
+                $scope.colorArray = $scope.existingMapConfigurationRecords[rowIndex].ExAM__Color_Mapping__c.split('~');
+                $scope.color = '';
+                $msg1 = '';
+                $msg2 = '';
+                $msg3 = '';
+
+                angular.forEach($scope.colorArray, function(value, key) {
+
+                    $scope.thisOpt = value.split(':')[0];
+                    $scope.thisColor = value.split(':')[1];
+
+                    if(angular.equals($scope.thisColor, 'Red')) {
+
+                        if($msg1.length>0) {
+                            $msg1 += ', '+$scope.thisOpt;
+                        }
+                        else {
+                            $msg1 = 'Red: '+$scope.thisOpt;
+                        }
+                    }
+                    else if(angular.equals($scope.thisColor, 'Green')) {
+
+                        if($msg2.length>0) {
+                            $msg2 += ', '+$scope.thisOpt;
+                        }
+                        else {
+                            $msg2 = 'Green: '+$scope.thisOpt;
+                        }
+                    }
+                    else if(angular.equals($scope.thisColor, 'Yellow')) {
+
+                        if($msg3.length>0) {
+                            $msg3 += ', '+$scope.thisOpt;
+                        }
+                        else {
+                            $msg3 = 'Yellow: '+$scope.thisOpt;
+                        }
+                    }
+                });
+                $scope.color = ($msg1) ? $msg1+'\n' : $msg1;
+                $scope.color += ($msg2) ? $msg2+'\n' : $msg2;
+                $scope.color += ($msg3) ? $msg3+'\n' : $msg3;
+                $scope.showMsg = true;
+            }
+
+            $scope.closeModelPopup = function() {
+                $scope.showMsg = false;
+            }
+
+            $scope.loadFieldsForSelectedAssessibleObject = function(isManual) {
+
+                $scope.clearAllVariables(false, isManual);
+    
+                if (angular.isDefined($scope.AssessibleObjDtl.assessibleObjApiRelatedFieldsMap[$scope.selectedMapPinColorConfig.ExAM__Assessible_Object__c])) {
+                    $scope.AssessibleFields = $scope.AssessibleObjDtl.assessibleObjApiRelatedFieldsMap[$scope.selectedMapPinColorConfig.ExAM__Assessible_Object__c];
+                }
+            }
+    
+            $scope.loadOptionsForSelectedAssessibleField = function() {
+
+                if (angular.isDefined($scope.AssessibleObjDtl.fieldApiAndPklstOptionsMap[$scope.selectedMapPinColorConfig.ExAM__Assessible_Object_Field__c])) {
+                    $scope.AssessibleFieldOptions = $scope.AssessibleObjDtl.fieldApiAndPklstOptionsMap[$scope.selectedMapPinColorConfig.ExAM__Assessible_Object_Field__c];
+                }
+            }
+    
+            $scope.editThisMapConfig = function(thisRecordIndex) {
+    
+                $scope.selIndex = thisRecordIndex;
+                $scope.selectedMapPinColorConfig = angular.copy( $scope.existingMapConfigurationRecords[thisRecordIndex] );
+                $scope.hideAssessibleObj = true;
+                    
+                if ($scope.existingRecordIds.indexOf($scope.selectedMapPinColorConfig.Id) == -1) {
+
+                    $scope.pinColorArr = [];
+                    $scope.pinColorArr = $scope.selectedMapPinColorConfig.ExAM__Color_Mapping__c.split('~');
+                    $scope.optionColorObjArr = [];
+
+                    angular.forEach($scope.pinColorArr, function(value, key) {
+                        $scope.optionColorObjArr.push( {"selectedOpt": value.split(':')[0], "selectedColor": value.split(':')[1]} );
+                    });
+                    $scope.existingRecordIds.push($scope.selectedMapPinColorConfig.Id);
+                    $scope.loadFieldsForSelectedAssessibleObject(true);
+                    $scope.loadOptionsForSelectedAssessibleField();
+                }
+            }
+
+            $scope.removeThisMapConfig = function(rowIndex) {
+    
+                $scope.hideAssessibleObj = false;
+                $scope.mapConfigToRemove = angular.copy( $scope.existingMapConfigurationRecords[rowIndex] );
+    
+                if (window.confirm('Are you sure?')) {
+        
+                    $scope.showSpinnerWheel = true;
+                    $scope.errMsg = '';
+                    $scope.setPgMsgColor = 'red';
+
+                    mapPinColorConfigService.callDeleteMapPinConfigJS($scope.mapConfigToRemove).then(function(data) {
+
+                        $scope.existingMapConfigurationRecords.splice(rowIndex, 1);
+                        $scope.clearAllVariables(true, false);
+                        $scope.setPgMsgColor = 'green';
+                        $scope.showSpinnerWheel = false;
+                        $scope.errMsg = data;
+                        $scope.toggleViewAllLinkVisibility();
+                        $scope.$apply();
+                    },function(errorData) {
+                        $scope.setPgMsgColor = 'red';
+                        $scope.showSpinnerWheel = false;
+                        $scope.errMsg = errorData;
+                    });
+                }
+            }
+
+            $scope.clearAllVariables = function(isFromRF, isManual) {
+
+                if (isFromRF) {
+                    $scope.optionColorCombo = '';
+                    $scope.selectedMapPinColorConfig.ExAM__Assessible_Object__c = '';
+                    $scope.selIndex = null;
+                    $scope.selectedMapPinColorConfig.Id = null;
+                    $scope.MapPinColorConfig = {};
+                    $scope.existingRecordIds = [];
+                    $scope.pklstOptionArr = [];
+                    $scope.optionColorObjArr = [];
+                    $scope.optionColorObjArr.push( {"selectedOpt": '--None--', "selectedColor": '--None--'} );
+                }
+
+                $scope.AssessibleFields = [];
+                if (!isManual) {
+                    $scope.selectedMapPinColorConfig.ExAM__Assessible_Object_Field__c = '--None--';
+                    $scope.selectedMapPinColorConfig.Name = '';
+                }
+            }
+    
+            $scope.validateData = function() {
+
+                $scope.isValidData = false;
+                $scope.errMsg = '';
+                $scope.setPgMsgColor = 'red';
+                $scope.selectedAssessibleFields = [];
+
+                if ( angular.isUndefined($scope.selectedMapPinColorConfig.ExAM__Assessible_Object__c) || ($scope.selectedMapPinColorConfig.ExAM__Assessible_Object__c == '') ) {
+
+                    $scope.errMsg = 'Please select a Assessible Object';
+                }
+                else if ( ($scope.selectedMapPinColorConfig.ExAM__Assessible_Object_Field__c == '' || $scope.selectedMapPinColorConfig.ExAM__Assessible_Object_Field__c == '--None--') ) {
+    
+                    $scope.errMsg = 'Please select a Assessible field from fields drop down';
+                }
+                else if ( ($scope.selectedMapPinColorConfig.Name == '' || $scope.selectedMapPinColorConfig.Name == '--None--') ) {
+    
+                    $scope.errMsg = 'Please enter mapping name';
+                }
+                else {
+
+                    var continueIteration = true, hasSelectionBoxLeftEmpty = false;
+                    $scope.pklstOptionArr = [];
+                    $scope.optionColorCombo = '';
+                    angular.forEach($scope.optionColorObjArr, function(value, key) {
+                        if (continueIteration) {
+
+                            $scope.objjFielddPklstt = $scope.selectedMapPinColorConfig.ExAM__Assessible_Object__c+'@@'+$scope.selectedMapPinColorConfig.ExAM__Assessible_Object_Field__c+'@@'+value.selectedOpt;
+
+                            if (value.selectedOpt == '--None--' || value.selectedColor == '--None--') {
+                                continueIteration = false;
+                                hasSelectionBoxLeftEmpty = true;
+                            }
+                            else if ($scope.pklstOptionArr.indexOf($scope.objjFielddPklstt) >= 0) {
+                                continueIteration = false;
+                            }
+                            else {
+
+                                $scope.pklstOptionArr.push($scope.objjFielddPklstt);
+                                if ($scope.optionColorCombo.length > 0) {
+                                    $scope.optionColorCombo += value.selectedOpt+':'+value.selectedColor+'~';
+                                }
+                                else {
+                                    $scope.optionColorCombo = value.selectedOpt+':'+value.selectedColor+'~';
+                                }
+                            }
+                        }
+                    });
+                    if (!continueIteration) {
+
+                        if (hasSelectionBoxLeftEmpty) {
+                            $scope.errMsg = 'Please enter value for all Field Value-Color Mapping';
+                        }
+                        else {
+                            $scope.errMsg = 'Please select unique combination of picklist option and color';
+                        }
+                    }
+                    else {
+
+                        if ($scope.optionColorCombo.endsWith('~')) {
+                            $scope.optionColorCombo = $scope.optionColorCombo.substr(0,$scope.optionColorCombo.length-1);
+                        }
+                        $scope.isValidData = true;
+                    }
+                }
+                if ($scope.isValidData) {
+                    $scope.savePinColorConfiguration();
+                }
+            }
+    
+            $scope.savePinColorConfiguration = function() {
+    
+                $scope.showSpinnerWheel = true;
+                $scope.errMsg = '';
+                $scope.setPgMsgColor = 'red';
+
+                $scope.selectedMapPinColorConfig.Name = ($scope.selectedMapPinColorConfig.Name != '--None--') ? $scope.selectedMapPinColorConfig.Name : '';
+                $scope.selectedMapPinColorConfig.ExAM__Assessible_Object__c = ($scope.selectedMapPinColorConfig.ExAM__Assessible_Object__c != '--None--') ? $scope.selectedMapPinColorConfig.ExAM__Assessible_Object__c : '';
+                $scope.selectedMapPinColorConfig.ExAM__Assessible_Object_Field__c = ($scope.selectedMapPinColorConfig.ExAM__Assessible_Object_Field__c != '--None--') ? $scope.selectedMapPinColorConfig.ExAM__Assessible_Object_Field__c : '';
+
+                $scope.MapPinColorConfig = {};
+                if ($scope.selectedMapPinColorConfig.Id != null) {
+                    $scope.MapPinColorConfig.Id = $scope.selectedMapPinColorConfig.Id;
+                }
+                $scope.MapPinColorConfig.Name = $scope.selectedMapPinColorConfig.Name;
+                $scope.MapPinColorConfig.ExAM__Assessible_Object__c = $scope.selectedMapPinColorConfig.ExAM__Assessible_Object__c;
+                $scope.MapPinColorConfig.ExAM__Assessible_Object_Field__c = $scope.selectedMapPinColorConfig.ExAM__Assessible_Object_Field__c;
+                $scope.MapPinColorConfig.ExAM__Color_Mapping__c = $scope.optionColorCombo;
+
+                mapPinColorConfigService.saveMapPinConfigJS($scope.MapPinColorConfig).then(function(data) {
+
+                    if( data.indexOf('Exception-') == -1) {
+
+                        var upsertedRecordId;
+                        if (data.indexOf('@@') > 0) {
+                            upsertedRecordId = data.split('@@')[0];
+                            data = data.split('@@')[1];
+                            $scope.MapPinColorConfig.Id = upsertedRecordId;
+                        }
+                        if ( $scope.selIndex != null ) {
+                            $scope.hideAssessibleObj = false;
+                            $scope.existingMapConfigurationRecords.splice($scope.selIndex, 1);
+                        }
+                        $scope.existingMapConfigurationRecords.unshift($scope.MapPinColorConfig);
+                        $scope.clearAllVariables(true, false);
+                        $scope.setPgMsgColor = 'green';
+                    }
+                    else {
+                        data = data.replace('Exception-', '');
+                    }
+                    $scope.showSpinnerWheel = false;
+                    $scope.errMsg = _.unescape(data);
+                    $scope.toggleViewAllLinkVisibility();
+                    $scope.$apply();
+                });
+            }
+        });
+    </script>
+</apex:component>

@@ -1,0 +1,115 @@
+<apex:page showHeader="false" sidebar="false">
+  <!-- This is the page for banner include it in all pages, always put the images and css together in a zip than we can reference from css the images-->
+
+<apex:stylesheet value="{!URLFOR($Resource.ResourceLibOHSES,'styles.css')}" />
+<apex:form >
+       <TABLE border="0" cellSpacing="0" cellPadding="0" width="100%">
+        <TBODY>
+        <!--<TR bgColor="#49572a">
+          <TD class="header-nav"></TD>
+          <TD style="PADDING-RIGHT: 4px" class="header-nav" vAlign="top" 
+            align="right">
+            <DIV id="navigation" class="navbar"></DIV>
+          </TD>
+        </TR>-->
+        <TR>
+          <TD class="header-main">
+            <TABLE border="0" cellSpacing="0" cellPadding="0" width="100%">
+              <TBODY>
+              <TR>
+                <TD vAlign="top" width="140" align="left"><A title="Go to the main Assessment page" 
+                  href="/apex/OHSESMain">   <apex:image url="{!URLFOR($Resource.ResourceLibOHSES,'images/OHSES_img_banner.png')}" width="500" height="100"/>
+          
+               </A></TD></TR></TBODY></TABLE>
+          </TD>
+          <TD class="header-main" vAlign="bottom" align="right">
+            <TABLE>
+              <TBODY>
+              
+              <TR>                 
+                 
+                
+              </TR>
+              <TR>
+               <TD style="PADDING-RIGHT: 10px;PADDING-BOTTOM: 10px;FONT-SIZE: 14px;FONT-FAMILY: Verdana, Arial, sans-serif; COLOR: #000000; TEXT-DECORATION: none;" vAlign="top" width="1%" align="right"><A style="FONT-FAMILY: Arial; COLOR: #000000;" 
+                  title="Go Home" 
+                  href="/home/home.jsp">Home
+                 <!--<apex:image url="{!$Resource.down_arrow_banner}"/>-->
+
+                  </A> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <A style="FONT-FAMILY: Arial; COLOR: #000000;" 
+                  title="Logout" 
+                  href="/secur/logout.jsp">Logout&nbsp;<!--{!$user.FirstName}&nbsp;&nbsp;{!$user.LastName}&nbsp;&nbsp;-->
+                 <!--<apex:image url="{!$Resource.down_arrow_banner}"/>-->
+
+                  </A> 
+                </TD>
+              </TR>
+              </TBODY></TABLE>
+           </TD>
+        </TR>
+        
+          
+          </TBODY></TABLE>
+      <TABLE>
+        <TBODY></TBODY></TABLE>
+        
+ </apex:form> 
+</apex:page>
+
+<!--<apex:page standardStylesheets="false" showHeader="false" sidebar="false">
+ 
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+    <td>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr bgcolor="#D7D7D7">          
+          <td align="left" valign="top">
+                
+
+             <apex:image url="{!URLFOR($Resource.OHSESResource,'images/OHSES_img_banner.png')}" width="500" height="100"/>
+          </td>
+           <td width="90%" valign="top">
+             <apex:image url="{!URLFOR($Resource.OHSESResource,'images/OHSES_banner_right.png')}" width="100%" height="100"/>        
+           </td>
+           
+           <td width="10%">        
+             Hello &nbsp;{!$User.FirstName}
+           </td>
+        </tr>
+      </table>
+    </td>
+    </tr>
+</table>--><!--
+<table>
+<TR>
+<TD>
+ <apex:stylesheet value="{!$Resource.navigationCustom}" />-->
+ <!--<apex:outputPanel layout="block" id="container_wrap" style="font-weight:bold"/>-->
+
+
+<!--<DIV id="container_wrap">
+    <DIV id="container">
+    <H2>Overview</H2>
+    <P>The Pre-Assessment Checklist (PAC) is a tool that facilitates the assessment of minimum security requirements set forth by the Department of the Interior &apos; Departmental Manual for facilities owned or leased by the Bureau of Indian Affairs in Indian Country.</P>
+        <DIV id="tool_container_wrap">
+            <DIV id="tool_container">
+            <A styleClass="big_box" href="">
+                <DIV class="top">&nbsp;</DIV>
+                <DIV class="middle">
+                  <apex:image url="{!$Resource.ph_survey}" width="100%" height="100"/>
+                    <H3>Survey</H3>
+                    <H4><BR></br></H4>
+                    <P>Questionnaire regarding the security standards and conditions of BIA/BIE owned or leased facilities operating in Indian Country.</P>
+                    <DIV class="go_arrow">&nbsp;</DIV>
+                </DIV>
+                <DIV class="bottom">&nbsp;</DIV>
+             </A>
+             </div>
+       </div>
+    </DIV>
+</div>
+</TD></TR>
+</table>
+
+</apex:page>-->

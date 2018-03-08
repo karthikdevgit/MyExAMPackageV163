@@ -1,0 +1,3 @@
+<aura:event type="COMPONENT" access="public">
+    <aura:attribute name="attachment" type="Map" access="public"/>
+</aura:event>

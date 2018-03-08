@@ -1,0 +1,135 @@
+<aura:component access="public">
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="change" value="{!v.isSectionEdited}" action="{!c.changesInformToParent}" description="Section's state inform to its parent"/>
+    <aura:handler name="updateFields" event="c:updateFieldEvt" action="{!c.reloadContent}"/>
+    <aura:handler name="QuestionSelected" event="c:questionSelectedEvt" action="{!c.toggleQuestionSelected}"/>
+    <aura:handler name="ctrlLinkMenuEvt" event="c:ctrlLinkMenuEvt" action="{!c.getAction}" description="for Menu control action"/>
+    <aura:handler name="cancelCreateAction" event="c:cancelCreateQuestionEvt" action="{!c.cancelCreateQuestion}"/>
+    <aura:handler name="disableViewToggle" event="c:disableViewToggleEvt" action="{!c.toggleInLineViewOfSection}" description="toggleView Of Section Inline"/>
+    <aura:handler name="editViewOn" event="c:editViewOnEvt" action="{!c.sectionEditStateOn}" />
+    <aura:handler name="doneEditingView" event="c:doneEditingViewEvt" action="{!c.sectionViewStateOn}" />
+	<aura:handler event="c:fireSectionChangedEvt" action="{!c.changeQuestionTemplates}"/>
+    	
+    
+    <aura:attribute name="fields" type="Map" access="public"/>
+    <aura:attribute name="lastQues_OrderNo" type="Integer" access="public"/>
+    <aura:attribute name="isSectionEdited" type="Boolean" default="false" access="public" description="Is section EditStateOn"/>
+    <aura:attribute name="showBtns" type="Boolean" default="true" access="public" description="If Section EditStateOn btns are hide"/>
+    <aura:attribute name="isInLineEdit" type="Boolean" default="false" access="public" description="Is Section Inline EditStateOn"/>
+    <aura:attribute name="orderNo" type="Integer" access="public" description="find Position Of newQuestion Template Builder"/>
+    <aura:attribute name="position" type="Integer" access="public" default="0"/>
+    <aura:attribute name="questionTerm" type="String" default="Question" access="public"/>
+    <aura:attribute name="check" type="Boolean" default="false" access="public"/>
+    <aura:attribute name="index" type="Integer" access="public"/>
+    <aura:attribute name="lengthOfSecTemp" type="Integer" access="public"/>
+    <aura:attribute name="showQuestion" type="Boolean" access="public" default="false"/>
+    <aura:attribute name="lastBtn" type="Boolean" access="public" default="false"/>
+    
+    <aura:attribute name="SectionTemplate" type="Section_Template__c" 
+                    default="{
+                             'sobjectType' : 'Section_Template__c',
+                              'ExAM__Section_label__c' : ''}" access="public"/>
+    <aura:attribute name="newSectionTemplate"
+                    type="Section_Template__c"
+                    default="{
+                             'sobjectType' : 'Section_Template__c',
+                             'ExAM__Section_label__c' : '',
+                             'ExAM__Order_No__c' : ''}"
+                    access="public"/>
+    <aura:attribute name="QuestionsTemplate" type="Question_Template__c[]" access="public"/>
+
+    
+    <aura:registerEvent name="notificationEvent" type="c:notificationEvt"/>
+    <aura:registerEvent name="toggleExpandEvent" type="c:toggleExpandEvt"/>
+    <aura:registerEvent name="editViewOn" type="c:editViewOnEvt" />
+    <aura:registerEvent name="doneEditingView" type="c:doneEditingViewEvt" />
+
+    <aura:method name="doInitMethod" action="{!c.doInit}"></aura:method>
+    <aura:method name="toggleExpand" action="{!c.toggleExpandSection}"></aura:method>
+    <aura:method name="disableQuestionView" action="{!c.questionEditStateOn}" description="disableView Of Questions"/>
+    <aura:method name="enableQuestionView" action="{!c.questionViewStateOn}" description="enableView Of Questions"/>
+    
+    
+
+  <div class="slds-p-around--small" aura:id="sectionViewer">
+    <article class="slds-card section" aura:id="sectionEditor">
+      <div class="slds-m-around--medium"></div>
+      <div class="slds-m-around--small" aura:id="sectionView">
+        <header class="slds-media slds-media--center slds-grid slds-grid--align-spread">
+          <div class="slds-media__body ">
+
+            <div class="slds-grid">
+              <span aura:id="expand" class="slds-p-right--small center" onclick="{!c.handleSectionChange}">
+
+                <div class="{!v.check ? 'slds-show' : 'slds-hide'}">
+                  <lightning:icon class="icn" iconName="utility:chevrondown" size="small"/>
+                </div>
+                <div class="{!v.check ? 'slds-hide' : 'slds-show'}">
+                  <lightning:icon class="icn" iconName="utility:chevronright" size="small"/>
+                </div>
+              </span>
+              <c:ExamTextFld aura:id="sectionName"  cssClass="display-inline" hideLabel="true" spreadButtons="false" record="{!v.SectionTemplate}" mode="edit" Id="{!v.SectionTemplate.Id}" sObjectName="ExAM__Section_Template__c" fieldName="ExAM__Section_label__c" fieldLabel="Section Name"/>
+
+            </div>
+          </div>
+          <div>
+              <div class="actions-container" aura:id="ctrlLink">
+                  <c:CtrlLinkMenu showIcon="true" hideLabel="false" 
+                                      sourceDerivenCmp="{'type' : 'SectionViewer'}"
+                                     menuLinkText="Section Actions" itemIndex="{!v.index}" linkChange="false" attributes="[{optionText:'Copy', optionValue: 'copySection'},
+                                                                                                                         {optionText:'Move', optionValue: 'moveSection'},
+                                                                                                                         {optionText:'Move Section Up', optionValue: 'moveSectionUp'},
+                                                                                                                         {optionText:'Move Section Down', optionValue: 'moveSectionDown'},
+                                                                                                                         {optionText:'Archive Section', optionValue: 'changeArchive'},
+                                                                                                                         {optionText:'Section Option', optionValue: 'sectionOption'}
+                                                                                                                         ]"/>
+              </div>
+            <div class="slds-grid ">
+              <div aura:id="sectionActions"></div>
+            </div>
+          </div>
+
+        </header>
+
+      </div>
+      <div aura:id="sectionMoveOrCpy"></div>
+
+      <div class="slds-card__body">
+
+        <ul class="slds-is-collapsed" role="group" aura:id="examSec" aria-labelledby="tree0-node1__label">
+            
+            <aura:iteration items="{!v.QuestionsTemplate}" var="QuesTemp" indexVar="index">
+                <div aura:id="addBtn" class="{!v.showBtns ? 'btn-container' : 'slds-hidden'}">
+                    <a class="question insert-between slds-align--absolute-center slds-button slds-button--neutral"
+                       onclick="{!c.addQuestion}" data-index="{!index}" 
+                       data-item="{!QuesTemp.ExAM__Question_Order_No__c ? QuesTemp.ExAM__Question_Order_No__c - 1 : index}">
+                        <span class="fa fa-plus slds-m-right--x-small"/>
+                        Insert {#v.questionTerm} 
+                    </a>
+                </div>
+                <div aura:id="questionEditView"></div>
+                <c:QuestionViewer aura:id="editQuest" QuestionTemplate="{!QuesTemp}" assessmentId="{!v.SectionTemplate.ExAM__Questionnaire_Section__c}" index="{!index}" />
+            </aura:iteration>
+            <div id="{!v.QuestionsTemplate.length}" aura:id="addBtn" class="{!v.showBtns ? 'slds-align--absolute-center' : 'slds-hide'}"> 
+                <button class="slds-m-around--medium slds-button slds-button--neutral"  
+                        onclick="{!c.addQuestion}" data-index="{!v.QuestionsTemplate.length}"
+                        data-item="{!v.lastQues_OrderNo}" data-btn="last"> 
+                    <span class="fa fa-plus slds-m-right--x-small"/> 
+                    Add {#v.questionTerm} 
+                </button>
+            </div>
+   <div aura:id="questionEditView"></div>
+</ul>
+</div> </article> </div> 
+    
+    <div aura:id="spinner_container" class="slds-hide">
+        <div class="slds-spinner_container">
+            <div role="status" class="slds-spinner slds-spinner--medium slds-spinner--brand">
+                <span class="slds-assistive-text">Loading</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </div>
+</aura:component>

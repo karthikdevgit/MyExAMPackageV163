@@ -1,0 +1,1193 @@
+<apex:page controller="AssessableFieldQuestionMappingController" standardStylesheets="false" docType="html-5.0">
+    <apex:includeScript value="{!URLFOR($Resource.UnderscoreAndAngularJS,'UnderscoreAndAngularJS/angular.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.UnderscoreAndAngularJS,'UnderscoreAndAngularJS/underscore-min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-1.10.2.js')}"/>
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <title>Assessable And Question field Mapping</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS052, '/assets/styles/salesforce-lightning-design-system-vf.css')}" />
+        </head>
+        <style>
+            .slds .slds-button--brand[disabled] {
+                background-color: #0070d2 !important;
+                border: 1px solid #0070d2 !important;
+            }
+        </style>
+        <script type="text/javascript">
+            var __sfdcSessionId = '{!GETSESSIONID()}';
+        </script>
+        
+        <script src="../../soap/ajax/35.0/connection.js" type="text/javascript"></script>
+        <script src="../../soap/ajax/35.0/apex.js" type="text/javascript"></script>
+        <apex:includeScript value="{!$Resource.svgxuse}"/>
+        
+        <div class="slds" ng-app="FieldMappingApp" ng-controller="FieldMappingAppCtrl">
+            <form class="slds-form--inline">
+                <!-- Processing Image Code -->
+                <div style="background-color: rgba(0, 0, 0, 0.6); width: 100%; height: 100%; z-index: 1000; position: fixed; left: 0; top: 0; overflow: hidden; text-align: center; vertical-align: middle;display:none;" class="maskDiv">
+                    <img src="{!URLFOR($Resource.SLDS052, '/assets/images/spinners/slds_spinner.gif')}" alt="Loading..." class="slds-spinner--small" style=" z-index: 10001; background-color: white; width: 80px; height: 80px; padding: 15px; border-radius: 4px; text-align: left; position: relative; top: 30%;"/>
+                </div>
+                <!--End Processing Image Code -->
+                <div class="slds-notify_container">
+                    <div class="slds-notify slds-notify--alert slds-theme--success slds-theme--alert-texture" role="alert" style="display:none">
+                        <button class="slds-button slds-button--icon-inverse slds-notify__close" ng-click="closeNotification(true);">
+                            <svg aria-hidden="true" class="slds-button__icon">
+                                <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                            </svg>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <span class="slds-assistive-text">Success</span>
+                        <h2 class="successMsg">
+                            
+                        </h2>
+                    </div>
+                    <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert" style="display:none">
+                        <button class="slds-button slds-button--icon-inverse slds-notify__close" ng-click="closeNotification(false);">
+                            <svg aria-hidden="true" class="slds-button__icon">
+                                <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                            </svg>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                            <span class="slds-assistive-text">Error</span>
+                        <h2 class="errorMsg" style="color:white">
+                            Error :      
+                        </h2>
+                    </div>
+                </div>
+                <div class="slds-card slds-m-top--x-small slds-m-bottom--x-large">
+                    <div class="slds-card__header slds-grid" style="margin-bottom: 10px;">
+                        <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <div class="slds-grid">
+                                    <h2 class="slds-text-heading--small slds-truncate" style="font-weight: bold;">
+                                        Field Mapping
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-no-flex slds-align-bottom">
+                           <a href="/apex/LoadScoreAndMapFieldValueInExistingAM"><span class="slds-text-link">Re-Run Major Features - Scoring and Field Mapping</span></a>
+                        </div>
+                    </div>
+                    <div class="slds-card__body slds-grid slds-wrap slds-size--23-of-24" style="background:white;">
+                        <div class="slds-grid slds-wrap slds-size--12-of-12 slds-p-around--x-small">
+                            <div class="slds-col--padded slds-size--5-of-12">
+                                <label class="slds-form-element__label  slds-size--6-of-12" for="text-input-01">Assessable Object</label>
+                                <select class="slds-select slds-size--12-of-12" id="assessableId" ng-model="selectedObject" ng-change="objectChange()" ng-options="ass.objectApi as ass.objectLabel for ass in (assessableObjects | orderBy:'objectLabel')">
+                                </select>
+                            </div>
+                            <div class="slds-col--padded slds-size--5-of-12">
+                                <label class="slds-form-element__label  slds-size--6-of-12" for="text-input-01">Assessment Template</label>
+                                <select class="slds-select slds-size--12-of-12" id="assessmentTempId" ng-model="selectedTemplate" ng-change="tempChange()" ng-options="assTemp.Id as (assTemp.Id !='' ? assTemp.Name+' ( '+assTemp.ExAM__Template_name__c+' )' : '--None--') for assTemp in (assessmentTemplate | orderBy:'ExAM__Template_name__c')">
+                                </select>
+                            </div>  
+                            <div class="slds-col--padded slds-size--2-of-12"></div>
+                        </div>  
+                        <!-- main content--> 
+                        <br/>
+                        <div ng-show="selectedObject != null && selectedObject != '' && selectedTemplate != null && selectedTemplate != ''" class="slds-size--1-of-1 slds-p-around--small">
+                            <!-- label class = "slds-text-heading--medium">Mapping</label><br/><br/ -->  
+                            <div class="slds-card slds-m-around--xx-small"> 
+                                <div class="slds-card__header slds-grid">
+                                    <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                        <div class="slds-media__body">
+                                            <div class="slds-grid">
+                                                <h2 class="slds-text-heading--medium slds-truncate">Mapping</h2>
+                                            </div>
+                                         </div>
+                                     </div>
+                                     <div class="slds-col slds-no-flex slds-align-bottom">
+                                         <span class="slds-icon__container slds-icon__container--circle slds-icon-action-new" ng-click="addMappingFields();">
+                                            <svg aria-hidden="true" class="slds-icon slds-icon-action-new slds-icon--small ">
+                                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#new')}">
+                                                </use>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="slds-card__body">
+                                    <div ng-repeat="ass in currentMappingResponseList track by $index" class="slds-grid slds-wrap slds-size--1-of-1 slds-p-around--small" id="mappingRow{{$index}}">
+                                        <div class="slds-size--3-of-12">
+                                            <select class="slds-select slds-size--7-of-8" id="assessableFieldApi" ng-model="ass.assessableFieldsApi" ng-change="onAssessableObjectFieldChange(ass, $index);" ng-options="assfield.fieldApi as assfield.fieldLabel for assfield in (assessableFields | orderBy:'fieldLabel')" ng-disabled="ass.isDisableFlag">
+                                            </select>
+                                        </div>
+                                        <div class="slds-size--3-of-12">
+                                            <select class="slds-select slds-size--7-of-8" id="mappedFromObj" ng-model="ass.mappedFrom" ng-options="eachOptn.fieldApi as eachOptn.fieldLabel for eachOptn in mappedFromOptions" ng-change="mappedObjChange()" ng-disabled="ass.isDisableFlag">
+                                            </select>
+                                        </div>
+                                        <div class="slds-size--5-of-12" ng-if="ass.mappedFrom == 'Assignment Manager'">
+                                            <select class="slds-select slds-size--11-of-12" id="managerFieldAPI" ng-model="ass.amFieldAPI" ng-options="amField.fieldApi as amField.fieldLabel for amField in (amFields | orderBy:'fieldLabel')" ng-change="validateFieldType(assessableFields, ass.assessableFieldsApi, amFields, ass.amFieldAPI, $index);" ng-disabled="ass.isDisableFlag">
+                                            </select>
+                                            <br/>
+                                            <span style="color:red;display:none" id="typeErrMsg{{$index}}"></span>
+                                        </div>
+                                        <div class="slds-size--3-of-12" ng-if="ass.mappedFrom != 'Assignment Manager'">
+                                            <select class="slds-select slds-size--7-of-8" id="questionTempId" ng-model="ass.questionId" ng-options="questionTemp.Id as questionTemp.ExAM__Section_Question__r.ExAM__Section_label__c+' - '+questionTemp.ExAM__Question_Label__c for questionTemp in (filterQuestion(questionTemplate, ass.questionId,ass.assessableFieldsApi))" ng-change="validateType(ass, $index)" ng-disabled="ass.isDisableFlag">
+                                            </select>
+                                        </div>
+                                        <div class="slds-size--2-of-12" ng-if="ass.mappedFrom != 'Assignment Manager'">
+                                            <select class="slds-select slds-size--7-of-8" id="storedType{{$index}}" ng-model="ass.storeAnswerResponseOrWeight" ng-options="eachOptn.fieldApi as eachOptn.fieldLabel for eachOptn in availableOptions" ng-change="validateType(ass, $index)" ng-disabled="ass.isDisableFlag">
+                                            </select>
+                                            <br/>
+                                            <span style="color:red;display:none" id="errMsg{{$index}}">Selected assessable field does not hold numeric value</span>
+                                        </div>
+                                        <div class="slds-size--1-of-12">
+                                            <span class="slds-icon__container slds-icon__container--circle slds-icon-action-delete" ng-click="removeMapping(ass.MappingRecordId,$index)">
+                                                <svg aria-hidden="true" class="slds-icon slds-icon--x-small">
+                                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#delete')}">
+                                                    </use>
+                                                </svg>
+                                            </span>
+                                            <span class="slds-icon__container slds-icon__container--circle slds-icon-action-edit" ng-click="editMapping(ass,$index)" ng-show="ass.MappingRecordId != null && ass.MappingRecordId != ''">
+                                                <svg aria-hidden="true" class="slds-icon slds-icon--x-small">
+                                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#edit')}">
+                                                    </use>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                        <span style= "color:#c23934;margin-top:5px;display:none" id="errMsgForValidation{{$index}}"> Please select a values </span>
+                                    </div>
+                                    <div ng-if="currentMappingResponseList.length > 0" class="slds-grid slds-wrap">
+                                        <div class="slds-size--1-of-3"><label style="margin-left: 15px;">Showing {{startIndex+1}} to {{endIndex+1}} of {{totalRecLength}} entries</label></div>
+                                        <div class="slds-size--1-of-3"></div>
+                                        <div class="slds-grid slds-wrap slds-size--1-of-3" style="font-size: larger;">
+                                            <div class="slds-size--1-of-2" style="text-align: right;"> <a ng-show="isPrevious" href="#" ng-click="previousFunc();">Previous</a></div>
+                                            <div class="slds-size--1-of-2"> <a style="padding-left: 10px;" ng-show="isNext" href="#" ng-click="nextFunc();">Next</a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>  
+                    </div>
+                    <div class="slds-card__footer slds-grid slds-wrap slds-size--1-of-1"  ng-show="selectedObject != null && selectedObject != '' && selectedTemplate != null && selectedTemplate != ''">
+                        <div class="slds-size--1-of-2" style="display:inline-block;text-align: right;">
+                            <button class="slds-button slds-button--neutral" ng-click="cancelMapping()" type="button">Cancel</button>
+                            <button class="slds-button slds-button--brand" type="button" ng-disabled="isClick" ng-click="saveMapping();">Save</button>
+                        </div>
+                    </div> 
+                </div>
+                <!--Start Case/Lead field Mapping -->
+                <div class="slds-card slds-m-top--x-small">
+                    <div class="slds-card__header slds-grid">
+                        <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <h2 class="slds-text-heading--small slds-truncate" style="font-weight: bold;">
+                                    Case/Lead Field Mapping
+                                </h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-card__body slds-grid slds-wrap slds-size--23-of-24 slds-p-around--small slds-theme--default  slds-m-left--x-small slds-m-bottom--x-small slds-m-top--x-small slds-m-right--x-small">
+                        <!--<div class="slds-col--padded slds-size--1-of-2">
+                            <label class="slds-form-element__label  slds-size--6-of-12" for="text-input-01">Assessable Object</label>
+                            
+                            <select class="slds-select slds-size--9-of-12" id="assessableId" ng-model="caseSelectedObject" ng-change="objectChange()" ng-options="ass.objectApi as ass.objectLabel for ass in assessableObjects">
+                            </select>
+                        </div>-->
+                        <div class="slds-col--padded slds-size--1-of-1 slds-grid slds-grid--align-center">
+                            <label class="slds-form-element__label  slds-size--2-of-12 slds-align-middle" for="text-input-01" style="text-align:right;">Assessment Template</label>
+                            <select class="slds-select slds-size--5-of-12" id="assessmentTempId" ng-model="selectedTemplate2" ng-change="tempChange2()" ng-options="assTemp.Id as (assTemp.Id !='' ? assTemp.Name+' ( '+assTemp.ExAM__Template_name__c+' )' : '--None--') for assTemp in (assessmentTemplate | orderBy:'ExAM__Template_name__c')">
+                            </select>
+                        </div>
+                        <br/><br/>      
+                        <div class="slds-col--padded slds-size--1-of-1 slds-grid slds-grid--align-center">      
+                            <label class="slds-form-element__label  slds-size--2-of-12 slds-align-middle" for="text-input-01" style="text-align:right;">Assessable Object</label>       
+                            <select class="slds-select slds-size--5-of-12" id="whichAssessableObject" ng-model="whichAssessableObj" ng-change="getCaseOrLeadFields();" ng-options="obj.Name as obj.Label for obj in [{'Label':'Case', 'Name':'Case'},{'Label':'Lead', 'Name':'Lead'}]">     
+                            </select>
+                        </div>
+                        <!-- main content--> 
+                        <br/>
+                        <div ng-show="caseSelectedObject != null && caseSelectedObject != '' && selectedTemplate2 != null && selectedTemplate2 != '' && whichAssessableObj != null && whichAssessableObj != ''" class="slds-text-heading--medium slds-p-around--small">Mapping</div><br/><br/>  
+                        <div ng-repeat="ass in assMappingResponseList2 track by $index" class="slds-grid slds-wrap slds-size--1-of-1 slds-p-around--small">
+                            <div class="slds-size--5-of-12" ng-show="caseSelectedObject != null && caseSelectedObject != '' && selectedTemplate2 != null && selectedTemplate2 != '' && whichAssessableObj != null && whichAssessableObj != ''">
+                                <!--<label class="slds-form-element__label slds-size--6-of-12" for="text-input-02">Assessable Fields </label>-->
+                                <select class="slds-select slds-size--9-of-12" id="sectionTempId" ng-model="ass.assessableFieldsApi" ng-options="assfield.fieldApi as assfield.fieldLabel for assfield in (assessableFields2 | orderBy:'fieldLabel')">
+                                </select>
+                            </div>
+                            <div class="slds-size--5-of-12" ng-show="caseSelectedObject != null && caseSelectedObject != '' && selectedTemplate2 != null && selectedTemplate2 != '' && whichAssessableObj != null && whichAssessableObj != ''">
+                                <!--<label class="slds-form-element__label  slds-size--6-of-12">Question Template</label>-->
+                                <select class="slds-select slds-size--9-of-12" id="questionTempId" ng-model="ass.questionId" ng-options="questionTemp.Id as questionTemp.ExAM__Section_Question__r.ExAM__Section_label__c+' - '+questionTemp.ExAM__Question_Label__c for questionTemp in (filterQuestion(questionTemplate2, ass.questionId,ass.assessableFieldsApi) | orderBy:'ExAM__Question_Label__c')">
+                                </select>
+                            </div>
+                            <div class="slds-size--2-of-12">
+                                <span ng-show="caseSelectedObject != null && caseSelectedObject != '' && selectedTemplate2 != null && selectedTemplate2 != '' && whichAssessableObj != null && whichAssessableObj != ''" class="slds-icon_container" ng-click="removeMapping2($index)">
+                                    <svg aria-hidden="true" class="slds-icon icon-utility-delete slds-icon-text-default">
+                                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#delete')}">
+                                        </use>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                                     
+                    </div> 
+                    <div class="slds-card__footer slds-grid slds-wrap slds-size--1-of-1"  ng-show="caseSelectedObject != null && caseSelectedObject != '' && selectedTemplate2 != null && selectedTemplate2 != '' && whichAssessableObj != null && whichAssessableObj != ''">
+                        <div class="slds-size--1-of-1 slds-p-around--small" style="display:inline-block;">
+                            <div class="slds-size--1-of-2">
+                                <span class="slds-icon__container slds-icon__container--circle slds-icon-action-new" ng-click="addMappingFields2();">
+                                    <svg aria-hidden="true" class="slds-icon slds-icon-action-new slds-icon--small ">
+                                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#new')}">
+                                        </use>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                    
+                        <div class="slds-size--2-of-3" style="display:inline-block;text-align: right;">
+                            <button class="slds-button slds-button--neutral" ng-click="cancelMapping2()" type="button">Cancel</button>
+                            <button class="slds-button slds-button--brand" type="button" ng-click="saveMapping2();">Save Field Mapping</button>
+                        </div>
+                    </div> 
+                       
+                </div><br/>
+                <!--End Case/Lead field Mapping -->
+                <div class="slds-col--padded">
+                    <a href="/apex/AdminConfig"> Back to admin configuration page </a>
+                </div>
+            </form>        
+        </div>
+        <script type="text/javascript">
+            
+            var underscore = angular.module('underscore', []);
+            underscore.factory('_', ['$window', function($window) {
+                return $window._; // assumes underscore has already been loaded on the page
+            }]);
+            
+            var app = angular.module('FieldMappingApp', ['underscore']);
+            app.service('FieldMappingService', function($q) {
+
+                this.getAssessableFields = function(selectedObject) {
+                    var defer = $q.defer();     
+                    ExAM.AssessableFieldQuestionMappingController.assessableFields(selectedObject, function(result, event) {     
+                        if (event.status) {     
+                            if (result != null && result != '') {       
+                                result = result.replace("&#39;","'");
+                                var response = JSON.parse(_.unescape(result));
+                                if (response['errorMsg'] != '') {
+                                    defer.reject( response['errorMsg'] );
+                                }
+                                else {
+                                    defer.resolve( response['fieldsDetail'] );
+                                }
+                            } else {        
+                                defer.reject( 'Error: No Mapping fields found' );       
+                            }       
+                        } else {        
+                            defer.reject( 'Error: No Mapping fields found' );                                   
+                        }       
+                    });     
+                    return defer.promise;       
+                }       
+                this.getChildQtnTemplates = function(selectedTemplate) {        
+                    var defer = $q.defer();     
+                    ExAM.AssessableFieldQuestionMappingController.getQuestionRecords(selectedTemplate, function(result, event) {     
+                        if (event.status) {     
+                            if (result != null && result != '') {       
+                                result = result.replace(/&#39;/g,"'");      
+                                var response = JSON.parse(_.unescape(result));
+                                if (response['errorMsg'] != '') {
+                                    defer.reject( response['errorMsg'] );
+                                }
+                                else {
+                                    defer.resolve( response['questions'] );
+                                }
+                            } else {        
+                                defer.reject( 'Error: No question template found' );                                    
+                            }       
+                        } else {        
+                            defer.reject( 'Error: No question template found' );                                    
+                        }       
+                    });     
+                    return defer.promise;       
+                }       
+                this.getExistingFieldMappingRecords = function(selectedobj, selectedTemp, isCaseResponse) {   
+                    var defer = $q.defer();     
+                    var newFieldMappingObj = {};        
+                    ExAM.AssessableFieldQuestionMappingController.existingFieldMapping(selectedobj, selectedTemp, isCaseResponse, function(result, event) {      
+                        if (result != null && result != '') {      
+                            var response = JSON.parse(_.unescape(result));
+                            
+                            if (response['errorMsg'] != '' || (typeof response['afms'] == 'string' && response['afms'] == '')) {
+                                defer.reject( response['errorMsg'] );
+                            }
+                            else {
+                                defer.resolve(JSON.parse(_.unescape(response['afms'])));
+                            }
+                            //defer.resolve( JSON.parse(_.unescape(result)) );        
+                        } else {        
+                            /*if (!isCaseResponse) {      
+                                newFieldMappingObj["assessableFieldsApi"] = '';     
+                                newFieldMappingObj["mappedFrom"] = 'Answer';        
+                                newFieldMappingObj["amFieldAPI"] = '';      
+                                newFieldMappingObj["questionId"] = '';      
+                                newFieldMappingObj["storeAnswerResponseOrWeight"] = 'Response';     
+                            }       
+                            else {      
+                                newFieldMappingObj["assessableFieldsApi"] = '';     
+                                newFieldMappingObj["whichAssessableObj"] = 'Case';      
+                                newFieldMappingObj["questionId"] = '';      
+                            } */      
+                            defer.reject( result );     
+                        }       
+                    });     
+                    return defer.promise;       
+                }       
+                this.removeThisMappingRecord = function(recordIdTobeDeleted) {      
+                    var defer = $q.defer();     
+                    ExAM.AssessableFieldQuestionMappingController.deleteMappingRecord(recordIdTobeDeleted, function(result, event) {     
+                        if (event.status) {                                     
+                            defer.resolve( 'Record deleted successfully' );     
+                        } else {        
+                            defer.reject( event.message );      
+                        }       
+                    });     
+                    return defer.promise;       
+                }       
+                this.removeExistingAFMs = function(afmRecordsTobeDeleted) {     
+                    var defer = $q.defer();     
+                    ExAM.AssessableFieldQuestionMappingController.deleteExistingAFMs(afmRecordsTobeDeleted, function(result, event) {        
+                        if (event.status) {                                     
+                            defer.resolve( result );        
+                        } else {        
+                            defer.reject( event.message );      
+                        }       
+                    });     
+                    return defer.promise;       
+                }       
+                this.saveSelectedAFM = function(selectedObject, configuredMapping, selectedTemplate, isCaseResponse) {      
+                    var defer = $q.defer();     
+                    ExAM.AssessableFieldQuestionMappingController.saveFieldMapping(selectedObject, configuredMapping, selectedTemplate, isCaseResponse, function(result, event) {        
+                        if (event.status) {     
+                            var saveResponse = JSON.parse(_.unescape(result));   
+                            var mappedFields = (saveResponse.assMappingFields != '') ? JSON.parse(_.unescape(saveResponse.assMappingFields)) : '';
+                            if (saveResponse != null && saveResponse.status && mappedFields != '' && mappedFields.errorMsg == '' && mappedFields.afms != '') {      
+                                defer.resolve( {'msg': saveResponse.resultMsg,'savedMapping':JSON.parse(_.unescape(mappedFields.afms))});      
+                            } else if(mappedFields != '' && mappedFields.errorMsg != '') { 
+                                defer.reject( mappedFields.errorMsg );     
+                            } else {
+                                defer.reject( saveResponse.resultMsg );
+                            }
+                        } else {        
+                            defer.reject( saveResponse.resultMsg );     
+                        }       
+                    });     
+                    return defer.promise;       
+                }       
+            });
+            app.controller('FieldMappingAppCtrl', function($scope, FieldMappingService, filterFilter,_) {
+                
+                $scope.selectedObject = '';
+                $scope.selectedTemplate = '';
+                $scope.selectedTemplate2 = '';                
+                $scope.selectedSection = '';
+                $scope.caseSelectedObject = 'Case';
+                $scope.isClick = false;
+                $scope.HasErrorInAMFieldMapping = false;
+
+                $scope.fldApiwithAssessableFieldsMap = {};
+                $scope.fldApiwithAssessableFieldsMap2 = {};
+
+                $scope.assessableObjects = [];
+                $scope.assessableFields = [];
+                $scope.assessableFields2 = [];
+                $scope.assessmentTemplate = [];
+                $scope.sectionTemplate = [];
+                $scope.questionTemplate = [];
+                $scope.questionTemplate2 = [];
+                $scope.finalAssMappingResponseList = [];
+                $scope.finalAssMappingResponseList2 = [];
+                $scope.existingAFMs = [];
+                var totalMappedRecords = [];
+                $scope.currentMappingResponseList = [];
+                
+                $scope.assMappingResponseList2 = [];
+                $scope.startIndex = 0;
+                $scope.endIndex = 0;
+                $scope.totalRecLength = 0;
+                $scope.isNext = false;
+                $scope.isPrevious = false;
+                
+
+                $scope.mappedFromOptions = [{'fieldLabel': 'Answer', 'fieldApi': 'Answer'}, {'fieldLabel': 'Assignment Manager', 'fieldApi': 'Assignment Manager'}];
+                $scope.availableOptions = [{'fieldLabel': 'Response', 'fieldApi': 'Response'}, {'fieldLabel': 'Score', 'fieldApi': 'Score'}];
+
+                $scope.HasErrorInAMFieldMapping = false;
+
+                $('.maskDiv').hide();
+                $('.slds-notify--alert.slds-theme--success').hide();
+                $('.slds-notify--alert.slds-theme--error').hide();
+
+                if ('{!JSENCODE(assessableObjectJSON)}' != null && '{!JSENCODE(assessableObjectJSON)}' != '' && '{!JSENCODE(assessableObjectJSON)}' != 'null') {
+                    $scope.assessableObjects = JSON.parse('{!JSENCODE(assessableObjectJSON)}');
+                }
+                
+                if ('{!JSENCODE(assessmentTemplateJSON)}' != null && '{!JSENCODE(assessmentTemplateJSON)}' != '' && '{!JSENCODE(assessmentTemplateJSON)}' != 'null') {
+                    $scope.assessmentTemplate = JSON.parse('{!JSENCODE(assessmentTemplateJSON)}');
+                    var assTemp = new Object();
+                    assTemp.Id = '';
+                    assTemp.ExAM__Template_name__c = '--None--';
+                    $scope.assessmentTemplate.splice(0,0,assTemp);
+                }
+
+                if ('{!JSENCODE(accessViolationMsg)}' != null && '{!JSENCODE(accessViolationMsg)}' != '' && '{!JSENCODE(accessViolationMsg)}' != 'null') {
+                    $('.errorMsg').text( '{!JSENCODE(accessViolationMsg)}' );       
+                    $('.slds-notify--alert.slds-theme--error').show();      
+                }
+
+                if ('{!JSENCODE(amFieldsListJSON)}' != null && '{!JSENCODE(amFieldsListJSON)}' != '' && '{!JSENCODE(amFieldsListJSON)}' != 'null') {        
+                    $scope.amFields = JSON.parse('{!JSENCODE(amFieldsListJSON)}');      
+                }
+
+                $scope.objectChange = function() {
+                    
+                    $scope.currentMappingResponseList = [];
+                    $scope.startIndex = 0;
+                    $scope.endIndex = 0;
+                    $scope.totalRecLength = 0;
+                    $scope.isNext = false;
+                    $scope.isPrevious = false;
+                    $('.maskDiv').show();
+                    $('.slds-notify--alert.slds-theme--error').hide();
+                    totalMappedRecords = [];
+                    
+                    if ($scope.selectedObject != '') {
+                        FieldMappingService.getAssessableFields($scope.selectedObject).then(function(successResponse) {
+                            $scope.assessableFields = successResponse;   
+                            for (var count = 0 ; count <= $scope.assessableFields.length; count++) {
+                                if (angular.isDefined($scope.assessableFields[count]) && angular.isDefined($scope.assessableFields[count].fieldApi) && $scope.assessableFields[count].fieldApi != '') {
+                                    $scope.fldApiwithAssessableFieldsMap[$scope.assessableFields[count].fieldApi] = $scope.assessableFields[count];
+                                }
+                            }
+                            if ($scope.selectedTemplate != null && $scope.selectedTemplate != '') {
+                                $scope.existingFieldMapping($scope.selectedObject, $scope.selectedTemplate );
+                            }
+                            $('.maskDiv').hide();       
+                        }, function(errorResponse) {        
+                            $('.errorMsg').text( errorResponse );       
+                            $('.slds-notify--alert.slds-theme--error').show();      
+                            $('.maskDiv').hide();       
+                        });
+                    } else {
+                        $('.maskDiv').hide();
+                    }
+                }
+                $scope.getCaseOrLeadFields = function() {
+                    $('.maskDiv').show();
+                    $('.slds-notify--alert.slds-theme--error').hide();
+                    $scope.assMappingResponseList2 = [];
+                    //Start case change 06-07-2016
+                    FieldMappingService.getAssessableFields($scope.whichAssessableObj).then(function(successResponse) {
+                        $scope.assessableFields2 = successResponse;   
+                        for (var count = 0 ; count <= $scope.assessableFields2.length; count++) {
+                            if (angular.isDefined($scope.assessableFields2[count]) && angular.isDefined($scope.assessableFields2[count].fieldApi) && $scope.assessableFields2[count].fieldApi != '') {
+                                $scope.fldApiwithAssessableFieldsMap2[$scope.assessableFields2[count].fieldApi] = $scope.assessableFields2[count];
+                            }
+                        }
+                        FieldMappingService.getExistingFieldMappingRecords($scope.whichAssessableObj, $scope.selectedTemplate2, true).then(function(successResponse) {
+                            if (successResponse != null && successResponse.length > 0) {
+                                var existingAFM = successResponse[0];
+                                if (existingAFM.entity == null || existingAFM.entity == $scope.whichAssessableObj) {
+                                    $scope.assMappingResponseList2 = successResponse;
+                                }
+                                else {
+                                    $scope.existingAFMs = successResponse;
+                                }
+                            }
+                            $('.maskDiv').hide();
+                        }, function(errorResponse) {
+                            //$scope.assMappingResponseList2 = errorResponse;
+                            $('.maskDiv').hide(errorResponse);
+                        });
+                    }, function(errorResponse) {
+                        $('.errorMsg').text( errorResponse );
+                        $('.slds-notify--alert.slds-theme--error').show();
+                        $('.maskDiv').hide();
+                    });
+                    //End case change 06-07-2016
+                }                
+                $scope.tempChange2 = function() {
+                    $('.maskDiv').show();
+                    $scope.caseSelectedObject = 'Case';
+                    $('.slds-notify--alert.slds-theme--error').hide();
+                    if ($scope.selectedTemplate2 != '') {
+                        FieldMappingService.getChildQtnTemplates($scope.selectedTemplate2).then(function(successResponse) {
+                            $scope.questionTemplate2 = successResponse;
+                            if ($scope.questionTemplate2 == null || $scope.questionTemplate2.length == 0) {
+                                $('.maskDiv').hide();       
+                                $('.errorMsg').text('Error: No question template found');
+                                $('.slds-notify--alert.slds-theme--error').show();
+                            } else {
+                                FieldMappingService.getExistingFieldMappingRecords('Case', $scope.selectedTemplate2, true).then(function(successResponse) {     
+                                    $scope.assMappingResponseList2 = successResponse;       
+                                    $scope.whichAssessableObj = ($scope.assMappingResponseList2.length > 0) ? $scope.assMappingResponseList2[0].entity : 'Case';        
+                                    FieldMappingService.getAssessableFields($scope.whichAssessableObj).then(function(successResponse) {     
+                                        $scope.assessableFields2 = successResponse;         
+                                        for (var count = 0 ; count <= $scope.assessableFields2.length; count++) {       
+                                            if (angular.isDefined($scope.assessableFields2[count]) && angular.isDefined($scope.assessableFields2[count].fieldApi) && $scope.assessableFields2[count].fieldApi != '') {      
+                                                $scope.fldApiwithAssessableFieldsMap2[$scope.assessableFields2[count].fieldApi] = $scope.assessableFields2[count];      
+                                            }       
+                                        }       
+                                        $('.maskDiv').hide();       
+                                    }, function(errorResponse) {        
+                                        $('.errorMsg').text( errorResponse );       
+                                        $('.slds-notify--alert.slds-theme--error').show();      
+                                        $('.maskDiv').hide();       
+                                    });     
+                                }, function(errorResponse) {        
+                                    //$scope.assMappingResponseList2 = errorResponse; 
+                                    $('.maskDiv').hide();       
+                                });     
+                            }
+                        }, function(errorResponse) {        
+                            $('.errorMsg').text( errorResponse );       
+                            $('.slds-notify--alert.slds-theme--error').show();      
+                            $('.maskDiv').hide();       
+                        });
+                    } else {
+                        $('.maskDiv').hide();
+                    }
+                }
+                $scope.tempChange = function() {
+                    
+                    $scope.currentMappingResponseList = [];
+                    $scope.startIndex = 0;
+                    $scope.endIndex = 0;
+                    $scope.totalRecLength = 0;
+                    $scope.isNext = false;
+                    $scope.isPrevious = false;
+                    totalMappedRecords = [];
+                    
+                    $('.maskDiv').show();
+                    $('.slds-notify--alert.slds-theme--error').hide();
+                    if ($scope.selectedTemplate != '') {
+
+                        FieldMappingService.getChildQtnTemplates($scope.selectedTemplate).then(function(successResponse) {
+
+                            $scope.questionTemplate = successResponse;  
+                            quesIDAndQuesTemp = _.indexBy($scope.questionTemplate, 'Id'); 
+                            if ($scope.questionTemplate == null || $scope.questionTemplate.length == 0) {
+                                $('.errorMsg').text('Error: No question template found');
+                                $('.slds-notify--alert.slds-theme--error').show();
+                                $('.maskDiv').hide();
+                            } else {
+                                if ($scope.selectedObject != null && $scope.selectedObject != '') {
+                                    $scope.existingFieldMapping($scope.selectedObject, $scope.selectedTemplate );
+                                    $('.maskDiv').hide();
+                                }
+                                $('.maskDiv').hide();
+                            }
+                            
+                        }, function(errorResponse) {
+                            $('.errorMsg').text( errorResponse );
+                            $('.slds-notify--alert.slds-theme--error').show();
+                            $('.maskDiv').hide();
+                        });
+
+                    } else {
+                        $('.maskDiv').hide();
+                    }
+                }
+                $scope.existingFieldMapping = function(selectedobj, selectedTemp) {
+                    FieldMappingService.getExistingFieldMappingRecords(selectedobj, selectedTemp, false).then(function(successResponse) {
+                        totalMappedRecords = successResponse;
+                        $scope.totalRecLength = totalMappedRecords.length;
+                        if($scope.totalRecLength > 10) { // total no.of records greater than 10 we need pagination
+                            
+                            $scope.endIndex = 9;
+                            $scope.currentMappingResponseList = totalMappedRecords.slice(0,10); //slice records (0-include 10-exclude) so only given 0 to 10
+                            $scope.isNext = true;
+                        } else {
+                            
+                            $scope.endIndex = $scope.totalRecLength-1;
+                            $scope.currentMappingResponseList = angular.copy(totalMappedRecords);
+                        }
+                    }, function(errorResponse) {
+                        $scope.startIndex = -1;
+                        $scope.endIndex = -1;
+                    });
+                }
+                $scope.previousFunc = function() {
+                
+                    var isFill = false;
+                    var errBoxId = '';
+                    var hasError = false;
+                    
+                    if($scope.currentMappingResponseList[0].mappedFrom == 'Assignment Manager') {
+                        if($scope.currentMappingResponseList[0].assessableFieldsApi == '' ||  $scope.currentMappingResponseList[0].amFieldAPI == '' ||
+                            $scope.currentMappingResponseList[0].assessableFieldsApi == null ||  $scope.currentMappingResponseList[0].amFieldAPI == null){
+                            $('#mappingRow0').addClass('slds-has-error');
+                            $('#errMsgForValidation0').css('display','');
+                            isFill = true;
+                        } else {
+                            $('#mappingRow0').removeClass('slds-has-error');
+                            $('#errMsgForValidation0').css('display','none');
+                            isFill = false;
+                        }
+                    } else if($scope.currentMappingResponseList[0].mappedFrom == 'Answer') {
+                        if($scope.currentMappingResponseList[0].assessableFieldsApi == '' || $scope.currentMappingResponseList[0].questionId == '' || $scope.currentMappingResponseList[0].storeAnswerResponseOrWeight == '' ||
+                            $scope.currentMappingResponseList[0].assessableFieldsApi == null || $scope.currentMappingResponseList[0].questionId == null || $scope.currentMappingResponseList[0].storeAnswerResponseOrWeight == null) {
+                            $('#mappingRow0').addClass('slds-has-error');
+                            $('#errMsgForValidation0').css('display','');
+                            isFill = true;
+                        } else {
+                            $('#mappingRow0').removeClass('slds-has-error');
+                            $('#errMsgForValidation0').css('display','none');
+                            isFill = false;
+                        }
+                    } 
+                    for (var i = 0; i < $scope.currentMappingResponseList.length; i++) {
+                        errBoxId = ($scope.currentMappingResponseList[i].mappedFrom == 'Answer') ? 'errMsg'+i : 'typeErrMsg'+i;
+                        hasError = $('#'+errBoxId).is(":visible");
+                        if (hasError) {
+                            hasError = true;
+                            break;
+                        }
+                    }
+                    if(!isFill && !hasError) {
+                        $scope.isNext = true;
+                        var j = 0;
+                        
+                        for(var i=$scope.startIndex; i <= $scope.endIndex; i++) {
+                            totalMappedRecords[i] = $scope.currentMappingResponseList[j];
+                            j++;
+                        }
+                        if($scope.startIndex >= 0) {
+                            $scope.endIndex = $scope.startIndex-1;
+                            $scope.startIndex = $scope.startIndex-10;
+                            $scope.currentMappingResponseList = totalMappedRecords.slice($scope.startIndex,$scope.endIndex+1);
+                        } 
+                        if($scope.startIndex == 0) {
+                            $scope.isPrevious = false;
+                        }
+                    }
+                }
+                $scope.nextFunc = function() {
+                    
+                    //var index = $scope.currentMappingResponseList.length -1 ;
+                    var isFill = false;
+                    var hasError = false;
+                    if($scope.currentMappingResponseList[0].mappedFrom == 'Assignment Manager') {
+                        if($scope.currentMappingResponseList[0].assessableFieldsApi == '' ||  $scope.currentMappingResponseList[0].amFieldAPI == ''
+                            || $scope.currentMappingResponseList[0].assessableFieldsApi == null ||  $scope.currentMappingResponseList[0].amFieldAPI == null){
+                            $('#mappingRow0').addClass('slds-has-error');
+                            $('#errMsgForValidation0').css('display','');
+                            isFill = true;
+                        } else {
+                            $('#mappingRow0').removeClass('slds-has-error');
+                            $('#errMsgForValidation0').css('display','none');
+                            isFill = false;
+                        }
+                    } else if($scope.currentMappingResponseList[0].mappedFrom == 'Answer') {
+                        if($scope.currentMappingResponseList[0].assessableFieldsApi == '' || $scope.currentMappingResponseList[0].questionId == '' || $scope.currentMappingResponseList[0].storeAnswerResponseOrWeight == '' ||
+                            $scope.currentMappingResponseList[0].assessableFieldsApi == null || $scope.currentMappingResponseList[0].questionId == null || $scope.currentMappingResponseList[0].storeAnswerResponseOrWeight == null) {
+                            $('#mappingRow0').addClass('slds-has-error');
+                            $('#errMsgForValidation0').css('display','');
+                            isFill = true;
+                        } else {
+                            $('#mappingRow0').removeClass('slds-has-error');
+                            $('#errMsgForValidation0').css('display','none');
+                            isFill = false;
+                        }
+                    } 
+                    for (var i = 0; i < $scope.currentMappingResponseList.length; i++) {
+                        
+                        errBoxId = ($scope.currentMappingResponseList[i].mappedFrom === 'Answer') ? 'errMsg'+i : 'typeErrMsg'+i;
+                        
+                        hasError = $('#'+errBoxId).is(":visible");
+                        if (hasError) {
+                            break;
+                        }
+                    }
+                    if(!isFill && !hasError) {
+                        $scope.isPrevious = true;
+                        var j = 0;
+                        for(var i=$scope.startIndex; i<=$scope.endIndex; i++) {
+                            totalMappedRecords[i] = $scope.currentMappingResponseList[j];
+                            j++;
+                        }
+                        //if(!isDuplicate) {
+                            if( $scope.totalRecLength > ($scope.endIndex+11)) { // Why add 11? Slice a 10 records from totalMappedRecords
+                                $scope.startIndex = $scope.endIndex+1;
+                                $scope.currentMappingResponseList = totalMappedRecords.slice($scope.endIndex+1,$scope.endIndex+11);
+                                $scope.endIndex = $scope.endIndex+10;
+                                if($scope.endIndex == $scope.totalRecLength - 1) {
+                                    $scope.isNext = false;
+                                }
+                            } else {
+                                var lastSetrecLength = $scope.totalRecLength-($scope.endIndex+1);
+                                var lastRecIndex = $scope.endIndex + lastSetrecLength;
+                                $scope.startIndex = $scope.endIndex + 1;
+                                $scope.currentMappingResponseList = totalMappedRecords.slice($scope.endIndex+1,lastRecIndex);
+                                $scope.currentMappingResponseList.push(totalMappedRecords[lastRecIndex]);
+                                $scope.endIndex = lastRecIndex;
+                                $scope.isNext = false;
+                            }
+                        //}
+                    }
+                }
+                $scope.editMapping = function(editRec,index) {
+                    
+                    if(editRec.MappingRecordId != undefined && editRec.MappingRecordId != '') {
+                        $scope.currentMappingResponseList[index].isDisableFlag = false;
+                    }
+                }
+                
+                $scope.addMappingFields = function() {
+                    var isFill = false;
+                    if($scope.currentMappingResponseList.length > 0) {
+                        if($scope.currentMappingResponseList[0].mappedFrom == 'Assignment Manager') {
+                            if($scope.currentMappingResponseList[0].assessableFieldsApi == '' || $scope.currentMappingResponseList[0].assessableFieldsApi == null
+                                || $scope.currentMappingResponseList[0].amFieldAPI == '' || $scope.currentMappingResponseList[0].amFieldAPI == null) {
+                                $('#mappingRow0').addClass('slds-has-error');
+                                $('#errMsgForValidation0').css('display','');
+                                isFill = true;
+                            } else {
+                                $('#mappingRow0').removeClass('slds-has-error');
+                                $('#errMsgForValidation0').css('display','none');
+                                isFill = false;
+                            }
+                        } else if($scope.currentMappingResponseList[0].mappedFrom == 'Answer') {
+                            if($scope.currentMappingResponseList[0].assessableFieldsApi == '' || $scope.currentMappingResponseList[0].questionId == '' || $scope.currentMappingResponseList[0].storeAnswerResponseOrWeight == '' ||
+                                $scope.currentMappingResponseList[0].assessableFieldsApi == null || $scope.currentMappingResponseList[0].questionId == null || $scope.currentMappingResponseList[0].storeAnswerResponseOrWeight == null) {
+                                $('#mappingRow0').addClass('slds-has-error');
+                                $('#errMsgForValidation0').css('display','');
+                                isFill = true;
+                            } else {
+                                $('#mappingRow0').removeClass('slds-has-error');
+                                $('#errMsgForValidation0').css('display','none');
+                                isFill = false;
+                            }
+                        } 
+                    }
+                    if(!isFill) {
+                        if (!$scope.HasErrorInOtherObjFieldMapping && !$scope.HasErrorInAMFieldMapping) {
+                            if($scope.currentMappingResponseList.length == 0 && $scope.startIndex == -1) {
+                                $scope.startIndex = 0;
+                                $scope.currentMappingResponseList.push({assessableFieldsApi: '',mappedFrom: 'Answer',amFieldAPI:'',questionId: '',storeAnswerResponseOrWeight: 'Response',isDisableFlag:false});
+                                totalMappedRecords.push({assessableFieldsApi: '',mappedFrom: 'Answer',amFieldAPI:'',questionId: '',storeAnswerResponseOrWeight: 'Response',isDisableFlag:false});
+                                $scope.endIndex = totalMappedRecords.length - 1;
+                                $scope.totalRecLength = totalMappedRecords.length;
+                                
+                            } else {
+                                if((($scope.endIndex+1) % 10 ) == 0 && $scope.endIndex != -1) { // when this is true,add more than 10 records of current table 
+                                    var j = 0;
+                                    for(var i = $scope.startIndex; i <= $scope.endIndex; i++) {
+                                        var temp = $scope.currentMappingResponseList[j];
+                                        totalMappedRecords[i] = temp;
+                                        j++;
+                                    } 
+                                }
+                                $scope.currentMappingResponseList.splice(0,0,{assessableFieldsApi: '',mappedFrom: 'Answer',amFieldAPI:'',questionId: '',storeAnswerResponseOrWeight: 'Response',isDisableFlag:false});
+                                totalMappedRecords.splice($scope.startIndex,0,{assessableFieldsApi: '',mappedFrom: 'Answer',amFieldAPI:'',questionId: '',storeAnswerResponseOrWeight: 'Response',isDisableFlag:false});
+                                $scope.totalRecLength = totalMappedRecords.length;
+                                
+                                if(($scope.totalRecLength%10) >= 0 && ($scope.startIndex+9) > $scope.endIndex ) {
+                                    $scope.endIndex = $scope.endIndex+1;
+                                }
+                                if($scope.currentMappingResponseList.length > 10 ) {
+                                    $scope.currentMappingResponseList.splice(-1,1);
+                                    $scope.isNext = true;
+                                }
+                            }
+                        }       
+                    }
+                    if ($scope.assessableFields.length == 0) {
+                        $('.errorMsg').text( 'No fields available to map in '+$scope.selectedObject+', Please check field data type and field level security of fields in '+$scope.selectedObject );
+                        $('.slds-notify--alert.slds-theme--error').show();
+                    }
+                } 
+                $scope.addMappingFields2 = function() {
+                    //if ($scope.assMappingResponseList2.length == 0) { // why this line commented - we leverage the fields mapped one field more than one question
+                        $scope.assMappingResponseList2.push({assessableFieldsApi: '',questionId: ''});
+                    //}
+                    if ($scope.assessableFields2.length == 0) {
+                        $('.errorMsg').text( 'No fields available to map in '+$scope.caseSelectedObject+', Please check field data type and field level security of fields in '+$scope.caseSelectedObject );
+                        $('.slds-notify--alert.slds-theme--error').show();
+                    }
+                }
+                $scope.filterQuestion = function(questionTemplate, selectedQuestion, fieldapi) {
+                    var question = [];
+                    for (var i = 0; i < questionTemplate.length; i++) {
+                        var isAddedQuestion = false;
+                       // for (var j = 0; j < $scope.currentMappingResponseList.length; j++) {
+                            //if (questionTemplate[i].Id == $scope.currentMappingResponseList[j].questionId && questionTemplate[i].Id != selectedQuestion) {
+                            //} else 
+                             if (angular.isDefined($scope.fldApiwithAssessableFieldsMap) 
+                                        && angular.isDefined($scope.fldApiwithAssessableFieldsMap[fieldapi])) {
+                                
+                                if (($scope.fldApiwithAssessableFieldsMap[fieldapi].fieldType == 'DATETIME' 
+                                            || $scope.fldApiwithAssessableFieldsMap[fieldapi].fieldType == 'DATE')
+                                      && questionTemplate[i].ExAM__Question_Type__c != 'Date'
+                                            ) {
+                                    isAddedQuestion = true;
+                                } else if ($scope.fldApiwithAssessableFieldsMap[fieldapi].fieldType == 'PICKLIST'
+                                            && questionTemplate[i].ExAM__Question_Type__c != 'RadioPicklist'
+                                            &&  questionTemplate[i].ExAM__Question_Type__c != 'Dropdown Picklist') {
+                                        
+                                    isAddedQuestion = true;
+                                }
+                            }
+                        //} 
+                        if (!isAddedQuestion) {
+                            question.push(questionTemplate[i]);
+                        }
+                    }
+                    return question;
+                }
+                /*Comment out for to view all Fields
+                $scope.filterFields = function(fieldList, selectedField) {
+                    var fieldArray = [];
+                    for (var i = 0; i < fieldList.length; i++) {
+                        var isAddedField = false;
+                        for (var j = 0; j < $scope.currentMappingResponseList.length; j++) {
+                            if (fieldList[i].fieldApi == $scope.currentMappingResponseList[j].assessableFieldsApi && fieldList[i].fieldApi != selectedField) {
+                                isAddedField = true;
+                            }
+                        } 
+                        if (!isAddedField) {
+                            fieldArray.push(fieldList[i]);
+                        }
+                    }
+                    return fieldArray;
+                }
+                $scope.filterFields2 = function(fieldList, selectedField) {
+                    var fieldArray = [];
+                    for (var i = 0; i < fieldList.length; i++) {
+                        var isAddedField = false;
+                        for (var j = 0; j < $scope.assMappingResponseList2.length; j++) {
+                            if (fieldList[i].fieldApi == $scope.assMappingResponseList2[j].assessableFieldsApi && fieldList[i].fieldApi != selectedField) {
+                                isAddedField = true;
+                            }
+                        } 
+                        if (!isAddedField) {
+                            fieldArray.push(fieldList[i]);
+                        }
+                    }
+                    return fieldArray;
+                }*/
+                $scope.removeMapping = function(mappingRecordId,indexVal) {
+                    $('.slds-notify--alert.slds-theme--error').hide();
+                    var deleteConfirm = true;
+                    if(mappingRecordId !== undefined && mappingRecordId !== null && mappingRecordId !== '' ) {
+                        deleteConfirm = confirm("Are you sure?");
+                    }
+                    
+                    if(deleteConfirm == true) {
+                        $('#typeErrMsg'+indexVal).hide();
+                        $('#errMsg'+indexVal).hide();
+                        
+                        if ($scope.currentMappingResponseList[indexVal]['MappingRecordId'] != undefined &&
+                            $scope.currentMappingResponseList[indexVal]['MappingRecordId'] != null &&
+                            $scope.currentMappingResponseList[indexVal]['MappingRecordId'] != '') {
+                            
+                            var deleteMappingId = $scope.currentMappingResponseList[indexVal].MappingRecordId;
+                            $('#mappingRow'+indexVal).removeClass('slds-has-error');
+                            $('#errMsgForValidation'+indexVal).css('display','none');
+                            $scope.currentMappingResponseList.splice(indexVal,1);
+                            totalMappedRecords.splice($scope.startIndex+indexVal,1);
+                            $scope.totalRecLength = totalMappedRecords.length; //11
+                            
+                            if(totalMappedRecords.length-1 > $scope.endIndex) { 
+                                //$scope.endIndex = $scope.endIndex + 1;
+                                $scope.currentMappingResponseList[($scope.currentMappingResponseList.length-1)+1] = totalMappedRecords[$scope.endIndex];
+                            } else if(totalMappedRecords.length-1 == $scope.endIndex) {
+                                $scope.currentMappingResponseList[($scope.currentMappingResponseList.length-1)+1] = totalMappedRecords[$scope.endIndex];
+                                $scope.isNext = false;
+                            } else {
+                                $scope.endIndex = $scope.endIndex - 1;
+                                $scope.isNext = false;
+                            }
+                            FieldMappingService.removeThisMappingRecord(deleteMappingId).then(function(successResponse) {
+                            }, function(errorResponse) {
+                                $('.errorMsg').text( errorResponse );
+                                $('.slds-notify--alert.slds-theme--error').show();
+                            });
+                        } else {
+                            $('#mappingRow'+indexVal).removeClass('slds-has-error');
+                            $('#errMsgForValidation'+indexVal).css('display','none');
+                            $scope.currentMappingResponseList.splice(indexVal,1);
+                            if(totalMappedRecords.length > 0 ) {
+                                totalMappedRecords.splice($scope.startIndex+indexVal,1);
+                                $scope.totalRecLength = totalMappedRecords.length;
+                                if(totalMappedRecords.length-1 > $scope.endIndex) {
+                                    $scope.currentMappingResponseList[($scope.currentMappingResponseList.length-1)+1] = totalMappedRecords[$scope.endIndex];
+                                } else if(totalMappedRecords.length-1 == $scope.endIndex) {
+                                    $scope.currentMappingResponseList[($scope.currentMappingResponseList.length-1)+1] = totalMappedRecords[$scope.endIndex];
+                                    $scope.isNext = false;
+                                } else {
+                                    $scope.endIndex = $scope.endIndex - 1;
+                                    $scope.isNext = false;
+                                }
+                            } else {
+                                $scope.totalRecLength = $scope.currentMappingResponseList.length;
+                            }
+                        }
+                        if($scope.currentMappingResponseList.length == 0 ) {
+                            
+                            if(totalMappedRecords.length != 0 ) {
+                                if( totalMappedRecords.length < 11 && $scope.endIndex < 10) {
+                                    $scope.startIndex = 0;
+                                    $scope.isPrevious = false;
+                                } else {
+                                    $scope.startIndex = $scope.startIndex - 10;
+                                }
+                                
+                                var j = 0;
+                                for(var i=$scope.startIndex; i <= $scope.endIndex; i++) {
+                                    $scope.currentMappingResponseList[j] = totalMappedRecords[i];
+                                    j++;
+                                }
+                            } else {
+                                $scope.startIndex = -1;
+                                $scope.endIndex = -1;
+                                $scope.isPrevious = false;
+                                $scope.isNext = false;
+                                $scope.totalMappedRecords = 0;
+                            }
+                        } 
+                        if($scope.HasErrorInOtherObjFieldMapping) {
+                            $scope.HasErrorInOtherObjFieldMapping = false;
+                        }
+                        if($scope.HasErrorInAMFieldMapping) {
+                            $scope.HasErrorInAMFieldMapping = false;
+                        }
+                    } 
+                }
+                $scope.removeMapping2 = function(indexVal) {
+                    if ($scope.assMappingResponseList2[indexVal].MappingRecordId != null &&
+                        $scope.assMappingResponseList2[indexVal].MappingRecordId != '') {
+                        var deleteMappingId = $scope.assMappingResponseList2[indexVal].MappingRecordId;
+                        $scope.assMappingResponseList2.splice(indexVal,1);
+                        FieldMappingService.removeThisMappingRecord(deleteMappingId).then(function(successResponse) {
+                        }, function(errorResponse) {
+                            $('.errorMsg').text( errorResponse );
+                            $('.slds-notify--alert.slds-theme--error').show();
+                        });
+                    } else {
+                        $scope.assMappingResponseList2.splice(indexVal,1);
+                    }
+                }
+                $scope.cancelMapping = function() {
+                    $scope.selectedObject = '';
+                    $scope.selectedTemplate = '';
+                    $scope.assessableFields = [];
+                    $scope.questionTemplate = [];
+                    $scope.currentMappingResponseList = [];
+                    $('.slds-notify--alert.slds-theme--success').hide();
+                    $('.slds-notify--alert.slds-theme--error').hide();
+                }
+                $scope.cancelMapping2 = function() {
+                    $scope.whichAssessableObj = '';
+                    $scope.caseSelectedObject = '';
+                    $scope.selectedTemplate2 = '';
+                    $scope.assessableFields2 = [];
+                    $scope.questionTemplate2 = [];
+                    $scope.assMappingResponseList2 = [];
+                    $('.slds-notify--alert.slds-theme--success').hide();
+                    $('.slds-notify--alert.slds-theme--error').hide();
+                }
+                $scope.saveMapping = function() {
+                
+                    $('.slds-notify--alert.slds-theme--success').hide();
+                    $('.slds-notify--alert.slds-theme--error').hide();
+                    $('.errorMsg').text('Error: ');
+                    $('#mappingRow').removeClass('slds-has-error');
+                    $('.errMsgForValidation').css('display','none');
+                    $scope.finalAssMappingResponseList = [];
+                    $scope.isClick = true;
+                                        
+                    if ($scope.selectedObject != null && $scope.selectedObject != ''
+                        && totalMappedRecords != null && totalMappedRecords.length > 0) {  
+                         
+                        var errBoxId = '';
+                        var hasError = false;
+                        for (var i = 0; i < totalMappedRecords.length; i++) {
+                            errBoxId = (totalMappedRecords[i].mappedFrom == 'Answer') ? 'errMsg'+i : 'typeErrMsg'+i;
+                            hasError = $('#'+errBoxId).is(":visible");
+                            if (hasError) {
+                                hasError = true;
+                                break;
+                            }
+                        }
+                        if (!hasError) {
+                            var j = 0;
+                            for(var i=$scope.startIndex; i <= $scope.endIndex; i++) {
+                                totalMappedRecords[i] = $scope.currentMappingResponseList[j];
+                                j++;
+                            }
+                            for (var i = 0; i < totalMappedRecords.length; i++) {
+                                if ((totalMappedRecords[i].assessableFieldsApi != null && totalMappedRecords[i].assessableFieldsApi != '' && !totalMappedRecords[i].isDisableFlag)
+                                    && ((totalMappedRecords[i].mappedFrom == 'Answer' && totalMappedRecords[i].questionId != null && totalMappedRecords[i].questionId != '')
+                                        ||(totalMappedRecords[i].mappedFrom == 'Assignment Manager' && totalMappedRecords[i].amFieldAPI != null && totalMappedRecords[i].amFieldAPI != '')
+                                )){
+                                    $scope.finalAssMappingResponseList.push(totalMappedRecords[i]);    
+                                }
+                            }
+                            if ($scope.finalAssMappingResponseList.length > 0) {
+                                FieldMappingService.saveSelectedAFM($scope.selectedObject, $scope.finalAssMappingResponseList, $scope.selectedTemplate, false).then(function(successResponse) {
+                                    
+                                    $scope.currentMappingResponseList = [];
+                                    $scope.startIndex = 0;
+                                    $scope.endIndex = 0;
+                                    $scope.totalRecLength = 0;
+                                    $scope.isNext = false;
+                                    $scope.isPrevious = false;
+                                    totalMappedRecords = [];
+                                    
+                                    $('.successMsg').text(successResponse.msg);
+                                    totalMappedRecords = successResponse.savedMapping;
+                                    $scope.totalRecLength = totalMappedRecords.length;
+                                    if($scope.totalRecLength > 10) { // total no.of records greater than 10 we need pagination
+                                        $scope.endIndex = 9;
+                                        $scope.currentMappingResponseList = totalMappedRecords.slice(0,10); //slice records (0-include 10-exclude) so only given 0 to 10
+                                        $scope.isNext = true;
+                                    } else {
+                                        $scope.endIndex = $scope.totalRecLength-1;
+                                        $scope.currentMappingResponseList = angular.copy(totalMappedRecords);
+                                    }
+                                    $('.slds-notify--alert.slds-theme--success').show();
+                                    $scope.isClick = false;
+                                }, function(errorResponse) {
+                                    $('.errorMsg').text( errorResponse );
+                                    $('.slds-notify--alert.slds-theme--error').show();
+                                    $scope.isClick = false;
+                                });
+                            } else {
+                                $scope.isClick = false;
+                                if($scope.currentMappingResponseList[0].mappedFrom == 'Assignment Manager') {
+                                    if($scope.currentMappingResponseList[0].assessableFieldsApi == '' ||  $scope.currentMappingResponseList[0].amFieldAPI == ''
+                                        || $scope.currentMappingResponseList[0].assessableFieldsApi == null ||  $scope.currentMappingResponseList[0].amFieldAPI == null){
+                                        $('#mappingRow0').addClass('slds-has-error');
+                                        $('#errMsgForValidation0').css('display','');
+                                        isFill = true;
+                                    } else {
+                                        $('#mappingRow0').removeClass('slds-has-error');
+                                        $('#errMsgForValidation0').css('display','none');
+                                        isFill = false;
+                                    }
+                                } else if($scope.currentMappingResponseList[0].mappedFrom == 'Answer') {
+                                    if($scope.currentMappingResponseList[0].assessableFieldsApi == '' || $scope.currentMappingResponseList[0].questionId == '' || $scope.currentMappingResponseList[0].storeAnswerResponseOrWeight == '' ||
+                                        $scope.currentMappingResponseList[0].assessableFieldsApi == null || $scope.currentMappingResponseList[0].questionId == null || $scope.currentMappingResponseList[0].storeAnswerResponseOrWeight == null) {
+                                        $('#mappingRow0').addClass('slds-has-error');
+                                        $('#errMsgForValidation0').css('display','');
+                                        isFill = true;
+                                    } else {
+                                        $('#mappingRow0').removeClass('slds-has-error');
+                                        $('#errMsgForValidation0').css('display','none');
+                                        isFill = false;
+                                    }
+                                } 
+                            }
+                        }
+                    }
+                }
+                $scope.saveMapping2 = function() {
+                    $('.slds-notify--alert.slds-theme--success').hide();
+                    $('.slds-notify--alert.slds-theme--error').hide();                    
+                    $('.errorMsg').text('Error: ');
+                    $scope.finalAssMappingResponseList2 = [];
+                    if ($scope.whichAssessableObj != null && $scope.whichAssessableObj != '' && 
+                        $scope.assMappingResponseList2 != null && $scope.assMappingResponseList2.length > 0) {
+                        for (var i = 0; i < $scope.assMappingResponseList2.length; i++) {
+                            if ($scope.assMappingResponseList2[i].assessableFieldsApi != null && $scope.assMappingResponseList2[i].assessableFieldsApi != '' &&
+                                $scope.assMappingResponseList2[i].questionId != null && $scope.assMappingResponseList2[i].questionId != '') {
+                                    
+                                $scope.assMappingResponseList2[i].entity = $scope.whichAssessableObj;
+                                $scope.finalAssMappingResponseList2.push($scope.assMappingResponseList2[i]);    
+                            }
+                        }
+                        if ($scope.finalAssMappingResponseList2.length > 0) {
+                            if ($scope.existingAFMs.length > 0) {
+                                var tobeDeletedAFMs = [];
+                                $.each($scope.existingAFMs, function(key, value) {
+                                    var tobeDeletedAFM = {};
+                                    tobeDeletedAFM["Id"] = value.MappingRecordId;
+                                    tobeDeletedAFMs.push( tobeDeletedAFM );
+                                });
+                                FieldMappingService.removeExistingAFMs(tobeDeletedAFMs).then(function(deleteResponse) {
+                                });
+                            }
+                            FieldMappingService.saveSelectedAFM($scope.whichAssessableObj, $scope.finalAssMappingResponseList2, $scope.selectedTemplate2, true).then(function(successResponse) {
+                                $('.successMsg').text(successResponse.msg);
+                                $scope.assMappingResponseList2 = successResponse.savedMapping;
+                                $('.slds-notify--alert.slds-theme--success').show();
+                            }, function(errorResponse) {
+                                $('.errorMsg').text( errorResponse );
+                                $('.slds-notify--alert.slds-theme--error').show();
+                            });
+                        }
+                    }
+                }
+                $scope.closeNotification = function(isSuccess) {
+                    if (isSuccess) {
+                        $('.slds-notify--alert.slds-theme--success').hide();
+                    } else {
+                        $('.slds-notify--alert.slds-theme--error').hide();
+                    }
+                }
+                $scope.mappedObjChange = function() {
+                    $scope.HasErrorInOtherObjFieldMapping = false;
+                    $scope.HasErrorInAMFieldMapping = false;
+                }
+                $scope.validateType = function(obj, position) {
+                    if(obj.assessableFieldsApi != '' && obj.questionId != '') {
+                        $('#mappingRow'+position).removeClass('slds-has-error');
+                        $('#errMsgForValidation'+position).css('display','none');
+                    }
+                    var objId = 'errMsg'+position;
+                    var fieldsArray = $scope.assessableFields;
+                    $('#'+objId).hide();
+                    $scope.HasErrorInOtherObjFieldMapping = false;
+                    $.each(fieldsArray, function(key, eachField) {
+                        if (eachField.fieldApi == obj.assessableFieldsApi) {
+                            if((obj.storeAnswerResponseOrWeight == 'Score') && ((eachField.fieldType != 'DOUBLE') && (eachField.fieldType != 'STRING') && (eachField.fieldType != 'TEXTAREA'))) {
+                                $('#'+objId).show();
+                                $scope.HasErrorInOtherObjFieldMapping = true;
+                            }
+                        }
+                    });
+                }
+                $scope.validateFieldType = function(assessableObjectFields, selectedAssessableObjField, amFields, selectedAMField, position) {      
+                    var objFieldType, amFieldType;
+                    var typeArray = ['DATE','DATETIME','DOUBLE'];
+                    var boxId = 'typeErrMsg'+position;      
+                    $scope.HasErrorInAMFieldMapping = false;        
+                    $('#'+boxId).hide();
+                    
+                    if(selectedAssessableObjField != '' && selectedAMField != '') {
+                        $('#mappingRow'+position).removeClass('slds-has-error');
+                        $('#errMsgForValidation'+position).css('display','none');
+                    }        
+                    for(var i=0;i< assessableObjectFields.length;i++) {     
+                        if ( selectedAssessableObjField == assessableObjectFields[i].fieldApi ) {       
+                            objFieldType = assessableObjectFields[i].fieldType;     
+                            break;      
+                        }       
+                    }       
+                    for(var j=0;j< amFields.length;j++) {       
+                        if ( selectedAMField == amFields[j].fieldApi ) {        
+                            amFieldType = amFields[j].fieldType;        
+                            break;      
+                        }       
+                    }
+                    if((objFieldType != 'STRING' && objFieldType != 'TEXTAREA')
+                       && objFieldType != amFieldType) {     
+                       
+                        var msg = 'Selected assessable field does not hold '+amFieldType.toLowerCase()+' value';        
+                        $('#'+boxId).html( msg );       
+                        $('#'+boxId).show();        
+                        $scope.HasErrorInAMFieldMapping = true;     
+                    }       
+                }       
+                $scope.onAssessableObjectFieldChange = function(configuredRecord, position) {       
+                    if (configuredRecord.mappedFrom == 'Answer') {      
+                        $scope.validateType(configuredRecord, position);        
+                    }       
+                    else if (configuredRecord.mappedFrom == 'Assignment Manager') {     
+                        $scope.validateFieldType($scope.assessableFields, configuredRecord.assessableFieldsApi, $scope.amFields, configuredRecord.amFieldAPI, position);        
+                    }       
+                }
+            });
+        </script>
+    </html>
+</apex:page>

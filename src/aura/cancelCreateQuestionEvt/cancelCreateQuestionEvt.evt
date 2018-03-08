@@ -1,0 +1,6 @@
+<aura:event type="Component" description="Event template" access="public">
+    <aura:attribute name="position" type="Integer" access="public"/>
+    <aura:attribute name="whichBtn" type="String" access="public"/>
+    <aura:attribute name="assessmentId" type="String" access="public"/>
+    <aura:attribute name="sectionId" type="String" access="public"/>
+</aura:event>

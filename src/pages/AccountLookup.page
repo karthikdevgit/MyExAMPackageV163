@@ -1,0 +1,95 @@
+<apex:page standardController="Account" extensions="AccountLookupController" showHeader="false" sidebar="false">
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" />
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js" />
+    <apex:styleSheet value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/smoothness/jquery-ui.css" />
+    
+   <script>
+       var textId;
+       var hiddenId; 
+       function enterAndSubmit(event){           
+            if(event.keyCode == 13 || event.which == 13){  
+                                
+            }
+       }  
+       var accNameValId;
+       function addNewAcc(searchText){
+           var s = document.getElementById(searchText).value;
+           if(s == '' || s.length == 0){
+               alert('Please enter the ticker or company name.');
+               return false;
+           }
+           addNew();
+           //$.blockUI({ message: '<div style="height:70px; padding-top:20px;">This will create the account with this name.?<br/><br/><input type="button" value="OK" onclick="addNew();"/>&nbsp;&nbsp;<input type="button" value="Cancel" onclick="unBlockUI(); return false;"/>'}); 
+           
+       }
+       
+       function addNewAccFromYahoo(searchText){
+           var s = document.getElementById(searchText).value;
+            if(s == '' || s.length == 0){
+               alert('Please enter the keyword.');
+               return false;
+           }
+           addNewFromYahoo();
+           //$.blockUI({ message: '<div style="height:70px; padding-top:20px;">This will create the account with this name.?<br/><br/><input type="button" value="OK" onclick="addNewFromYahoo();"/>&nbsp;&nbsp;<input type="button" value="Cancel" onclick="unBlockUI(); return false;"/>'}); 
+           
+       }
+       
+       
+        
+       function unBlockUI() {
+           setTimeout($.unblockUI, 100);
+       }
+       
+       function autoClick(accNameColId, listSize, accName){          
+           if(parseInt(listSize) > 0){               
+               document.getElementById(accNameValId).click();
+           }else {
+               $.blockUI({ message: '<div style="height:70px; padding-top:20px;">'+accName+'  is not a valid ticker.<br/><br/><input type="button" value="Ok" onclick="unBlockUI(); return false;"/>'}); 
+               
+           }  
+       }
+   </script>
+    <apex:form >
+        <apex:pageBlock >                   
+            <apex:inputText id="searchText" value="{!accName}" onkeyup="enterAndSubmit(event);"/>           
+            <apex:commandButton id="goButton" title=" Go! " value=" Go! " action="{!searchUsers}" reRender="lookupTable"/>           
+            <!-- <apex:commandButton value=" Add New "  onclick="addNewAcc('{!$Component.searchText}');return false;"/> -->
+            <!--<apex:commandButton value=" Add " onclick="addNewAccFromYahoo('{!$Component.searchText}');return false;"/>                           -->
+           <br/><br/>           
+            <apex:actionFunction action="{!searchUsers}" name="testAction" reRender="lookupTable"/>
+            <apex:actionFunction action="{!searchUsers}" name="refreshTable" reRender="lookupTable" oncomplete="autoClick(accNameValId, '{!accList.size}','{!accName}');return false;"/>
+            <!-- <apex:actionFunction name="addNew" action="{!addNewAccount}" oncomplete="refreshTable();" /> 
+            <apex:actionFunction name="addNewFromYahoo" action="{!addAccount}"  oncomplete="refreshTable();"/>-->
+           <script>
+               var buttonId = '{!$Component.goButton}';
+           </script>
+            <apex:pageBlockTable id="lookupTable"  value="{!accList}" var="ul" width="920px" cellpadding="4" border="1">              
+                <apex:column >
+                    <apex:facet name="header">Name</apex:facet>
+                    <apex:outputLink onclick="setTemplateId('{!JSINHTMLENCODE(ul.id)}','{!(ul.Name)}')">{!ul.Name}</apex:outputLink>
+                    <!--<a href="javascript:window.close();"
+                    onclick="top.window.opener.lookupPick('pageId:formId:',document.getElementById(hiddenId).value,document.getElementById(textId).value,'','{!ul.id}','{!JSENCODE(ul.Name)}','','');">
+                        <apex:outputText id="accNameVal" value="{!ul.Name}"/>
+                        <script>
+                            accNameValId = '{!$Component.accNameVal}';
+                        </script>
+                    </a>-->
+                </apex:column>  
+                
+            </apex:pageBlockTable>
+        </apex:pageBlock>  
+        <apex:inputHidden value="{!accNameFieldId}" id="accTextFieldID"/>
+        <script> textId = '{!$Component.accTextFieldID}';</script>
+        <apex:inputHidden value="{!accHiddenFieldId}" id="accHiddenFieldID"/>
+        <script> hiddenId = '{!$Component.accHiddenFieldID}';</script>      
+    </apex:form>
+    <script>
+        function setTemplateId(accId,accName) {
+            //alert('>>>><<<<'+accId+'<<<<>>>>'+accName);
+            
+            parent.window.opener.AccountIdNameFunc(accId,accName);
+            window.close();
+        }
+    
+    </script>
+</apex:page>

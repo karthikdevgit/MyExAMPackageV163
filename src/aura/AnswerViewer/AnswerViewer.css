@@ -1,0 +1,54 @@
+.THIS .absolute{
+    position: absolute;
+    left: 28px;
+}
+
+.THIS .horizontal {
+    float : left;
+    padding-right : 15px;
+}
+.THIS .te{
+    margin-top: 3px;
+}
+
+.THIS .slds_width{
+    width: 90%;
+}
+
+.THIS.relative{
+    position: relative;
+
+}
+
+.THIS .img{
+    border: 1px solid;
+    width: 105px;
+    /* max-height: 100%; */
+    margin: 4px;
+    height: 100px;
+}
+
+.THIS.div-container{
+    width: 100%;
+    height: 123px;
+    overflow: auto;
+}
+.THIS .image-container{
+    display: inline-block;
+    height: 100px;
+    margin: 5px;
+    padding: 4px;
+    /*background-color: #efefef;*/
+}
+.THIS .uiInputCheckbox {
+  margin: 5px 0;
+}
+.THIS .imgHover .img:hover{
+    
+}
+/*.THIS .slds-spinner_container {
+    position: relative !important; 
+}
+.THIS.ImgFix {
+    position : fixed;
+}*/

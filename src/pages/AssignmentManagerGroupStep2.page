@@ -1,0 +1,205 @@
+<apex:page controller="AssignmentGroupController" showHeader="false" sidebar="false">
+    <!--<apex:includescript value="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"/>
+    <script src="https://cdn.datatables.net/1.10.6/js/jquery.dataTables.min.js"></script>    -->
+    
+    <apex:includeScript value="{!URLFOR($Resource.dialog,'Jquery/jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.dialog,'Jquery/jquery.ui.touch-punch.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.dialog,'Jquery/jquery-ui.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.dialog,'Jquery/Modalboxjquery-ui.min.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.dialog,'Jquery/Modalboxjquery-ui.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.dialog,'Jquery/jquery-ui.css')}"/>
+    
+    
+    
+    <script src="../../soap/ajax/33.0/connection.js" type="text/javascript"></script>
+    <script src="../../soap/ajax/29.0/apex.js" type="text/javascript"></script>
+    
+    <style>
+        .searchWaitingDivOpacity{
+            background:url("/img/loading32.gif")scroll no-repeat 46% 43% #fff;
+            top: 0;
+            height: 100%;
+            left: 0;
+            opacity: 0.8;
+            position: absolute;
+            width: 100%;
+            z-index: 1500;
+        }
+        .ui-widget-header .ui-icon {
+            background-image: url('https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/redmond/images/ui-icons_d8e7f3_256x240.png'); 
+        }
+        .dialog{
+             position:   fixed;
+             z-index:    1000;
+             top:        0;
+             left:       0;
+             height:     100%;
+             width:      100%;
+             background: rgba( 255, 255, 255, .8 );
+             border-color:1px solid black;
+         
+        }
+        body .bPageBlock .pbBody .blue .pbSubheader{
+            background-color:#35B4E9;
+        }
+    </style>
+    <div class="searchWaitingDivOpacity" style = "display:none;"></div>    
+    <apex:form >
+        <apex:outputPanel id="frm">
+            <apex:pageBlock >
+                <apex:outputPanel styleClass="blue" layout="block">
+                    <apex:pageBlockSection title="New Assessment Event" columns="1">
+                        <apex:pageBlockSectionItem >
+                            <apex:outputText style="font-weight:bold;" value="Object for Group"></apex:outputText>
+                            <apex:selectList id="selectedObjId" value="{!selectedObj}" size="1" onchange="selectedValue(this.value);">                            
+                                <apex:selectOptions value="{!ObjectGroup}"/>
+                            </apex:selectList>    
+                        </apex:pageBlockSectionItem>     
+                        <apex:pageBlockSectionItem >
+                            <apex:outputText >Assessment Group Name</apex:outputText>
+                            <apex:selectList id="selectedGroupId" value="{!selectedGroupId2}" size="1">                            
+                                <apex:selectOptions value="{!groupOptions}"/>
+                            </apex:selectList>
+                               
+                        </apex:pageBlockSectionItem>     
+                        <apex:pageBlockSectionItem >
+                            <apex:outputText >Assessment Event Name</apex:outputText>
+                            <apex:inputField value="{!assEvent.Name}" />
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputText >Assessment Event Description</apex:outputText>
+                            <apex:inputField value="{!assEvent.Description__c}"/>
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputText >Assessment Type</apex:outputText>
+                            <apex:inputField value="{!assMan.InvestigationType__c}"/>
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputText >Event Start Time</apex:outputText>
+                            <apex:inputField value="{!assEvent.Event_Start_Time__c}"/>
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputText >Event Finish Time</apex:outputText>
+                            <apex:inputField value="{!assEvent.Event_Finish_Time__c}"/>
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputText >Event Date</apex:outputText>
+                            <apex:inputField value="{!assEvent.Event_Date__c}"/>
+                        </apex:pageBlockSectionItem>
+                        <!--<apex:pageBlockSectionItem >
+                            <apex:inputCheckbox value="{!recurringEvent}"> 
+                            </apex:inputCheckbox>Recurring Event
+                        </apex:pageBlockSectionItem>-->
+                        <apex:pageBlockSectionItem >
+                            <apex:outputText >Assigned Resource</apex:outputText>
+                            <apex:inputField styleClass="assignedRes" id="assignedResId" value="{!assMan.Assessor_Resource__c}"/>
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputText ></apex:outputText>
+                            <apex:commandButton value="Save" onclick="saveAssignmentManager();" reRender="none"/>
+                        </apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>
+                </apex:outputPanel>
+            </apex:pageBlock>
+            <apex:pageBlock >
+                <apex:outputPanel styleClass="blue" layout="block">
+                    <apex:pageBlockSection title="View Assessment Events" columns="1" collapsible="false">
+                        <apex:pageBlockSectionItem >
+                            <a href="/{!$ObjectType.Assessment_Event__c.keyPrefix}" target="_blank"> All Assessment Events </a>    
+                        </apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>
+                </apex:outputPanel>
+            </apex:pageBlock>
+        <div class="dialog" style="display:none;" id="allrecordsId">  
+            <apex:sectionHeader title="Please Select Record"/>
+                        <br/>
+            
+            <!-- Display search results -->
+                  <apex:outputpanel id="Contactlist">
+                        <table cellspacing="10" border="0" class="sobjectRecords">
+                        </table>
+                        <!--<table class="list" width="100%">
+                            <thead>
+                                <tr class="headerRow">
+                                    <th class="headerRow" width="20%">
+                                        <apex:inputCheckbox onclick="checkAll(this)"/>
+                                    </th>
+                                    <th class="headerRow">
+                                        Name
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="dataRow">
+                            
+                                <apex:repeat value="{!objList}" var="res">
+                                <tr class="dataRow">
+                                    <td class="dataCell">
+                                        <apex:inputCheckbox styleClass="objId" id="selectLine1"/>
+                                        <span style="display:none">{!res.con['Id']}</span>
+                                    </td>
+                                    <td class="dataCell">
+                                        <apex:outputtext value="{!res.con['Name']}"/>
+                                    </td>
+                                </tr>
+                                </apex:repeat>
+                            </tbody>
+                        </table>-->
+                         <br/><br/>
+                
+                    </apex:outputpanel>
+            <!-- End of search results -->
+            
+            <!-- Commandbutton to proceed to next screen -->
+              <div style="position:relative;left:75px;">
+                  <!--<apex:commandButton value="Selected Records" onclick="selectedId();" reRender="none"/>-->
+                  <input type = "button" value="Select Records" style="display:none" class="selectRecordbtn" onclick="selectedId();"/>
+              </div>
+            <!-- End of Commandbutton -->
+        </div>
+        <div id="dialog-message" style="display:none" title="Information Message">
+          <p>
+            <span class="ui-icon ui-icon-circle-check" style="float:left; margin:0 7px 50px 0;"></span>
+            <apex:outputText value="{!msgResult}"></apex:outputText><br/>
+          </p>
+        </div>
+        <apex:actionFunction name="processSelectedFunc" action="{!processSelected}" reRender="none" oncomplete="getRecords('{!selectedRecords}','{!totalRecords}');">
+            <apex:param name="idsVal" value=""/>
+            <apex:param name="totelRec" value=""/>
+        </apex:actionFunction>
+        <apex:actionFunction name="selectedValue2" action="{!changeObject}" reRender="frm" oncomplete="$('.searchWaitingDivOpacity').hide();">
+            <apex:param name="selectedObjectAPIName" value=""/>
+        </apex:actionFunction>
+        <apex:actionFunction name="insertAssignmentManager" action="{!insertAssignmentManager}" reRender="frm" oncomplete="$('.searchWaitingDivOpacity').hide();window.scrollTo(0, 0);$('#dialog-message').dialog({ modal: true, buttons: { Ok: function() { $(this).dialog('close');window.location.reload(); } } });"/>        
+        </apex:outputPanel>
+    </apex:form>
+    <script>
+        $(document).ready( function() {
+            
+        });
+        
+        var selectedObjVal = '{!JSENCODE(selectedObj)}';
+        var selectedGrpVal = '{!JSENCODE(selectedGroup)}';
+        function selectedValue(selectedval) {
+            $('.searchWaitingDivOpacity').show();
+            selectedObjVal = selectedval;
+            selectedValue2(selectedObjVal);
+        }
+        function changeGroup(selectGrp) {
+            selectedGrpVal = selectGrp;
+        }
+        
+        function saveAssignmentManager() {
+            $('.searchWaitingDivOpacity').show();
+            insertAssignmentManager();
+            $('.searchWaitingDivOpacity').hide();
+            
+        }
+        
+    </script>
+    <style>
+        #recSelectId table thead{
+            display:none;
+        }
+        
+    </style>
+</apex:page>

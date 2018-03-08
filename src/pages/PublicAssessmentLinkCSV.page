@@ -1,0 +1,143 @@
+<apex:page controller="PublicAssessmentLinkCSVcontroller" showHeader="false" sidebar="false" readOnly="true">
+    <div xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <title>Public Assessment CSV</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS052, '/assets/styles/salesforce-lightning-design-system-vf.css')}"/>
+        </head>
+        <apex:includeScript value="{!URLFOR($Resource.Datepicker,'Datepicker/jquery-1.10.2.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.UnderscoreAndAngularJS,'UnderscoreAndAngularJS/underscore-min.js')}"/>
+        <script>
+            var paTotalrecords = [];
+            var paFieldsLabel = '{!PAFieldsLabel}';
+            var paQueryFields = '{!PAQueryFields}';
+            var assGeneratorId = '{!$CurrentPage.parameters.agId}';
+            var distributionId = '{!$CurrentPage.parameters.distId}';
+            var csvCount = 0;
+            var recordCount = 0;
+            var splitOfQueryFields =[];
+            
+            $(document).ready(function () {
+                $('.maskDiv, .slds-spinner--small').show();
+                if( ((assGeneratorId != null && assGeneratorId != '') || (distributionId != null && distributionId != '')) 
+                    && paQueryFields != null && paQueryFields != '') {
+                    splitOfQueryFields = paQueryFields.split(',');
+                    var queryStr = queryStrFunc();
+                    console.log('::::queryStr:::::',queryStr);
+                    queryPArecords(queryStr,true,[]);
+                }
+            });
+            function ConvertToCSV(objArray) {
+                var str = paFieldsLabel;
+                str += '\r\n'; 
+                
+                objArray.forEach(function(objArray){ delete objArray.attributes });
+                for (var i = 0; i < objArray.length; i++) {
+                    var line = '';
+                    var currentRec = new Object(objArray[i]);
+                    var missingFieldAddObj = new Object();
+                    
+                    for(var a = 0; a < splitOfQueryFields.length; a++ ) {
+                        var f = splitOfQueryFields[a];
+                        if(!currentRec.hasOwnProperty(f)) {
+                            missingFieldAddObj[f] = "";
+                        } else {
+                            missingFieldAddObj[f] = currentRec[f];
+                        }
+                    }
+                    for (var index in missingFieldAddObj) {
+                        if (line != '') line += ','
+                        
+                        line += missingFieldAddObj[index];
+                    }
+                    str += line + '\r\n';
+                }
+                return str;
+            } 
+            function closeFunc() {
+                console.log(':::Entering:::');
+                $('.csvStatus').removeClass('slds-fade-in-open');
+                $('.csvStatus').addClass('slds-modal__close');
+                window.close();
+            }
+            function queryStrFunc() {
+                var queryStr = 'SELECT '+paQueryFields+' FROM ExAM__Public_Assessment__c WHERE';
+                if( assGeneratorId != null && assGeneratorId != '' ){
+                    queryStr += ' ExAM__Assignment_Generator_Batch__c = \''+assGeneratorId+'\'';
+                } else if( distributionId != null && distributionId != '' ){
+                    queryStr += ' ExAM__Distribution__c= \''+distributionId+'\'';
+                }
+                return queryStr;
+            }
+            function queryPArecords(queryStr,isFirstTime,queriedRec) {
+                csvCount++;
+                var paTotalrecords = [];
+                
+                ExAM.PublicAssessmentLinkCSVcontroller.queryPArecords(queryStr,isFirstTime,queriedRec,function(result,event) {
+                    if(event.status) {
+                        if(result != null 
+                           && result['paRecordsList'] != undefined && result['paRecordsList'].length > 0
+                           && result['queriedPARecordsId'] != undefined && result['queriedPARecordsId'].length > 0
+                           && result['statusMsg'] != undefined && result['statusMsg'] == 'Processing') {
+                           
+                            paTotalrecords = result['paRecordsList']; 
+                            if(paTotalrecords.length > 0) {
+                                recordCount = recordCount + paTotalrecords.length;
+                                var csv = ConvertToCSV(paTotalrecords);
+                                var a = document.createElement('a');
+                                a.textContent = 'Assessment Link';
+                                a.download = 'Public Assessment('+csvCount+').csv';
+                                a.href = 'data:text/csv;charset=utf-8,'+escape(csv);
+                                a.click();
+                            }
+                            
+                            var queryStr = queryStrFunc();
+                            queryPArecords(queryStr,false,result['queriedPARecordsId']);
+                        } else if (result != null 
+                           && result['paRecordsList'] != undefined && result['paRecordsList'].length == 0
+                           && result['queriedPARecordsId'] != undefined && result['queriedPARecordsId'].length == 0
+                           && result['statusMsg'] != undefined && result['statusMsg'] == 'Finish') {
+                           $('.csvStatus').removeClass('slds-modal__close');
+                           $('.csvStatus').addClass('slds-fade-in-open');
+                           $('.msgText').text('You have downloaded '+(csvCount-1)+' file(s) and '+recordCount+' public assessment link(s).');
+                           $('.maskDiv, .slds-spinner--small').hide();
+                        } else if(result['statusMsg'] != undefined && result['statusMsg'] == 'Empty') {
+                           $('.csvStatus').removeClass('slds-modal__close');
+                           $('.csvStatus').addClass('slds-fade-in-open');
+                           $('.msgText').text('The link has no records.');
+                           $('.maskDiv, .slds-spinner--small').hide();
+                        } else {
+                           $('.csvStatus').removeClass('slds-modal__close');
+                           $('.csvStatus').addClass('slds-fade-in-open');
+                           $('.msgText').text(result['statusMsg']);
+                           $('.maskDiv, .slds-spinner--small').hide();
+                        }
+                    }
+                });
+            }
+            
+        </script>
+        <body>
+            <div class="slds">
+                <div style="display: none; background-color: rgba(0, 0, 0, 0.6); width: 100%; height: 100%; z-index: 1000; position: fixed; left: 0; top: 0; overflow: hidden; text-align: center; vertical-align: middle;" class="maskDiv">
+                    <img src="{!URLFOR($Resource.SLDS052, '/assets/images/spinners/slds_spinner.gif')}" alt="Loading..." class="slds-spinner--small" style="display: none; z-index: 10001; background-color: white; width: 80px; height: 80px; padding: 15px; border-radius: 4px; text-align: left; position: relative; top: 30%;"/>
+                </div>
+                <div aria-hidden="false" role="dialog" class="slds-modal slds-modal__close csvStatus" style="background-color: rgba(128, 128, 128, 0.75);">
+                    <div class="slds-modal__container">
+                        <div class="slds-modal__header">
+                            <h2 class="slds-text-heading--medium">CSV Download Status</h2>
+                        </div>
+                        <div class="slds-modal__content">
+                            <div>
+                                <h2 class="slds-text-heading_small msgText"></h2>
+                            </div>
+                        </div>
+                        <div class="slds-modal__footer">
+                            <button class="slds-button slds-button--neutral slds-button--brand" onclick="closeFunc();">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </body>
+    </div>
+</apex:page>

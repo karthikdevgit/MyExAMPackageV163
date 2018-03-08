@@ -1,0 +1,110 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable" access="global">
+
+    <ltng:require styles="{!$Resource.fontawesome + '/font-awesome/css/font-awesome.css'}"/>
+
+    <!--<aura:handler name="change" value="{!v.assessementId}" action="{!c.clearAssessmentContextDataWthRelatedRecord}"/>-->
+    <aura:handler name="SettingSelectedTab" event="c:settingSelectedTabEvt" action="{!c.changeTemplateAction}"/>
+    <aura:handler name="navigateToExamManage" event="c:navigateToExamMngTempEvt" action="{!c.navigateToExamMngTemplate}"/>
+    <aura:handler name="updateFields" event="c:updateFieldEvt" action="{!c.refreshData}"/>
+    <aura:handler name="fileAttachmentEvt" event="c:logoAttachmentEvt" action="{!c.reloadFileContent}"/>
+    <aura:handler name="ctrlLinkMenuEvt" event="c:ctrlLinkMenuEvt" action="{!c.viewChange}"/>
+    <aura:handler name="editViewOn" event="c:editViewOnEvt" action="{!c.editStateOn}"/>
+    <aura:handler name="doneEditingView" event="c:doneEditingViewEvt" action="{!c.viewStateOn}"/>
+    
+    <aura:attribute name="canSwitchTab" type="Boolean" access="public" default="true" description="Cloud be able to Switch tab"/>
+    <aura:attribute name="editCount" type="Integer" access="public" default="0" description="count no of editview in assessment"/>
+    <aura:attribute name="hasQuriedFieldSetOfSec" type="Boolean" access="public" default="false" description=""/>
+    <aura:attribute name="hasName" type="Boolean" default="false" access="public" description="show Template name"/>
+    <aura:attribute name="showNavTab" type="Boolean" default="false" access="public" description="show tab container"/>
+    <aura:attribute name="assessementId" type="String" access="public" description="set assessment id"/>
+    <aura:attribute name="countQuestion" type="Integer" access="public" default="0"/>
+    <aura:attribute name="fields" type="Map" access="public"/>
+    <aura:attribute name="attachment" type="Map" default="{Name : '', Id : '', ContentType : ''}" access="public"/>
+    <aura:attribute name="showSection" type="Boolean" access="public" default="false"/>
+    <aura:attribute name="selectedView" type="String" access="public" default="Current_User"/>
+    <aura:attribute name="selectedLabel" type="String" access="public" default="My ExAMs"/>
+    <aura:attribute name="viewMenuAttr"		       
+                    type="Object[]"		    
+                    access="public"		
+                    description="attributes for view filter menu"		
+                    default="[{		
+                             optionText: 'My ExAMs',		
+                             optionValue: 'Current_User'		
+                             },		
+                             {		
+                             optionText: 'All ExAMs',		
+                             optionValue: 'All'		
+                             }]"/>	
+    
+    <aura:attribute name="SectionTemplates" type="Section_Template__c[]" access="public" description="set SectionTemplates based on assessment"/>
+    <aura:attribute name="assessmentTemplate" type="Main_questionaire__c" access="public" description="set assessment record which assessment choosed"/>
+    
+    	
+  
+
+    <aura:registerEvent name="notificationEvent" type="c:notificationEvt"/>
+    <aura:registerEvent name="focusToEditView" type="c:focusToEditViewEvt"/>
+    
+    <div class="notification_Container">
+        <c:NotificationContainer />
+    </div>
+
+
+   					 <!-- show currentAssessment in Header-->
+    <div class="slds-p-around--medium">
+        <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center slds-m-vertical_large">
+            <div class="slds-text-heading_large">
+                <a onclick="{!c.navigateToAssessmentTable}">{!v.selectedLabel}</a>
+                <aura:if isTrue="{!v.hasName}">
+                    > {!v.assessmentTemplate.ExAM__Template_name__c}
+                </aura:if>
+                <div class="{!v.showNavTab ? 'slds-hide' : 'dropDown'}">
+                    <div class="slds-text-heading__small">
+                        <c:CtrlLinkMenu linkChange="false" showIcon="true" hideLabel="true" attributes="{!v.viewMenuAttr}"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Start Traverse assessmentTable to TabContainer / TabContainer to AssessmentTable -->
+        <aura:if isTrue="{!v.showNavTab}">
+            <article aura:id="examManage">
+                <div class="section-header">
+                    <c:TabContainer aura:id="tabContainer" wrapperClass="slds-tabs--scoped "
+                                    ulClass="slds-tabs--scoped__nav "
+                                    liClass="slds-text-heading--label slds-tabs--scoped__item"
+                                    aClass="slds-tabs--scoped__link"
+                                    canSwitchTab="{!v.canSwitchTab}"
+                                    accList="[
+                                             {name:'Edit Questions', componentLink: 'SectionContainer', active:true},
+                                             {name:'Options', componentLink: 'ExamTemplateOptionsEdit'},
+                                             {name:'Summary', componentLink: 'ExamTemplateSummary'},
+                                             {name:'Analytics ', componentLink: 'QuestionResponseAnalytics'}, 
+                                             {name : 'Distributions', componentLink : 'DistributionView'}
+                                             ]"/>
+                </div>
+                <div class="section-body">
+                    <div class="templateActions" aura:id="templateActions"></div>
+                </div>
+            </article>
+            <aura:set attribute="else">
+                <div aura:id="assessmentTable" class="slds-show">
+                    <c:AssessmentTable aura:id="assessment" selectView="{!v.selectedView}"/>
+                </div>
+            </aura:set>
+        </aura:if>
+    </div>
+
+    							<!-- ShowSpinner-->
+    <div aura:id="spinner_container" class="slds-hide">
+        <div class="slds-spinner_container spinnerFixed">
+            <div role="status" class="slds-spinner slds-spinner--medium slds-spinner--brand">
+                <span class="slds-assistive-text">Loading</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </div>
+
+
+</aura:component>

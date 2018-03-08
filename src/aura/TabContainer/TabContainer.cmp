@@ -1,0 +1,26 @@
+<aura:component access="public">
+    
+    <aura:handler name="change" value="{!v.currentComponent}" action="{!c.doUpdate}"/>
+    
+    <aura:attribute name="accList" type="Object[]" default="" access="public"/>
+    <aura:attribute name="wrapperClass" type="String" access="public"/>
+    <aura:attribute name="ulClass" type="String" access="public"/>
+    <aura:attribute name="liClass" type="String" access="public"/>
+    <aura:attribute name="aClass" type="String" access="public"/>
+    <aura:attribute name="tooltipText" type="String" access="public"/>
+    <aura:attribute name="currentComponent" type="String" access="public"/> 
+    <aura:attribute name="canSwitchTab" type="Boolean" access="public"/>
+
+      <div class="{# ' slds-grid slds-wrap ' + v.wrapperClass}">
+          <div class=" slds-size--1-of-1 ">
+              <div class="">
+                  <ul class="{#v.ulClass}" role="tablist" aura:id="list">
+                      <aura:iteration items="{#v.accList}" var="acc" indexVar="index">
+                          <c:TabComponent aura:id="tabCmp" label="{!acc.name}" canSwitchTab="{!v.canSwitchTab}" tooltipText="{#acc.tooltipText}" liClass="{#v.liClass}" aClass="{#v.aClass}" active='{#acc.active}' componentLink='{#acc.componentLink}' index='{!index}' currentComponent="{!v.currentComponent}" />
+                      </aura:iteration>
+                  </ul>
+              </div>
+          </div>
+      </div>
+
+  </aura:component>

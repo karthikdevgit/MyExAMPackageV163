@@ -1,0 +1,198 @@
+<apex:page sidebar="false" standardStylesheets="false" standardController="Section_Template__c" extensions="SafeandHealthySchoolReportController" recordSetVar="sitem" action="{!sectionStatus}" id="thePage">
+
+<!--<apex:page showHeader="false" sidebar="false" standardStylesheets="false" standardController="Section_Template__c" extensions="QuestionnaireFieldsReportOutput"  recordSetVar="sitem" action="{!sectionStatus}" id="thePage" renderAs="pdf">
+-<apex:page showHeader="false" sidebar="false" standardStylesheets="false" standardController="Section_Template__c" extensions="QuestionnaireFieldsReportOutput"  recordSetVar="sitem" action="{!sectionStatus}" id="thePage" contenttype="application/vnd.ms-excel">
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" standardController="Section_Template__c" extensions="QuestionnaireFieldsReportOutput"  recordSetVar="sitem" action="{!sectionStatus}" id="thePage" contentType="application/msWord" cache="true">-->
+ <!-- This is the page for banner include it in all pages
+<apex:include pageName="BannerTemplate"/>-->
+<style>
+@charset "UTF-8";
+/* CSS Document */
+
+@media all {
+    .page-break { display: none; }
+}
+
+@media print {
+    .page-break { display: block; page-break-before: always; }
+}
+
+h1,h2,h3    { font-weight:bold; font-family:Cambria, "Hoefler Text", "Liberation Serif", Times, "Times New Roman", serif }
+h1      { font-size:24px; }
+h2      { font-size:16px; border-bottom:1px solid #ccc; padding:0 0 2px 0; margin:0 0 5px 0; }
+h3      { font-size:13px; margin:0 0 2px 0; }
+
+table {width: 100%; margin:0; float:none;}
+.bigger {
+    font-family: Cambria, "Hoefler Text", "Liberation Serif", Times, "Times New Roman", serif;
+    font-size: xx-large;
+    color: #0001FF;
+    border: #0001FF;
+    float:inherit;
+}
+.red {
+    font-family: Cambria, "Hoefler Text", "Liberation Serif", Times, "Times New Roman", serif;
+    font-size: xx-large;
+    color: red;
+    float:inherit;
+}
+
+@page Section1 {
+mso-footer:f1;
+}
+div.Section1 {
+page:Section1;
+}
+p.MsoFooter, li.MsoFooter, div.MsoFooter {
+mso-pagination:widow-orphan;
+}
+
+#incident{
+    top: 0;
+    left: 500;
+    background: green
+    
+#reported{
+    top: 0;
+    left: 300;
+    background: yellow    
+
+</style>
+<script language="JavaScript" type="text/javascript">
+
+</script>
+<div class='Section1'>
+<apex:form id="templateForm">
+     <!-- <table><tr><td width="70%">
+  <apex:outputfield value="{!acc.School_Logo__c}"/> </td><td width="25%"><apex:image value="{!$Resource.CompanyLogo}" height="100"/></td></tr></table>
+
+        <h1>{!accountName} Assessment</h1>-->
+       
+   <image height="30px" src="{!$Resource.CompanyLogo}"></image>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<h1>Investigation Report</h1>
+   
+     <apex:pageblock >
+         
+    
+      <!-- <h1>{!accountName} {!templateName} Core Information</h1><hr/>-->
+
+          <apex:variable var="secnum" value="{!1}"/> 
+         <apex:repeat value="{!sectionList}" var="section" > 
+        
+         <apex:pageBlockSection columns="1" title=" {!section.Name}" rendered="{!IF(section.Name=='Core Investigation Details',true,false)}">
+          <apex:repeat value="{!section.questionList}" var="question" > 
+                      <!-- SPECIFIC QUESTION --> 
+                  <apex:outputText value="{!question.Name}: {!question.responsename} " />
+                  <!--<apex:outputText value="{!question.Name}" rendered="{!ISNULL(question.responsename)&&(question.qid=='Q-817')}" style="color:blue;font-style:normal;"/>-->
+                              
+             <!--<apex:outputPanel rendered="{!IF(question.qid=='Q-820',true,false)}">
+                      SPECIFIC QUESTION  
+                  <apex:outputText value="{!question.Name}: {!question.responsename} " rendered="{!NOT(ISNULL(question.score))&&(question.qid=='Q-820')}" />
+                 
+                     <apex:outputText value="{!question.Name}: {!question.responsename} " rendered="{!IF(question.qid=='Q-821',true,false)}" />
+                     
+                     <apex:outputText value="{!question.Name}: {!question.responsename} " rendered="{!IF(question.qid=='Q-822',true,false)}" />
+                    
+                
+                     <apex:outputText value="{!question.Name}: {!question.responsename} " rendered="{!IF(question.qid=='Q-823',true,false)}" />
+                  
+                     <apex:outputText value="{!question.Name}: {!question.responsename} " rendered="{!IF(question.qid=='Q-844',true,false)}" />
+                    
+                
+                     <apex:outputText value="{!question.Name}: {!question.responsename} " rendered="{!IF(question.qid=='Q-843',true,false)}" />
+                     
+                     <apex:outputText value="{!question.Name}: {!question.responsename} " rendered="{!IF(question.qid=='Q-824',true,false)}" />
+                    
+                -->
+            
+             <apex:variable var="secnum" value="{!secnum+1}"/>            
+          </apex:repeat> 
+          </apex:pageBlockSection>
+          
+          
+           <apex:pageBlockSection columns="1" title=" {!section.Name}" rendered="{!IF(section.Name=='Incident Scene',true,false)}">
+          <apex:repeat value="{!section.questionList}" var="question" > 
+                              <!-- SPECIFIC QUESTION --> 
+                  <apex:outputText value="{!question.Name}: {!question.responsename} " />
+                 
+                 <!-- COMMENTS we can create a table to show-->
+                  <apex:outputPanel rendered="{!if(question.resObj.Notes.size>0 ,true,false)}" >
+                  
+                  <table class="list" border="0" cellpadding="0" cellspacing="0"><!--BORDERCOLOR="#2AABAB">-->         
+                       <tr><th class="headerRow">Owner Name</th>
+                       <th class="headerRow"><apex:outputText value="Comment"/></th>
+                       </tr>
+                  <apex:repeat value="{!question.resObj.Notes}" var="note">
+                  <tr><td width="10%">
+                               <apex:outputText value="{!note.Owner.FirstName} {!note.Owner.LastName}" rendered="{!NOT(ISNULL(note.Owner.FirstName)|| ISNULL(note.Owner.LastName))}"/> 
+                       </td><td>{!note.body} </td>
+                  </tr>
+                   </apex:repeat>
+                   </table>
+                   </apex:outputPanel>
+                 
+            
+          </apex:repeat> 
+          </apex:pageBlockSection>
+          
+          <apex:pageBlockSection columns="1" title=" {!section.Name}" rendered="{!IF(section.Name=='Key Witness',true,false)}">
+          <apex:repeat value="{!section.questionList}" var="question" > 
+                  <apex:outputText value="{!question.Name}: {!question.responsename} "  />
+          </apex:repeat> 
+          </apex:pageBlockSection>
+          
+          <apex:pageBlockSection columns="1" title=" {!section.Name}" rendered="{!IF(section.Name=='Incident Analysis',true,false)}">
+          <apex:repeat value="{!section.questionList}" var="question" > 
+                   <apex:outputText value="{!question.Name}: {!question.responsename} " />
+                  <!-- <apex:outputText value="{!question.Name}: {!question.responsename} " rendered="{!IF(question.qid=='Q-832',true,false)}" />
+                   <apex:outputText value="{!question.Name}: {!question.responsename} " rendered="{!IF(question.qid=='Q-835',true,false)}" />
+                   <apex:outputText value="{!question.Name}: {!question.responsename} " rendered="{!IF(question.qid=='Q-833',true,false)}" />
+                   <apex:outputText value="{!question.Name}: {!question.responsename} " rendered="{!IF(question.qid=='Q-834',true,false)}" />
+                   <apex:outputText value="{!question.Name}: {!question.responsename} " rendered="{!IF(question.qid=='Q-836',true,false)}" />
+                   <apex:outputText value="{!question.Name}: {!question.responsename} " rendered="{!IF(question.qid=='Q-837',true,false)}" />-->
+          </apex:repeat> 
+          </apex:pageBlockSection>
+          
+          
+          <apex:pageBlockSection columns="1" title=" {!section.Name}" rendered="{!IF(section.Name=='Other Investigative Agencies',true,false)}">
+          <apex:repeat value="{!section.questionList}" var="question" > 
+                              <!-- SPECIFIC QUESTION --> 
+                  <apex:outputText value="{!question.Name}: {!question.responsename} "  />
+                 
+                 <!-- COMMENTS we can create a table to show-->
+                  <apex:outputPanel rendered="{!if(question.resObj.Notes.size>0 ,true,false)}" >
+                  
+                  <table class="list" border="0" cellpadding="0" cellspacing="0"><!--BORDERCOLOR="#2AABAB">-->         
+                       <tr><th class="headerRow">Owner Name</th>
+                       <th class="headerRow"><apex:outputText value="Comment"/></th>
+                       </tr>
+                  <apex:repeat value="{!question.resObj.Notes}" var="note">
+                  <tr><td width="10%">
+                               <apex:outputText value="{!note.Owner.FirstName} {!note.Owner.LastName}" rendered="{!NOT(ISNULL(note.Owner.FirstName)|| ISNULL(note.Owner.LastName))}"/> 
+                       </td><td>{!note.body} </td>
+                  </tr>
+                   </apex:repeat>
+                   </table>
+                   </apex:outputPanel>
+                 
+            
+          </apex:repeat> 
+          </apex:pageBlockSection>
+          
+           <apex:pageBlockSection columns="1" title=" {!section.Name}" rendered="{!IF(section.Name=='Other Statements',true,false)}">
+          <apex:repeat value="{!section.questionList}" var="question" > 
+                  <apex:outputText value="{!question.Name}: {!question.responsename} " rendered="{!IF(question.qid=='Q-830',true,false)}" />
+          </apex:repeat> 
+          </apex:pageBlockSection>
+          
+          
+          
+          
+          
+           </apex:repeat>
+        
+
+   </apex:pageblock>
+</apex:form>
+</div>
+ 
+</apex:page>

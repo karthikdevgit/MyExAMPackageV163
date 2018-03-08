@@ -1,0 +1,6 @@
+<aura:event type="APPLICATION" description="Event template" access="public">
+    <aura:attribute name="isFileUpload" type="Boolean" default="false" access="public"/>
+    <aura:attribute name="fileContentMap" type="Map" access="public"/>
+    <aura:attribute name="answerOptions" type="Answer_Option__c[]" access="public"/>
+    <aura:attribute name="removedIndices" type="List" access="public"/>
+</aura:event>

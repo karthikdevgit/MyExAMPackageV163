@@ -1,0 +1,9 @@
+<apex:page controller="MyController">
+  <!-- Begin Default Content REMOVE THIS -->
+  <apex:form >
+  <apex:selectList value="{!accountId}" size="1">
+    <apex:selectOptions value="{!accountOptions}"/>
+</apex:selectList>
+</apex:form>
+  <!-- End Default Content REMOVE THIS -->
+</apex:page>

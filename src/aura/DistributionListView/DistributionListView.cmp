@@ -1,0 +1,112 @@
+<aura:component access="public">
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="distributions" type="List" access="public" />
+    <aura:attribute name="assessmentId" type="String" access="public"/>
+    <aura:attribute name="wizardName" type="String" access="public"/>
+    <aura:registerEvent name="notificationEvent" type="c:notificationEvt"/>
+    <aura:registerEvent name="selectedRecord" type="c:selectedRecordEvt"/>
+    
+    <lightning:card >
+        
+        <aura:set attribute="title">
+            <span class="slds-p-around_x-small">
+            <lightning:icon iconName="custom:custom73" size="medium" alternativeText="custom73"/>
+            </span>
+            <ui:outputText value="ExAM Distributions"/>
+        </aura:set>       
+        <aura:set attribute="actions">
+            <a class="slds-button slds-button--neutral" onclick="{!c.createNewDistribution}">
+              <span class="fa fa-plus slds-m-right--x-small"/>New Distribution
+            </a>
+        </aura:set>
+        
+        <aura:if isTrue="{!v.distributions.length}">
+            <div>
+                <table class="slds-table slds-table--bordered slds-no-row-hover slds-table--cell-buffer slds-table_fixed-layout">
+                    <thead>
+                        <tr class="slds-text-title--caps">
+                            <th scope="col">
+                                <div class="slds-truncate" title="Title">Name</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Start Date">Start Date</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="End Date">End Date</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Status">Status</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Type">Type</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Action">Action</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <aura:iteration items="{!v.distributions}" var="distribution" indexVar="index">
+                            <tr>
+                                <td>
+                                    <div class="slds-truncate" title="{!distribution.Name}">
+                                        <a data-index="{!index}" onclick="{!c.getContextDist_Record}">
+                                            {!distribution.Name}
+                                        </a>
+                                    </div>
+                                </td>
+                                
+                                <td>
+                                    <div class="slds-truncate" title="{!distribution.ExAM__Start_Date__c}">
+                                        {!distribution.ExAM__Start_Date__c}
+                                        <!--<ui:outputDate value="{!distribution.Start_Date__c}"/>-->
+                                     </div>
+                                </td>
+                                
+                                <td>
+                                    <div class="slds-truncate" title="{!distribution.ExAM__Expiration_Date__c}">
+                                        {!distribution.ExAM__Expiration_Date__c}
+                                        <!--<ui:outputDate value="{!distribution.Expiration_Date__c}"/>-->
+                                    </div>
+                                </td>
+                                
+                               <td>
+                                    <div class="slds-truncate" title="{!distribution.ExAM__Status__c}">
+                                        <ui:outputText value="{!distribution.ExAM__Status__c}"/>
+                                    </div>
+                                </td>
+                                
+                                <td>
+                                    <div class="slds-truncate" title="{!distribution.ExAM__Type__c}">
+                                        <ui:outputText value="{!distribution.ExAM__Type__c}"/> 
+                                    </div>
+                                </td>
+                                
+                                <td>
+                                    
+                                    <lightning:buttonMenu variant="container" aura:id="menu" onselect="{! c.handleSelect }" alternativeText="Show menu">
+                                        
+                                        <lightning:menuItem value="{!index+'~Archive'}" label="Archive" />
+                                        <lightning:menuItem value="{!index+'~Delete'}" label="Delete" />
+                                    </lightning:buttonMenu>
+                                    
+                                </td>
+                            </tr>
+                        </aura:iteration>
+                    </tbody>
+                </table>
+            </div>
+            
+            <aura:set attribute="else">
+                <div class="slds-align_absolute-center">
+                    No Distributions currently submitted for this assessment
+                </div>
+            </aura:set>
+        </aura:if>
+            
+        
+        
+    </lightning:card>
+    
+</aura:component>

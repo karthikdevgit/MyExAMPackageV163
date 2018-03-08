@@ -1,0 +1,50 @@
+<apex:component controller="AssignmentManagerListController">
+    <div class="slds-scrollable--x">
+        <div class="slds-card__body slds-p-horizontal--small">        
+            <div ng-show="!allAssignmentManagersObj.length">There are no existing {!$Label.exam__web_assignment_manager_label} against this user</div>
+            <div ng-show="allAssignmentManagersObj.length">
+                <div class="slds-scrollable--x">
+                    <table class="slds-table slds-table--bordered slds-max-medium-table--stacked">
+                        <thead>
+                            <tr class="slds-text-heading--label">
+                                <th scope="col"><span class="slds-truncate"><b>ID Name</b></span></th>
+                                <th scope="col"><span class="slds-truncate"><b>Overall Status</b></span></th>
+                                <th scope="col"><span class="slds-truncate"><b>Assessment Template Type</b></span></th>
+                                <th scope="col"><span class="slds-truncate"><b>Assigned Resources</b></span></th>
+                                <th scope="col"><span class="slds-truncate"><b>Priority</b></span></th>
+                                <th scope="col"><span class="slds-truncate"><b>Created Date</b></span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="mnger in allAssignmentManagersObj track by $index">
+                                <td data-label="{!$Label.exam__web_assignment_manager_label}">
+                                    <a class="slds-truncate" ng-click="openAssignmentManagerRecord(mnger.Id);" style="cursor: pointer;"> {{ mnger.Name }} </a>
+                                </td>   
+                                <td data-label="Overall Status">
+                                    <span class="slds-truncate">{{ mnger.ExAM__Status__c }}</span>
+                                </td>             
+                                <td class="slds-cell-wrap" data-label="Assessment Template Type">
+                                    <span class="slds-truncate"> {{ mnger.ExAM__Assessment_Template_Type__c }} </span>
+                                </td>
+                                <td data-label="Assignmed Recourses">
+                                    <span class="slds-truncate">{{ mnger.ExAM__Assessor_Resource__r.Name }}</span>
+                                </td>
+                                <td data-label="Priority">
+                                    <span class="slds-truncate">{{ mnger.ExAM__Priority__c }}</span>
+                                </td>
+                                <td data-label="Created Date">
+                                    <span class="slds-truncate">{{ mnger.CreatedDate | date : 'MM/dd/yyyy hh:mm a' }}</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-scrollable--x">
+        <div class="slds-card__body slds-p-horizontal--small">        
+            <div ng-show="allAssignmentManagersObj.length"><a href="/{!assMngrPrefix}" target="_blank">View All {!$Label.exam__web_assignment_manager_label}</a></div>
+        </div>
+    </div>
+</apex:component>

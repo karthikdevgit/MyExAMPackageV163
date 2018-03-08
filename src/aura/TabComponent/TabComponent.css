@@ -1,0 +1,8 @@
+.THIS.bgColor{
+    background-color : white !important;
+}
+
+.THIS li.disabled{
+  cursor:not-allowed;
+  opacity: .5;
+}

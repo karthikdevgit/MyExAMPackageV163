@@ -1,0 +1,171 @@
+<apex:component controller="KnowledgeArticleConfigurationController">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <title>Article Type Configuration</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS052, '/assets/styles/salesforce-lightning-design-system-vf.css')}" />
+        </head>
+        <div class="slds-form-element" ng-app="articleTypeApp" ng-controller="articleTypeCtrl">
+            <div class="slds-card__body">
+                <div ng-show="showTypeErrMessage" style="color: {{setTypePgMsgColor1}};font-size: 15px;">{{ typeErrMessage1 }}</div>
+                <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                    <tbody>
+                        <tr class="slds-hint-parent">
+                            <td class="slds-size--1-of-4">Article Type</td>
+                            <td class="slds-size--2-of-4">
+                                <p ng-show="!showTypeSelectionBox">{{ existingarticleType.Name }}</p>
+                                <select ng-show="showTypeSelectionBox" class="slds-select slds-size--3-of-4" ng-options="eachArticle.typeApiName as eachArticle.typeLabel for eachArticle in (articleTypeObj | orderBy:'typeLabel')" ng-model="selectedarticleType.Name" ng-change="onTypeChange();">
+                                </select>
+                            </td>
+                            <td class="slds-size--1-of-4"></td>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td class="slds-size--1-of-4">Field</td>
+                            <td class="slds-size--2-of-4">
+                                <p ng-show="!showTypeSelectionBox">{{ existingarticleType.ContentFieldName }}</p>
+                                <select ng-show="showTypeSelectionBox" class="slds-select slds-size--3-of-4" ng-options="eachField.fieldApiName as eachField.fieldLabel for eachField in (fieldsArray | orderBy:'fieldLabel')" ng-model="selectedarticleType.ContentFieldName" ng-selected="eachField.fieldApiName == selectedarticleType.ContentFieldName">
+                                </select>
+                            </td>
+                            <td class="slds-size--1-of-4"></td>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td colspan="2">
+                                <center>
+                                    <input class="slds-button slds-button--brand" ng-show="!showTypeSelectionBox" ng-click="toggleTypeSelectionView('edit')" type="button" value="Edit Configuration"/>
+                                    <input class="slds-button slds-button--brand" ng-show="showTypeSelectionBox" ng-click="onSaveClick()" type="button" value="Save"/>
+                                    <input class="slds-button slds-button--brand" ng-show="showTypeSelectionBox" ng-click="toggleTypeSelectionView('cancel')" type="button" value="Cancel"/>
+                                </center>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </html>
+    <script>
+        var underscore = angular.module('underscore', []);
+        underscore.factory('_', ['$window', function($window) {
+            return $window._; // assumes underscore has already been loaded on the page
+        }]);
+        var app = angular.module('articleTypeApp', ['underscore']);
+        app.service('articleTypeService', function($q,_) {
+
+            this.getExamConfigAndAssessmentTemplates = function() {
+                var defer = $q.defer();
+                ExAM.GeneralConfigController.queryExamConfigRecordAndAllAssessmentTemplates(function(result, event) {
+                    if(event.status) {
+                        defer.resolve(result);
+                    }
+                });
+                return defer.promise;
+            }
+            this.getarticleTypes = function() {
+                var defer = $q.defer();
+                ExAM.KnowledgeArticleConfigurationController.returnKnowledgeArticleTypes(function(result, event) {
+                    if(event.status) {
+                        defer.resolve(result);
+                    }
+                });
+                return defer.promise;
+            }
+            this.saveTypeFilter = function(record) {
+                var defer = $q.defer();
+                ExAM.GeneralConfigController.saveSelectedQuestionTypesFilter(record, function(result, event) {
+                    if(event.status) {
+                        var respObj = JSON.parse(_.unescape(result));
+                        if(respObj["recId"] ) {
+                            defer.resolve( respObj );
+                        }
+                        else if(respObj["errType"] ) {
+                            defer.reject( respObj["errMsg"] );
+                        }
+                    }
+                });
+                return defer.promise;
+            }
+        });
+        app.controller('articleTypeCtrl', function($scope, articleTypeService, _) {
+
+            $scope.showTypeErrMessage = false;
+            $scope.setTypePgMsgColor1 = 'red';
+            $scope.typeErrMessage1 = '';
+            $scope.showTypeSelectionBox = false;
+            $scope.articleTypeObj = {};
+            $scope.fieldsArray = {};
+            $scope.existingarticleType = {};
+            $scope.selectedarticleType = {};
+            $scope.examConfigObj = {};
+
+            articleTypeService.getExamConfigAndAssessmentTemplates().then(function(data) {
+                if (angular.isDefined(data.examConfigRecord.Id)) {
+                    $scope.examConfigObj = data.examConfigRecord;
+                    $scope.existingarticleType.Name = data.examConfigRecord.ExAM__Knowledge_Article_Type_Name__c;
+                    $scope.existingarticleType.ContentFieldName = data.examConfigRecord.ExAM__Knowledge_Article_Content_Field_Name__c;
+                    angular.copy($scope.existingarticleType, $scope.selectedarticleType);
+                }
+            });
+            articleTypeService.getarticleTypes().then(function(data) {
+                $scope.articleTypeObj = data;
+                $scope.onTypeChange();
+            });
+
+            $scope.onTypeChange = function() {
+
+                $scope.fieldsArray = {};
+                angular.forEach($scope.articleTypeObj, function(value, key) {
+                    if ( angular.equals(value.typeApiName, $scope.selectedarticleType.Name) ) {
+                        $scope.fieldsArray = value.fieldDtls;
+                    }
+                });
+            }
+            $scope.toggleTypeSelectionView = function(from) {
+
+                $scope.typeErrMessage1 = '';
+                $scope.showTypeErrMessage = false;
+                $scope.showTypeSelectionBox = false;
+                if (from == 'edit') {
+                    $scope.showTypeSelectionBox = true;
+                }
+                $scope.selectedarticleType = angular.copy($scope.existingarticleType);
+            }
+            $scope.onSaveClick = function() {
+
+                $scope.typeErrMessage1 = '';
+                $scope.showTypeErrMessage = false;
+
+                if (angular.isUndefined($scope.selectedarticleType.Name) || angular.isUndefined($scope.selectedarticleType.ContentFieldName)) {
+                    $scope.typeErrMessage1 = 'Please select both Article Type and field in which summary information is stored';
+                    $scope.showTypeErrMessage = true;
+                }
+                else {
+
+                    var examConfigId = $('.hiddenExamConfigId').val();
+                    $scope.examConfigObjToUpdate = {};
+                    if (examConfigId != undefined && examConfigId != null && examConfigId != '' ) {
+                        $scope.examConfigObjToUpdate.Id = examConfigId;
+                    }
+                    else if (angular.isDefined($scope.examConfigObj.Id) ) {
+                        $scope.examConfigObjToUpdate.Id = $scope.examConfigObj.Id;
+                    }
+                    $scope.examConfigObjToUpdate.Name = angular.isDefined($scope.examConfigObj.Name) ? $scope.examConfigObj.Name : 'Configuration';
+                    $scope.examConfigObjToUpdate.ExAM__Knowledge_Article_Type_Name__c = $scope.selectedarticleType.Name;
+                    $scope.examConfigObjToUpdate.ExAM__Knowledge_Article_Content_Field_Name__c = $scope.selectedarticleType.ContentFieldName;
+    
+                    articleTypeService.saveTypeFilter($scope.examConfigObjToUpdate).then(function(data) {
+                        $('.hiddenExamConfigId').val(data["recId"]);
+                        $scope.typeErrMessage1 = 'Knowledge Article Type and field stored successfully';
+                        $scope.setTypePgMsgColor1 = 'green';
+                        $scope.showTypeErrMessage = true;
+                        $scope.showTypeSelectionBox = false;
+                        $scope.existingarticleType = $scope.selectedarticleType;
+                    },
+                    function(errdata) {
+                        $scope.typeErrMessage1 = errdata ;
+                        $scope.setTypePgMsgColor1 = 'Red';
+                        $scope.showTypeErrMessage = true;
+                    });
+                }
+            }
+        });
+    </script>
+</apex:component>

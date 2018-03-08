@@ -1,0 +1,66 @@
+<apex:component >
+    <div xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <style>
+            .singleQTpadding{
+                padding: 27px 4px 11px 22px !important;
+            }
+        </style>
+        <div ng-if="showMessage" class="slds-text-align--center">
+            <div class="slds-text-align--center slds-m-around--x-large" ng-class="{'slds-theme--error':!hasActionSuccess,'slds-theme--success':hasActionSuccess}">
+                {{ messageText }}
+            </div>
+        </div>
+        <div class="slds-card slds-m-around--x-large">
+            <div class="slds-card__body slds-p-around--large">
+                <c:Text_QuestionType_Component isPrimaryText="true"/>
+                <c:Email_QuestionType_Component isPrimaryEmail="true"/>
+                <c:PhoneNumber_QuestionType_Component isPrimaryPhone="true"/>
+                <c:Date_QuestionType_Component isPrimaryDate="true"/>
+                <c:Number_QuestionType_Component isPrimaryNumber="true"/>
+                <c:TextArea_QuestionType_Component isPrimaryTextarea="true"/>
+                <c:DropdownPicklist_QuestionType_Component isPrimaryDropdown="true"/>
+                <c:Radio_QuestionType_Component isPrimaryRadioQtn="true"/>
+                <c:Image_QuestionType_Component isPrimaryImage="true"/>
+                <c:Button_QuestionType_Component isPrimaryButton="true"/>
+                <c:One_Or_Many_CBox_QuestionType_Component isPrimaryCBox="true"/>
+                <c:File_AM_Or_Object_QuestionType_Component isPrimaryFileAMOrObject="true"/>
+                <c:FileAnswer_QuestionType_Component isPrimaryFileAnswer="true"/>
+                <c:List_QuestionType_Component isPrimaryList="true"/>
+                <c:Signature_QuestionType_Component isPrimarySignature="true"/>
+                <c:HotspotImage_QuestionType_Component isPrimaryHotSpotImage="true"/>
+                <c:DependentQuestions_Component />
+                <c:Case_QuestionType_Component isPrimaryCase="true" />
+            </div>
+            <div class="slds-card__footer slds-p-around--large" ng-show="eachQuestTemplateRec">
+                <button class="slds-button slds-button--neutral slds-button--brand singleQPrevious" ng-click="previousQuestionSingleQuesFun()"> Previous </button>
+                <button class="slds-button slds-button--neutral slds-button--brand singleQNext" ng-click="nextQuestionFun(true);">Next</button>
+                <input class="slds-button slds-button--neutral  slds-button--brand singleQSubmit" type="button" value="Submit" ng-click="saveUsrEnteredAnswerOptions();" />
+                <input class="slds-button slds-button--neutral  slds-button--brand singleQCancel" type="button" value="Cancel" ng-click="cancelAnswer();" />
+            </div>
+            <!-- Start Modal Window -->
+            <div aria-hidden="false" role="dialog" class="slds-modal slds-modal__close ModalWindow" style="background-color: rgba(128, 128, 128, 0.75);">
+                <div class="slds-modal__container">
+                    <button class="slds-button slds-button--icon-inverse slds-modal__close" ng-click="closeModalWindow()">
+                        <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                            <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                        </svg>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <div class="slds-modal__content">
+                        <div ng-if="tqMessage == ''" ng-bind-html="modalWindowTxt"></div>
+                        <div ng-if="tqMessage != ''" ng-bind-html="tqMessage"></div>
+                    </div>
+                    <div class="slds-modal__footer">
+                        <input class="slds-button slds-button--brand" type="button" value="Submit" ng-click="closeModalWindow(true)"/>
+                        <button class="slds-button slds-button--neutral" ng-click="closeModalWindow(false)">Cancel</button>
+                    </div>
+                </div>
+            </div>
+            <!-- End Modal Window -->
+            <c:Comment_ModelPopUp_Component />
+            <c:File_ModelPopUp_Component />
+            <c:Signature_ModelPopUp_Component />
+            <c:DecisionTreeQuestions_Component />
+        </div>
+    </div>
+</apex:component>

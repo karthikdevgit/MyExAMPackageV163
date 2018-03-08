@@ -1,0 +1,67 @@
+<aura:component access="public">
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="change" value="{!v.assessmentId}" action="{!c.changeAssessmentTemp}"/>
+    <aura:handler name="change" value="{!v.sectionId}" action="{!c.selectedSection}"/>
+    <aura:handler name="ctrlLinkMenuEvt" event="c:ctrlLinkMenuEvt" action="{!c.getAction}" />
+    
+    <aura:attribute name="assessmentsName" type="List" access="public"/>
+    <aura:attribute name="sectionsName" type="List" access="public"/>
+    <aura:attribute name="nameOfSelectedAssessment" type="string" access="public"/>
+    <aura:attribute name="nameOfSelectedSection" type="string" access="public"/>
+    <aura:attribute name="nameOfSelectedDirection" type="string" access="public" default="Before"/>
+    <aura:attribute name="position"
+                    type="List"
+                    access="public"
+                    description=""
+                    default="[{
+                             optionText: 'Before',
+                             optionValue: 'Before'
+                             },
+                             {
+                             optionText: 'After',
+                             optionValue: 'After'
+                             }]"/>
+    
+    <aura:attribute name="copySectionId" type="String" access="public"/>
+    <aura:attribute name="assessmentId" type="String" access="public"/>
+    <aura:attribute name="sectionId" type="String" access="public"/>
+    <aura:attribute name="sel_Direction" type="String" default="Before" access="public"/>
+    <aura:attribute name="sectionIndex" type="Integer" default="-1" access="public"/>
+    <aura:attribute name="sectionOrderNo" type="Integer" access="public"/>    
+    <aura:attribute name="sectionTemplates" type="Section_Template__c[]" access="public"/>
+    
+    <aura:registerEvent name="notificationEvent" type="c:notificationEvt"/>
+    <aura:registerEvent name="doneEditingView" type="c:doneEditingViewEvt"/>
+    
+    <div class="editor-options-card">
+        <article class="slds-card slds-m-around--large">
+            <div class="slds-card__header slds-grid">
+                <span class="slds-text-heading--medium">Copy Section</span>
+            </div>
+            <div class="slds-card__body">
+                <div class="slds-text-heading--small">
+                    Within Assessment 
+                    <c:CtrlLinkMenu itemIndex="0" linkChange="false" showIcon="true" 
+                                    sourceDerivenCmp="{'type' : 'SectionCopier' , 'label' : 'assessments'}"
+                                    hideLabel="false" attributes="{!v.assessmentsName}" menuLinkText="{!v.nameOfSelectedAssessment}"/>
+                </div>
+                <div class="slds-text-heading--small">
+                    So that it is
+                    <c:CtrlLinkMenu itemIndex="1" linkChange="false" showIcon="true"
+                                    sourceDerivenCmp="{'type' : 'SectionCopier' , 'label' : 'direction'}"
+                                    hideLabel="false" attributes="{!v.position}" menuLinkText="{!v.nameOfSelectedDirection}"/>
+                    
+                    <c:CtrlLinkMenu itemIndex="2" linkChange="false" showIcon="true"
+                                    sourceDerivenCmp="{'type' : 'SectionCopier' , 'label' : 'sections'}"
+                                    hideLabel="false" attributes="{!v.sectionsName}" menuLinkText="{!v.nameOfSelectedSection}"/>
+                </div>
+            </div>
+            <div class="slds-card__footer slds-grid slds-grid--align-center">
+                <button class="slds-button slds-button--neutral slds-button--save" onclick="{!c.saveRecord}">Copy</button>
+                <button class="slds-button slds-button--neutral" onclick="{!c.cancelSectionCopy}">Cancel</button>
+            </div>
+        </article>
+    </div>
+    
+</aura:component>

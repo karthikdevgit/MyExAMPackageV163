@@ -1,0 +1,68 @@
+<aura:component access="public">
+    
+    <aura:handler name="disableViewToggle" event="c:disableViewToggleEvt" action="{!c.toggleInLineViewOfSectionOption}" description="toggleView Of Section Inline"/>
+    
+    <aura:attribute name="sectionTemplate" type="Section_Template__c" access="public"/>
+    <aura:attribute name="fields" type="Map" access="public"/>
+    <aura:attribute name="defaultMode" type="String" access="public"/>
+    <aura:attribute name="mode" type="String" access="public" default="view"/>
+    <aura:attribute name="newField" type="Boolean" access="public" default="false"/>
+    <aura:attribute name="editCount" type="Integer" access="public"/>
+    <aura:attribute name="sectionOptionsLinkType" type="String" access="public" default="Advanced"/>
+    
+    <aura:registerEvent name="doneEditingView" type="c:doneEditingViewEvt"/>
+    
+    <div class="editor-options-card">
+        <lightning:card class="slds-m-horizontal_large" variant="narrow" title="Section Options">
+            
+            <aura:set attribute="footer">
+                <a class="slds-m-around_x-large" onclick="{!c.showSectionOptions}">Show {!v.sectionOptionsLinkType} Section Options</a>
+            </aura:set>
+            
+            <aura:set attribute="actions">
+                <lightning:button disabled="{!v.editCount > 0}" label="Cancel" class="slds-button slds-button--neutral" onclick="{!c.cancel}" />
+            </aura:set>
+            
+            <div class="slds-card__body">
+               
+                <div aura:id="BasicOption">
+                    <aura:iteration items="{!v.fields.ExAM__lightningComp_SectionOptions_FieldSet}" var="field">
+                        <div class="slds-text-heading--small option-item">
+                            <c:ExamField valType="{!field.fieldDataType}"
+                                         record="{!v.sectionTemplate}"
+                                         Id="{!v.sectionTemplate.Id}"
+                                         sObjectAPI="{!field.sObjectApi}"
+                                         fieldName="{!field.fieldApi}"
+                                         fieldLabel="{!field.fieldLabel}"
+                                         options="{!field.options}"
+                                         defaultMode="{!v.defaultMode}"
+                                         helpText="{!field.inLineHelpText}"
+                                         mode="{!v.mode}"
+                                         newField="{!v.newField}"
+                                         sourceDerivenCmp="{type : 'SectionOptions'}"/>
+                        </div>
+                    </aura:iteration>
+                </div>
+                
+                <div aura:id="AdvancedOption" class="slds-hide">
+                    <aura:iteration items="{!v.fields.ExAM__lightningCmp_AdvanceSecOptions_FieldSet}" var="field">
+                        <div class="slds-text-heading--small option-item">
+                            <c:ExamField valType="{!field.fieldDataType}"
+                                         record="{!v.sectionTemplate}"
+                                         Id="{!v.sectionTemplate.Id}"
+                                         sObjectAPI="{!field.sObjectApi}"
+                                         fieldName="{!field.fieldApi}"
+                                         fieldLabel="{!field.fieldLabel}"
+                                         options="{!field.options}"
+                                         defaultMode="{!v.defaultMode}"
+                                         mode="{!v.mode}"
+                                         newField="{!v.newField}"
+                                         sourceDerivenCmp="{type : 'SectionOptions'}"/>
+                        </div>
+                    </aura:iteration>
+                </div>
+                
+            </div>
+        </lightning:card>
+    </div>
+</aura:component>

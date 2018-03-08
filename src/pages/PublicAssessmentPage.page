@@ -1,0 +1,604 @@
+<apex:page controller="PublicAssessmentComponentCtrller" applyBodyTag="false" docType="html-5.0">
+    <div xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+        <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"/>
+        <apex:stylesheet value="{!URLFOR($Resource.SLDS052, '/assets/styles/salesforce-lightning-design-system-vf.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.angularJs_color_picker,'angular-colorpicker-directive-master/css/color-picker.css')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.angularJs_color_picker,'angular-colorpicker-directive-master/js/color-picker.js')}"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"/>
+        <script src="{!$Resource.sanitize}"/>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.8.2/lodash.min.js"/>
+        <apex:includeScript value="{!URLFOR($Resource.CKEditor, '/ckeditor/ckeditor.js')}"/>
+        
+        <script type="text/javascript">
+            var __sfdcSessionId = '{!GETSESSIONID()}';
+        </script>
+        
+        <body>
+            <div class="slds slds-form-element" ng-app="PACompApp" ng-controller="PAComController">
+                <div style="background-color: rgba(0, 0, 0, 0.6); width: 100%; height: 100%; z-index: 1000; position: fixed; left: 0; top: 0; overflow: hidden; text-align: center; vertical-align: middle;display:none;" class="maskDiv">
+                    <img src="{!URLFOR($Resource.SLDS052, '/assets/images/spinners/slds_spinner.gif')}" alt="Loading..." class="slds-spinner--small" style=" z-index: 10001; background-color: white; width: 80px; height: 80px; padding: 15px; border-radius: 4px; text-align: left; position: relative; top: 30%;"/>
+                </div>
+                <div class="slds-card">
+                    <div class="slds-card__header slds-grid">
+                        <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <h2 class="slds-text-heading--medium slds-truncate">Public Assessment Page Configuration Details</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-notify_container " style="display:none;" id="except">
+                        <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert">
+                            <button class="slds-button slds-notify__close slds-button--icon-inverse" title="Close">
+                                <svg aria-hidden="true" class="slds-button__icon">
+                                    <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                                </svg>
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                                <span class="slds-assistive-text">Error</span>
+                                <h2 id="exceptMsg">  
+                                    
+                                </h2>
+                        </div>
+                    </div>
+                    <div class="slds-card__body">
+                         <div class="slds-card__body">
+                            <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                                <tbody>
+                                    <tr class="slds-hint-parent">
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-3 slds-cell-wrap">
+                                              Public Assessment Show Modal Window
+                                        </td>
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--3-of-4 slds-cell-wrap">
+                                            <label class="slds-checkbox">
+                                                <input class="slds-col slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--8-of-12" type="checkbox" name="options" id="modalWindowCBox" ng-model="templateRec.ExAM__Show_Modal_Window__c"/>
+                                                <span class="slds-checkbox--faux"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr class="slds-hint-parent" ng-show="templateRec.ExAM__Show_Modal_Window__c">
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-3 slds-cell-wrap">
+                                            Public Assessment Modal Window Text
+                                        </td>
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--3-of-4 slds-cell-wrap">
+                                            <div class="slds-form-element {{modalText}}">
+                                                <input id="modalWindowTxtBox" class="slds-col slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--8-of-12 slds-input" type="text" placeholder="Enter Modal Window Text" ng-model="templateRec.ExAM__Modal_Window_Text__c"/>
+                                                <span id="errorMsg" class="slds-form-element__help">Please Enter Value</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="slds-hint-parent">
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-3 slds-cell-wrap">
+                                              Hide Section Titles   
+                                        </td>
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--3-of-4 slds-cell-wrap">
+                                            <label class="slds-checkbox">
+                                                <input class="slds-col slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--8-of-12" type="checkbox" name="Hidesection" id="hideSections" ng-model="templateRec.ExAM__Hide_Section_Titles__c"/>
+                                                <span class="slds-checkbox--faux"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr class="slds-hint-parent">
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-3 slds-cell-wrap">
+                                              Single Question Mode   
+                                        </td>
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--3-of-4 slds-cell-wrap">
+                                            <label class="slds-checkbox">
+                                                <input class="slds-col slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--8-of-12" type="checkbox" ng-model="templateRec.ExAM__Public_Assessment_Single_Question_Mode__c"/>
+                                                <span class="slds-checkbox--faux"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr class="slds-hint-parent">
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-3 slds-cell-wrap">
+                                              Auto Submit   
+                                        </td>
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--3-of-4 slds-cell-wrap">
+                                            <label class="slds-checkbox">
+                                                <input class="slds-col slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--8-of-12" type="checkbox" ng-model="templateRec.ExAM__Auto_Submit__c"/>
+                                                <span class="slds-checkbox--faux"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr class="slds-hint-parent">       
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-3 slds-cell-wrap">      
+                                              Enable Survey Overlay     
+                                        </td>       
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--3-of-4 slds-cell-wrap">      
+                                            <label class="slds-checkbox">       
+                                                <input class="slds-col slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--8-of-12" type="checkbox" name="options" id="enableSurveyOverlay" ng-model="templateRec.ExAM__Enable_Survey_Overlay__c"/>       
+                                                <span class="slds-checkbox--faux"></span>       
+                                            </label>        
+                                        </td>       
+                                    </tr>  
+                                    <tr class="slds-hint-parent" ng-show="templateRec.ExAM__Enable_Survey_Overlay__c">
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-3 slds-cell-wrap">
+                                            Survey Overlay Header Text
+                                        </td>
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--3-of-4 slds-cell-wrap">
+                                            <div class="slds-form-element">
+                                                <textarea id="surveyOverlayText" class="slds-col slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--8-of-12 slds-input validate{{templateRec.ExAM__Enable_Survey_Overlay__c}}" type="text" placeholder="Enter Survey Overlay Header Text" ng-model="templateRec.ExAM__Survey_Overlay_Header_Text__c"/>
+                                                <span class="slds-form-element__help requiredMessage" style="color:#C23934;display:none;">Please Enter Value</span>
+                                            </div>
+                                        </td>
+                                    </tr>     
+                                    <tr class="slds-hint-parent" ng-show="templateRec.ExAM__Enable_Survey_Overlay__c">        
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-3 slds-cell-wrap">      
+                                            Survey Overlay Text     
+                                        </td>       
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--3-of-4 slds-cell-wrap">      
+                                            <div class="slds-form-element">     
+                                                <textarea id="surveyOverlayText" class="slds-col slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--8-of-12 slds-input validate{{templateRec.ExAM__Enable_Survey_Overlay__c}}" type="text" placeholder="Enter Survey Overlay Text" ng-model="templateRec.ExAM__Survey_Overlay_Text__c"/>        
+                                                <span class="slds-form-element__help requiredMessage" style="color:#C23934;display:none;">Please Enter Value</span>
+                                            </div>      
+                                        </td>       
+                                    </tr>       
+                                    <tr class="slds-hint-parent" ng-show="templateRec.ExAM__Enable_Survey_Overlay__c">        
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-3 slds-cell-wrap">      
+                                            Survey Overlay Button Text      
+                                        </td>       
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--3-of-4 slds-cell-wrap">      
+                                            <div class="slds-form-element">     
+                                                <input id="surveyOverlayButtonText" class="slds-col slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--8-of-12 slds-input validate{{templateRec.ExAM__Enable_Survey_Overlay__c}}" type="text" placeholder="Enter Survey Overlay Button Text" ng-model="templateRec.ExAM__Survey_Overlay_button_Text__c"/>       
+                                                <span class="slds-form-element__help requiredMessage" style="color:#C23934;display:none;">Please Enter Value</span>
+                                            </div>      
+                                        </td>       
+                                    </tr>
+                                    <tr class="slds-hint-parent">
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-3 slds-cell-wrap">
+                                              Configure Tab Title
+                                        </td>
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--3-of-4 slds-cell-wrap">
+                                            <div class="slds-form-element">
+                                                <input class="slds-col slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--8-of-12 slds-input" type="text" placeholder="Enter title" ng-model="templateRec.ExAM__Public_Assessment_Viewer_Title__c"/>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="slds-hint-parent">
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-3 slds-cell-wrap">
+                                              Configure Tab Image
+                                        </td>
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--3-of-4 slds-cell-wrap">
+                                            <div class="slds-form-element">
+                                                <input class="slds-col slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--8-of-12 slds-input" type="text" placeholder="Enter name of static resource contains uploaded image" ng-model="templateRec.ExAM__Public_Assessment_Viewer_Tab_Icon__c"/>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="slds-hint-parent">
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-3 slds-cell-wrap">
+                                              Heading Text
+                                        </td>
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--3-of-4 slds-cell-wrap">
+                                            <div class="slds-form-element">
+                                                <input class="slds-col slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--8-of-12 slds-input" type="text" placeholder="Enter public assessment heading text" ng-model="templateRec.ExAM__PA_Template_Heading_Text__c"/>
+                                                <div class="slds-col slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--8-of-12" style="font-style: italic;color: blue;"><b>Note :</b> Assessable object field should be enclosed with curly brackets({}) Eg :Header Text {assessableobjectfieldAPIname}</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="slds-hint-parent">
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-3 slds-cell-wrap">
+                                              Header Logo
+                                        </td>
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--3-of-4 slds-cell-wrap">
+                                            <div class="slds-form-element">
+                                                 <div>
+                                                    <input type="button" value="Choose File" ng-click="chooseFileClick();"/>
+                                                    <label>{{logoUpload.name}}</label>
+                                                    <input id="logoFile" ng-hide="true" type="file" data-file="logoUpload" accept="image/*" onchange="angular.element(this).scope().logoUploadChanged(this);"/>
+                                                </div>
+                                                <div class="slds-form-element__help errorFileSelect" style="display:none;color:#c23934;font-size:12px;"> Please upload a file less than 750KB</div>
+                                                <div class="slds-form-element__help errorSelect" ng-show ="ErrorFlag" style="color:#c23934;font-size:12px;"> Please choose a valid Image File </div>
+                                            </div>
+                                            <div class="logo slds-size--3-of-8 slds-box slds-box--x-small slds-m-around--x-small" ng-show="isShowLogo" ng-init="logoCheck()">
+                                                <div class="slds-size--1-of-1" style="text-align: end;"> 
+                                                    <svg class="slds-icon slds-icon--x-small slds-icon-text-default" aria-hidden="true" ng-click="removeLogo()">
+                                                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                                                    </svg>
+                                                </div>
+                                                <img class="slds-text-align--center" ng-if ="logoUpload.length < 19 && logoUpload.resultbody == null" ng-src="/servlet/servlet.FileDownload?file={{logoUpload}}" height="200px" width="200px"/>
+                                                <img class="slds-text-align--center" ng-if ="logoUpload.resultbody != null" ng-src="data:image/png;base64,{{logoUpload.resultbody}}" height="200px" width="200px"/>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="slds-hint-parent">
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-3 slds-cell-wrap">
+                                              Header and Button Background Color
+                                        </td>
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--3-of-4 slds-cell-wrap ">
+                                            <div class="slds-form-element">
+                                               <div style="float:left;">
+                                                   <input class = "slds-col slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--11-of-12 slds-input" placeholder="Select background color" type = "Hex" ng-model="templateRec.ExAM__PA_Header_and_Button_Background_Color__c"/>
+                                               </div>
+                                               <div class="slds-col slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--12-of-12" style="padding-top:5px;">
+                                                   <table style="border:buttonface 2px;width: 44px;height: 23px;background-color: buttonface;border-width: 1px;border-style: solid;border-color: rgb(169, 169, 169);border-image: initial;padding: 1px 2px;" cellspacing="5">
+                                                       <tr>
+                                                           <td style="padding:2px 4px;">
+                                                               <input type="text" style="width:37px;height:15px;" color-picker="var" color-picker-model="templateRec.ExAM__PA_Header_and_Button_Background_Color__c" color-picker-position="right" ng-style = "{background:templateRec.ExAM__PA_Header_and_Button_Background_Color__c,color:templateRec.ExAM__PA_Header_and_Button_Background_Color__c}" title="Select background color"/>
+                                                           </td>
+                                                       </tr>
+                                                   </table>
+                                               </div>
+                                           </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="slds-hint-parent">
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-3 slds-cell-wrap">
+                                           Header and Button Text Color
+                                        </td>
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--3-of-4 slds-cell-wrap">
+                                            <div class="slds-form-element ">
+                                                <div style="float:left;">
+                                                    <input class="slds-col slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--11-of-12 slds-input"  placeholder="Select text color" type = "Hex"  ng-model="templateRec.ExAM__PA_Header_and_Button_Text_Color__c" />
+                                                </div>
+                                                <div class="slds-col slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--12-of-12" style="padding-top:5px;">
+                                                    <table style="border:buttonface 2px;width: 44px;height: 23px;background-color: buttonface;border-width: 1px;border-style: solid;border-color: rgb(169, 169, 169);border-image: initial;padding: 1px 2px;" cellspacing="5">
+                                                       <tr>
+                                                           <td style="padding:2px 4px;">
+                                                               <input type="text" style="width:37px;height:15px;"  color-picker="var" color-picker-model="templateRec.ExAM__PA_Header_and_Button_Text_Color__c" color-picker-position="right" ng-style = "{background:templateRec.ExAM__PA_Header_and_Button_Text_Color__c,color:templateRec.ExAM__PA_Header_and_Button_Text_Color__c}" title="Select text color"/>
+                                                           </td>
+                                                       </tr>
+                                                   </table>
+                                               </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="slds-hint-parent">
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-3 slds-cell-wrap">
+                                              Enable Section Description 
+                                        </td>
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--3-of-4 slds-cell-wrap">
+                                            <label class="slds-checkbox">
+                                                <input class="slds-col slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--8-of-12" type="checkbox" name="options" id="enableSecDesc" ng-model="templateRec.ExAM__Enable_Section_Description__c"/>
+                                                <span class="slds-checkbox--faux"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="slds-card__header slds-grid">
+                            <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                <div class="slds-media__body">
+                                    <h2 class="slds-text-heading--small slds-truncate">CSS Resource</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-card__body">
+                            <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                                <tbody>
+                                    <tr class="slds-hint-parent">
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-4">
+                                              Static Resource Name
+                                        </td>
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--3-of-4">
+                                              <input id="text-input-01" class="slds-col slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--8-of-12 slds-input" type="text" placeholder="Enter Static Resource Name" ng-model="templateRec.ExAM__Static_Resource_Name__c"/>
+                                        </td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-4">
+                                        </td>
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-4">
+                                            <div style="font-style: italic;color: blue;"><b>File Path Note :</b> /MainFolderName/FileName (OR) /MainFolderName/subFolderName/FileName</div>
+                                        </td>
+                                    </tr>
+                                    <tr class="slds-hint-parent" ng-repeat="path in filePathList track by $index">
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-4">
+                                           File Path{{$index+1}}
+                                        </td>
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--3-of-4">
+                                           <input id="text-input-01"  class="slds-col slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--8-of-12 slds-input" type="text" placeholder="Enter File Path" value="{{path}}" ng-model="filePathList[$index]"/>
+                                           <span class="slds-icon__container slds-icon__container--circle slds-icon-action-delete" ng-click="remove($index);" ng-show="$index > 0" style="padding:4px 4px 4px 4px;">
+                                               <svg aria-hidden="true" class="slds-icon slds-icon--x-small" style="height:12px;">
+                                                   <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#delete')}"> </use>
+                                               </svg>
+                                           </span>
+                                            <span class="slds-icon__container slds-icon__container--circle slds-icon-action-new" ng-show="filePathList.length-1 == $index" ng-click="addNew($index);" style="padding:4px 4px 4px 4px;">
+                                               <svg aria-hidden="true" class="slds-icon slds-icon--x-small" style="height:12px;">
+                                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#new')}"> </use>
+                                               </svg>
+                                           </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="slds-card__header slds-grid">
+                            <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                <div class="slds-media__body">
+                                    <h2 class="slds-text-heading--small slds-truncate">Public Assessment Page Header/Survey Intro Text</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-card__body">
+                            <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                                <tbody>
+                                    <tr class="slds-hint-parent">
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-3 slds-cell-wrap">
+                                              Enable Survey Intro Text 
+                                        </td>
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--3-of-4 slds-cell-wrap">
+                                            <label class="slds-checkbox">
+                                                <input class="slds-col slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--8-of-12" type="checkbox" name="options" id="enableSurveyIntro" ng-model="templateRec.ExAM__Enable_Survey_Intro_Text__c"/>
+                                                <span class="slds-checkbox--faux"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr class="slds-hint-parent" ng-show="templateRec.ExAM__Enable_Survey_Intro_Text__c">
+                                        <td colspan="2" class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-4">
+                                            <div class="slds-form-element">
+                                                <input type="textarea" class="slds-input" id="editor1" rows="10" cols="80"/> 
+                                                <span class="slds-form-element__help validateCKed" style="color:#C23934;display:none;">Please Enter Value</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>   
+                            </table>
+                        </div>
+                        <div class="slds-card__header slds-grid">
+                            <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                <div class="slds-media__body">
+                                    <h2 class="slds-text-heading--small slds-truncate">Public Assessment Page Footer Section</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-card__body">
+                            <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                                <tbody>
+                                    <tr class="slds-hint-parent">
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-4">
+                                            <input type="textarea" class="slds-input" id="editor2" rows="10" cols="80"/>
+                                          </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="slds-card__footer slds-grid slds-wrap">
+                        <div class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-1">
+                            <center>
+                                <input class="slds-button slds-button--brand" type="button" value="Save" ng-click="saveRecord();"/>
+                                <input class="slds-button slds-button--brand" type="button" value="Cancel" ng-click="cancelRecord();"/>
+                            </center>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </body>   
+        <script>
+            var app = angular.module('PACompApp',['colorpicker']);
+            app.directive('file', function() {
+                return {
+                    scope: {
+                        file: '='
+                    },
+                    link: function(scope, el, attrs){
+                        el.bind('change', function(event){
+                            var files = event.target.files;
+                            var file = files[0];
+                            var reader = new FileReader();
+                            reader.onload = loaded;
+                            reader.onerror = errorHandler;
+                            reader.readAsDataURL(file);
+                            
+                            function loaded(evt){
+                                scope.file = {};
+                                var fileContent = String(evt.target.result);
+                                fileContent = fileContent.substr(fileContent.indexOf(',') + 1);
+                                
+                                scope.file.resultbody = fileContent ;
+                                scope.file.name = file ? file.name : undefined;
+                                scope.file.contenttype = file ? file.type : undefined;
+                                
+                                scope.$apply(); 
+                            }
+                            
+                            function errorHandler(evt) {
+                                if (evt.target.error.name == 'NotReadableError') {
+                                    alert('File could not be read');
+                                }
+                                else {
+                                    alert(evt.target.error);
+                                }
+                            }
+                            
+                        });
+                    }
+                };
+            });
+            app.controller('PAComController', function($scope) {
+                
+                $scope.modalText = '';
+                $('#errorMsg').hide();
+                $('#errorMsg1').hide();     
+                $('#errorMsg2').hide();
+                $scope.templateRec = {};
+                $scope.filePathList = [];
+                $scope.filePathLength;
+                $scope.logoUpload = {};
+                $scope.ErrorFlag = false;
+                $scope.logoUpload = '{!JSENCODE(logoId)}' != '' ? '{!JSENCODE(logoId)}' : {};
+                $scope.isShowLogo = false;
+                $scope.isConfirm = false;
+                $('.maskDiv').hide();
+                var alreadyAttLogo = '';
+                
+                if('{!JSENCODE(templateRecord)}' != 'null' && '{!JSENCODE(templateRecord)}' != '' ) {
+                    $scope.templateRec = JSON.parse('{!JSENCODE(templateRecord)}');
+                }
+                
+                if ( '{!exceptMsg}' != null && '{!exceptMsg}' != '' ) {
+                    $('#exceptMsg').text('{!exceptMsg}');
+                    $('#except').css('display','');
+                }
+                
+                if(!angular.isUndefined($scope.templateRec) && !angular.isUndefined($scope.templateRec.ExAM__SRFile_Path__c)) {
+                    $scope.filePathList = $scope.templateRec.ExAM__SRFile_Path__c.split("~");
+                    $scope.filePathLength = $scope.filePathList.length-1;
+                }else{
+                    $scope.filePathList.push('');
+                }
+                window.onload = function() { 
+                    CKEDITOR.replace('editor1'); 
+                    CKEDITOR.replace('editor2');
+                    $scope.setHeaderAndFooter();
+                    
+                }
+                $scope.setHeaderAndFooter = function () {
+                    CKEDITOR.instances['editor1'].setData( $scope.templateRec.ExAM__Public_Assessment_Page_Header__c );
+                    CKEDITOR.instances['editor2'].setData( $scope.templateRec.ExAM__Public_Assessment_Page_Footer__c );
+                }
+                $scope.addNew = function(index) {
+                    $scope.filePathList.push('');
+                }
+                
+                $scope.remove = function(index) {
+                    $scope.filePathList.splice(index,1);
+                }
+                
+                $scope.saveRecord = function() {
+                
+                    var fileURL = '';
+                    var isError = false;
+                    
+                    if($scope.templateRec.ExAM__Show_Modal_Window__c == true && (angular.isUndefined($scope.templateRec.ExAM__Modal_Window_Text__c) || $scope.templateRec.ExAM__Modal_Window_Text__c == null || $scope.templateRec.ExAM__Modal_Window_Text__c == '')) {
+                        $scope.modalText = 'slds-has-error';
+                        $('#errorMsg').show();
+                        isError = true;
+                    }
+                    if((angular.isDefined($scope.logoUpload) && typeof $scope.logoUpload != 'string' && typeof $scope.logoUpload == 'object' && Object.keys($scope.logoUpload).length != 0) && ($scope.logoUpload.contenttype != 'image/jpeg' && $scope.logoUpload.contenttype != 'image/png' && $scope.logoUpload.contenttype != 'image/gif' && $scope.logoUpload.contenttype != 'image/jpg')){
+                        $scope.ErrorFlag = true;
+                        isError = true;
+                    }
+                    $('.validatetrue').each(function() {
+                        if($(this).val() == '' || $(this).val().trim() == '') {
+                            $(this).parent('div').addClass('slds-has-error');
+                            $(this).parent('div').find('.requiredMessage').css('display','');
+                            isError = true;
+                        } else {
+                            $(this).parent('div').removeClass('slds-has-error');
+                            $(this).parent('div').find('.requiredMessage').css('display','none');
+                        }
+                    });
+                    var ck = CKEDITOR.instances['editor1'].getData();
+                    if((ck == null || ck == '') && $scope.templateRec.ExAM__Enable_Survey_Intro_Text__c) {
+                        $('.validateCKed').css('display','');
+                        $('#cke_editor1').css('border-width','medium');
+                        $('#cke_editor1').css('border-color','#C23934');
+                        isError = true;
+                    } else {
+                        $('#cke_editor1').css('border-width','');
+                        $('#cke_editor1').css('border-color','');
+                        $('.validateCKed').css('display','none');
+                    }
+                    if(isError) {
+                        return false;
+                    }
+
+                    if(!angular.isUndefined($scope.filePathList) && $scope.filePathList != null && $scope.filePathList != '') {
+                        for(var i=0; i < $scope.filePathList.length; i++) {
+                            if($scope.filePathList[i] != null && $scope.filePathList[i] != '' ) {
+                                /*if(i == 0) {
+                                    fileURL = $scope.filePathList[i];
+                                } else {
+                                    fileURL = fileURL+'~'+$scope.filePathList[i];
+                                }*/
+                                fileURL = fileURL != '' ? fileURL+'~'+$scope.filePathList[i] : $scope.filePathList[i];
+                            }
+                        }
+                        $scope.templateRec.ExAM__SRFile_Path__c = fileURL;
+                    } else {
+                        $scope.templateRec.ExAM__SRFile_Path__c = '';
+                    }
+                    if($scope.templateRec.ExAM__Show_Modal_Window__c == false) {
+                        $scope.templateRec.ExAM__Modal_Window_Text__c = '';  
+                    }
+                    $scope.templateRec.ExAM__Public_Assessment_Page_Header__c = CKEDITOR.instances['editor1'].getData();
+                    $scope.templateRec.ExAM__Public_Assessment_Page_Footer__c = CKEDITOR.instances['editor2'].getData();
+                    
+                    delete $scope.templateRec.attributes;
+                    if(typeof $scope.logoUpload == 'string') {
+                        $scope.logoUpload = {};
+                    }
+                    ExAM.PublicAssessmentComponentCtrller.savePAConfig(angular.toJson($scope.templateRec),$scope.logoUpload, function(result, event) {
+                        if(event.status && result != null && result != '') {
+                            if(result == 'success') {
+                                window.open('/'+$scope.templateRec.Id, '_self');
+                            } else {
+                                $('#exceptMsg').text(result);
+                                $('#except').css('display','');
+                            }
+                        }
+                    });
+                }
+                
+                $scope.cancelRecord = function() {
+                    window.open('/'+$scope.templateRec.Id, '_self');
+                }
+                
+                $scope.removeLogo = function() {
+
+                    if(typeof $scope.logoUpload == 'string' || alreadyAttLogo != '') {
+                        
+                        if(confirm("Are you sure?")) {
+                            $('.maskDiv').show();
+                            
+                            ExAM.PublicAssessmentComponentCtrller.deleteLogo('{!JSENCODE(logoId)}', function(result, event) {
+                                if(event.status && result != null && result != '') {
+                                    if(result == 'success') {
+                                        $scope.logoUpload = {};
+                                        alreadyAttLogo = '';
+                                        $scope.isShowLogo = false;
+                                        $('.maskDiv').hide();
+                                        $scope.$apply();
+                                    } else {
+                                        $('.maskDiv').hide();
+                                        $('#exceptMsg').text(result);
+                                        $('#except').css('display','');
+                                        $scope.$apply();
+                                    }
+                                } 
+                            });
+                            
+                        }
+                    } else {
+                        $scope.logoUpload = {};
+                        alreadyAttLogo = '';
+                        $scope.isShowLogo = false;
+                    }
+                }
+                $scope.logoCheck = function() {
+
+                    if(( typeof $scope.logoUpload == 'string' && $scope.logoUpload != '') || (typeof $scope.logoUpload == 'object' && Object.keys($scope.logoUpload).length != 0) ) {
+                        $scope.isShowLogo = true;
+                    } else {
+                        $scope.isShowLogo = false;
+                    }
+                }
+                $scope.chooseFileClick = function() {
+                    if(typeof $scope.logoUpload == 'string' && $scope.logoUpload != '') {
+                        alreadyAttLogo = $scope.logoUpload;
+                    }
+                    document.getElementById('logoFile').click();
+                };
+                $scope.logoUploadChanged = function(ele) {
+                    $('.errorFileSelect').css('display','none');
+                    var files = ele.files;
+                    if(files[0].size > 750000){
+                        $scope.logoUpload = {};
+                        $('.errorFileSelect').css('display','');
+                        $scope.isShowLogo = false;
+                    } else {
+                        var l = files.length; 
+                        if(l > 0) {
+                            $scope.isShowLogo = true;
+                        }
+                    }
+                }
+            });
+        </script>     
+    </div>
+</apex:page>

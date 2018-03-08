@@ -1,0 +1,76 @@
+<apex:component >
+
+    <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'Result'" class="col-md-12">
+        <c:DecisionTree_Question_Property />
+        <div class="slds-grid--reverse slds-wrap">
+            <div class="slds-col slds-size--8-of-12">
+                <!-- start result template fields iteration -->
+                <div ng-repeat="eachResultField in decisionTreeResultTemplate">
+                    <div ng-if="eachResultField.fieldType == 'STRING' && eachResultField.hasEnabled && !eachResultField.isHidden" class="col-md-12">
+                        <label for="eachResultField.fieldAPIName"><b>{{ eachResultField.fieldLabelName }}</b></label>
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-col slds-size--8-of-12">
+                                <input class="slds-col slds-size--12-of-12 slds-input validate{{decisionTreeQuestion.ExAM__Is_Mandatory__c}}" type="text" ng-model="DTResultResponse[decisionTreeQuestion.Id+'~~'+eachResultField.fieldAPIName]"/>
+                                <c:DecisionTree_Question_Action />
+                            </div>
+                        </div> 
+                    </div>
+                    <div ng-if="eachResultField.fieldType == 'TEXTAREA' && eachResultField.hasEnabled && !eachResultField.isHidden" class="col-md-12">
+                        <label for="eachResultField.fieldAPIName"><b>{{ eachResultField.fieldLabelName }}</b></label>
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-col slds-size--8-of-12">
+                                <textarea rows="4" cols="50" class="slds-col slds-size--12-of-12 slds-textarea validate{{decisionTreeQuestion.ExAM__Is_Mandatory__c}}" ng-model="DTResultResponse[decisionTreeQuestion.Id+'~~'+eachResultField.fieldAPIName]" />
+                                <c:DecisionTree_Question_Action />
+                            </div>
+                        </div> 
+                    </div>
+                    <div ng-if="eachResultField.fieldType == 'PICKLIST' && eachResultField.hasEnabled && !eachResultField.isHidden" class="col-md-12">
+                        <label for="eachResultField.fieldAPIName"><b>{{ eachResultField.fieldLabelName }}</b></label>
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-col slds-size--8-of-12">
+                                <select id="sectionTempId" ng-value="section"  class="slds-select" ng-model="DTResultResponse[decisionTreeQuestion.Id+'~~'+eachResultField.fieldAPIName]" ng-options="section as section for section in eachResultField.picklistValues"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-if="eachResultField.fieldType == 'PICTURE' && eachResultField.hasEnabled && !eachResultField.isHidden" class="col-md-12">
+                        <label for="eachResultField.fieldAPIName"><b>{{ eachResultField.fieldLabelName }}</b></label>
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-col slds-size--8-of-12">  
+                                <table class="fileAnsTable">
+                                    <tbody>
+                                        <tr ng-repeat="photo in photos[decisionTreeQuestion.Id]">  
+                                            <td class="slds-p-bottom--small">
+                                                <div style="float:left;" class="slds-col slds-size--4-of-12 slds-truncate">
+                                                    <input type="button" id="fileButtonId{{$index}}" value="Choose File" ng-click="DTclick(decisionTreeQuestion.Id,$index);"/>
+                                                    <span title="{{photos[decisionTreeQuestion.Id][$index].name}}">{{photos[decisionTreeQuestion.Id][$index].name}}</span>
+                                                    <input ng-hide="true" type="file" id="fileAttId{{decisionTreeQuestion.Id}}index{{$index}}" data-file="photos[decisionTreeQuestion.Id][$index]" onchange="angular.element(this).scope().photoUploadChanged(this);" />
+                                                </div>
+                                                <div ng-if="photos[decisionTreeQuestion.Id][$index].resultbody && isImageType(photos[decisionTreeQuestion.Id][$index].contenttype);" style="float:left;padding-right:4px;">
+                                                    <img src="data:image/png;base64,{{photos[decisionTreeQuestion.Id][$index].resultbody}}" style="width:90px;height:90px;"/>
+                                                </div>
+                                                <span class="slds-icon__container slds-icon__container--square slds-icon-action-new" ng-show="photos[decisionTreeQuestion.Id].length-1 == $index" ng-click="DTphoto(decisionTreeQuestion.Id,$index+1);" style="padding: 4px 4px 4px 4px;">
+                                                   <svg aria-hidden="true" class="slds-icon slds-icon--small" style="height:12px;">
+                                                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#new')}"> </use>
+                                                   </svg>
+                                                </span>
+                                                <span class="slds-icon__container slds-icon__container--square slds-icon-action-delete" ng-click="removePhotos(decisionTreeQuestion.Id,$index);" style="padding: 4px 4px 4px 4px;">
+                                                   <svg aria-hidden="true" class="slds-icon slds-icon--small" style="height:12px;">
+                                                       <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#delete')}"> </use>
+                                                   </svg>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table> 
+                            </div>                                            
+                        </div>
+                        <c:DecisionTree_Question_Action />
+                    </div>
+                    
+                </div>
+                <!-- end result template fields iteration -->
+            </div>
+        </div> 
+    </div>
+
+</apex:component>

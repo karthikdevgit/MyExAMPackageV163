@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Assignment Generator Batch</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Assignment Generator Batches</value>
+    </caseValues>
+    <fields>
+        <label><!-- Assessable Object Api --></label>
+        <name>Assessable_Object_Api__c</name>
+    </fields>
+    <fields>
+        <label><!-- Assessment Template --></label>
+        <name>Assessment_Template__c</name>
+        <relationshipLabel><!-- Assignment Generator Batches --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- No Of Records --></label>
+        <name>No_Of_Records__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

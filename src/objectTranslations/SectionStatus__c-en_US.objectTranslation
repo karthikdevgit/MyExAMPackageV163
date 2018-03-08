@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>SectionStatus</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>SectionStatus</value>
+    </caseValues>
+    <fields>
+        <help><!-- This is the lookup object that will be used in a survey.So we are not using user but accounts to create number of surveys.The no of surveys would be same as no of accounts whose craete_survey field(on Account object) is set to true --></help>
+        <label><!-- Account to SectionStatus --></label>
+        <name>Account_to_SectionStatus__c</name>
+        <relationshipLabel><!-- SectionStatus --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Issue/Request --></label>
+        <name>Issue_Request__c</name>
+        <relationshipLabel><!-- SectionStatus --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- copy the section label from section table here --></help>
+        <label><!-- Section Status Label --></label>
+        <name>Section_StatusLabel__c</name>
+    </fields>
+    <fields>
+        <help><!-- section table id in section status table --></help>
+        <label><!-- Section Template --></label>
+        <name>Section_Template__c</name>
+        <relationshipLabel><!-- SectionStatus --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Status External Id --></label>
+        <name>Status_External_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Status --></label>
+        <name>Status__c</name>
+    </fields>
+    <fields>
+        <label><!-- User --></label>
+        <name>User__c</name>
+        <relationshipLabel><!-- SectionStatus --></relationshipLabel>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

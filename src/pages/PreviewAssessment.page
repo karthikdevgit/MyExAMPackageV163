@@ -1,0 +1,30 @@
+<apex:page standardController="Section_Template__c"  standardStylesheets="false" sidebar="false"  id="thePage" docType="html-5.0" tabStyle="Assessment_Development_Wizard__tab">
+<meta name="viewport" content="width=device-width-5, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes;" />
+ <apex:form id="templateForm" style="bgcolor:#EEEEEE;border-color:#666666;" >
+   <apex:pageMessages ></apex:pageMessages>
+   <div style="margin-right:3px;margin-left:3px;text-align:center;font-size:18px;padding:10px 0 10px 0px;font-style:bold;" >
+          <apex:outputText value="{!Section_Template__c.Questionnaire_Section__r.Template_name__c}"/>
+      </div>
+      <apex:pageBlock >
+      
+     <br/>
+     <!--<apex:repeat value="{!Main_questionaire__c.Section_Template__r}" var="sec" >
+               
+                <apex:pageBlockSection id="subsection" columns="1" title="{!sec.Section_label__c}"> 
+                
+                <apex:repeat value="{!sec.Question_Template__r}" var="q" >
+                   
+                    <apex:outputField value="{!q.Question_Label__c}" />
+                 </apex:repeat>
+                </apex:pageBlockSection>
+            </apex:repeat>-->
+            
+            
+            
+            
+      </apex:pageBlock>
+     <br/>
+      
+ </apex:form> 
+  
+</apex:page>

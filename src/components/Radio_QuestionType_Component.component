@@ -1,0 +1,98 @@
+<apex:component >
+  
+    <apex:attribute name="isPrimaryRadioQtn" type="Boolean" default="false" description="Renders Primary Radiopicklist or Horizontal Radiopicklist Question"/>
+    <apex:attribute name="isDependenRadioQtn" type="Boolean" default="false" description="Renders Dependent Radiopicklist or Horizontal Radiopicklist Question"/>
+    <apex:attribute name="isDecisionTreeRadioQtn" type="Boolean" default="false" description="Renders Decision Tree Radiopicklist or Horizontal Radiopicklist Question"/>
+
+    <apex:outputPanel rendered="{!isPrimaryRadioQtn}">
+        <div ng-if="eachQuestTemplateRec.ExAM__Question_Type__c == 'RadioPicklist' || eachQuestTemplateRec.ExAM__Question_Type__c == 'Horizontal Radiopicklist' || eachQuestTemplateRec.ExAM__Question_Type__c == 'Likert'">
+            <c:Primary_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <div class="slds-size--8-of-12"> 
+                    <label ng-repeat="option in splitOptions(eachQuestTemplateRec) track by $index"
+                           class="slds-radio validateradio{{eachQuestTemplateRec.ExAM__Is_Mandatory__c}}">
+
+                        <div ng-if="eachQuestTemplateRec.ExAM__Question_Type__c == 'RadioPicklist'">
+                            <input type="radio" ng-model="response[eachQuestTemplateRec.Id]" ng-value="option"
+                                   ng-change="openDecisionTreePopUp(response[eachQuestTemplateRec.Id], eachQuestTemplateRec);
+                                              returnRelatedDependentQuestion(eachQuestTemplateRec, response[eachQuestTemplateRec.Id]);"/> 
+                            <span class="slds-radio--faux"></span>
+                            <span class="slds-form-element__label">{{option}}</span>
+                        </div>
+
+                        <div ng-if="eachQuestTemplateRec.ExAM__Question_Type__c == 'Horizontal Radiopicklist'|| eachQuestTemplateRec.ExAM__Question_Type__c == 'Likert'">
+                            <div ng-class="{'float-left':!$last,'float-none':$last}">
+                                <input type="radio" ng-model="response[eachQuestTemplateRec.Id]" ng-value="option"
+                                       ng-change="openDecisionTreePopUp(response[eachQuestTemplateRec.Id], eachQuestTemplateRec);
+                                                  returnRelatedDependentQuestion(eachQuestTemplateRec, response[eachQuestTemplateRec.Id]);"/> 
+                                <span class="slds-radio--faux"></span>
+                                <span class="slds-form-element__label">{{option}}</span>
+                            </div>
+                        </div>
+
+                    </label>
+                </div>
+                <c:Primary_Question_Action renderClearIcon="true" />
+            </div> 
+        </div>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!isDependenRadioQtn}">
+        <div ng-if="nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c == 'RadioPicklist' || nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c == 'Horizontal Radiopicklist' || nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c == 'Likert'" class="slds-size--12-of-12 slds-small-size--3-of-4 slds-medium-size--4-of-12">
+            <c:Dependent_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <div class="slds-size--8-of-12"> 
+                    <label ng-repeat="option in splitOptions(nextDependentQuestion[eachQuestTemplateRec.Id]) track by $index"
+                           class="slds-radio validateradio{{nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Is_Mandatory__c}}">
+
+                        <div ng-if="nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c == 'RadioPicklist'">
+                            <input type="radio" ng-model="response[nextDependentQuestion[eachQuestTemplateRec.Id].Id]" ng-value="option"/> 
+                            <span class="slds-radio--faux"></span>
+                            <span class="slds-form-element__label">{{option}}</span>
+                        </div>
+
+                        <div ng-if="nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c == 'Horizontal Radiopicklist' || nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c == 'Likert'">
+                            <div ng-class="{'float-left':!$last,'float-none':$last}">
+                                <input type="radio" ng-model="response[nextDependentQuestion[eachQuestTemplateRec.Id].Id]" ng-value="option"/> 
+                                <span class="slds-radio--faux"></span>
+                                <span class="slds-form-element__label">{{option}}</span>
+                            </div>
+                        </div>
+
+                    </label>
+                </div>
+                <c:Dependent_Question_Action />
+            </div>
+        </div>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!isDecisionTreeRadioQtn}">
+        <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'RadioPicklist' || decisionTreeQuestion.ExAM__Question_Type__c == 'Horizontal Radiopicklist' || decisionTreeQuestion.ExAM__Question_Type__c == 'Likert'" class="col-md-12">
+            <c:DecisionTree_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <div class="slds-size--8-of-12"> 
+                    <label ng-repeat="option in splitOptions(decisionTreeQuestion) track by $index" class="slds-radio">
+
+                        <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'RadioPicklist'">
+                            <input type="radio" ng-model="DecisionTreeresponse[decisionTreeQuestion.Id]" ng-value="option"
+                                   ng-change="renderNextQuestionInDecisionTreeFunCall(DecisionTreeresponse[decisionTreeQuestion.Id], decisionTreeQuestion);"/>
+                            <span class="slds-radio--faux"></span>
+                            <span class="slds-form-element__label">{{option}}</span>
+                        </div>
+
+                        <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'Horizontal Radiopicklist' || decisionTreeQuestion.ExAM__Question_Type__c == 'Likert'">
+                            <div style="float:left;">
+                                <input type="radio" ng-model="DecisionTreeresponse[decisionTreeQuestion.Id]" ng-value="option"
+                                       ng-change="renderNextQuestionInDecisionTreeFunCall(DecisionTreeresponse[decisionTreeQuestion.Id], decisionTreeQuestion);"/> 
+                                <span class="slds-radio--faux"></span>
+                                <span class="slds-form-element__label">{{option}}</span>
+                            </div>
+                        </div>
+
+                    </label>
+                </div>
+            </div>
+        </div>
+    </apex:outputPanel>
+
+</apex:component>

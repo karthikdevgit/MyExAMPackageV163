@@ -1,0 +1,70 @@
+<aura:component access="public">
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="change" value="{!v.sectionId}" action="{!c.changeSection}"/>
+    <aura:handler name="change" value="{!v.questionId}" action="{!c.selectQuestion}"/>
+    <aura:handler name="ctrlLinkMenuEvt" event="c:ctrlLinkMenuEvt" action="{!c.getAction}" />
+    
+    <aura:attribute name="sectionsName" type="List" access="public"/>
+    <aura:attribute name="questionsName" type="List" access="public"/>
+    <aura:attribute name="nameOfSelectedSection" type="string" access="public"/>
+    <aura:attribute name="nameOfSelectedQuestion" type="string" access="public"/>
+    <aura:attribute name="sel_Direction" type="String" access="public" default="Before"/>
+    <aura:attribute name="nameOfSelectedDirection" type="string" access="public" />
+    <aura:attribute name="direction"
+                    type="List"
+                    access="public"
+                    description=""
+                    default="[{
+                             optionText: 'Before',
+                             optionValue: 'Before'
+                             },
+                             {
+                             optionText: 'After',
+                             optionValue: 'After'
+                             }]"/>
+	
+    <aura:attribute name="assessmentId" type="String" access="public"/>
+    <aura:attribute name="index" type="Integer" access="public"/>
+    <aura:attribute name="questionTemplateList" type="Question_Template__c[]" access="public"/>
+    <aura:attribute name="QuestionTemplate" type="Question_Template__c" access="public"/>
+    <aura:attribute name="questionId" type="String" access="public"/>
+    <aura:attribute name="sectionId" type="String" access="public"/>
+    <aura:attribute name="questionIndex" type="Integer" default="-1" access="public"/>
+	<aura:attribute name="position" type="Integer" access="public" default="-1"/>
+    
+	<aura:registerEvent name="navigateToOptionTab" type="c:navigateToOptionTabEvt"/>
+    <aura:registerEvent name="notificationEvent" type="c:notificationEvt"/>
+    <aura:registerEvent name="doneEditingView" type="c:doneEditingViewEvt"/>
+
+    <div class="editor-options-card">
+        <article class="slds-card">
+            <div class="slds-card__header slds-grid">
+                <span class="slds-text-heading--medium">Move Question</span>
+            </div>
+            <div class="slds-card__body">
+                <div class="slds-text-heading--small">
+                    Within section
+                    <c:CtrlLinkMenu itemIndex="0" linkChange="false" showIcon="true" 
+                                    sourceDerivenCmp="{'type' : 'QuestionMover' , 'label' : 'sections'}"
+                                    hideLabel="false" attributes="{!v.sectionsName}" menuLinkText="{!v.nameOfSelectedSection}"/>
+                </div>
+                <div class="slds-text-heading--small">
+                    So that it is
+                    <c:CtrlLinkMenu itemIndex="1" linkChange="false" showIcon="true" 
+                                    sourceDerivenCmp="{'type' : 'QuestionMover' , 'label' : 'direction'}"
+                                    hideLabel="false" attributes="{!v.direction}" menuLinkText="{!v.sel_Direction}"/>
+                    
+                    <c:CtrlLinkMenu itemIndex="2" linkChange="false" showIcon="true" 
+                                    sourceDerivenCmp="{'type' : 'QuestionMover' , 'label' : 'questions'}"
+                                    hideLabel="false" attributes="{!v.questionsName}" menuLinkText="{!v.nameOfSelectedQuestion}"/>
+                </div>
+            </div>
+            <div class="slds-card__footer slds-grid slds-grid--align-center">
+                <button class="slds-button slds-button--neutral slds-button--save" onclick="{!c.saveRecord}">Move</button>
+                <button class="slds-button slds-button--neutral" onclick="{!c.cancelMove}">Cancel</button>
+            </div>
+        </article>
+    </div>
+
+</aura:component>

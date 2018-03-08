@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Mobile Incident Report</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Mobile Incident Reports</value>
+    </caseValues>
+    <fields>
+        <label><!-- Category --></label>
+        <name>Category__c</name>
+        <picklistValues>
+            <masterLabel>Crimes Against Persons</masterLabel>
+            <translation><!-- Crimes Against Persons --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Crimes Against Property</masterLabel>
+            <translation><!-- Crimes Against Property --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Drug/Alcohol Offenses</masterLabel>
+            <translation><!-- Drug/Alcohol Offenses --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Security Threats</masterLabel>
+            <translation><!-- Security Threats --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Incident Description --></label>
+        <name>Incident_Description__c</name>
+    </fields>
+    <fields>
+        <label><!-- Incident Location Address --></label>
+        <name>Incident_Location__c</name>
+    </fields>
+    <fields>
+        <label><!-- Incident Score --></label>
+        <name>Incident_Score__c</name>
+    </fields>
+    <fields>
+        <label><!-- Location --></label>
+        <name>Location__c</name>
+    </fields>
+    <fields>
+        <label><!-- People Involved --></label>
+        <name>People_Involved__c</name>
+    </fields>
+    <fields>
+        <label><!-- Subcategory --></label>
+        <name>Subcategory__c</name>
+        <picklistValues>
+            <masterLabel>&quot;Other&quot; Drug/Alcohol Offenses</masterLabel>
+            <translation><!-- &quot;Other&quot; Drug/Alcohol Offenses --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Arson</masterLabel>
+            <translation><!-- Arson --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Assault with a Deadly Weapon</masterLabel>
+            <translation><!-- Assault with a Deadly Weapon --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Battery</masterLabel>
+            <translation><!-- Battery --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Bomb Threat</masterLabel>
+            <translation><!-- Bomb Threat --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Force protection issues</masterLabel>
+            <translation><!-- Force protection issues --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Homicide</masterLabel>
+            <translation><!-- Homicide --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Personal Property Theft</masterLabel>
+            <translation><!-- Personal Property Theft --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Possession of Drugs</masterLabel>
+            <translation><!-- Possession of Drugs --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Threats of Extreme Violence</masterLabel>
+            <translation><!-- Threats of Extreme Violence --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Use of Drugs/Alcohol</masterLabel>
+            <translation><!-- Use of Drugs/Alcohol --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Vandalism</masterLabel>
+            <translation><!-- Vandalism --></translation>
+        </picklistValues>
+    </fields>
+    <layouts>
+        <layout>Mobile Incident Report Form Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Location of Incident --></label>
+            <section>Location of Incident</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>salesforce1_mobile_incident</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Fields --></label>
+            <section>Fields</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

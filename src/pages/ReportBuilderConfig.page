@@ -1,0 +1,82 @@
+<apex:page cache="false" standardStylesheets="false" docType="html-5.0" applyBodyTag="false">
+    <apex:includeScript value="{!URLFOR($Resource.WordSurveyUsingJQcloud ,'www/lib/angular/jquery.min.js')}"/>
+    <div xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <title>Report Builder</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS052, '/assets/styles/salesforce-lightning-design-system-vf.css')}" />
+        </head>
+        <style>
+            .slds .slds-tabs--scoped .slds-active > a {
+                background-color: white;
+                color: #0070d2;
+                border-color: #d8dde6; 
+            }
+            .slds .slds-tabs--scoped .slds-active > a:focus {
+                text-decoration: underline; 
+            }
+        </style>
+        <div ng-app="mainApp">    
+            <body>
+                <apex:pageMessages />
+                <div class="slds slds-p-around--xx-large slds-container--large slds-container--center">
+                    <div class="main" role="main">
+                        <div class="slds-page-header">
+                            <div class="slds-tabs--scoped">
+                                <ul class="slds-tabs--scoped__nav" role="tablist">
+                                    <li class="slds-tabs__item slds-text-heading--label slds-active" title="General Information" role="presentation" id="tab1">
+                                        <a href="#" role="tab" tabindex="0" aria-selected="true" style="text-decoration:none;">General Information</a>
+                                    </li>
+                                    <li class="slds-tabs__item slds-text-heading--label" title="Word Cloud" id="tab2">
+                                        <a href="#" role="tab" tabindex="-1" aria-selected="false" style="text-decoration:none;">Word Cloud</a>
+                                    </li>
+                                </ul>
+                                <div class="slds-tabs__content slds-hide" role="tabpanel" id="tabpanel1">
+                                    <c:ReportBuilderGeneralInformation ></c:ReportBuilderGeneralInformation>
+                                </div>
+                                <div class="slds-tabs__content slds-hide" role="tabpanel" id="tabpanel2">
+                                    <apex:iframe scrolling="true" src="{!$Page.AnswerSurvey}" id="iFrameAnswerSurvey" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </body>
+        </div>
+    </div>     
+    <script>
+        var activeComponentId, activeComponentIndex, selectedComponentId, selectedComponentIndex;
+        $('#tabpanel1').addClass('slds-show');
+        $('li.slds-tabs__item').click(function() {
+            $('li.slds-tabs__item').each(function() {
+                if($(this).hasClass('slds-active')) {
+
+                    activeComponentId = $(this).attr('id');
+                    activeComponentIndex = activeComponentId.substring(activeComponentId.length-1, activeComponentId.length);
+                    $(this).removeClass('slds-active');
+                    $('#tabpanel'+activeComponentIndex).removeClass('slds-show');
+                }
+            });
+            selectedComponentId = $(this).attr('id');
+            selectedComponentIndex = selectedComponentId.substring(selectedComponentId.length-1, selectedComponentId.length);
+            $(this).addClass('slds-active');
+            $('#tabpanel'+selectedComponentIndex).addClass('slds-show');
+        });
+        var app = angular.module('mainApp',['reportBuilderApp']);
+        function resizeWindow() {
+            var iFrameID = document.getElementById('iFrameAnswerSurvey');
+            if(iFrameID) {
+                // here you can make the height, 
+                //iFrameID.height = "600px";
+                var heightVal = iFrameID.contentWindow.document.body.offsetHeight + 110;
+                //iFrameID.height = heightVal + "px";
+                if (heightVal < 2500) {
+                    iFrameID.height = heightVal + "px";
+                } else {
+                    iFrameID.height = "2500px";
+                }
+            } 
+            
+        }
+    </script> 
+</apex:page>

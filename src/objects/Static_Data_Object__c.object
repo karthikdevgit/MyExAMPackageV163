@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>List</customSettingsType>
+    <description>Add any field name which is static across orgs, they can have different values.Eg the Site URL, country codes</description>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Site_URL__c</fullName>
+        <deprecated>false</deprecated>
+        <description>This is the url of the site. In salesforce create a Site which has a app guest user licence and add the url here.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This is the url of the site. In salesforce create a Site which has a app guest user licence and add the url here.</inlineHelpText>
+        <label>Site URL</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <label>Static Data Object</label>
+    <visibility>Public</visibility>
+</CustomObject>

@@ -1,0 +1,11 @@
+<aura:component access="public" isTemplate="true" extends="aura:template">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:set attribute="auraPreInitBlock">
+        <auraStorage:init name="actions"
+          persistent="false"
+          secure="true"
+          maxSize="1024"
+          defaultExpiration="900"
+          defaultAutoRefreshInterval="30" />
+    </aura:set>
+</aura:component>

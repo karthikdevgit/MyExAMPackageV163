@@ -1,0 +1,6 @@
+<aura:event type="COMPONENT" description="Event template" access="public" >
+    <!--<aura:attribute name="indexToAttachId" type="Map"/>-->
+    <aura:attribute name="index" type="Integer" access="public" />  
+    <aura:attribute name="fileContent" type="Object" access="public" />    
+    <aura:attribute name="fileName" type="String" access="public"/>
+</aura:event>

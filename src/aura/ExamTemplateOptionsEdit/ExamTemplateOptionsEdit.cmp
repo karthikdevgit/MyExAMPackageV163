@@ -1,0 +1,125 @@
+<aura:component access="public">
+    
+    <aura:handler name="disableViewToggle" event="c:disableViewToggleEvt" action="{!c.toggleInLineViewOfAssessment}" description="toggle View Of InLineEdit Assessment"/>
+    
+    <aura:attribute name="assessmentTemplate" type="Main_questionaire__c" access="public"/>
+    <aura:attribute name="fields" type="Map" access="public"/>
+    <aura:attribute name="attachment" type="Map" access="public"/>
+    <aura:attribute name="editCountIn" type="Map" access="public" default="{'Basic Options' : 0,
+                                                                           'Advanced Options' : 0,                                                                         
+                                                                           'Survey Look and Feel' : 0,
+                                                                           'Web Intercept Look and Feel' : 0}"/>
+
+    
+    
+    <aura:registerEvent name="notificationEvent" type="c:notificationEvt"/>
+    <aura:registerEvent name="editViewOn" type="c:editViewOnEvt" description="fire event When editCount is changed from 0 to 1"/>
+    <aura:registerEvent name="doneEditingView" type="c:doneEditingViewEvt" description="fire event When editCount is 0"/>
+    
+    <div class="slds-grid slds-wrap">
+        <div class=" slds-size--1-of-1 slds-large-size--1-of-2 ">
+            <article aura:id="Basic Options" class="slds-card slds-m-around--large">
+                <div class="slds-card__header slds-grid">
+                    <span class="slds-text-heading--medium">Basic Options</span>
+                </div>
+                <div class="slds-card__body">
+                    
+                    <aura:iteration items="{!v.fields.ExAM__lightningComp_BasicOptions_FieldSet}" var="field" indexVar="index">
+                        <div class="slds-text-heading--small option-item">
+                            
+                            <c:ExamField valType="{!field.fieldDataType}" record="{!v.assessmentTemplate}"
+                                            Id="{!v.assessmentTemplate.Id}"
+                                            sObjectAPI="{!field.sObjectApi}"
+                                            helpText="{!field.inLineHelpText}"
+                                            fieldName="{!field.fieldApi}" fieldLabel="{!field.fieldLabel}" options="{!field.options}" mode="edit" identifierCmp="{!index}" sourceDerivenCmp="{'type' : 'Basic Options'}"/>
+                        </div>
+                    </aura:iteration>
+                    
+                    
+                    
+                </div>
+                <div class="slds-card__footer slds-grid slds-grid--align-spread"></div>
+            </article>
+            <article aura:id="Advanced Options" class="slds-card slds-m-around--large">
+                <div class="slds-card__header slds-grid">
+                    <span class="slds-text-heading--medium">Advanced Options</span>
+                </div>
+                <div class="slds-card__body">
+                    <aura:iteration items="{!v.fields.ExAM__lightningComp_AdvancedOptions_FieldSet}" var="field" indexVar="index">
+                        <div class="slds-text-heading--small option-item">
+                            
+                            <c:ExamField valType="{!field.fieldDataType}" record="{!v.assessmentTemplate}"
+                                            mode="edit" Id="{!v.assessmentTemplate.Id}"
+                                            sObjectAPI="{!field.sObjectApi}"
+                                            helpText="{!field.inLineHelpText}"
+                                            fieldName="{!field.fieldApi}" fieldLabel="{!field.fieldLabel}" options="{!field.options}" identifierCmp="{!index}" sourceDerivenCmp="{'type' : 'Advanced Options'}"/>
+                        </div>
+                    </aura:iteration>
+                </div>
+                <div class="slds-card__footer slds-grid slds-grid--align-spread"></div>
+            </article>
+            
+        </div>
+        <div class=" slds-size--12-of-12  slds-large-size--6-of-12">
+            <c:ExamTemplateOptionsStyles aura:id="Survey Look and Feel" assessmentTemplate="{!v.assessmentTemplate}" attachment="{!v.attachment}"/>
+            
+            <article aura:id="Web Intercept Look and Feel" class="slds-card slds-m-around--large">
+                <div class="slds-card__header slds-grid">
+                    <span class="slds-text-heading--medium">Web Intercept Look and Feel</span>
+                </div>
+                <div class="slds-card__body">
+                    <div class="slds-text-heading--small">
+                        
+                        <c:ExamTextArea record="{!v.assessmentTemplate}"
+                                           mode="edit" Id="{!v.assessmentTemplate.Id}"
+                                           sObjectName="ExAM__Main_questionaire__c"
+                                           fieldName="ExAM__Web_Intercept_Header__c" fieldLabel="Header Text" sourceDerivenCmp="{'type' : 'Web Intercept Look and Feel'}"/>
+                        
+                    </div>
+                    <div class="slds-text-heading--small">
+                        
+                        
+                        <c:ExamTextFld record="{!v.assessmentTemplate}"
+                                          mode="edit" Id="{!v.assessmentTemplate.Id}"
+                                          sObjectName="ExAM__Main_questionaire__c"
+                                          fieldName="ExAM__Web_Intercept_PA_Static_Resource_Name__c"
+                                          fieldLabel="Public Assessment Page CSS Override Static Resource" sourceDerivenCmp="{'type' : 'Web Intercept Look and Feel'}"/>
+                        
+                    </div>
+                    <div class="slds-text-heading--small">
+                        
+                        
+                        <c:ExamTextArea record="{!v.assessmentTemplate}"
+                                           mode="edit" Id="{!v.assessmentTemplate.Id}"
+                                           sObjectName="ExAM__Main_questionaire__c"
+                                           fieldName="ExAM__Web_Intercept_PA_Resource_File_Path__c"
+                                           fieldLabel="Assessment Page CSS Override File Path" sourceDerivenCmp="{'type' : 'Web Intercept Look and Feel'}"/>
+                        
+                    </div>
+                    <div class="slds-text-heading--small">
+                        
+                        <c:ExamTextFld record="{!v.assessmentTemplate}"
+                                          mode="edit" Id="{!v.assessmentTemplate.Id}"
+                                          sObjectName="ExAM__Main_questionaire__c"
+                                          fieldName="ExAM__Web_Intercept_Static_Resource_Name__c"
+                                          fieldLabel="Modal CSS Override Static Resource" sourceDerivenCmp="{'type' : 'Web Intercept Look and Feel'}"/>
+                        
+                    </div>
+                    <div class="slds-text-heading--small">
+                        
+                        <c:ExamColorPickerFld record="{!v.assessmentTemplate}"
+                                                 mode="edit" Id="{!v.assessmentTemplate.Id}"
+                                                 sObjectName="ExAM__Main_questionaire__c"
+                                                 fieldName="ExAM__Web_Intercept_Header_color__c"
+                                                 fieldLabel="Header Color" sourceDerivenCmp="{'type' : 'Web Intercept Look and Feel'}"/>
+                        
+                    </div>
+                    
+                </div>
+                <div class="slds-card__footer slds-grid slds-grid--align-spread"></div>
+            </article>
+            
+        </div>
+    </div>
+    
+</aura:component>

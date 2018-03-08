@@ -1,0 +1,219 @@
+<aura:component access="public">
+  
+  <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+  <aura:handler name="SettingSelectedTab" event="c:settingSelectedTabEvt" action="{!c.changeTemplateAction}"/>
+  <aura:handler name="updateFields" event="c:updateFieldEvt" action="{!c.reloadContent}"/>
+  <aura:handler name="promptEvent" event="c:promptEvt" action="{!c.deleteQuestion}"/>
+  <aura:handler name="navigateToOptionTab" event="c:navigateToOptionTabEvt" action="{!c.navigateOption}"/>
+  <aura:handler name="disableViewToggle" event="c:disableViewToggleEvt" action="{!c.toggleQuestionInLineEditView}" description="toggle Inline EditView in Question"/>
+  <aura:handler name="doneEditingView" event="c:doneEditingViewEvt" action="{!c.questionEditingDone}"/>
+  <aura:handler event="c:additionalOptionBasedEvt" action="{!c.updateAnswer}"/>
+  <aura:handler event="c:fireAnswerChangedEvt" action="{!c.changeAnswerTemplates}"/>
+  
+  <aura:attribute name="position" type="Integer" access="public"/>
+  <aura:attribute name="canSwitchTab" type="Boolean" default="true" access="public" description="Is Switch To Tab"/>
+  
+  <aura:attribute name="hasSwitchTab" type="Boolean" default="false" access="public" description="Is Tab Switched"/>
+  <aura:attribute name="editCount" type="Integer" default="0" access="public" description="count editState in Question template"/>
+  <aura:attribute name="orderNo" type="Integer" access="public"/>
+  <aura:attribute name="questionTerm" type="String" default="Question" access="public"/>
+  <aura:attribute name="builtNewQuestion" type="Boolean" default="false" access="public"/>
+  <aura:attribute name="fields" type="Map" access="public"/>
+  <aura:attribute name="questionTypes" type="List" access="public"/>
+  <aura:attribute name="showPick" type="Boolean" access="public"/>
+  <aura:attribute name="isFileUpload" type="Boolean" default="false" access="public"/>
+  <aura:attribute name="editAnswers" type="Boolean" default="false" access="public"/>  
+  <aura:attribute name="imageSrc" type="String[]" access="public"/>
+  <aura:attribute name="count" type="Integer" default="0" access="public"/>
+  <aura:attribute name="assessmentId" type="String" access="public"/>
+  <aura:attribute name="index" type="Integer" access="public"/>
+  <aura:attribute name="fileContentMap" type="map" access="public"/>
+  <aura:attribute name="fileContentList" type="List" access="public"/>
+  <aura:attribute name="QuestionTemplate" type="Question_Template__c" access="public"/>
+  <aura:attribute name="answerOptions" type="Answer_Option__c[]" access="public"/>
+    <aura:attribute name="questionImageAttachment" type="Map" access="public" default="{}"/>
+    <aura:attribute name="showAttachment" type="Boolean" access="public" default="false"/>
+    <aura:attribute name="toggleViewContent" type="Map" access="public" default='{
+                                                                                 "isQuestionEdited" : false,
+                                                                                 "questionTypeEnabled" : false,
+                                                                                 "answerOptionsViewerEdited" : false
+                                                                                 }'/>
+
+  <aura:registerEvent name="cancelCreateAction" type="c:cancelCreateQuestionEvt"/>
+  <aura:registerEvent name="QuestionSelected" type="c:questionSelectedEvt"/>
+  <aura:registerEvent name="disableViewToggle" type="c:disableViewToggleEvt"/>
+  <aura:registerEvent name="editViewOn" type="c:editViewOnEvt" description="fire event When editCount is changed from 0 to 1"/>
+  <aura:registerEvent name="doneEditingView" type="c:doneEditingViewEvt" description="fire event When editCount is 0"/>
+
+  <aura:if isTrue="{!v.builtNewQuestion}">
+
+    <div aura:id="newQues" class="slds-m-around--large ">
+      <article class="exam-question-preview edit-mode">
+        <c:TabContainer wrapperClass="question-actions slds-tabs--scoped"
+          ulClass="slds-tabs--scoped__nav"
+          liClass="slds-text-heading--label slds-tabs--scoped__item"
+          aClass="slds-tabs--scoped__link disabled"
+          accList="[{name:'Options', componentLink: 'QuestionOptionsViewer', tooltipText: 'Add a Question to change options', active:true},
+                                         {name:'Copy', componentLink: 'QuestionCopier', tooltipText: 'Add a Question Before Copying'},
+                                         {name:'Move', componentLink: 'QuestionMover', tooltipText: 'Add a Question Before Moving'},
+                                         {name:'Delete', componentLink: 'QuestionDeleter', tooltipText: 'Add a Question Before Deleting'}]"/>
+        <div class="section-body">
+          <div class="slds-grid slds-grid_pull-padded-medium  slds-grid--vertical-stretch">
+            <div class="slds-size--2-of-4 slds-col slds-p-horizontal_medium">
+              <div class="slds-box">
+                <div class="slds-text-heading--small">
+                  Select a question type and enter your
+                {#v.questionTerm} to continue
+              </div>
+                  <aura:if isTrue="{!v.showPick}">
+                      <div class="slds-p-vertical--xx-small">
+                          <c:ExamPickListFld identifierCmp="{!v.position}" mode="edit" defaultMode="edit" newField="true" cssClass="" hideLabel="true" 
+                                             sourceDerivenCmp="{'type' : 'QuestionViewer'}"
+                                             record="{!v.QuestionTemplate}"  Id="{!v.QuestionTemplate.Id}" sObjectName="Question_Template__c" fieldName="ExAM__Question_Type__c" fieldLabel="Question Type" options="{!v.questionTypes}"/>
+
+                      </div>
+                  </aura:if>
+                  
+                  <div class="slds-p-vertical--xx-small">
+                      <ui:inputTextArea aura:id="txtArea" class="slds-p-vertical--xx-small slds-input" labelClass="slds-form-element__label" placeholder="Question Text" value="{!v.QuestionTemplate.ExAM__Question_Label__c}" rows="2"/>
+                  </div>
+                  <div class="slds-p-around_x-small">
+                      <c:ExamTextFldAndAttach aura:id="imageQuestion" mode="edit" defaultMode="edit" newField="true" hideLabel="true" 
+                                                 sourceDerivenCmp="{'type' : 'QuestionViewer'}"
+                                                 record="{!v.QuestionTemplate}"  Id="{!v.QuestionTemplate.Id}" sObjectName="ExAM__Question_Template__c" fieldLabel="Upload Question Image" />
+                  </div>
+                  <div class="slds-p-around_x-small">
+                      <c:ExamUrlFld mode="edit" defaultMode="edit" newField="true" cssClass="" hideLabel="true" 
+                                       sourceDerivenCmp="{'type' : 'QuestionViewer'}"
+                                       record="{!v.QuestionTemplate}"  Id="{!v.QuestionTemplate.Id}" sObjectName="ExAM__Question_Template__c" fieldName="ExAM__Video_URL__c" fieldLabel="Video URL"/>
+                  </div>
+                </div>
+            </div>
+                        <div class="slds-size--2-of-4 slds-col slds-p-horizontal_medium">
+                          <c:QuestionOptionsViewer aura:id="questionOptions" mode="edit" defaultMode="edit" newField="true" fields="{!v.fields}" QuestionTemplate="{!v.QuestionTemplate}"/>
+
+                        </div>
+                    </div>
+            
+            
+                    <aura:if isTrue="{!v.QuestionTemplate.ExAM__Question_Type__c == 'Dropdown Picklist' ||
+                                     v.QuestionTemplate.ExAM__Question_Type__c == 'RadioPicklist' ||
+                                     v.QuestionTemplate.ExAM__Question_Type__c == 'Button' ||
+                                     v.QuestionTemplate.ExAM__Question_Type__c == 'MultiselectPicklist' ||
+                                     v.QuestionTemplate.ExAM__Question_Type__c == 'List' ||
+                                     v.QuestionTemplate.ExAM__Question_Type__c == 'Image' ||
+                                     v.QuestionTemplate.ExAM__Question_Type__c == 'Horizontal Radiopicklist'}">
+                        <div aura:id="answerView">
+                        <c:AnswerOptionsViewer assessmentId="{!v.assessmentId}" aura:id="additionOpt" disable="true" QuestionTemplate="{!v.QuestionTemplate}" />
+                      </div>
+                    </aura:if>
+                    <div class="slds-m-top--medium">
+                        <lightning:button class="slds-button slds-button--neutral slds-button--save slds-m-right--small" label="{#'Add ' + v.questionTerm}" onclick="{!c.saveQuestion}"/>
+                        <lightning:button class="slds-button slds-button--neutral " label="Cancel" onclick="{!c.closeModal}"/>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <aura:set attribute="else">
+            <div aura:id="editQuestion" class="slds-m-horizontal--large exam-question-preview" onclick="{!c.editQuestionTemplate}">
+                <article aura:id="questionDiv" class="">
+                    <c:TabContainer aura:id="tabContainer" wrapperClass="question-actions slds-tabs--scoped"
+                                    ulClass="slds-tabs--scoped__nav"
+                                    liClass="slds-text-heading--label slds-tabs--scoped__item"
+                                    aClass="slds-tabs--scoped__link"
+                                    canSwitchTab="{!v.canSwitchTab}"
+                                    accList="[{name:'Options', componentLink: 'QuestionOptionsViewer', active:true},
+                                             {name:'Copy', componentLink: 'QuestionCopier'},
+                                             {name:'Move', componentLink: 'QuestionMover'},
+                                             {name:'Delete', componentLink: 'QuestionDeleter'}]"/>
+                    <div aura:id="editQues" class="section-body">
+                        <div  class="slds-grid slds-grid_pull-padded-medium ">
+                            <div class="slds-size--2-of-4  slds-col slds-p-horizontal_medium" aura:id="questionEditor">
+                                <div class="slds-box">
+                                    <div>
+                                        <div class="slds-text-heading--medium slds-grid slds-col exam-bold label-override">
+                                            <div class="slds-m-right_small">
+                                                {!v.QuestionTemplate.ExAM__Question_Order_No__c}.
+                                            </div>
+                                            <div class="slds-size--11-of-12">
+                                                <c:ExamTextArea questionTextLayout="true" record="{!v.QuestionTemplate}" mode="edit" defaultMode="view" 
+                                                                   fieldLabel="Question Name"
+                                                                   Id="{!v.QuestionTemplate.Id}" sObjectName="ExAM__Question_Template__c" fieldName="ExAM__Question_Label__c" />
+                                            </div>
+                                        </div>
+                                        <div class="field-divider slds-grid one">
+                                            <c:AnswerViewer aura:id="answerTemp" answerOptions="{!v.answerOptions}" QuestionTemplate="{!v.QuestionTemplate}"/>
+                                        </div>
+                                        <div class="slds-p-around_x-small">
+                                        <c:ExamUrlFld record="{!v.QuestionTemplate}" mode="edit" defaultMode="view" Id="{!v.QuestionTemplate.Id}" 
+                                                            fieldLabel="Video URL"
+                                                            sObjectName="ExAM__Question_Template__c" fieldName="ExAM__Video_URL__c" preview="true" />
+                                    </div>
+                                    <aura:if isTrue="{!v.showAttachment}">
+                                        <div class="slds-p-around_x-small">
+                                            
+                                            <c:ExamTextFldAndAttach record="{!v.QuestionTemplate}" mode="edit" defaultMode="view" Id="{!v.QuestionTemplate.Id}" 
+                                                                    fieldLabel="Upload Question Image"
+                                                                    sObjectName="ExAM__Question_Template__c"  attachment="{!v.questionImageAttachment}" preview="true"/>
+                                        </div>
+                                    </aura:if>
+                                        <div class="additionalActions" aura:id="additionalActions"></div>
+                                    </div>
+                                        
+                                    <aura:if isTrue="{!v.showPick}">
+                                        <div aura:id="questionType" class="slds-grid slds-grid--vertical-align-center slds-m-top_small" >
+                                            <div class="slds-m-right_x-small">
+                                                Question Type:
+                                            </div>
+                                            <c:ExamPickListFld identifierCmp="{!v.index}" cssClass="" hideLabel="true"
+                                                                  sourceDerivenCmp="{'type' : 'QuestionViewer'}"
+                                                                  record="{!v.QuestionTemplate}" mode="edit" Id="{!v.QuestionTemplate.Id}" sObjectName="ExAM__Question_Template__c" fieldName="ExAM__Question_Type__c" fieldLabel="Question Type" options="{!v.questionTypes}"/>
+                                            
+                                            
+                                        </div>
+                                    </aura:if>
+                                    
+                                    <aura:if isTrue="{!v.QuestionTemplate.ExAM__Question_Type__c == 'Dropdown Picklist' ||
+                                                     v.QuestionTemplate.ExAM__Question_Type__c == 'RadioPicklist' ||
+                                                     v.QuestionTemplate.ExAM__Question_Type__c == 'Button' ||
+                                                     v.QuestionTemplate.ExAM__Question_Type__c == 'MultiselectPicklist' ||
+                                                     v.QuestionTemplate.ExAM__Question_Type__c == 'List' ||
+                                                     v.QuestionTemplate.ExAM__Question_Type__c == 'Image' ||
+                                                     v.QuestionTemplate.ExAM__Question_Type__c == 'Horizontal Radiopicklist'}">
+                                        <div aura:id="toggleAnswers" class="slds-m-top_x-small slds-grid slds-grid_vertical-stretch  slds-grid_vertical-align-end">
+                                            <a class="=" onclick="{!c.toggleAnswerDetails}">{!v.editAnswers ? 'Hide' : 'Show'} Answer Details</a>
+                                            
+                                        </div>
+                                    </aura:if>
+                                </div>
+                            </div>
+                            <div class="slds-size--2-of-4  slds-col slds-p-horizontal_medium">
+                                <div class="templateActions" aura:id="templateActions"></div>
+                            </div>
+                        </div>
+                        <div  class="slds-grid" aura:id="answerViewer">
+                            <div class="slds-size--4-of-4">
+                              <aura:if isTrue="{!v.editAnswers}">
+                              <c:AnswerOptionsViewer assessmentId="{!v.assessmentId}" aura:id="additionOpt" answerOptionsFrmQuestion="{!v.answerOptions}" QuestionTemplate="{!v.QuestionTemplate}" />
+                            </aura:if>
+                        </div>
+                      </div>
+                    </div>
+                </article>
+            </div>
+        </aura:set>
+    </aura:if>
+
+    							<!-- ShowSpinner-->
+    <div aura:id="spinner_container" class="slds-hide">
+        <div class="slds-spinner_container spinnerFixed">
+            <div role="status" class="slds-spinner slds-spinner--medium slds-spinner--brand">
+                <span class="slds-assistive-text">Loading</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </div>
+
+</aura:component>

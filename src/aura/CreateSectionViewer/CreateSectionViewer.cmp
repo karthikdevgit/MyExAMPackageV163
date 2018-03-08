@@ -1,0 +1,29 @@
+<aura:component access="public">
+
+    <aura:attribute name="sectionTemplate" type="Section_Template__c" access="public"/>
+    <aura:attribute name="position" type="Integer" access="public"/>
+    <aura:attribute name="orderNo" type="Integer" access="public"/>
+    <aura:attribute name="whichBtn" type="String" access="public"/>
+    <aura:attribute name="SectionTerm" type="String" default="Section" access="public"/>
+
+    <aura:registerEvent name="cancelCreateSectionEvt" type="c:cancelCreateQuestionEvt"/>
+    <aura:registerEvent name="notificationEvent" type="c:notificationEvt"/>
+	<aura:registerEvent name="doneEditingView" type="c:doneEditingViewEvt"/>
+    
+    <div class="slds-p-around--small">
+            <div class="slds-card slds-size--1-of-1">
+                <div class="slds-p-vertical--xx-small slds-text-heading--small">Enter a {#v.SectionTerm} title and description to add questions</div>
+                <div class="slds-p-vertical--xx-small">
+                    <ui:inputTextArea aura:id="txtArea" class="slds-input" labelClass="slds-form-element__label" placeholder="Name" value="{!v.sectionTemplate.ExAM__Section_label__c}" rows="1"/>
+                </div>
+                <div class="slds-p-vertical--xx-small">
+                    <ui:inputTextArea aura:id="txtArea" class="slds-input" labelClass="slds-form-element__label" placeholder="Description" value="{!v.sectionTemplate.ExAM__Section_Description__c}" rows="3"/>
+                </div>
+
+                <div class="slds-p-top--small">
+                    <lightning:button class="slds-button slds-button--neutral slds-button--save" label="{#'Add ' + v.SectionTerm}" onclick="{!c.addSection}"/>
+                    <lightning:button class="slds-button slds-button--neutral" label="Cancel" onclick="{!c.closeModal}"/>
+                </div>
+            </div>
+    </div>
+</aura:component>

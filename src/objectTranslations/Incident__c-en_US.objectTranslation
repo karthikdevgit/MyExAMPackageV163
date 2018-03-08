@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Incident</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Incident</value>
+    </caseValues>
+    <fields>
+        <help><!-- Name of the School or facility.Against this object all Incidents,Assessment checklist,t\Tornado and fire drill form instances will be stored. --></help>
+        <label><!-- Facility/School Name --></label>
+        <name>FacilityOrSchoolName__c</name>
+        <relationshipLabel><!-- Incident --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Facility Name --></label>
+        <name>Facility_Name__c</name>
+        <picklistValues>
+            <masterLabel>ALDIE ELEMENTARY</masterLabel>
+            <translation><!-- ALDIE ELEMENTARY --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Administrative Building</masterLabel>
+            <translation><!-- Administrative Building --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>BELMONT RIDGE MIDDLE</masterLabel>
+            <translation><!-- BELMONT RIDGE MIDDLE --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>BRIAR WOODS HIGH</masterLabel>
+            <translation><!-- BRIAR WOODS HIGH --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <help><!-- Top level Facility whether its a school or an administrative building --></help>
+        <label><!-- Facility Type --></label>
+        <name>Facility_Type__c</name>
+        <picklistValues>
+            <masterLabel>Elementary School</masterLabel>
+            <translation><!-- Elementary School --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>High School</masterLabel>
+            <translation><!-- High School --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Middle School</masterLabel>
+            <translation><!-- Middle School --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Other</masterLabel>
+            <translation><!-- Other --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <help><!-- DESCRIBE IN DETAIL WHAT OCCURED.State WHO, WHAT, WHERE, HOW, WHEN. Provide details of monetary losses, weapons, eyewitness accounts, etc. --></help>
+        <label><!-- Incident Description --></label>
+        <name>IncidentDescription__c</name>
+    </fields>
+    <fields>
+        <label><!-- Incident Classification --></label>
+        <name>Incident_Classification__c</name>
+        <picklistValues>
+            <masterLabel>Alarm</masterLabel>
+            <translation><!-- Alarm --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Bullying</masterLabel>
+            <translation><!-- Bullying --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Drug/Alcohol Offenses</masterLabel>
+            <translation><!-- Drug/Alcohol Offenses --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Involving People</masterLabel>
+            <translation><!-- Involving People --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Involving Property</masterLabel>
+            <translation><!-- Involving Property --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Other</masterLabel>
+            <translation><!-- Other --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Security Threats</masterLabel>
+            <translation><!-- Security Threats --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <help><!-- List of all incidents type on a incident.Please manually add new incidents on separate line in the format Incident Classification:Incident Type --></help>
+        <label><!-- Incident List --></label>
+        <name>Incident_List__c</name>
+    </fields>
+    <fields>
+        <label><!-- Incident Location --></label>
+        <name>Incident_Location__c</name>
+        <picklistValues>
+            <masterLabel>Bus</masterLabel>
+            <translation><!-- Bus --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Cafeteria</masterLabel>
+            <translation><!-- Cafeteria --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Classrooms</masterLabel>
+            <translation><!-- Classrooms --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Field Trips</masterLabel>
+            <translation><!-- Field Trips --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Hallways</masterLabel>
+            <translation><!-- Hallways --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Locker rooms</masterLabel>
+            <translation><!-- Locker rooms --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Other</masterLabel>
+            <translation><!-- Other --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Parking Lots</masterLabel>
+            <translation><!-- Parking Lots --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Play areas</masterLabel>
+            <translation><!-- Play areas --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Restrooms</masterLabel>
+            <translation><!-- Restrooms --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Incident Time --></label>
+        <name>Incident_Time__c</name>
+        <picklistValues>
+            <masterLabel>After school</masterLabel>
+            <translation><!-- After school --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Before school</masterLabel>
+            <translation><!-- Before school --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Change of class</masterLabel>
+            <translation><!-- Change of class --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>During class</masterLabel>
+            <translation><!-- During class --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>During school</masterLabel>
+            <translation><!-- During school --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Weekends</masterLabel>
+            <translation><!-- Weekends --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Incident Type --></label>
+        <name>Incident_Type__c</name>
+        <picklistValues>
+            <masterLabel>Alarms</masterLabel>
+            <translation><!-- Alarms --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Arson</masterLabel>
+            <translation><!-- Arson --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Assault with weapon</masterLabel>
+            <translation><!-- Assault with weapon --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Assault(Minor)</masterLabel>
+            <translation><!-- Assault(Minor) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Burglary</masterLabel>
+            <translation><!-- Burglary --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Cyber</masterLabel>
+            <translation><!-- Cyber --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Cyber Threat</masterLabel>
+            <translation><!-- Cyber Threat --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Distribution</masterLabel>
+            <translation><!-- Distribution --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Fight</masterLabel>
+            <translation><!-- Fight --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Fire</masterLabel>
+            <translation><!-- Fire --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Graffiti</masterLabel>
+            <translation><!-- Graffiti --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Larceny (over $200)</masterLabel>
+            <translation><!-- Larceny (over $200) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Larceny (under $200)</masterLabel>
+            <translation><!-- Larceny (under $200) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Other</masterLabel>
+            <translation><!-- Other --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Panic</masterLabel>
+            <translation><!-- Panic --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Phone Threat</masterLabel>
+            <translation><!-- Phone Threat --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Physical</masterLabel>
+            <translation><!-- Physical --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Possession</masterLabel>
+            <translation><!-- Possession --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Robbery</masterLabel>
+            <translation><!-- Robbery --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Security</masterLabel>
+            <translation><!-- Security --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Sex Offense</masterLabel>
+            <translation><!-- Sex Offense --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Suspicious Incident</masterLabel>
+            <translation><!-- Suspicious Incident --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Suspicious Package</masterLabel>
+            <translation><!-- Suspicious Package --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Suspicious People</masterLabel>
+            <translation><!-- Suspicious People --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Suspicious Vehicles</masterLabel>
+            <translation><!-- Suspicious Vehicles --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Use</masterLabel>
+            <translation><!-- Use --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Vandalism</masterLabel>
+            <translation><!-- Vandalism --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Verbal</masterLabel>
+            <translation><!-- Verbal --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Verbal Threat</masterLabel>
+            <translation><!-- Verbal Threat --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Notifications --></label>
+        <name>Notifications__c</name>
+        <picklistValues>
+            <masterLabel>Administrator</masterLabel>
+            <translation><!-- Administrator --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Public Information Officer</masterLabel>
+            <translation><!-- Public Information Officer --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Safety and Security</masterLabel>
+            <translation><!-- Safety and Security --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Superintendent</masterLabel>
+            <translation><!-- Superintendent --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Participants List --></label>
+        <name>Participants_List__c</name>
+    </fields>
+    <layouts>
+        <layout>Incident Layout</layout>
+        <sections>
+            <label><!-- Add Description --></label>
+            <section>Add Description</section>
+        </sections>
+        <sections>
+            <label><!-- Add Incident --></label>
+            <section>Add Incident</section>
+        </sections>
+        <sections>
+            <label><!-- Add Notifications --></label>
+            <section>Add Notifications</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+    <webLinks>
+        <label><!-- New_Participant --></label>
+        <name>New_Participant</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Update_Incident --></label>
+        <name>Update_Incident</name>
+    </webLinks>
+</CustomObjectTranslation>

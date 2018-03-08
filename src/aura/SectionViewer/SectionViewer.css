@@ -1,0 +1,36 @@
+/*.THIS .actions-container{
+    text-align: right;
+}
+.THIS .slds-card.btn-bar
+{
+
+  transition: all .5s linear;
+  padding: 15px;
+  opacity: .6;
+}
+.THIS .slds-card.btn-bar:hover{
+  border: dashed 1px #000;
+  opacity: 1;
+}
+.THIS .slds-card.btn-bar .slds-button{
+  padding-left: 45px;
+  padding-right: 45px;
+}
+.THIS .tooltip-container .slds-popover.slds-popover--tooltip {
+  top: -45px;
+  left: 0;
+}*/
+.THIS .insert-between.slds-button.slds-button--neutral {
+    background-color: #FAFBFC !important;
+
+}
+.THIS .insert-between.slds-button.slds-button--neutral:hover {
+    background-color: #FAFBFC !important;
+}
+.THIS .disable{
+    pointer-events: none;
+    opacity: 0.5;
+}
+.THIS .slds-spinner_container {
+    position: fixed !important; 
+}

@@ -1,0 +1,65 @@
+<apex:component >
+
+    <apex:attribute name="isPrimaryImage" type="Boolean" default="false" description="Renders Primary Image Question"/>
+    <apex:attribute name="isDependentImage" type="Boolean" default="false" description="Renders Dependent Image Question"/>
+    <apex:attribute name="isDecisionTreeImage" type="Boolean" default="false" description="Renders Decision Tree Image Question"/>
+
+    <apex:outputPanel rendered="{!isPrimaryImage}">
+        <div ng-if="eachQuestTemplateRec.ExAM__Question_Type__c == 'Image'">
+            <c:Primary_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <div ng-init="splitImageOption(eachQuestTemplateRec)" class="slds-size--8-of-12 imageValidate{{eachQuestTemplateRec.ExAM__Is_Mandatory__c}}" id="{{eachQuestTemplateRec.Id}}">
+                    <div id="imageId" ng-repeat="temp in attArr =( dependentQuestionsAttObj[eachQuestTemplateRec.Id] | filter:'!Question-Image')" style="display:inline-block;">
+                        <div class="slds-m-right--medium">
+                            <img ng-src="{{sourceURL}}{{temp.Id}}"
+                                 ng-click="imageTypeQues(eachQuestTemplateRec, $index, $event, dependentQuestionsAttObj[eachQuestTemplateRec.Id], temp.Id, false)"
+                                 ng-class="{imgBorder:selOptionIndex[eachQuestTemplateRec.Id]==$index,noneImgBorder:selOptionIndex[eachQuestTemplateRec.Id]!=$index}"
+                                 class="imgStyle" id="{{temp.Id}}"/> 
+                        </div>
+                    </div>
+                </div>
+                <c:Primary_Question_Action renderClearIcon="true" />
+            </div> 
+        </div>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!isDependentImage}">
+        <div ng-if="nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c == 'Image'">
+            <c:Dependent_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <div ng-init="splitImageOption(nextDependentQuestion[eachQuestTemplateRec.Id])"
+                     class="slds-size--8-of-12 imageValidate{{nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Is_Mandatory__c}}"
+                     id="{{nextDependentQuestion[eachQuestTemplateRec.Id].Id}}">
+                    <div id="imageId" ng-repeat="temp in attArr =( dependentQuestionsAttObj[nextDependentQuestion[eachQuestTemplateRec.Id].Id] | filter:'!Question-Image')" style="display:inline-block;">
+                        <div class="slds-m-right--medium">
+                            <img ng-src="{{sourceURL}}{{temp.Id}}"
+                                 ng-click="imageTypeQues(nextDependentQuestion[eachQuestTemplateRec.Id], $index, $event, dependentQuestionsAttObj[nextDependentQuestion[eachQuestTemplateRec.Id].Id], temp.Id, false)"
+                                 ng-class="{imgBorder:selOptionIndex[nextDependentQuestion[eachQuestTemplateRec.Id].Id]==$index,noneImgBorder:selOptionIndex[nextDependentQuestion[eachQuestTemplateRec.Id].Id]!=$index}"
+                                 class="imgStyle" id="{{temp.Id}}"/> 
+                        </div>
+                    </div>
+                </div>
+                <c:Dependent_Question_Action />
+            </div> 
+        </div>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!isDecisionTreeImage}">
+        <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'Image'">
+            <c:DecisionTree_Question_Property />
+            <div class="slds-grid--reverse slds-wrap">
+                <div class="slds-size--12-of-12" id="{{decisionTreeQuestion.Id}}">
+                    <div id="imageId" ng-repeat="temp in attArr =( dependentQuestionsAttObj[decisionTreeQuestion.Id] | filter:'!Question-Image')" style="display: inline-block;">
+                        <div class="slds-m-right--medium">
+                            <img src="{{sourceURL}}{{temp.Id}}"
+                                 ng-click="imageTypeQues(decisionTreeQuestion, $index, $event, dependentQuestionsAttObj[decisionTreeQuestion.Id], temp.Id, true); renderNextQuestionInDecisionTreeFunCall(DecisionTreeresponse[decisionTreeQuestion.Id], decisionTreeQuestion);"
+                                 ng-class="{imgBorder:DTselOptionIndex[decisionTreeQuestion.Id]==$index,noneImgBorder:DTselOptionIndex[decisionTreeQuestion.Id]!=$index}"
+                                 class="imgDTStyle" id="{{temp.Id}}"/>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+        </div>
+    </apex:outputPanel>
+
+</apex:component>

@@ -1,0 +1,159 @@
+<apex:page controller="ResultTemplateConfigurationController" applyBodyTag="false" docType="html-5.0"> 
+    <div xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+        <apex:stylesheet value="{!URLFOR($Resource.SLDS052, '/assets/styles/salesforce-lightning-design-system-vf.css')}"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <style>
+            .slds .slds-card__body {
+                padding: 0px 0 !important;
+            }
+        </style>
+        <body>
+            <div class="slds slds-form-element" ng-app="tempApp" ng-controller="tempController">
+                <div class="slds-notify_container" style="display:none" id="errorMsg" >
+                  <div class="slds-notify slds-notify--alert slds-theme--error slds-theme--alert-texture" role="alert">
+                    <button class="slds-button slds-button--icon-inverse slds-notify__close" ng-click="notifyClose();">
+                      <svg aria-hidden="true" class="slds-button__icon">
+                        <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/utility-sprite/svg/symbols.svg#close')}"></use>
+                      </svg>
+                      <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <span class="slds-assistive-text">Error</span>
+                    <h2 id="ErrorText">
+                        
+                    </h2>
+                  </div>
+                </div>
+                <div class="slds-card" style="background-color: white;">
+                    <div class="slds-card__body">
+                        <div class="slds-card">
+                            <div class="slds-card__header slds-grid">
+                                <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                    <div class="slds-media__body">
+                                        <h2 class="slds-text-heading--medium slds-truncate">Field Visibility Configuration Details</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-card__body">
+                             
+                                <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                                    <thead>
+                                        <tr class="slds-text-heading--label">
+                                            <th scope="col"><span class="slds-truncate"><b>Field Label</b></span></th>
+                                            <th scope="col"><span class="slds-truncate"><b>Available</b></span></th>
+                                            <th scope="col"><span class="slds-truncate"><b>Hidden</b></span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody  id="rowSortable">
+                                        <tr class="slds-hint-parent" ng-repeat = "field in templateObj.fieldVisibilityList" style="cursor: move;">
+                                            <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-4 slds-cell-wrap" data-label="Field Label">
+                                                  {{field.fieldLabelName}}
+                                            </td>
+                                            <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-4 slds-cell-wrap" data-label="Available">
+                                                <label class="slds-checkbox">
+                                                    <input class="slds-col slds-size--8-of-12" type="checkbox" name="options1" ng-model="field.hasSelected"/>
+                                                    <span class="slds-checkbox--faux"></span>
+                                                </label>
+                                            </td>
+                                            <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-4 slds-cell-wrap" data-label="Hidden">
+                                                <label class="slds-checkbox">
+                                                    <input class="slds-col slds-size--8-of-12" type="checkbox" name="options2" ng-model="field.isHidden"/>
+                                                    <span class="slds-checkbox--faux"></span>
+                                                </label>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="slds-card__footer">
+                                <p style="font-style: italic;font-size: 12px;"> Note: Please drag and drop the rows to re-oder the fields</p>
+                            </div>
+                        </div>
+                        <div class="slds-card">
+                            <div class="slds-card__header slds-grid">
+                                <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                    <div class="slds-media__body">
+                                        <h2 class="slds-text-heading--medium slds-truncate">Result Question Button Text Configuration</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-card__body">
+                                <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover">
+                                    <tr class="slds-hint-parent">
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-3 slds-cell-wrap">
+                                            Result Question Button Text
+                                        </td>
+                                        <td class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--3-of-4 slds-cell-wrap">
+                                            <div class="slds-form-element">
+                                                <input id="resultQuesButtonText" class="slds-col slds-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--8-of-12 slds-input" type="text" placeholder="Enter Result Question Button Text" ng-model="templateObj.resultQuesButtonText"/>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-card__footer">
+                        <center>                            
+                            <input class="slds-button slds-button--brand" type="button" value="Save" ng-click="saveChange();"/>
+                            <input class="slds-button slds-button--brand" type="button" value="Cancel" ng-click="cancelChange();"/>
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </body>
+        <script>
+            var app = angular.module('tempApp',[]);
+            app.controller('tempController', function($scope) {
+                
+                $scope.templateObj = {
+                    fieldVisibilityList : '',
+                    id : '',
+                    resultQuesButtonText : ''
+                };
+                $('#errorMsg').hide();
+                if('{!JSENCODE(templateString)}' != 'null' && '{!JSENCODE(templateString)}' != '' ) {
+                    $scope.templateObj = JSON.parse('{!JSENCODE(templateString)}');
+                }
+                $scope.templateObj.id = '{!$CurrentPage.parameters.assessmentTemplateId}';
+                $scope.saveChange = function() {
+                    
+                   ExAM.ResultTemplateConfigurationController.saveFieldVisibility(angular.toJson($scope.templateObj),function(result, event) {
+                        if(event.status && result != null && result != '') {
+                            if(result == 'Success') {
+                                window.open('/'+$scope.templateObj.id, '_self');
+                            } else {
+                                $('#errorMsg').show();
+                                $('#ErrorText').text(result);
+                            }
+                        } else {
+                            $('#ErrorText').text(event.message);
+                            $('#errorMsg').show();
+                        }
+                    });
+                }
+                $scope.cancelChange = function() {
+                    window.open('/'+$scope.templateObj.id, '_self');
+                }
+                $scope.dragStart = function(e, ui) {
+                    ui.item.data('start', ui.item.index());
+                }
+                $scope.dragEnd = function(e, ui) {
+                    var start = ui.item.data('start'),
+                    end = ui.item.index();
+                    $scope.templateObj.fieldVisibilityList.splice(end, 0, 
+                    $scope.templateObj.fieldVisibilityList.splice(start, 1)[0]);
+                    $scope.$apply();
+                }
+                 var sortableEle = $('#rowSortable').sortable({
+                    start: $scope.dragStart,
+                    update: $scope.dragEnd
+                });
+            });
+            
+        </script>
+    </div>
+</apex:page>

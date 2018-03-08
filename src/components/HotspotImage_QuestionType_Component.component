@@ -1,0 +1,55 @@
+<apex:component >
+   
+    <apex:attribute name="isPrimaryHotSpotImage" type="Boolean" default="false" description="Renders Primary HotSpotImage Question"/>
+    <apex:attribute name="isDependentHotSpotImage" type="Boolean" default="false" description="Renders Dependent HotSpotImage Question"/>
+    <apex:attribute name="isDecisionTreeHotSpotImage" type="Boolean" default="false" description="Renders Decision Tree HotSpotImage Question"/>
+
+    <apex:outputPanel rendered="{!isPrimaryHotSpotImage}">
+        <div ng-if="eachQuestTemplateRec.ExAM__Question_Type__c == 'Hotspot Image'">
+            <c:Primary_Question_Property />
+            <div id="hotspot{{eachQuestTemplateRec.Id}}" style="padding-bottom:15px;" class="slds-grid--reverse hotspotImage{{eachQuestTemplateRec.ExAM__Is_Mandatory__c}}">
+                <div class="slds-col" ng-init="hotspot[eachQuestTemplateRec.Id] = hotspotInit(eachQuestTemplateRec.ExAM__Hotspot_Image_Properties__c)">
+                    <div ng-if="hotspot[eachQuestTemplateRec.Id] != null">
+                        <img class="map" ng-src="{{sourceURL}}{{hotspot[eachQuestTemplateRec.Id].questionImageId}}" usemap="#{{hotspot[eachQuestTemplateRec.Id].questionImageId}}" alt="" width="{{hotspot[eachQuestTemplateRec.Id].imageWidth}}" style="height:{{hotspot[eachQuestTemplateRec.Id].imageHeight}}px" ng-init="hilightinit()" />
+                        <map id="imgMap" class="tabs" name="{{hotspot[eachQuestTemplateRec.Id].questionImageId}}"  >
+                            <area ng-repeat="area in hotspot[eachQuestTemplateRec.Id].area" shape="{{area.shape}}" class="Map{{$index}}" coords="{{area.coords}}" ng-init="selectOptionHighLight(eachQuestTemplateRec.Id,area.areaValue,$index)" ng-click="response[eachQuestTemplateRec.Id] = area.areaValue;" title="{{area.areaValue}}" alt="{{area.areaValue}}" />
+                        </map>
+                    </div>
+                </div>
+            </div>
+            <c:Primary_Question_Action renderClearIcon="true" />
+        </div> 
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!isDependentHotSpotImage}">
+        <div ng-if="nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Question_Type__c == 'Hotspot Image'">
+            <c:Dependent_Question_Property />
+            <div id="hotspot{{nextDependentQuestion[eachQuestTemplateRec.Id].Id}}" style="padding-bottom:15px;" class="slds-grid--reverse hotspotImage{{nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Is_Mandatory__c}}">
+                <div class="slds-col" ng-init="hotspot[nextDependentQuestion[eachQuestTemplateRec.Id].Id] = hotspotInit(nextDependentQuestion[eachQuestTemplateRec.Id].ExAM__Hotspot_Image_Properties__c)">
+                    <div ng-if="hotspot[nextDependentQuestion[eachQuestTemplateRec.Id].Id] != null">
+                        <img class="map" ng-src="{{sourceURL}}{{hotspot[nextDependentQuestion[eachQuestTemplateRec.Id].Id].questionImageId}}" usemap="#{{hotspot[nextDependentQuestion[eachQuestTemplateRec.Id].Id].questionImageId}}" alt="" width="{{hotspot[nextDependentQuestion[eachQuestTemplateRec.Id].Id].imageWidth}}" style="height:{{hotspot[nextDependentQuestion[eachQuestTemplateRec.Id].Id].imageHeight}}px" ng-init="hilightinit()" />
+                        <map id="imgMap" class="tabs" name="{{hotspot[nextDependentQuestion[eachQuestTemplateRec.Id].Id].questionImageId}}"  >
+                            <area ng-repeat="area in hotspot[nextDependentQuestion[eachQuestTemplateRec.Id].Id].area" shape="{{area.shape}}" class="Map{{$index}}" coords="{{area.coords}}" ng-init="selectOptionHighLight(nextDependentQuestion[eachQuestTemplateRec.Id].Id,area.areaValue,$index)" ng-click="response[nextDependentQuestion[eachQuestTemplateRec.Id].Id] = area.areaValue;" title="{{area.areaValue}}" alt="{{area.areaValue}}" />
+                        </map>
+                    </div>
+                </div>
+            </div>
+            <c:Dependent_Question_Action /> 
+        </div>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!isDecisionTreeHotSpotImage}">
+        <div ng-if="decisionTreeQuestion.ExAM__Question_Type__c == 'Hotspot Image'">
+            <c:DecisionTree_Question_Property />
+            <div id="hotspot{{decisionTreeQuestion.Id}}" style="padding-bottom:15px;" class="slds-grid--reverse">
+                <div class="slds-col" ng-init="hotspot[decisionTreeQuestion.Id] = hotspotInit(decisionTreeQuestion.ExAM__Hotspot_Image_Properties__c)">
+                    <div ng-if="hotspot[decisionTreeQuestion.Id] != null">
+                        <img class="map" ng-src="{{sourceURL}}{{hotspot[decisionTreeQuestion.Id].questionImageId}}" usemap="#{{hotspot[decisionTreeQuestion.Id].questionImageId}}" alt="" width="{{hotspot[decisionTreeQuestion.Id].imageWidth}}" style="height:{{hotspot[decisionTreeQuestion.Id].imageHeight}}px" ng-init="hilightinit()" />
+                        <map id="imgMap" class="tabs" name="{{hotspot[decisionTreeQuestion.Id].questionImageId}}"  >
+                            <area ng-repeat="area in hotspot[decisionTreeQuestion.Id].area" shape="{{area.shape}}" class="Map{{$index}}" coords="{{area.coords}}" ng-init="selectOptionHighLight(decisionTreeQuestion.Id,area.areaValue,$index)" ng-click="DecisionTreeresponse[decisionTreeQuestion.Id] = area.areaValue;" title="{{area.areaValue}}" alt="{{area.areaValue}}" />
+                        </map>
+                    </div>
+                </div>
+            </div>
+            <c:DecisionTree_Question_Action /> 
+        </div>
+    </apex:outputPanel>
+</apex:component>

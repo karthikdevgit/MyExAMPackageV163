@@ -1,0 +1,11 @@
+<aura:event type="COMPONENT">
+    
+    <aura:attribute name="state" type="String" access="public"/>
+    <aura:attribute name="questionId" type="String" access="public"/>
+    <aura:attribute name="sectionId" type="String" access="public"/>
+    <aura:attribute name="CurrentTab" type="String" access="public"/>
+    <aura:attribute name="Id" type="String" access="public"/>
+    <aura:attribute name="sourceDrivenCmp" type="String" access="public"/>
+    <aura:attribute name="fieldName" type="String" access="public"/>
+    
+</aura:event>

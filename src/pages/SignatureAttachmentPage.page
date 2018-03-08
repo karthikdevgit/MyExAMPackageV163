@@ -1,0 +1,293 @@
+<apex:page controller="SigntureAttachmentPageController" standardStylesheets="false" docType="html-5.0">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <title>Admin Configuration</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+            <apex:includeScript value="{!URLFOR($Resource.UnderscoreAndAngularJS,'UnderscoreAndAngularJS/angular.min.js')}"/>
+            <apex:includeScript value="{!$Resource.JSSignaturePad}"/>
+            <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" />
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS052, '/assets/styles/salesforce-lightning-design-system-vf.css')}" />
+            <style>
+                .signImage{
+                    margin-top:-25px;
+                    margin-left:-20px;
+                }
+                .signDiv{
+                    padding:2px;
+                }
+                .actions{
+                    text-align:center;
+                    padding-top:45px;
+                }
+            </style>
+            <script type="text/javascript">
+                var __sfdcSessionId = '{!GETSESSIONID()}';
+            </script>
+            
+            <script src="../../soap/ajax/35.0/connection.js" type="text/javascript"></script>
+            <script src="../../soap/ajax/35.0/apex.js" type="text/javascript"></script>
+        
+        </head>
+        <body>
+            <div class="slds" ng-app="signatureApp" ng-controller="signatureController">
+                <form class="slds-form">
+                    <div class="slds-card">
+                        <div class="slds-card__header slds-m-bottom--small slds-grid">
+                            <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                                <div class="slds-media__body">
+                                    <h2 class="slds-text-heading--small slds-truncate">Add Signatures</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-card__body slds-m-right--x-small slds-m-left--x-small" style="background-color: white;">
+                            
+                            <table class="slds-table slds-table--bordered slds-max-medium-table--stacked-horizontal slds-no-row-hover" style="border-bottom: 0px">
+                                <tbody >
+                                    <tr class="slds-hint-parent slds-size--12-of-12" ng-repeat="sign in signatureArray">
+                                        <td class="slds-size--3-of-12"></td>
+                                        <td class="slds-size--4-of-12">
+                                            <div class="slds-box slds-col slds-size--12-of-12 slds-box--x-small slds-text-align--center slds-m-around--x-small signImage">
+                                                <img src="{{sign.signImg}}" alt="No Signature" height="200px" width="200px"/>
+                                            </div>
+                                        </td>
+                                        <td class="slds-size--2-of-12">
+                                            <span class="slds-p-left--large">
+                                                <span class="slds-icon__container slds-icon__container--circle slds-icon-action-new" ng-click="addSignature(this)" ng-show="this.$index === i">
+                                                   <svg aria-hidden="true" class="slds-icon slds-icon--x-small"  >
+                                                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#new')}"> </use>
+                                                   </svg>
+                                                </span>
+                                                <span class="slds-icon__container slds-icon__container--circle slds-icon-action-edit"  ng-click="openSignatureModal(this)">
+                                                   <svg aria-hidden="true" class="slds-icon slds-icon--x-small" >
+                                                       <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#edit')}"> </use>
+                                                   </svg>
+                                                </span>     
+                                                <span class="slds-icon__container slds-icon__container--circle slds-icon-action-delete" ng-click="removeSignature(this)"  ng-hide="this.$index === signLength">
+                                                   <svg aria-hidden="true" class="slds-icon slds-icon--x-small" >
+                                                       <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#delete')}"> </use>
+                                                   </svg>
+                                                </span>
+                                            </span>
+                                        </td>
+                                        <td class="slds-size--3-of-12"></td>
+                                    </tr>
+                                    <tr class="slds-hint-parent">
+                                        <td colspan="4">
+                                            <center>
+                                                <button class="slds-button slds-button--neutral" type="button" style="background-color: #0070D2;color:white;" ng-click="saveAttachment()">Save</button>
+                                                <button class="slds-button slds-button--neutral" type="button" ng-click="cancelAttachment()">Cancel</button>
+                                            </center>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!--signature modal-->
+                        <div aria-hidden="false" role="dialog" class="slds-modal slds-modal__close sign" style="background-color: rgba(128, 128, 128, 0.75);">
+                            <div class="slds-modal__container">
+                                <div class="slds-modal__header">
+                                    <h2 class="slds-text-heading--medium">Signature</h2>
+                                    <button class="slds-button slds-button--icon-inverse slds-modal__close" ng-click="closeSign()">
+                                        <svg aria-hidden="true" class="slds-button__icon slds-button__icon--large">
+                                            <use xlink:href="{!URLFOR($Resource.SLDS052, '/assets/icons/action-sprite/svg/symbols.svg#close')}"></use>
+                                        </svg>
+                                        <span class="slds-assistive-text">Close</span>
+                                    </button>
+                                </div>
+                                <div class="slds-modal__content">
+                                    <div class="slds-grid slds-grid--align-center">
+                                        <canvas id="canvas{{signIndex}}" style="border: 1px solid #A7C6FC; border-color:#ccc;" ng-click="canvasClickfun(thid.id);"/>
+                                    </div>
+                                </div>
+                                <div class="slds-modal__footer">
+                                    <button class="slds-button slds-button--neutral" ng-click="clearSign()">Clear</button>
+                                    <button class="slds-button slds-button--neutral slds-button--brand" ng-click="saveSign()">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end signature modal-->
+                    </div>
+                </form>
+            </div>    
+        </body>
+        <script>
+        var ngModule = angular.module("signatureApp", []);
+         
+        ngModule.controller("signatureController",
+        function($scope,$timeout) {
+            var amId = '{!JSENCODE($CurrentPage.parameters.amId)}';
+            var signature;
+            var st;
+            var ind;
+            $scope.i = 0;
+            $scope.signLength = 0;        
+            $scope.signatureArray = [];
+            $scope.signatureDeleteArray = [];
+            $scope.signatureListArray = [];
+            $scope.signImage = {};
+            $scope.signIndex = '';
+            $scope.signatureArray.push({'signImg':"",'Id':"",'Name':""});
+            $scope.maxNo = 0;
+            
+            $scope.getSignature = function(){
+                ExAM.SigntureAttachmentPageController.attachmentGetter(amId, function(result,event){
+                        if(event.status){
+                            st = JSON.parse(result);
+                            if(st.attachmentList.length > 0){
+                                for(var i = 0;i< st.attachmentList.length;i++){
+                                    var blobStr = "data:image/png;base64,"+st.attachmentList[i].Body;
+                                    $scope.signatureListArray.push({
+                                        'signImg':blobStr,
+                                        'Id':st.attachmentList[i].Id,
+                                        'Name':st.attachmentList[i].Name
+                                    });
+                                    $scope.i = i;
+                                    $scope.tempName = st.attachmentList[i].Name;
+                                    $scope.tempNoStr = $scope.tempName.slice(9,$scope.tempName.length);
+                                    $scope.tempNo = parseInt($scope.tempNoStr);
+                                    
+                                    if($scope.tempNo > $scope.maxNo){
+                                        $scope.maxNo = $scope.tempNo;
+                                    }
+                                }
+                                $timeout(function(){
+                                    $scope.signatureArray = $scope.signatureListArray;  
+                                    $scope.signLength = ''; 
+                                },0);
+                            } else{
+                                $scope.i = 0;
+                            }
+                            
+                        }                       
+                    },
+                    {escape: false}
+                );
+            }
+            $scope.getSignature();
+            $scope.addSignature = function(param){
+                
+                $scope.signLength = ''; 
+                $scope.i += 1;
+                ind = param.$index;
+                $scope.signImage = {};
+                
+                $scope.signatureArray.push({'signImg':"",'Id':"",'Name':""});
+                $scope.signatureArray[ind+1].signImg = '';
+                param.$index = param.$index+1;
+                $scope.openSignatureModal(param);
+            }
+            $scope.removeSignature = function(param){
+                
+                $scope.i -= 1;
+                if( $scope.i == 0 ){
+                    $scope.signLength = 0;
+                }
+                if($scope.signatureArray[param.$index].Id != ''){
+                    $scope.signatureDeleteArray.push({ 'Id':$scope.signatureArray[param.$index].Id });
+                    ExAM.SigntureAttachmentPageController.attachmentDeleter(
+                        $scope.signatureDeleteArray,
+                        function(result){
+                            if(result == 'null'){
+                                $scope.getSignature();
+                            }
+                        },{escape:false}
+                        );
+                }
+                $scope.signatureArray.splice( param.$index , 1 );
+            }
+            
+            $scope.openSignatureModal = function(signIndex) {
+                    $scope.signIndex = signIndex.$index;
+                    $('.sign').removeClass('slds-modal__close');
+                    $('.sign').addClass('slds-fade-in-open'); 
+                    $timeout(function(){
+                        var canvas = document.getElementById('canvas'+$scope.signIndex);
+                        var context = canvas.getContext('2d');
+                        signature = new SignaturePad(canvas, {
+                            backgroundColor: 'rgba(255, 255, 255, 0)',
+                            penColor: 'rgb(0, 0, 0)'
+                        });
+                        var imageObj = new Image();
+                        if($scope.signatureArray[$scope.signIndex].signImg == ""){
+                            
+                            imageObj.onload = function() {
+                              context.drawImage(imageObj, 0, 0);
+                            };
+                            imageObj.src = $scope.signImage[$scope.signIndex];
+                        }else{                            
+                            imageObj.src = signIndex.sign.signImg;
+                            imageObj.onload = function() {
+                                context.drawImage(imageObj, 0, 0);
+                            };
+                            $scope.canvasClick = false;
+                        }
+                    },0);
+                }
+                $scope.closeSign = function() {
+                     $('.sign').addClass('slds-modal__close');
+                     $('.sign').removeClass('slds-fade-in-open');
+                }
+                $scope.clearSign = function(){
+                    signature.clear();
+                    
+                };
+                $scope.canvasClickfun = function(id){
+                    
+                    $scope.canvasClick = true;
+                    
+                }
+                $scope.saveSign = function(){
+                    if($scope.canvasClick){
+                        
+                        $scope.signatureArray[$scope.signIndex].signImg = signature.toDataURL('image/png');
+                        
+                    }else {
+                        delete $scope.signImage[$scope.signIndex];
+                        
+                    }
+                    signature.clear();
+                    $('.sign').addClass('slds-modal__close');
+                    $('.sign').removeClass('slds-fade-in-open');
+                };
+                $scope.saveAttachment = function(){
+                    if($scope.signatureArray != null) { 
+                        //$scope.num = 0;
+                        var i =$scope.maxNo+1;
+                        var attachmentlist = [];
+                        try {
+                            angular.forEach($scope.signatureArray, function(value, key) {
+                                if($scope.signatureArray[key].signImg != ''){ 
+                                    //$scope.num += 1;
+                                    var attach = new sforce.SObject("Attachment");
+                                    if($scope.signatureArray[key].Name != ''){
+                                        attach.Name    = $scope.signatureArray[key].Name;
+                                    } else{
+                                        //attach.Name    = 'Signature'+$scope.num;
+                                        
+                                        attach.Name    = 'Signature'+i;
+                                        i++;
+                                    }
+                                    attach.ContentType = 'image/png';
+                                    attach.Body        = $scope.signatureArray[key].signImg.replace("data:image/png;base64,","");
+                                    attach.ParentId    = amId;
+                                    attach.IsPrivate   = false;
+                                    attach.Id = $scope.signatureArray[key].Id;
+                                    attachmentlist.push(attach);
+                                }
+                                
+                            });
+                            attachment_result = sforce.connection.upsert("Id",attachmentlist);
+                            window.location.href = '/'+amId;
+                        }
+                        catch(error){
+                            console.log(':::errror:::',error.message);
+                        } 
+                    }
+                }
+                $scope.cancelAttachment = function(){
+                    window.location.href = '/'+amId;
+                }
+        });
+        </script>
+    </html>    
+</apex:page>

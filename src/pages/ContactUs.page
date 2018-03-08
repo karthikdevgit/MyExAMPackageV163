@@ -1,0 +1,234 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="true" tabStyle="account" standardController="Contact" extensions="ContactUsController">
+<html>
+<head>
+<style>
+.site-title,
+        .site-description {
+            position: absolute !important;
+            clip: rect(1px 1px 1px 1px); /* IE7 */
+            clip: rect(11px, 11px, 1px, 1px);
+        }
+.site {
+    padding: 0 24px;
+    padding: 0 1.714285714rem;
+    background-color: #fff;
+}
+.site-content {
+    margin: 24px 0 0;
+    margin: 1.714285714rem 0 0;
+}
+.widget-area {
+    margin: 24px 0 0;
+    margin: 1.714285714rem 0 0;
+}
+
+/* Header */
+.site-header {
+    padding: 54px 0;
+    padding: 1.714285714rem 0;
+    clip: rect(1px 1px 1px 1px); /* IE7 */
+    clip: rect(11px, 11px, 1px, 1px);
+}
+.site-header h1,
+.site-header h2 {
+    text-align: center;
+}
+.site-header h1 a,
+.site-header h2 a {
+    color: #515151;
+    display: inline-block;
+    text-decoration: none;
+}
+.site-header h1 a:hover,
+.site-header h2 a:hover {
+    color: #21759b;
+}
+.site-header h1 {
+    font-size: 24px;
+    font-size: 1.714285714rem;
+    line-height: 1.285714286;
+    margin-bottom: 14px;
+    margin-bottom: 1rem;
+    
+}
+.site-header h2 {
+    font-weight: normal;
+    font-size: 13px;
+    font-size: 0.928571429rem;
+    line-height: 1.846153846;
+    color: #757575;
+}
+.header-image {
+    margin-top: 15px;
+    margin-bottom: 15px;
+} .inputTextWidth { width: 95%; }
+.inputTextBig { width: 150px;margin-left:95px;align-text:left; }
+.inputTextWidthMedium { width: 150px; padding-left:8px;align-text:right;}
+.inputTextWidthMediumSchool { width: 40%;padding-left:11px; }
+
+</style>
+<style type="text/css" id="custom-background-css">
+body.custom-background {  }
+</style>
+
+</head>
+
+<body class="page page-id-129 page-template-default custom-background custom-font-enabled single-author">
+
+<apex:form > 
+<!-- <a href="http://EXAM4SCHOOLS.COM/" title="ExAM (Extensible Assessment Management)" rel="home" align="center">      <apex:image value="{!$Resource.ExAMlogo}" style="border:2px groove #A4A4A4;"/></a>-->
+<!--<h1 class="site-title"><a href="http://EXAM4SCHOOLS.COM/" title="ExAM (Extensible Assessment Management)" rel="home">HOME ExAM (Extensible Assessment Management)</a></h1>-->
+           
+   
+   <!-- <header id="masthead" class="site-header" role="banner">
+        <hgroup>
+            <apex:image value="{!$Resource.ExAMlogo}" styleClass="header-image"/>
+<h1 class="site-title"><a href="http://EXAM4SCHOOLS.COM/" title="ExAM (Extensible Assessment Management)" rel="home">ExAM (Extensible Assessment Management)</a></h1>
+            <h2 class="site-description">Changing school performance, changing lives</h2>
+        </hgroup>
+
+     </header> #masthead -->
+     <apex:pageMessages ></apex:pageMessages>
+ <apex:variable var="snum" value="{!1}"/>  
+  <br/><!--<hr width="100%"/>-->
+         <TABLE BORDER="3"    WIDTH="70%"   CELLPADDING="4" CELLSPACING="0" align="center" BORDERCOLOR="gray" >
+           <TR align="center"><td colspan="2" style="font-style:bold;font-size:20px;padding:20px 0 20px 0px;"><a href="http://EXAM4SCHOOLS.COM/" title="ExAM (Extensible Assessment Management)" rel="home" align="center">      <apex:image value="{!$Resource.ExAMlogo}" /></a>
+</TD></TR><TR align="center" style="font-style:bold;">
+             <td colspan="2" style="font-style:bold;font-size:20px;padding:20px 0 20px 0px;"> <b>Schedule an Assessment</b></td>      
+           </TR>      
+           <TR><TD colspan="2" style="padding-bottom:12px;">Please Note: Fields marked with * are required.</TD></TR>
+            <TR>
+              <TD style="width:20%;"><b>* SCHOOL NAME </b></TD>
+              <TD><apex:inputField value="{!VisAccRecord.Name}" styleClass="inputTextWidth" required="true"/> </TD>
+           </TR>
+            
+           <TR><TD style="padding-left:4px;"><b>* SCHOOL ADDRESS</b></TD><TD>
+                        <label for="School_Street">* Street:</label> <br/>
+                       
+                       <apex:inputField value="{!VisAccRecord.BillingStreet}" styleClass="inputTextWidth"  id="School_Street"/><br/>
+                  
+                        <label for="School_City">* City:</label>   <br/>
+                        <apex:inputField value="{!VisAccRecord.BillingCity}" styleClass="inputTextWidth" id="School_City" required="true"/><br/>
+                        
+                        <label for="School_State" >* State:</label><br/>
+                        <apex:inputField value="{!VisAccRecord.BillingState}" styleClass="inputTextWidth" id="School_State" required="true"/><br/>
+                        
+                        <label for="School_Cty">* Country:</label>    <br/>
+                        <apex:inputField value="{!VisAccRecord.BillingCountry}" styleClass="inputTextWidth" id="School_Cty" required="true"/> <br/>
+                        
+                        <label for="School_Postal">* Postal Code:</label> <br/>
+                        <apex:inputField value="{!VisAccRecord.BillingPostalCode}" styleClass="inputTextWidth" id="School_Postal" required="true"/><br/>
+                        
+                    </td></TR>
+           
+           <TR><TD style="padding-left:12px;"><b> NAME</b></TD><TD>
+                        <label for="First_Name" style="padding-left:6px;">First Name:</label> <br/>
+                       
+                       <apex:inputField value="{!VisRecord.firstName}" styleClass="inputTextWidth"  id="First_Name"/><br/>
+                  
+                        <label for="Last_Name" >* Last Name:</label> 
+                        <apex:inputField value="{!VisRecord.lastName}" styleClass="inputTextWidth"/>
+                 
+                    </td></TR>
+           <TR>
+              <TD><b>* EMAIL </b></TD>
+              <TD><apex:inputField value="{!VisRecord.Email}" styleClass="inputTextWidth" required="true"/> </TD>
+           </TR>
+            <TR>
+              <TD><b>* PHONE </b></TD>
+              <TD><apex:inputField value="{!VisRecord.Phone}" styleClass="inputTextWidth" required="true"/> </TD>
+           </TR>
+           
+            <TR>
+              <TD style="padding-left:12px;"><b> ROLE/TITLE </b></TD>
+              <TD><apex:inputField value="{!VisRecord.Title}" styleClass="inputTextWidth"/> </TD>
+           </TR>
+           
+            <!--<TR>
+              <TD><b>UPLOAD PHOTO</b></TD>
+              <TD><apex:inputField value="{!VisRecord.Contact_Photo__c}" styleClass="inputTextWidth"/> </TD>
+           </TR>-->
+         
+           
+             <TR align="center" style="font-style:bold;">
+             <td colspan="2" style="font-style:bold;font-size:16px;padding:20px 0 20px 0px;">
+             <apex:commandButton value="Cancel" action="{!Cancel}" id="button1"/> 
+             <apex:commandButton value="Submit For Approval" action="{!Save}"/>
+             </td>      
+           </TR>
+        </TABLE> 
+ 
+    
+        
+
+    <!--<TABLE BORDER="0" CELLPADDING="4" CELLSPACING="0" align="LEFT" BORDERCOLOR="black" WIDTH="100%">
+           <TR align="center" style="font-style:bold;" rowspan="2">
+             <td  style="font-style:bold;font-size:30px;padding:20px 0 20px 0px;"> Contact Us</td>      
+           </TR>      
+           <TR>
+              <TD><b><label for="labelarea" style="padding-left:10px;font-size:15px;">First Name :</label> </b><apex:inputField value="{!Contact.firstName}" id="labelarea" styleClass="inputTextWidthMediumSchool "></apex:inputField>
+             </TD>
+          </TR> 
+          <TR>
+              <TD><b><label for="labelarealast" style="padding-left:10px;font-size:15px;">Last Name :</label> </b><apex:inputField value="{!Contact.LastName}" id="labelarealast" ></apex:inputField>
+             </TD>
+          </TR>
+              
+           <TR>
+              <TD><b><label for="labeldist" style="padding-left:10px;font-size:15px;">Email : </label></b><apex:inputField value="{!Contact.Email}" id="labeldist" styleClass="inputTextWidthMediumSchool "></apex:inputField></TD>
+            </TR>      
+           <TR>  <TD style="font-style:bold;font-weight:bold;font-size:15px;">
+              <label for="labelinci" style="padding-left:10px;">Phone :  </label><apex:inputField value="{!Contact.Phone}" id="labelinci" styleClass="inputTextWidthMedium" ></apex:inputField></TD>
+            </TR>      
+           <TR>  <TD><b><label for="labelreason" style="padding-left:10px;font-size:15px;">Upload Photo: </label></b><apex:inputField value="{!Contact.Contact_Photo__c}" id="labelreason" styleClass="inputTextWidthMediumSchool "></apex:inputField></TD>
+          
+           </TR>
+           <TR align="center" style="font-style:bold;">
+             <td colspan="2" style="font-style:bold;font-size:16px;padding:20px 0 20px 0px;">
+             <apex:commandButton value="Cancel" action="{!Cancel}" id="button1"/> 
+             <apex:commandButton value="Save" action="{!Save}"/>
+             </td>      
+           </TR>
+    </TABLE>-->
+   <!-- <div>
+        <label for='129-name'>Name<span>(required)</span></label>
+        <input type='text' name='129-name' id='129-name' value='' class='name'/>
+    </div>
+
+    <div>
+        <label for='129-email' class='grunion-field-label email'>Email<span>(required)</span></label>
+        <input type='email' name='129-email' id='129-email' value='' class='email' />
+    </div>
+
+    <div>
+        <label for='129-phone' >Phone No.</label>
+        <input type='email' name='129-email' id='129-email' value='' />
+    </div>
+    <div>
+        <label for='129-reasonforcontact' class='grunion-field-label select'>Reason for Contact<span>(required)</span></label>
+    <select name='129-reasonforcontact' id='129-reasonforcontact' class='select' >
+        <option>Prospective Client</option>
+        <option>Support Request</option>
+        <option>Prospective Partner</option>
+    </select>
+    </div>
+
+    <div>
+        <label for='contact-form-comment-129-comment'>Comment</label>
+        <textarea name='129-comment' id='contact-form-comment-129-comment' rows='10'></textarea>
+    </div>
+    <p class='contact-submit'>
+        <input type='submit' value='Submit &#187;' class='pushbutton-wide'/>
+        <input type="hidden" id="_wpnonce" name="_wpnonce" value="3c3d315976" /><input type="hidden" name="_wp_http_referer" value="/?page_id=129" />
+        <input type='hidden' name='contact-form-id' value='129' />
+        <input type='hidden' name='action' value='grunion-contact-form' />
+    </p>-->
+
+
+
+
+    <div style="display:none">
+    </div></apex:form>
+
+  </body>
+</html></apex:page>

@@ -1,0 +1,19 @@
+<apex:component >
+    <div xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open" >
+            <div class="slds-modal__container">
+                <div class="slds-modal__header" ng-if="modalHeader">
+                    <h2 class="slds-text-heading--medium">{{modalHeader}}</h2>
+                </div>
+                <div class="slds-modal__content slds-p-around--medium">
+                     <p>{{ modalBody }}</p>
+                </div>
+                <div class="slds-modal__footer">
+                    <button class="slds-button slds-button--brand" ng-click="close()">{{ buttonText }}</button>
+                </div>
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop--open"></div>
+
+    </div>
+</apex:component>

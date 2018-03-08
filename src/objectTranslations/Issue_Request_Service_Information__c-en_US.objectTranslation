@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Assignment Manager Service Information</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Assignment Manager Service Information</value>
+    </caseValues>
+    <fields>
+        <help><!-- Date the contractor finished the work --></help>
+        <label><!-- Date/Time Completed --></label>
+        <name>Date_Time_Completed__c</name>
+    </fields>
+    <fields>
+        <label><!-- Issue/Request Information --></label>
+        <name>Issue_Request_Information__c</name>
+        <relationshipLabel><!-- Assignment Manager Service Information --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Responder --></label>
+        <name>Responder__c</name>
+        <relationshipLabel><!-- Assignment Manager Service Information --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- Date the contractor responded to the requirement --></help>
+        <label><!-- Response Date --></label>
+        <name>Response_Date__c</name>
+    </fields>
+    <fields>
+        <help><!-- Service end date/abatement end date --></help>
+        <label><!-- Scheduled End Date --></label>
+        <name>Scheduled_End_Date__c</name>
+    </fields>
+    <fields>
+        <help><!-- Schedule the service task(abatement) --></help>
+        <label><!-- Scheduled Start Date --></label>
+        <name>Scheduled_Start_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Service Organization --></label>
+        <name>Service_Organization__c</name>
+        <relationshipLabel><!-- Assignment Manager Service Information --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Support Status --></label>
+        <name>Support_Status__c</name>
+        <picklistValues>
+            <masterLabel>Cancelled</masterLabel>
+            <translation><!-- Cancelled --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Completed</masterLabel>
+            <translation><!-- Completed --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>En Route</masterLabel>
+            <translation><!-- En Route --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>On Hold</masterLabel>
+            <translation><!-- On Hold --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Scheduled</masterLabel>
+            <translation><!-- Scheduled --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>on-hold</masterLabel>
+            <translation><!-- on-hold --></translation>
+        </picklistValues>
+    </fields>
+    <layouts>
+        <layout>Issue/Request Service Information Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- Response Date less than scheduled Completion date --></errorMessage>
+        <name>Response_Date_less_than_Complete_Date</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- Schedule_Service_Requests --></label>
+        <name>Schedule_Service_Requests</name>
+    </webLinks>
+</CustomObjectTranslation>

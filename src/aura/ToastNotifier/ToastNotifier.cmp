@@ -1,0 +1,28 @@
+<aura:component access="public">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:attribute name="action" type="String" access="public" />
+    <aura:attribute name="message" type="String" access="public" />
+    <aura:attribute name="time" type="Integer" access="public" />
+    <aura:attribute name="method" type="Aura.Action" access="public"/>
+    
+        <div>
+            <div class="{!'slds-notify slds-notify--toast slds-theme--'+v.action}" role="alert">
+                <span class="slds-assistive-text">{!v.action}</span>
+                <a class="slds-button slds-button--icon-inverse slds-notify__close" onclick="{!c.closeNotification}">
+                    <lightning:icon aura:id="closeIcon" iconName="utility:close" size="small" />
+                </a>
+                <div class="slds-notify__content slds-grid">
+                    
+                    <a class="slds-icon slds-icon--small slds-m-right--small slds-col slds-no-flex" onclick="{!c.closeNotification}">
+                        <lightning:icon aura:id="actionIcon" iconName="{!v.action == 'success' ? 'utility:success' : 'utility:error' }" size="small" />
+                    </a>
+                    <div class="slds-col slds-align-middle">
+                        <h2 class="slds-text-heading--small ">{!v.message}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    
+</aura:component>

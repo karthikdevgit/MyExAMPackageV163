@@ -1,0 +1,40 @@
+<apex:page standardController="Visitor_Register__c" tabstyle="account" standardStylesheets="false" sidebar="false" extensions="VisitorsRegisterController" >
+    <style type="text/css">
+        .inputTextWidth { width: 350px; }
+    </style>
+    <apex:form id="visitorForm">
+        <apex:pageMessages />
+        <br></br>
+        <table BORDER="3"    WIDTH="50%"   CELLPADDING="4" CELLSPACING="0" align="center" BORDERCOLOR="gray">
+            <tr align="center" style="font-style:bold;">
+                <td colspan="2" style="font-style:bold;font-size:20px;padding:20px 0 20px 0px;"> VISITORS INFORMATION</td>      
+            </tr>      
+            <tr>
+                <td><b>CURRENT DATE/TIME </b></td>
+                <td><apex:outputField value="{!Visitor_Register__c.Date_and_TimeIN__c}" styleClass="inputTextWidth"></apex:outputField></td>
+            </tr>
+            <tr>
+                <td><b>VISITORS NAME</b></td><td>
+                    <label for="First_Name">First Name:</label>
+                    <apex:inputField value="{!Visitor_Register__c.Visitor__c}" styleClass="inputTextWidth"  id="First_Name"/><br/>
+                    <label for="Last_Name" >Last Name:</label> 
+                    <apex:inputField value="{!Visitor_Register__c.Visitor_Last_Name__c}" styleClass="inputTextWidth"/>
+                </td>
+            </tr>
+            <!-- <tr>
+                <td><b>BADGE NO. </b></td>
+                <td><apex:outputText value="{!Visitor_Register__c.Badge_No__c}" styleClass="inputTextWidth"/> </td>
+            </tr>-->
+            <tr>
+                <td><b>REASON FOR VISIT </b></td>
+                <td><apex:inputField value="{!Visitor_Register__c.Person_Place_Visiting__c}" styleClass="inputTextWidth"/> </td>
+            </tr>
+            <tr align="center" style="font-style:bold;">
+                <td colspan="2" style="font-style:bold;font-size:16px;padding:20px 0 20px 0px;"><!-- <apex:commandButton value="Save" action="{!Save}" id="button2"/>-->
+                    <apex:commandButton value="Cancel" action="{!Cancel}" id="button1"/> 
+                    <apex:commandButton value="Submit For Approval" action="{!Save}"/>
+                </td>      
+            </tr>
+        </table> 
+    </apex:form>
+</apex:page>

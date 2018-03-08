@@ -1,0 +1,1006 @@
+.THIS {
+}
+
+/* Date time */
+.THIS .uiInput--datetime .form-element {
+    position: relative;
+}
+
+.THIS .uiInput--datetime .form-element__group .form-element__label, .THIS .uiInput--datetime.form-element__group .form-element__label {
+    margin-top: .5rem;
+}
+
+.THIS .uiInput--default .form-element__label {
+    color: rgb(112, 110, 107);
+    line-height: 1.5;
+    margin-bottom: .25rem;
+}
+
+
+.THIS .uiInput--datetime .datePicker-openIcon {
+    background: url(/projRes/ui-global-components/img/event.svg) no-repeat;
+    position: absolute;
+    left: auto;
+    width: 15px;
+    height: 15px;
+    right: .75rem;
+    bottom: 7px;
+}
+
+.THIS .uiInput--datetime .timePicker-openIcon {
+    background: url(/projRes/ui-global-components/img/clock.svg) no-repeat;
+    position: absolute;
+    left: auto;
+    width: 15px;
+    height: 15px;
+    right: .75rem;
+    bottom: 7px;
+}
+/*end Date time */
+
+.THIS .slds-spinner_container {
+    position: fixed !important; 
+}
+
+.THIS .spinnerFixed {
+  position: fixed;
+}
+
+.THIS {
+  /*padding: 4rem;*/
+}
+
+.THIS a{
+  color: #005EB8;
+}
+.THIS a:hover{
+  color: #0033A0;
+}
+
+.THIS .section-body {
+  z-index: 500;
+  padding: 1rem;
+  border: 1px solid #d8dde6;
+  border-radius: 0.25rem;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.THIS .section-header {}
+
+.THIS .section-header .slds-button--neutral {
+  border-top: none;
+  background-color: rgb(244, 246, 249);
+}
+
+.THIS .section-header .slds-button--neutral.active {
+  background-color: #fff;
+  border-bottom-color: #fff;
+}
+
+/*.THIS .slds-button-group .slds-button:first-child {
+  border-radius: 0.25rem 0 0 0.25rem;
+  border-bottom-left-radius: 0;
+  border-left: none;
+}
+
+.THIS .slds-button-group .slds-button:last-child {
+  border-radius: 0.25rem 0.25rem 0 0;
+  border-bottom-right-radius: 0;
+  border-right: none;
+}*/
+
+.THIS .slds-context-bar {
+  border-top: none;
+  border-bottom: 3px solid #002855;
+}
+
+.THIS .button-wrap {
+  margin: 30px 0 0;
+}
+
+.THIS .button-wrap button {
+  margin-right: 15px;
+}
+
+.THIS .cExamQuestionEditor .slds-button, .THIS .cExamQuestionMenu .slds-button {
+  background-color: #efeef2;
+  border: 1px solid #002855;
+  transition: all 0.75s ease-in-out;
+
+}
+
+.THIS .slds-button {
+  font-size: .875rem;
+  font-weight: normal;
+}
+
+.THIS .slds-button.slds-button--neutral:hover{
+  /*background-color: #A2AAAD;
+  color: #fff;*/
+}
+
+.THIS .slds-button.slds-button--neutral.slds-button--save.disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.THIS .slds-button.slds-button--neutral.slds-button--save.active {
+  outline: 0;
+  box-shadow: 0 0 3px #005EB8;
+}
+
+.THIS .slds-button.slds-button--neutral.slds-button--save {
+  background-color: #002855;
+  color: #fff;
+  transition: all 0.5s ease-in-out;
+  opacity: 1;
+}
+.THIS .slds-button.slds-button--neutral.slds-button--action {
+  background-color: #EBE7E0;
+  color: #fff;
+  transition: all 0.5s ease-in-out;
+  opacity: 1;
+}
+.THIS.notification_Container{
+    display : inline;
+}
+
+
+.THIS .slds-button.slds-button--neutral {
+  transition: background-color 0.25s ease-in-out;
+}
+
+.THIS .slds-button.slds-button--neutral:hover .slds-icon-text-default {
+    /*fill: #fff;*/
+}
+
+.THIS .slds-button.slds-button--neutral.slds-button--browse {
+  background-color: #EAAA00;
+  color: #504000;
+  transition: all 0.5s ease-in-out;
+  opacity: 1;
+}
+
+.THIS .slds-button.slds-button--neutral.slds-button--save:hover {
+  background-color: #005EB8;
+}
+
+.THIS .slds-button.slds-button--neutral.slds-button--browse:hover {
+  background-color: #333F48;
+  color: #fff;
+}
+
+.THIS .wizard-block .slds-button {
+  width: 100%;
+  padding: 10px;
+}
+
+.THIS .slds-button.slds-button--neutral.slds-button--save[disabled] {
+  cursor: not-allowed;
+  opacity: .5;
+  background-color: #8588a5;
+}
+
+.THIS .slds-context-bar__item {
+  max-width: none;
+}
+
+.THIS .slds-context-bar__item.slds-is-active, .THIS .slds-context-bar__item:not(.slds-no-hover):hover {
+  margin-bottom: 0;
+  border-radius: 0;
+  background-color: #efeef2;
+  border: 0 solid #002855;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+
+.THIS .slds-card__body .slds-card:hover {}
+
+.THIS .slds-global-header_container {
+  position: relative;
+}
+
+.THIS .slds-context-bar {
+  border-top: none;
+  margin: 10px 0 50px;
+  height: auto;
+}
+
+/*.THIS .slds-button {
+  color: #002855;
+  __border-radius: 0;
+}*/
+
+.THIS .slds-icon-action-preview {
+  background-color: transparent;
+}
+
+
+.THIS .pad-icon {
+  padding-left: 5px;
+}
+
+.THIS .uiLabel-left {
+
+
+}
+
+.THIS .editable-input {
+  border: none;
+  background-color: inherit;
+  cursor: pointer;
+  width: 100%;
+}
+
+.THIS .editable-input:focus {
+  border: 1px solid #002855;
+  background-color: #fff;
+  cursor: auto;
+  width: 60%;
+}
+
+.THIS .uiLabel-left {
+  margin-right: 10px;
+}
+
+.THIS .exam-question-edit {
+  padding: 4rem;
+}
+
+.THIS .exam-question-edit .section-body {
+  z-index: 500;
+  padding: 1rem;
+  border: 1px solid #d8dde6;
+  border-radius: 0.25rem;
+  border-top-right-radius: 0;
+}
+
+.THIS .exam-question-edit .section-header {
+  border: 1px solid #d8dde6;
+  border-bottom: none;
+  border-radius: 0.25rem;
+  border-bottom-right-radius: none;
+  border-bottom-left-radius: none;
+  margin-top: -30px;
+}
+
+.THIS .exam-question-edit .section-header .slds-button--neutral {
+  border-top: none;
+  border-bottom: none;
+}
+
+.THIS .exam-question-edit .slds-button-group .slds-button:first-child {
+  border-radius: 0.25rem 0 0 0.25rem;
+  border-bottom-left-radius: 0;
+  border-left: none;
+}
+
+.THIS .exam-question-edit .slds-button-group .slds-button:last-child {
+  border-bottom-right-radius: 0;
+  border-right: none;
+}
+
+.THIS .exam-question-preview {
+  /*padding: 2rem 2rem 0;*/
+  opacity: .6;
+  /*transition:  0.5s ease-in-out;*/
+  /*border: 1px solid #D6DEE8;*/
+  background-color: #fff;
+  border-radius: 0.25rem;
+}
+
+.THIS .exam-question-preview:hover {
+  opacity: .8;
+  /*border: 1px dashed #000;*/
+}
+
+.THIS .exam-question-preview.edit-mode {
+  opacity: 1;
+}
+
+
+/*.THIS .exam-question-preview .section-body {
+  z-index: 500;
+  padding: 1rem;
+  border: 1px solid #d8dde6;
+  border-radius: 0.25rem;
+  border-top-right-radius: 0;
+}
+
+.THIS .exam-question-preview .section-header {
+  border: 1px solid #d8dde6;
+  border-bottom: none;
+  border-radius: 0.25rem;
+  margin-top: -30px;
+  transition: none;
+}*/
+
+.THIS .exam-question-preview.edit-mode .section-header {
+  border: 1px solid #A8B7CC;
+  border-bottom: none;
+  border-radius: 0.25rem;
+  margin-top: -30px;
+}
+
+.THIS .exam-question-preview .section-header .slds-button--neutral {
+  opacity: 0.4;
+  border-top: none;
+}
+
+.THIS .exam-question-preview.edit-mode .section-header .slds-button--neutral {
+  opacity: 1;
+  border-top: none;
+  border-bottom: none;
+}
+
+.THIS .exam-question-preview:hover .cExamAnswerTemplate, .THIS .exam-question-preview:hover .question-box {
+  transition: all 0.75s ease-in-out;
+}
+
+
+/*.THIS .exam-question-preview:hover .section-header {
+  border: 1px dashed #000;
+  transition: all 0.75s ease-in-out;
+  border-bottom: none;
+}*/
+
+.THIS .exam-question-preview.edit-mode {
+  outline: 0;
+  border: 1px solid #1589ee;
+  box-shadow: 0 0 3px #005EB8;
+  background-color: #fff;
+}
+
+
+/*.THIS .exam-question-preview.edit-mode .section-header {
+  outline: 0;
+  border: 1px solid #1589ee;
+  box-shadow: 0 0 3px #005EB8;
+  border-bottom: none;
+  background-color: #fff;
+}*/
+
+.THIS .exam-question-preview .slds-card {
+  background-color: #fff;
+}
+
+.THIS .exam-question-preview:hover .section-header .slds-button--neutral {
+  /*-webkit-transition: all 0.75s ease-in-out;
+  transition: all 0.75s ease-in-out;
+  opacity: 1;*/
+}
+
+.THIS .section-editor>.slds-card {
+  background-color: #fff;
+}
+
+.THIS .lookup .slds-form-element{
+    width: 50% !important;
+}
+.THIS .slds-m-bottom_small .inputCmp{
+    height: 32px;
+    padding-left: 10px;
+    border-radius: .25rem;
+    width: 50%;
+}
+.THIS .dateTimeCmp{
+    width: 50%;
+}
+.THIS .dateTimeCmp input{
+    height: 32px;
+    padding-left: 10px;
+    border-radius: .25rem;
+    width: 100%;
+}
+
+.THIS .question-box {
+  margin: 15px 0;
+}
+
+.THIS .wizard-container {
+  min-height: 300px;
+  transition: all 5s ease-in-out;
+}
+
+.THIS .wizard-container.slide-in {
+  transition: all 5s ease-in-out;
+}
+
+.THIS .copy-link-block {
+  position: relative;
+  word-wrap: break-word;
+}
+
+.THIS .exam-tooltip {
+  visibility: hidden;
+  opacity: 0;
+  top: -45px;
+  left: -15px;
+  position: absolute;
+  transition: visibility .5s, opacity .5s linear;
+}
+
+.THIS .copy-link-block:hover .exam-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+.THIS .card-section {
+  margin: 15px 0;
+  padding: 10px;
+}
+
+.THIS .stack-left {
+  position: absolute;
+  left: 6px;
+  top: -5px;
+  font-size: 16px;
+}
+
+.THIS .stack-group+.slds-section__title {
+  display: inline-block;
+}
+
+.THIS .stack-group {
+  margin-right: 20px;
+  position: relative;
+}
+
+.THIS .fa-xxl {
+  font-size: 2em;
+  opacity: .4;
+}
+
+.THIS .dummyscriptlink {}
+
+.THIS input.wizard-selection {
+  margin: 0 5px;
+  float: left;
+}
+
+.THIS .exam-wizard {
+  padding: 10px;
+  margin: 10px;
+}
+
+.THIS .wizard-container .slds-card__footer {
+  text-align: left;
+  padding: 0;
+}
+
+.THIS .exam-wizard .exam-wizard-item {
+  padding: 10px;
+  margin: 0 10px;
+  position: relative;
+  opacity: .3;
+  border: 1px dotted black;
+  border-radius: 3px;
+  cursor: not-allowed;
+  z-index: 1000;
+}
+
+.THIS .exam-wizard .exam-wizard-item+span {
+  padding: 10px;
+  margin-bottom: auto;
+  position: relative;
+  opacity: .3;
+  border-bottom: 4px solid black;
+  width: 100px;
+}
+
+.THIS .exam-wizard .exam-wizard-item.active {
+  border: 1px solid gray;
+  border-radius: 3px;
+  position: relative;
+  background-color: rgb(22, 50, 92);
+  color: #fff;
+  opacity: 1;
+  cursor: default;
+}
+
+.THIS .exam-wizard .exam-wizard-item.completed {
+  border: 1px solid gray;
+  border-radius: 3px;
+  position: relative;
+  background-color: #8588a5;
+  color: #fff;
+  opacity: 1;
+  cursor: pointer;
+  ;
+}
+
+.THIS .exam-wizard .exam-wizard-item.completed {
+  position: relative;
+  opacity: 1;
+}
+
+.THIS .wizard-multiple-select label {
+  display: block;
+}
+
+.THIS .wizard-multiple-select select[multiple] {
+  height: 100px;
+  width: 100%;
+}
+
+.THIS .wizard-container .blockSavedLists select {
+  width: 100%;
+}
+
+.THIS .wizard-container .exam-wizard-item .fa {
+  margin: 3px 5px 0 0;
+}
+
+.THIS .wizard-container .wizard-block {
+  transition: all .5s ease-in-out;
+  border-radius: 3px;
+  border: 1px dotted grey;
+  margin: 15px;
+  min-height: 150px;
+  opacity: 1;
+}
+
+.THIS .wizard-container .wizard-block.wizard-current {
+  transition: all .5s ease-in-out;
+  border-radius: 0;
+  box-shadow: -0.25rem 0.25rem 1rem #888888;
+}
+
+.THIS .wizard-container .wizard-block.wizard-current:hover {
+  transition: all .5s ease-in-out;
+  border-radius: 0;
+  box-shadow: none;
+  background-color: #fff;
+}
+
+.THIS .cExamDistToolbar {
+  padding: 10px;
+}
+
+.THIS .cExamDistToolbar .question-box {
+  margin: 10px 0 5px;
+}
+
+.THIS .slds-button--download+.slds-button--download {
+  margin: 20px 0 0;
+}
+
+.THIS .slds-button--download {
+  background-color: #8588a5;
+  color: #fff;
+  display: block;
+}
+
+.THIS .slds-button--download:hover {
+  background-color: #002855;
+  color: #fff;
+}
+
+
+
+.THIS .cCtrlQuestionFlowCondition .slds-select[multiple] option {
+  padding: 0 .5em;
+}
+
+.THIS .cCtrlQuestionFlowCondition .slds-select {
+  display: block;
+}
+
+.THIS .cCtrlQuestionFlowCondition .slds-select[multiple] {
+  height: 100px;
+}
+.THIS .slds-card {
+  background-color: #fff;
+  padding: 30px;
+}
+
+.THIS .slds-card__header {
+  padding: 0;
+  /*background-color: #A2AAAD;*/
+}
+.THIS .cExamTemplateSummary .slds-card, .THIS .cExamTemplateOptionsEdit .slds-card, .THIS .editor-options-card .slds-card {
+  padding: 0;
+}
+.THIS .editor-options-card .slds-card {
+  border: 1px solid rgb(221, 219, 218);
+}
+.THIS .cExamTemplateSummary .slds-card .slds-card__header, .THIS .cExamTemplateOptionsEdit .slds-card .slds-card__header, .THIS .editor-options-card .slds-card .slds-card__header {
+  padding: 10px 20px;
+  border-bottom: 1px solid rgb(216, 221, 230);
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.THIS .cExamTemplateSummary .slds-card .slds-card__body, .THIS .cExamTemplateOptionsEdit .slds-card .slds-card__body, .THIS .editor-options-card .slds-card .slds-card__body {
+  padding: 10px 25px;
+}
+
+.THIS .cExamTemplateSummary .slds-card .slds-card__body .slds-text-heading--small, .THIS .cExamTemplateOptionsEdit .slds-card .slds-card__body .slds-text-heading--small, .THIS .editor-options-card .slds-card .slds-card__body .slds-text-heading--small {
+  padding: 10px 0 ;
+  border-bottom: 1px solid rgb(216, 221, 230);
+}
+
+.THIS .slds-text-heading--medium {
+  margin: auto 0;
+}
+
+.THIS .exam-valid-file {
+  color: #3c763d;
+}
+
+.THIS .exam-invalid-file {
+  color: #a94442;
+}
+
+.THIS .exam-no-file-selected {
+  color: #8a6d3b;
+}
+
+.THIS .cExamQuesEditor .slds-button--neutral {
+  /*border-bottom: none;*/
+}
+
+.THIS .uiMenu {
+  display: inline-block;
+}
+
+.THIS .cCtrlQuestionFlowCondition .uiMenu {
+  display: block;
+}
+
+.THIS .cCtrlQuestionFlowCondition .uiMenu {
+  display: block;
+}
+
+.THIS .uiMenuList--default .uiMenuItem>a {
+  height: 1.25rem;
+}
+
+.THIS .editor-options-card .slds-select[size] {
+  width: auto;
+  max-width: 100%;
+}
+
+.THIS .slds-spinner_container {
+  position: fixed !important;
+}
+
+.THIS .tooltip-container {
+  position: relative;
+  display: inline-block;
+}
+
+
+/* Tooltip text */
+
+.THIS .tooltip-container .slds-popover.slds-popover--tooltip {
+  transition: visibility .5s, opacity .5s linear;
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  z-index: 1;
+  top: -60px;
+  min-width: auto;
+  white-space: nowrap;
+  left: 0;
+}
+
+
+/* Show the tooltip text when you mouse over the tooltip container */
+
+.THIS .tooltip-container:hover .slds-popover.slds-popover--tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+
+.THIS .proper-case {
+  text-transform: capitalize;
+}
+
+.THIS input[type=checkbox], .THIS input[type=radio] {
+    box-sizing: border-box;
+    margin-right: 10px;
+
+}
+
+.THIS .slds-tabs--scoped__nav{
+  /*color: #fff;
+  background-color: #002855;
+  border-color: #002855;*/
+}
+.THIS .slds-tabs--scoped__nav a{
+  /*color: #fff;*/
+
+}
+.THIS .slds-tabs--scoped__nav .slds-active .slds-tabs--scoped__link{
+  /*color: #2C2A29;*/
+}
+.THIS  .slds-card__header{
+  background-color: rgb(244, 246, 249);
+}
+
+.THIS .exam-bold{
+  /*deprecated*/
+  /*font-weight: bold;*/
+}
+.THIS .slds-select[size], .THIS .slds-select[multiple] {
+    width: inherit;
+}
+.THIS .display-inline{
+    display: inline-block;
+}
+.THIS .center {
+  margin:auto;
+}
+
+.THIS .slds-table td{
+  white-space: pre-line;
+  vertical-align: text-top;
+}
+.THIS .slds-input {
+
+}
+.THIS .slds-card.section
+{
+  background-color: #FAFBFC;
+}
+.THIS .slds-tabs--scoped__item
+{
+  border-top-left-radius: .25rem
+}
+.THIS .disabled{
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.THIS .dropDown{
+    display: inline-block;
+}
+
+.THIS .question-actions .slds-tabs--scoped__nav {
+  /*background-color: #D6DEE8;*/
+}
+
+.THIS .cExamStaticRrcFilePath .slds-card__header{
+  border: 1px solid rgb(216, 221, 230);
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.THIS .slds-card {
+  background-color: #fff;
+  padding: 30px;
+}
+
+.THIS .slds-card__header {
+  padding: 0;
+  /*background-color: #A2AAAD;*/
+}
+.THIS .slds-card {
+  padding: 0;
+}
+
+.THIS .slds-card .slds-card__header {
+  padding: 10px 20px;
+  border-bottom: 1px solid rgb(216, 221, 230);
+  background-color: rgb(244, 246, 249)
+}
+
+.THIS .slds-card .slds-card__body{
+  padding: 10px 25px;
+}
+
+.THIS .slds-card .slds-card__body .slds-text-heading--small {
+  padding: 10px 0;
+  /*border-bottom: 1px solid rgb(216, 221, 230);*/
+}
+.THIS .slds-radio--button [type=radio]:checked+.slds-radio--button__label {
+    background-color: #002855;
+
+}
+/* Tooltip text */
+
+.THIS .tooltip-container .slds-popover.slds-popover--tooltip {
+  transition: visibility .5s, opacity .5s linear;
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  z-index: 1;
+
+  width: max-content;
+
+  left: 0;
+}
+
+
+/* Show the tooltip text when you mouse over the tooltip container */
+
+.THIS .tooltip-container:hover .slds-popover.slds-popover--tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+.THIS .slds-button.slds-button--neutral:hover {
+  /*background-color: #A2AAAD;
+  color: #fff;*/
+}
+
+.THIS .slds-button.slds-button--neutral.slds-button--save.disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.THIS .slds-button.slds-button--neutral.slds-button--save.active {
+  outline: 0;
+  box-shadow: 0 0 3px #005EB8;
+}
+
+.THIS .slds-button.slds-button--neutral.slds-button--save {
+  background-color: #002855;
+  color: #fff;
+  transition: all 0.5s ease-in-out;
+  opacity: 1;
+}
+
+.THIS .slds-button.slds-button--neutral.slds-button--action {
+  background-color: #EBE7E0;
+  color: #fff;
+  transition: all 0.5s ease-in-out;
+  opacity: 1;
+}
+
+.THIS .slds-button.slds-button--neutral {
+  transition: background-color 0.25s ease-in-out;
+}
+
+.THIS .slds-button.slds-button--neutral:hover .slds-icon-text-default {
+  /*fill: #fff;*/
+}
+
+.THIS .slds-button.slds-button--neutral.slds-button--browse {
+  background-color: #EAAA00;
+  color: #504000;
+  transition: all 0.5s ease-in-out;
+  opacity: 1;
+}
+
+.THIS .slds-button.slds-button--neutral.slds-button--save:hover {
+  background-color: #005EB8;
+}
+
+.THIS .slds-button.slds-button--neutral.slds-button--browse:hover {
+  background-color: #333F48;
+  color: #fff;
+}
+.THIS .accordion.distribution-wizard {
+    -webkit-box-shadow: 0px 75px 35px -55px rgba(10, 30, 65, 0.6);
+    -moz-box-shadow: 0px 75px 35px -55px rgba(10, 30, 65, 0.6);
+    box-shadow: 0px 75px 35px -55px rgba(10, 30, 65, 0.6);
+    font-family: Arial, Helvetica, sans-serif;
+    border-color: #505050;
+    border-style: solid;
+    border-width: 0px;
+    border-radius: 8px;
+    margin: 0 auto;
+    height: 290px;
+    width: 864px;
+}
+
+.THIS .accordion.distribution-wizard > ul > li,
+.THIS .distribution-wizard .accordion-title,
+.THIS .distribution-wizard .accordion-content,
+.THIS .distribution-wizard .accordion-separator {
+    float: left;
+}
+
+.THIS .accordion.distribution-wizard > ul > li {
+    background-color: #1f1f1f;
+    margin-right: -700px;
+    margin-bottom: -0px;
+}
+
+.THIS .distribution-wizard .accordion-select:checked ~ .accordion-separator {
+    margin-right: 700px;
+    margin-bottom: 0px;
+}
+
+.THIS .distribution-wizard .accordion-title,
+.THIS .distribution-wizard .accordion-select  {
+    background-color: #2d2d2d;
+    color: #ffffff;
+    width: 40px;
+    height: 290px;
+    font-size: 15px;
+}
+
+.THIS .distribution-wizard .accordion-title span {
+    margin-bottom: 20px;
+    margin-left: 20px;
+}
+
+.THIS .distribution-wizard .accordion-select:hover ~ .accordion-title,
+.THIS .distribution-wizard .accordion-select:checked ~ .accordion-title {
+    background-color: #3068cc;
+}
+
+.THIS .distribution-wizard .accordion-title span  {
+    transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+    -ms-writing-mode: lr-bt;
+    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+    margin-left: 0px;
+    line-height: 40px;
+}
+
+.THIS .distribution-wizard .accordion-content {
+    background-color: #3e3e3e;
+    color: #f5f2f0;
+    height: 234px;
+    width: 644px;
+    padding: 28px;
+}
+
+.THIS .distribution-wizard .accordion-title,
+.THIS .distribution-wizard .accordion-select:checked ~ .accordion-content {
+    margin-right: 1px;
+    margin-bottom: 1px;
+}
+
+/* Do not change following properties, they aren't
+generated automatically and are common for each slider. */
+.THIS .accordion {
+    overflow: hidden;
+}
+
+.THIS .accordion > ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    width: 101%;
+}
+
+.THIS .accordion > ul > li,
+.THIS .accordion-title {
+    position: relative;
+}
+
+.THIS .accordion-select {
+    cursor: pointer;
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    left: 0;
+    margin: 0;
+    z-index: 1;
+}
+
+.THIS .accordion-title span {
+    display: block;
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    white-space: nowrap;
+}
+
+.THIS .accordion-content {
+    position: relative;
+    overflow: auto;
+}
+
+.THIS .accordion-separator {
+    transition: margin 0.3s ease 0.1s;
+    -o-transition: margin 0.3s ease 0.1s;
+    -moz-transition: margin 0.3s ease 0.1s;
+    -webkit-transition: margin 0.3s ease 0.1s;
+}
+
+.THIS .border-bottom{
+  border-bottom: 1px solid rgb(216, 221, 230);
+}
+.THIS .slds-icon-action-edit {
+    background-color: #002855;
+  }
